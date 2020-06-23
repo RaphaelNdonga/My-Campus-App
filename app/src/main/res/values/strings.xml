@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">My Campus App</string>
+    <string name="my_campus_app_logo">My campus app logo</string>
+    <string name="subject">subject</string>
+    <string name="time">time</string>
+    <string name="save">SAVE</string>
+    <string name="empty_message">Please fill in all the blanks before saving</string>
+</resources>
