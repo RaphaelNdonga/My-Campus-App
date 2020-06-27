@@ -45,12 +45,4 @@ interface TimetableDataSource {
     suspend fun deleteAllSaturdayClasses(saturdayClass: SaturdayClass)
     suspend fun deleteAllSundayClasses(sundayClass: SundayClass)
 
-    suspend fun getAllMondayClasses():List<MondayClass>
-    suspend fun getAllTuesdayClasses():List<MondayClass>
-    suspend fun getAllWednesdayClasses():List<MondayClass>
-    suspend fun getAllThursdayClasses():List<MondayClass>
-    suspend fun getAllFridayClasses():List<MondayClass>
-    suspend fun getAllSaturdayClasses():List<MondayClass>
-    suspend fun getAllSundayClasses():List<MondayClass>
-
 }
