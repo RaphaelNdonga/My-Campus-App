@@ -12,25 +12,19 @@ import com.example.android.mycampusapp.data.timetable.local.TimetableDao
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.data.timetable.local.TimetableLocalDataSource
 import com.example.android.mycampusapp.databinding.FragmentClassInputBinding
-import com.example.android.mycampusapp.di.TimetableDatabase
 import com.example.android.mycampusapp.util.setupSnackbar
 import com.google.android.material.snackbar.Snackbar
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 
-@AndroidEntryPoint
+
+
 class ClassInputFragment : Fragment() {
 
-    @TimetableDatabase
-    @Inject lateinit var timetableRepository: TimetableDataSource
-
-
+    lateinit var timetableRepository: TimetableDataSource
 
     private val viewModel by viewModels<ClassInputViewModel> {
         ClassInputViewModelFactory(timetableRepository as TimetableLocalDataSource)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
