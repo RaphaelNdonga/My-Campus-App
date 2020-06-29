@@ -8,12 +8,19 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.example.android.mycampusapp.R
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-@MediumTest
+@HiltAndroidTest
 class ClassInputFragmentTest{
+
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+
     @Test
     fun classInputDetails_displayedInUI(){
         launchFragmentInContainer<ClassInputFragment>(Bundle(),

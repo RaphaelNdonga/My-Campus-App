@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.data.timetable.dao
+package com.example.android.mycampusapp.data.timetable.local.dao
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider

@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.data.timetable.dao
+package com.example.android.mycampusapp.data.timetable.local.dao
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -25,14 +25,6 @@ class FridayDaoTest {
             ApplicationProvider.getApplicationContext(),
             TimetableDatabase::class.java
         ).allowMainThreadQueries().build()
-    }
-    @Test
-    fun insert_retrieveById(){
-        val fridayClass = FridayClass(subject = "friday subject",time = "10:00 am")
-        database.timetableDao().insert(fridayClass)
-        val fridayClass2 = database.timetableDao().getFridayClassById(fridayClass.id)
-
-        assertThat(fridayClass2.time,`is`("10:00 am"))
     }
     @Test
     fun update_delete(){

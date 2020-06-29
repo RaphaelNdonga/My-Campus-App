@@ -29,20 +29,28 @@ interface TimetableDataSource {
     suspend fun updateSaturdayClass(saturdayClass: SaturdayClass)
     suspend fun updateSundayClass(sundayClass: SundayClass)
 
-    suspend fun observeAllMondayClasses():LiveData<List<MondayClass>>
-    suspend fun observeAllTuesdayClasses():LiveData<List<TuesdayClass>>
-    suspend fun observeAllWednesdayClasses():LiveData<List<WednesdayClass>>
-    suspend fun observeAllThursdayClasses():LiveData<List<ThursdayClass>>
-    suspend fun observeAllFridayClasses():LiveData<List<FridayClass>>
-    suspend fun observeAllSaturdayClasses():LiveData<List<SaturdayClass>>
-    suspend fun observeAllSundayClasses():LiveData<List<SundayClass>>
+    suspend fun observeAllMondayClasses(): LiveData<List<MondayClass>>
+    suspend fun observeAllTuesdayClasses(): LiveData<List<TuesdayClass>>
+    suspend fun observeAllWednesdayClasses(): LiveData<List<WednesdayClass>>
+    suspend fun observeAllThursdayClasses(): LiveData<List<ThursdayClass>>
+    suspend fun observeAllFridayClasses(): LiveData<List<FridayClass>>
+    suspend fun observeAllSaturdayClasses(): LiveData<List<SaturdayClass>>
+    suspend fun observeAllSundayClasses(): LiveData<List<SundayClass>>
 
-    suspend fun deleteAllMondayClasses(mondayClass: MondayClass)
-    suspend fun deleteAllTuesdayClasses(tuesdayClass: TuesdayClass)
-    suspend fun deleteAllWednesdayClasses(wednesdayClass: WednesdayClass)
-    suspend fun deleteAllThursdayClasses(thursdayClass: ThursdayClass)
-    suspend fun deleteAllFridayClasses(fridayClass: FridayClass)
-    suspend fun deleteAllSaturdayClasses(saturdayClass: SaturdayClass)
-    suspend fun deleteAllSundayClasses(sundayClass: SundayClass)
+    suspend fun deleteAllMondayClasses()
+    suspend fun deleteAllTuesdayClasses()
+    suspend fun deleteAllWednesdayClasses()
+    suspend fun deleteAllThursdayClasses()
+    suspend fun deleteAllFridayClasses()
+    suspend fun deleteAllSaturdayClasses()
+    suspend fun deleteAllSundayClasses()
+
+    suspend fun getAllMondayClasses(): List<MondayClass>?
+    suspend fun getAllTuesdayClasses(): List<TuesdayClass>?
+    suspend fun getAllWednesdayClasses(): List<WednesdayClass>?
+    suspend fun getAllThursdayClasses(): List<ThursdayClass>?
+    suspend fun getAllFridayClasses(): List<FridayClass>?
+    suspend fun getAllSaturdayClasses(): List<SaturdayClass>?
+    suspend fun getAllSundayClasses(): List<SundayClass>?
 
 }

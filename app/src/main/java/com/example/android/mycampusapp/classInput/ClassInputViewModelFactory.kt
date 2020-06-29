@@ -6,7 +6,7 @@ import com.example.android.mycampusapp.data.timetable.local.TimetableDao
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.data.timetable.local.TimetableLocalDataSource
 
-class ClassInputViewModelFactory(private val timetableRepository: TimetableLocalDataSource): ViewModelProvider.NewInstanceFactory() {
+class ClassInputViewModelFactory(private val timetableRepository: TimetableDataSource): ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return ClassInputViewModel(timetableRepository) as T
     }
