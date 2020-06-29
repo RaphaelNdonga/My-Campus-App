@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_host"
-    app:startDestination="@id/classInputFragment"
+    app:startDestination="@id/timetableFragment"
     >
 
     <fragment
@@ -11,4 +11,43 @@
         android:name="com.example.android.mycampusapp.classInput.ClassInputFragment"
         android:label="ClassInputFragment"
         tools:layout="@layout/fragment_class_input"/>
+    <fragment
+        android:id="@+id/friday"
+        android:name="com.example.android.mycampusapp.timetable.days.FridayFragment"
+        android:label="Friday"
+        tools:layout="@layout/fragment_friday"/>
+    <fragment
+        android:id="@+id/monday"
+        android:name="com.example.android.mycampusapp.timetable.days.MondayFragment"
+        android:label="Monday"
+        tools:layout="@layout/fragment_monday"/>
+    <fragment
+        android:id="@+id/tuesday"
+        android:name="com.example.android.mycampusapp.timetable.days.TuesdayFragment"
+        android:label="Tuesday"
+        tools:layout="@layout/fragment_tuesday"/>
+    <fragment
+        android:id="@+id/wednesday"
+        android:name="com.example.android.mycampusapp.timetable.days.WednesdayFragment"
+        android:label="Wednesday"
+        tools:layout="@layout/fragment_wednesday"/>
+    <fragment
+        android:id="@+id/thursday"
+        android:name="com.example.android.mycampusapp.timetable.days.ThursdayFragment"
+        android:label="Thursday"
+        tools:layout="@layout/fragment_thursday"/>
+    <fragment
+        android:id="@+id/saturday"
+        android:name="com.example.android.mycampusapp.timetable.days.SaturdayFragment"
+        android:label="Saturday"
+        tools:layout="@layout/fragment_saturday"/>
+    <fragment
+        android:id="@+id/sunday"
+        android:name="com.example.android.mycampusapp.timetable.days.SundayFragment"
+        android:label="Sunday"
+        tools:layout="@layout/fragment_sunday"/>
+    <fragment
+        android:id="@+id/timetableFragment"
+        android:name="com.example.android.mycampusapp.timetable.TimetableFragment"
+        android:label="TimetableFragment" />
 </navigation>
