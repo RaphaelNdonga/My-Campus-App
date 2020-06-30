@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
+        <variable
+            name="mondayClass"
+            type="com.example.android.mycampusapp.data.MondayClass" />
+
+        <variable
+            name="clickListener"
+            type="com.example.android.mycampusapp.timetable.days.monday.MondayListener" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -11,6 +19,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:onClick="@{()->clickListener.onClick(mondayClass)}"
         android:orientation="vertical">
 
         <LinearLayout
@@ -25,7 +34,8 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/subject"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle" />
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
+                app:mondaySubject="@{mondayClass}" />
 
             <TextView
                 android:id="@+id/list_item_time"
@@ -33,7 +43,8 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/time"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails" />
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                app:mondayTime="@{mondayClass}" />
 
         </LinearLayout>
 

@@ -3,6 +3,7 @@ package com.example.android.mycampusapp.timetable
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.android.mycampusapp.timetable.days.*
+import com.example.android.mycampusapp.timetable.days.monday.MondayFragment
 
 class TimetableViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int {

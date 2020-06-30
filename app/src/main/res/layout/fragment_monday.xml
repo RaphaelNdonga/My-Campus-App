@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.example.android.mycampusapp.timetable.days.monday.MondayViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -18,7 +20,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:itemCount="5"
-            tools:listitem="@layout/list_item_class" />
+            tools:listitem="@layout/list_item_monday"
+            app:listData="@{viewModel.mondayClasses}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/monday_fab"

@@ -159,67 +159,32 @@ class TimetableLocalDataSource @Inject constructor(private val timetableDao: Tim
         }
     }
 
-    override suspend fun observeAllMondayClasses(): LiveData<List<MondayClass>> {
-        val mondayList = MutableLiveData<List<MondayClass>>()
-
-        withContext(Dispatchers.IO) {
-            mondayList.value = timetableDao.observeAllMondayClasses().value
-        }
-        return mondayList
+    override fun observeAllMondayClasses(): LiveData<List<MondayClass>> {
+        return timetableDao.observeAllMondayClasses()
     }
 
-    override suspend fun observeAllTuesdayClasses(): LiveData<List<TuesdayClass>> {
-        val tuesdayList = MutableLiveData<List<TuesdayClass>>()
-
-        withContext(Dispatchers.IO) {
-            tuesdayList.value = timetableDao.observeAllTuesdayClasses().value
-        }
-        return tuesdayList
+    override fun observeAllTuesdayClasses(): LiveData<List<TuesdayClass>> {
+        return timetableDao.observeAllTuesdayClasses()
     }
 
-    override suspend fun observeAllWednesdayClasses(): LiveData<List<WednesdayClass>> {
-        val wednesdayList = MutableLiveData<List<WednesdayClass>>()
-
-        withContext(Dispatchers.IO) {
-            wednesdayList.value = timetableDao.observeAllWednesdayClasses().value
-        }
-        return wednesdayList
+    override fun observeAllWednesdayClasses(): LiveData<List<WednesdayClass>> {
+        return timetableDao.observeAllWednesdayClasses()
     }
 
-    override suspend fun observeAllThursdayClasses(): LiveData<List<ThursdayClass>> {
-        val thursdayList = MutableLiveData<List<ThursdayClass>>()
-
-        withContext(Dispatchers.IO) {
-            thursdayList.value = timetableDao.observeAllThursdayClasses().value
-        }
-        return thursdayList
+    override fun observeAllThursdayClasses(): LiveData<List<ThursdayClass>> {
+        return timetableDao.observeAllThursdayClasses()
     }
 
-    override suspend fun observeAllFridayClasses(): LiveData<List<FridayClass>> {
-        val fridayList = MutableLiveData<List<FridayClass>>()
-
-        withContext(Dispatchers.IO) {
-            fridayList.value = timetableDao.observeAllFridayClasses().value
-        }
-        return fridayList
+    override fun observeAllFridayClasses(): LiveData<List<FridayClass>> {
+        return timetableDao.observeAllFridayClasses()
     }
 
-    override suspend fun observeAllSaturdayClasses(): LiveData<List<SaturdayClass>> {
-        val saturdayList = MutableLiveData<List<SaturdayClass>>()
-
-        withContext(Dispatchers.IO) {
-            saturdayList.value = timetableDao.observeAllSaturdayClasses().value
-        }
-        return saturdayList
+    override fun observeAllSaturdayClasses(): LiveData<List<SaturdayClass>> {
+        return timetableDao.observeAllSaturdayClasses()
     }
 
-    override suspend fun observeAllSundayClasses(): LiveData<List<SundayClass>> {
-        val sundayList = MutableLiveData<List<SundayClass>>()
-
-        withContext(Dispatchers.IO) {
-            sundayList.value = timetableDao.observeAllSundayClasses().value
-        }
-        return sundayList
+    override fun observeAllSundayClasses(): LiveData<List<SundayClass>> {
+        return timetableDao.observeAllSundayClasses()
     }
 
 

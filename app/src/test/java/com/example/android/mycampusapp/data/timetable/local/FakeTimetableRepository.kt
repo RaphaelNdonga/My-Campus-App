@@ -94,32 +94,32 @@ class FakeTimetableRepository:TimetableDataSource {
         TODO("Not yet implemented")
     }
 
-    override suspend fun observeAllMondayClasses(): LiveData<List<MondayClass>> {
+    override fun observeAllMondayClasses(): LiveData<List<MondayClass>> {
         observableMondayClass.value = mondayClasses.values.toList()
         return observableMondayClass
     }
 
-    override suspend fun observeAllTuesdayClasses(): LiveData<List<TuesdayClass>> {
+    override fun observeAllTuesdayClasses(): LiveData<List<TuesdayClass>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun observeAllWednesdayClasses(): LiveData<List<WednesdayClass>> {
+    override fun observeAllWednesdayClasses(): LiveData<List<WednesdayClass>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun observeAllThursdayClasses(): LiveData<List<ThursdayClass>> {
+    override fun observeAllThursdayClasses(): LiveData<List<ThursdayClass>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun observeAllFridayClasses(): LiveData<List<FridayClass>> {
+    override fun observeAllFridayClasses(): LiveData<List<FridayClass>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun observeAllSaturdayClasses(): LiveData<List<SaturdayClass>> {
+    override fun observeAllSaturdayClasses(): LiveData<List<SaturdayClass>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun observeAllSundayClasses(): LiveData<List<SundayClass>> {
+    override fun observeAllSundayClasses(): LiveData<List<SundayClass>> {
         TODO("Not yet implemented")
     }
 

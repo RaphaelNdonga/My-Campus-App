@@ -29,13 +29,13 @@ interface TimetableDataSource {
     suspend fun updateSaturdayClass(saturdayClass: SaturdayClass)
     suspend fun updateSundayClass(sundayClass: SundayClass)
 
-    suspend fun observeAllMondayClasses(): LiveData<List<MondayClass>>
-    suspend fun observeAllTuesdayClasses(): LiveData<List<TuesdayClass>>
-    suspend fun observeAllWednesdayClasses(): LiveData<List<WednesdayClass>>
-    suspend fun observeAllThursdayClasses(): LiveData<List<ThursdayClass>>
-    suspend fun observeAllFridayClasses(): LiveData<List<FridayClass>>
-    suspend fun observeAllSaturdayClasses(): LiveData<List<SaturdayClass>>
-    suspend fun observeAllSundayClasses(): LiveData<List<SundayClass>>
+    fun observeAllMondayClasses(): LiveData<List<MondayClass>>
+    fun observeAllTuesdayClasses(): LiveData<List<TuesdayClass>>
+    fun observeAllWednesdayClasses(): LiveData<List<WednesdayClass>>
+    fun observeAllThursdayClasses(): LiveData<List<ThursdayClass>>
+    fun observeAllFridayClasses(): LiveData<List<FridayClass>>
+    fun observeAllSaturdayClasses(): LiveData<List<SaturdayClass>>
+    fun observeAllSundayClasses(): LiveData<List<SundayClass>>
 
     suspend fun deleteAllMondayClasses()
     suspend fun deleteAllTuesdayClasses()

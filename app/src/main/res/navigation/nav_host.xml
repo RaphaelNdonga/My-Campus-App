@@ -18,9 +18,13 @@
         tools:layout="@layout/fragment_friday"/>
     <fragment
         android:id="@+id/monday"
-        android:name="com.example.android.mycampusapp.timetable.days.MondayFragment"
+        android:name="com.example.android.mycampusapp.timetable.days.monday.MondayFragment"
         android:label="Monday"
-        tools:layout="@layout/fragment_monday"/>
+        tools:layout="@layout/fragment_monday">
+        <action
+            android:id="@+id/action_monday_to_classInputFragment"
+            app:destination="@id/classInputFragment" />
+    </fragment>
     <fragment
         android:id="@+id/tuesday"
         android:name="com.example.android.mycampusapp.timetable.days.TuesdayFragment"
