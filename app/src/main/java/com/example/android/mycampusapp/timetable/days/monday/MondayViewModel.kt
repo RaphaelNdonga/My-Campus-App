@@ -11,10 +11,14 @@ class MondayViewModel(repository:TimetableDataSource): ViewModel() {
 
     val mondayClasses = repository.observeAllMondayClasses()
 
-    private val _navigateToSelectedClass = MutableLiveData<Event<MondayClass>>()
-    val navigateToSelectedClass:LiveData<Event<MondayClass>> = _navigateToSelectedClass
+    private val _navigateToSelectedClass = MutableLiveData<Event<Unit>>()
+    val navigateToSelectedClass:LiveData<Event<Unit>> = _navigateToSelectedClass
 
     fun displayMondayClassDetails(mondayClass: MondayClass){
-        _navigateToSelectedClass.value = Event(mondayClass)
+        //TODO("Not yet implemented")
+    }
+
+    fun addNewTask() {
+        _navigateToSelectedClass.value = Event(Unit)
     }
 }

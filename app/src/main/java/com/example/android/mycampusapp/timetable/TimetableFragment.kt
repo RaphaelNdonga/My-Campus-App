@@ -27,7 +27,7 @@ class TimetableFragment : Fragment() {
         val tabLayout = binding.tabLayout
         viewPager.adapter = timetableAdapter
 
-        val days = listOf<String>("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")
+        val days = listOf("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")
 
         TabLayoutMediator(tabLayout,viewPager){tab, position ->
             tab.text = days[position]

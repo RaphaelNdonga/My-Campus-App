@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.android.mycampusapp.EventObserver
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.databinding.FragmentMondayBinding
 import com.example.android.mycampusapp.di.TimetableDatabase
+import com.example.android.mycampusapp.timetable.TimetableFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -44,6 +44,11 @@ class MondayFragment : Fragment() {
         binding.mondayRecyclerView.adapter = MondayAdapter(MondayListener {
             viewModel.displayMondayClassDetails(it)
         })
+
+        viewModel.navigateToSelectedClass.observe(viewLifecycleOwner, EventObserver {
+                findNavController().navigate(TimetableFragmentDirections.actionTimetableFragmentToClassInputFragment())
+        })
+
         return binding.root
     }
 }

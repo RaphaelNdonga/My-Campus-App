@@ -18,12 +18,6 @@ android {
         versionName "1.0"
         testInstrumentationRunner 'com.example.android.mycampusapp.CustomTestRunner'
 
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments["room.incremental"] = "true"
-            }
-        }
-
         vectorDrawables.useSupportLibrary = true
     }
     compileOptions {

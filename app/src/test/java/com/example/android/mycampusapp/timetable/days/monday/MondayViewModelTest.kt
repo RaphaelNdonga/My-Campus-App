@@ -45,11 +45,8 @@ class MondayViewModelTest{
         assertThat(mondayClasses,`is`(notNullValue()))
     }
     @Test
-    fun navigateToSelectedClass(){
-        val mondayClass = MondayClass(subject = "monday_subject",time = "monday_time")
-        viewModel.displayMondayClassDetails(mondayClass)
-
+    fun addNewMondayClass(){
+        viewModel.addNewTask()
         assertThat(viewModel.navigateToSelectedClass, `is`(notNullValue()))
     }
-
 }
