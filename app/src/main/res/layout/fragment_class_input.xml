@@ -32,11 +32,11 @@
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="20dp"
                 android:contentDescription="@string/my_campus_app_logo"
-                app:srcCompat = "@drawable/ic_open_book"/>
+                app:srcCompat="@drawable/ic_open_book" />
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MyCampusApp.TextInputLayout"
                 android:id="@+id/class_subject_input"
+                style="@style/Widget.MyCampusApp.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_box_margin"
@@ -45,12 +45,13 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@={viewModel.subject}"/>
+                    android:fontFamily="@font/open_sans"
+                    android:text="@={viewModel.subject}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MyCampusApp.TextInputLayout"
                 android:id="@+id/class_time_input"
+                style="@style/Widget.MyCampusApp.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_box_margin"
@@ -59,17 +60,17 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@={viewModel.time}"/>
+                    android:text="@={viewModel.time}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
-                style="@style/Widget.MyCampusApp.Button"
                 android:id="@+id/save_button"
+                style="@style/Widget.MyCampusApp.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/save"
-                android:onClick="@{()->viewModel.save()}"/>
+                android:onClick="@{()->viewModel.save()}"
+                android:text="@string/save" />
 
 
         </LinearLayout>

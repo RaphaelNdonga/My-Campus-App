@@ -5,7 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimaryLight</item>
-        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorPrimary">@color/colorSecondaryDark</item>
         <item name="fontFamily">@font/open_sans</item>
         <item name="android:fontFamily">@font/open_sans</item>
     </style>
@@ -33,6 +33,18 @@
     </style>
     <style name="TextAppearance.MyCampusApp.RecyclerViewItemDetails" parent="TextAppearance.MaterialComponents.Body1">
         <item name="font">@font/open_sans</item>
+    </style>
+
+    <style name="Widget.MyCampusApp.Toolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="theme">?theme</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="titleTextAppearance">@style/TextAppearance.MyCampusApp.Toolbar</item>
+    </style>
+
+    <style name="TextAppearance.MyCampusApp.Toolbar" parent="TextAppearance.MaterialComponents.Button">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/montserrat_bold</item>
     </style>
 
 </resources>
