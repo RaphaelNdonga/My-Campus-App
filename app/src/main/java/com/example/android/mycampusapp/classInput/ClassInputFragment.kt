@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.example.android.mycampusapp.EventObserver
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.timetable.local.TimetableDao
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
@@ -24,10 +27,16 @@ import javax.inject.Inject
 class ClassInputFragment : Fragment() {
 
     @TimetableDatabase
-    @Inject lateinit var timetableRepository: TimetableDataSource
+    @Inject
+    lateinit var timetableRepository: TimetableDataSource
+
+    private val mondayArgs by navArgs<ClassInputFragmentArgs>()
 
     private val viewModel by viewModels<ClassInputViewModel> {
-        ClassInputViewModelFactory(timetableRepository as TimetableLocalDataSource)
+        ClassInputViewModelFactory(
+            timetableRepository as TimetableLocalDataSource,
+            mondayArgs.mondayClass
+        )
     }
 
     override fun onCreateView(
@@ -46,6 +55,10 @@ class ClassInputFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        viewModel.navigator.observe(viewLifecycleOwner,EventObserver{
+            findNavController().navigate(ClassInputFragmentDirections.actionClassInputFragmentToTimetableFragment())
+        })
+
         return binding.root
     }
 
@@ -54,7 +67,7 @@ class ClassInputFragment : Fragment() {
         setupSnackbar()
     }
 
-    private fun setupSnackbar(){
-        view?.setupSnackbar(this,viewModel.snackbarText,Snackbar.LENGTH_SHORT)
+    private fun setupSnackbar() {
+        view?.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_SHORT)
     }
 }

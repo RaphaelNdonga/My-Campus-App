@@ -10,7 +10,16 @@
         android:id="@+id/classInputFragment"
         android:name="com.example.android.mycampusapp.classInput.ClassInputFragment"
         android:label="ClassInputFragment"
-        tools:layout="@layout/fragment_class_input"/>
+        tools:layout="@layout/fragment_class_input">
+        <argument
+            android:name="mondayClass"
+            app:argType="com.example.android.mycampusapp.data.MondayClass"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_classInputFragment_to_timetableFragment"
+            app:destination="@id/timetableFragment" />
+    </fragment>
     <fragment
         android:id="@+id/timetableFragment"
         android:name="com.example.android.mycampusapp.timetable.TimetableFragment"

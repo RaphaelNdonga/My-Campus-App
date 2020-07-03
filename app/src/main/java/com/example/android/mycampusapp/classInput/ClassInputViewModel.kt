@@ -9,19 +9,29 @@ import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import kotlinx.coroutines.*
 
-class ClassInputViewModel(private val timetableRepository: TimetableDataSource) : ViewModel() {
+class ClassInputViewModel(
+    private val timetableRepository: TimetableDataSource,
+    private val mondayClass: MondayClass?
+) : ViewModel() {
+    init {
+        checkMondayClassIsNull()
+    }
 
     enum class Days { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY }
 
     private val _navigator = MutableLiveData<Event<Unit>>()
-    val navigator:LiveData<Event<Unit>>
+    val navigator: LiveData<Event<Unit>>
         get() = _navigator
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
-    val subject = MutableLiveData<String>()
+    var mondayClassIsNull: Boolean? = null
 
-    val time = MutableLiveData<String>()
+    val subject = MutableLiveData<String>(mondayClass?.subject)
+
+    val time = MutableLiveData<String>(mondayClass?.time)
+
+    val id = MutableLiveData<Long>(mondayClass?.id)
 
     private val _status = MutableLiveData<Days>()
     val status: LiveData<Days>
@@ -33,15 +43,27 @@ class ClassInputViewModel(private val timetableRepository: TimetableDataSource) 
 
 
     fun save() {
+
         val currentSubject: String? = subject.value
         val currentTime: String? = time.value
         if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank()) {
             _snackbarText.value = Event(R.string.empty_message)
-        } else {
-            //TODO add all the other weekday classes in a when statement
-            addMondayClass(currentSubject,currentTime)
+
+        } else if (mondayClassIsNull!!) {
+            addMondayClass(currentSubject, currentTime)
             navigateToTimetable()
+
+        } else if (!mondayClassIsNull!!) {
+            val mondayClass = MondayClass(id.value!!,currentSubject,currentTime)
+            updateMondayClass(mondayClass)
+            navigateToTimetable()
+
         }
+    }
+
+    private fun updateMondayClass(mondayClass:MondayClass) = uiScope.launch {
+        timetableRepository.updateMondayClass(mondayClass)
+        _snackbarText.value = Event(R.string.monday_updated)
     }
 
     fun navigateToTimetable() {
@@ -49,8 +71,15 @@ class ClassInputViewModel(private val timetableRepository: TimetableDataSource) 
     }
 
     fun addMondayClass(subject: String, time: String) = uiScope.launch {
-        timetableRepository.addMondayClass(MondayClass(subject = subject,time = time))
+        timetableRepository.addMondayClass(MondayClass(subject = subject, time = time))
         _snackbarText.value = Event(R.string.monday_saved)
     }
-    //TODO add all the other weekday classes and their functions
+
+    fun checkMondayClassIsNull() {
+        if (mondayClass == null) {
+            mondayClassIsNull = true
+            return
+        }
+        mondayClassIsNull = false
+    }
 }

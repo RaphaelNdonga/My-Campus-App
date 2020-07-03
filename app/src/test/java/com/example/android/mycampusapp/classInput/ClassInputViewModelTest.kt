@@ -32,11 +32,13 @@ class ClassInputViewModelTest{
         val mondayClass2 = MondayClass(2,"monday_subject2","monday_time2")
         val mondayClass3 = MondayClass(3,"monday_subject3","monday_time3")
 
+        val mondayClass4 = MondayClass(4,"monday_subject_args","monday_time_args")
+
         repository.addMondayClass(mondayClass1)
         repository.addMondayClass(mondayClass2)
         repository.addMondayClass(mondayClass3)
 
-        viewModel = ClassInputViewModel(repository)
+        viewModel = ClassInputViewModel(repository,mondayClass4)
     }
     @Test
     fun navigateToTimetable_setsNewNavigatorEvent(){
@@ -57,5 +59,10 @@ class ClassInputViewModelTest{
 
         val value = viewModel.snackbarText.getOrAwaitValue()
         assertThat(value.getContentIfNotHandled(), `is`(R.string.monday_saved))
+    }
+    @Test
+    fun mondayClassIsNull_updated(){
+        viewModel.checkMondayClassIsNull()
+        assertThat(viewModel.mondayClassIsNull, `is`(false))
     }
 }

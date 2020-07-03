@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.android.mycampusapp.MainCoroutineRule
 import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.FakeTimetableRepository
-import com.example.android.mycampusapp.data.timetable.local.TimetableDatabase
 import com.example.android.mycampusapp.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -47,6 +46,14 @@ class MondayViewModelTest{
     @Test
     fun addNewMondayClass(){
         viewModel.addNewTask()
-        assertThat(viewModel.navigateToSelectedClass, `is`(notNullValue()))
+        assertThat(viewModel.addNewClass, `is`(notNullValue()))
+    }
+    @Test
+    fun displayMondayClassDetails(){
+        val mondayClass = MondayClass(subject = "monday_subject",time = "monday_time")
+
+        viewModel.displayMondayClassDetails(mondayClass)
+
+        assertThat(viewModel.openMondayClass.value, `is`(notNullValue()))
     }
 }

@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.android.mycampusapp.Event
 import com.example.android.mycampusapp.EventObserver
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
@@ -47,8 +47,12 @@ class MondayFragment : Fragment() {
             viewModel.displayMondayClassDetails(it)
         })
 
-        viewModel.navigateToSelectedClass.observe(viewLifecycleOwner, EventObserver {
+        viewModel.addNewClass.observe(viewLifecycleOwner, EventObserver {
                 findNavController().navigate(TimetableFragmentDirections.actionTimetableFragmentToClassInputFragment())
+        })
+
+        viewModel.openMondayClass.observe(viewLifecycleOwner,EventObserver{
+            findNavController().navigate(TimetableFragmentDirections.actionTimetableFragmentToClassInputFragment(it))
         })
 
         return binding.root
