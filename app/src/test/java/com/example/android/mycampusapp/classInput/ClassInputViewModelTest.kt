@@ -8,6 +8,7 @@ import com.example.android.mycampusapp.data.timetable.local.FakeTimetableReposit
 import com.example.android.mycampusapp.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -64,5 +65,14 @@ class ClassInputViewModelTest{
     fun mondayClassIsNull_updated(){
         viewModel.checkMondayClassIsNull()
         assertThat(viewModel.mondayClassIsNull, `is`(false))
+    }
+    @Test
+    fun updatesMondayClass() = runBlockingTest {
+        val mondayClass = MondayClass(2,"monday_subject_updated","monday_time_updated")
+        viewModel.updateMondayClass(mondayClass)
+
+        val updatedMondayClass = repository.getAllMondayClasses()?.get(2)
+
+        assertThat(updatedMondayClass?.subject, `is`(mondayClass.subject))
     }
 }

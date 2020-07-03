@@ -17,8 +17,6 @@ class ClassInputViewModel(
         checkMondayClassIsNull()
     }
 
-    enum class Days { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY }
-
     private val _navigator = MutableLiveData<Event<Unit>>()
     val navigator: LiveData<Event<Unit>>
         get() = _navigator
@@ -33,17 +31,12 @@ class ClassInputViewModel(
 
     val id = MutableLiveData<Long>(mondayClass?.id)
 
-    private val _status = MutableLiveData<Days>()
-    val status: LiveData<Days>
-        get() = _status
-
     private val _snackbarText = MutableLiveData<Event<Int>>()
     val snackbarText: LiveData<Event<Int>>
         get() = _snackbarText
 
-
+// Can only be tested through espresso
     fun save() {
-
         val currentSubject: String? = subject.value
         val currentTime: String? = time.value
         if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank()) {
@@ -61,7 +54,7 @@ class ClassInputViewModel(
         }
     }
 
-    private fun updateMondayClass(mondayClass:MondayClass) = uiScope.launch {
+    fun updateMondayClass(mondayClass:MondayClass) = uiScope.launch {
         timetableRepository.updateMondayClass(mondayClass)
         _snackbarText.value = Event(R.string.monday_updated)
     }
