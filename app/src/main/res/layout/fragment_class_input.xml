@@ -55,12 +55,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_box_margin"
-                android:hint="@string/time">
+                android:hint="@string/time"
+                android:onClick="@{()->viewModel.setTime()}">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/class_time_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@={viewModel.time}" />
+                    android:text="@={viewModel.time}"
+                    android:onClick="@{()->viewModel.setTime()}"
+                    android:inputType="none"
+                    android:focusableInTouchMode="true"
+                    android:cursorVisible="false"
+                    android:focusable="false"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton

@@ -8,18 +8,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.EventObserver
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.data.timetable.local.TimetableDao
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.data.timetable.local.TimetableLocalDataSource
 import com.example.android.mycampusapp.databinding.FragmentClassInputBinding
 import com.example.android.mycampusapp.di.TimetableDatabase
+import com.example.android.mycampusapp.util.TimePickerValues
+import com.example.android.mycampusapp.util.setupTimeDialog
 import com.example.android.mycampusapp.util.setupSnackbar
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 import javax.inject.Inject
 
 
@@ -55,19 +58,35 @@ class ClassInputFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        viewModel.navigator.observe(viewLifecycleOwner,EventObserver{
+        viewModel.navigator.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(ClassInputFragmentDirections.actionClassInputFragmentToTimetableFragment())
         })
 
+        val cal = Calendar.getInstance()
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH)
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+        val hour = cal.get(Calendar.HOUR_OF_DAY)
+        val minute = cal.get(Calendar.MINUTE)
+        val time = binding.classTimeEditText
+
+        viewModel.hourMinuteSet.observe(viewLifecycleOwner, Observer { hourMinute->
+            time.setText("${hourMinute[0]} : ${hourMinute[1]} H")
+        })
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupSnackbar()
+        setupTimePickerDialog()
     }
 
     private fun setupSnackbar() {
         view?.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_SHORT)
+    }
+
+    private fun setupTimePickerDialog() {
+        activity?.setupTimeDialog(this, viewModel.hourMinuteDisplay)
     }
 }

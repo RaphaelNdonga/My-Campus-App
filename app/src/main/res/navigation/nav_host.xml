@@ -18,7 +18,9 @@
             android:defaultValue="@null" />
         <action
             android:id="@+id/action_classInputFragment_to_timetableFragment"
-            app:destination="@id/timetableFragment" />
+            app:destination="@id/timetableFragment"
+            app:popUpTo="@id/timetableFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/timetableFragment"

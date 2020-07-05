@@ -7,6 +7,7 @@ import com.example.android.mycampusapp.Event
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
+import com.example.android.mycampusapp.util.TimePickerValues
 import kotlinx.coroutines.*
 
 class ClassInputViewModel(
@@ -23,7 +24,12 @@ class ClassInputViewModel(
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
+    val hourMinuteSet:LiveData<List<Int>>
+        get() = TimePickerValues.hourMinuteSet
+
     var mondayClassIsNull: Boolean? = null
+
+    val hourMinuteDisplay = MutableLiveData<Event<List<Int>>>()
 
     val subject = MutableLiveData<String>(mondayClass?.subject)
 
@@ -74,5 +80,8 @@ class ClassInputViewModel(
             return
         }
         mondayClassIsNull = false
+    }
+    fun setTime(){
+        hourMinuteDisplay.value = Event(listOf(10,30))
     }
 }
