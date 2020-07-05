@@ -9,6 +9,9 @@ import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.TimePickerValues
 import kotlinx.coroutines.*
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ClassInputViewModel(
     private val timetableRepository: TimetableDataSource,
@@ -24,7 +27,7 @@ class ClassInputViewModel(
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
-    val hourMinuteSet:LiveData<List<Int>>
+    val hourMinuteSet: LiveData<String>
         get() = TimePickerValues.hourMinuteSet
 
     var mondayClassIsNull: Boolean? = null
@@ -32,16 +35,21 @@ class ClassInputViewModel(
     val hourMinuteDisplay = MutableLiveData<Event<List<Int>>>()
 
     val subject = MutableLiveData<String>(mondayClass?.subject)
-
     val time = MutableLiveData<String>(mondayClass?.time)
-
     val id = MutableLiveData<Long>(mondayClass?.id)
+
+    private val cal: Calendar = Calendar.getInstance()
+    private val year = cal.get(Calendar.YEAR)
+    private val month = cal.get(Calendar.MONTH)
+    private val day = cal.get(Calendar.DAY_OF_MONTH)
+    private val hour = cal.get(Calendar.HOUR_OF_DAY)
+    private val minute = cal.get(Calendar.MINUTE)
 
     private val _snackbarText = MutableLiveData<Event<Int>>()
     val snackbarText: LiveData<Event<Int>>
         get() = _snackbarText
 
-// Can only be tested through espresso
+    // Can only be tested through espresso
     fun save() {
         val currentSubject: String? = subject.value
         val currentTime: String? = time.value
@@ -53,14 +61,14 @@ class ClassInputViewModel(
             navigateToTimetable()
 
         } else if (!mondayClassIsNull!!) {
-            val mondayClass = MondayClass(id.value!!,currentSubject,currentTime)
+            val mondayClass = MondayClass(id.value!!, currentSubject, currentTime)
             updateMondayClass(mondayClass)
             navigateToTimetable()
 
         }
     }
 
-    fun updateMondayClass(mondayClass:MondayClass) = uiScope.launch {
+    fun updateMondayClass(mondayClass: MondayClass) = uiScope.launch {
         timetableRepository.updateMondayClass(mondayClass)
         _snackbarText.value = Event(R.string.monday_updated)
     }
@@ -81,7 +89,10 @@ class ClassInputViewModel(
         }
         mondayClassIsNull = false
     }
-    fun setTime(){
-        hourMinuteDisplay.value = Event(listOf(10,30))
+
+    fun setTime() {
+        if (mondayClassIsNull!!) {
+            hourMinuteDisplay.value = Event(listOf(hour, minute))
+        }
     }
 }

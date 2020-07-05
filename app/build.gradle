@@ -30,10 +30,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
-    dataBinding {
-        enabled = true
-        enabledForTests = true
+    buildFeatures{
+        dataBinding true
     }
 
     // Always show the result of every unit test when running via command line, even if it passes.

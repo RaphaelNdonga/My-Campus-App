@@ -8,10 +8,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.android.mycampusapp.Event
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.classInput.ClassInputViewModel
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 object TimePickerValues {
-    val hourMinuteSet = MutableLiveData<List<Int>>()
+    val hourMinuteSet = MutableLiveData<String>()
 }
 
 fun Activity.showTimeDialog(hour: Int, minute: Int) {
@@ -19,7 +21,10 @@ fun Activity.showTimeDialog(hour: Int, minute: Int) {
         this,
         R.style.TimePicker,
         TimePickerDialog.OnTimeSetListener { view, hourOfDay, minuteOfDay ->
-            TimePickerValues.hourMinuteSet.value = listOf(hourOfDay,minuteOfDay)
+            val inputTime = SimpleDateFormat("HH:mm", Locale.US).parse("$hourOfDay:$minuteOfDay")
+            val tf = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US)
+            val outputTime = tf.format(inputTime!!)
+            TimePickerValues.hourMinuteSet.value = outputTime.toString()
         },
         hour,
         minute,

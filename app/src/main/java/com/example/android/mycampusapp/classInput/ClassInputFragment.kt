@@ -62,16 +62,10 @@ class ClassInputFragment : Fragment() {
             findNavController().navigate(ClassInputFragmentDirections.actionClassInputFragmentToTimetableFragment())
         })
 
-        val cal = Calendar.getInstance()
-        val year = cal.get(Calendar.YEAR)
-        val month = cal.get(Calendar.MONTH)
-        val day = cal.get(Calendar.DAY_OF_MONTH)
-        val hour = cal.get(Calendar.HOUR_OF_DAY)
-        val minute = cal.get(Calendar.MINUTE)
         val time = binding.classTimeEditText
 
         viewModel.hourMinuteSet.observe(viewLifecycleOwner, Observer { hourMinute->
-            time.setText("${hourMinute[0]} : ${hourMinute[1]} H")
+            time.setText(hourMinute)
         })
         return binding.root
     }
