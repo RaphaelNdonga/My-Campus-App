@@ -15,6 +15,7 @@ import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.databinding.FragmentMondayBinding
 import com.example.android.mycampusapp.di.TimetableDatabase
 import com.example.android.mycampusapp.timetable.TimetableFragmentDirections
+import com.example.android.mycampusapp.util.TimePickerValues
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -48,11 +49,15 @@ class MondayFragment : Fragment() {
         })
 
         viewModel.addNewClass.observe(viewLifecycleOwner, EventObserver {
-                findNavController().navigate(TimetableFragmentDirections.actionTimetableFragmentToClassInputFragment())
+            findNavController().navigate(
+                TimetableFragmentDirections.actionTimetableFragmentToClassInputFragment()
+            )
         })
 
-        viewModel.openMondayClass.observe(viewLifecycleOwner,EventObserver{
-            findNavController().navigate(TimetableFragmentDirections.actionTimetableFragmentToClassInputFragment(it))
+        viewModel.openMondayClass.observe(viewLifecycleOwner, EventObserver {
+            findNavController().navigate(
+                TimetableFragmentDirections.actionTimetableFragmentToClassInputFragment(it)
+            )
         })
 
         return binding.root

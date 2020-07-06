@@ -9,7 +9,6 @@ import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.TimePickerValues
 import kotlinx.coroutines.*
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,9 +16,7 @@ class ClassInputViewModel(
     private val timetableRepository: TimetableDataSource,
     private val mondayClass: MondayClass?
 ) : ViewModel() {
-    init {
-        checkMondayClassIsNull()
-    }
+
 
     private val _navigator = MutableLiveData<Event<Unit>>()
     val navigator: LiveData<Event<Unit>>
@@ -27,10 +24,9 @@ class ClassInputViewModel(
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
+    private val _hourMinuteSet = TimePickerValues.hourMinuteSet
     val hourMinuteSet: LiveData<String>
-        get() = TimePickerValues.hourMinuteSet
-
-    var mondayClassIsNull: Boolean? = null
+        get() = _hourMinuteSet
 
     val hourMinuteDisplay = MutableLiveData<Event<List<Int>>>()
 
@@ -39,9 +35,6 @@ class ClassInputViewModel(
     val id = MutableLiveData<Long>(mondayClass?.id)
 
     private val cal: Calendar = Calendar.getInstance()
-    private val year = cal.get(Calendar.YEAR)
-    private val month = cal.get(Calendar.MONTH)
-    private val day = cal.get(Calendar.DAY_OF_MONTH)
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
     private val minute = cal.get(Calendar.MINUTE)
 
@@ -55,16 +48,15 @@ class ClassInputViewModel(
         val currentTime: String? = time.value
         if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank()) {
             _snackbarText.value = Event(R.string.empty_message)
-
-        } else if (mondayClassIsNull!!) {
+            return
+        } else if (mondayClassIsNull()) {
             addMondayClass(currentSubject, currentTime)
             navigateToTimetable()
 
-        } else if (!mondayClassIsNull!!) {
+        } else if (!mondayClassIsNull()) {
             val mondayClass = MondayClass(id.value!!, currentSubject, currentTime)
             updateMondayClass(mondayClass)
             navigateToTimetable()
-
         }
     }
 
@@ -82,17 +74,23 @@ class ClassInputViewModel(
         _snackbarText.value = Event(R.string.monday_saved)
     }
 
-    fun checkMondayClassIsNull() {
+    fun mondayClassIsNull():Boolean {
         if (mondayClass == null) {
-            mondayClassIsNull = true
-            return
+            return true
         }
-        mondayClassIsNull = false
+        return false
     }
 
-    fun setTime() {
-        if (mondayClassIsNull!!) {
+    fun setDialogBoxTime() {
+        if (mondayClassIsNull()) {
             hourMinuteDisplay.value = Event(listOf(hour, minute))
+        } else {
+            val time = SimpleDateFormat("HH:mm", Locale.US).parse(mondayClass?.time!!)
+            val calendar = Calendar.getInstance()
+            calendar.time = time!!
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minutes = calendar.get(Calendar.MINUTE)
+            hourMinuteDisplay.value = Event(listOf(hour, minutes))
         }
     }
 }

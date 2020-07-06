@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.Event
 import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
+import com.example.android.mycampusapp.util.TimePickerValues
 
 class MondayViewModel(repository:TimetableDataSource): ViewModel() {
 
@@ -20,9 +21,13 @@ class MondayViewModel(repository:TimetableDataSource): ViewModel() {
 
     fun displayMondayClassDetails(mondayClass: MondayClass){
         _openMondayClass.value = Event(mondayClass)
+
+        //Ensures that the timepickervalues object is updated before passing the arguments to mondayInput fragment
+        TimePickerValues.hourMinuteSet.value = mondayClass.time
     }
 
     fun addNewTask() {
         _addNewClass.value = Event(Unit)
+        TimePickerValues.hourMinuteSet.value = ""
     }
 }

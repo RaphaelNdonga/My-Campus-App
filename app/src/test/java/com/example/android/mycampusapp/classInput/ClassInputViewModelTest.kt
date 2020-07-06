@@ -52,7 +52,7 @@ class ClassInputViewModelTest{
     @Test
     fun addMondayClass_toDb_showsSnackbarMessage() = runBlocking{
         val subject = "monday_subject"
-        val time = "monday_time"
+        val time = "10:01"
         viewModel.addMondayClass(subject,time)
 
         val mondayClasses = repository.getAllMondayClasses()
@@ -63,8 +63,7 @@ class ClassInputViewModelTest{
     }
     @Test
     fun mondayClassIsNull_updated(){
-        viewModel.checkMondayClassIsNull()
-        assertThat(viewModel.mondayClassIsNull, `is`(false))
+        assertThat(viewModel.mondayClassIsNull(), `is`(false))
     }
     @Test
     fun updatesMondayClass() = runBlockingTest {
