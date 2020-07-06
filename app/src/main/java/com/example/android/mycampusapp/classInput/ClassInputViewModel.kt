@@ -51,18 +51,19 @@ class ClassInputViewModel(
             return
         } else if (mondayClassIsNull()) {
             addMondayClass(currentSubject, currentTime)
+            _snackbarText.value = Event(R.string.monday_saved)
             navigateToTimetable()
 
         } else if (!mondayClassIsNull()) {
             val mondayClass = MondayClass(id.value!!, currentSubject, currentTime)
             updateMondayClass(mondayClass)
+            _snackbarText.value = Event(R.string.monday_updated)
             navigateToTimetable()
         }
     }
 
     fun updateMondayClass(mondayClass: MondayClass) = uiScope.launch {
         timetableRepository.updateMondayClass(mondayClass)
-        _snackbarText.value = Event(R.string.monday_updated)
     }
 
     fun navigateToTimetable() {
@@ -71,7 +72,6 @@ class ClassInputViewModel(
 
     fun addMondayClass(subject: String, time: String) = uiScope.launch {
         timetableRepository.addMondayClass(MondayClass(subject = subject, time = time))
-        _snackbarText.value = Event(R.string.monday_saved)
     }
 
     fun mondayClassIsNull():Boolean {
