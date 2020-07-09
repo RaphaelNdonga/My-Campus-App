@@ -53,8 +53,6 @@ class ClassInputFragment : Fragment() {
             container,
             false
         )
-        (activity as AppCompatActivity).supportActionBar?.title = "Set class"
-
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
