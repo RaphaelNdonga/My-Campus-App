@@ -112,5 +112,9 @@ dependencies {
 
     implementation 'androidx.multidex:multidex:2.0.1'
 
+    //recycler view selection dependency
+    implementation 'androidx.recyclerview:recyclerview-selection:1.0.0'
+
+
 
 }

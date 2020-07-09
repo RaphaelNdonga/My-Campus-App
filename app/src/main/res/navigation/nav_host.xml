@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/classInputFragment"
         android:name="com.example.android.mycampusapp.classInput.ClassInputFragment"
-        android:label="ClassInputFragment"
+        android:label="Set Class"
         tools:layout="@layout/fragment_class_input">
         <argument
             android:name="mondayClass"
@@ -25,7 +25,7 @@
     <fragment
         android:id="@+id/timetableFragment"
         android:name="com.example.android.mycampusapp.timetable.TimetableFragment"
-        android:label="TimetableFragment" >
+        android:label="Timetable" >
         <action
             android:id="@+id/action_timetableFragment_to_classInputFragment"
             app:destination="@id/classInputFragment" />

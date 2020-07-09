@@ -25,8 +25,6 @@ class TimetableFragment : Fragment() {
             container,
             false
         )
-        (activity as AppCompatActivity).supportActionBar?.title = "Timetable"
-
         val timetableAdapter = TimetableViewPagerAdapter(this)
         val viewPager = binding.viewPager
         val tabLayout = binding.tabLayout
