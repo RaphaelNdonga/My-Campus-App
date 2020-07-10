@@ -7,27 +7,60 @@ import com.example.android.mycampusapp.Event
 import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.TimePickerValues
+import kotlinx.coroutines.*
 
-class MondayViewModel(repository:TimetableDataSource): ViewModel() {
+class MondayViewModel(private val repository: TimetableDataSource) : ViewModel() {
 
     val mondayClasses = repository.observeAllMondayClasses()
 
     private val _addNewClass = MutableLiveData<Event<Unit>>()
-    val addNewClass:LiveData<Event<Unit>> = _addNewClass
+    val addNewClass: LiveData<Event<Unit>> = _addNewClass
 
-    private val _openMondayClass =  MutableLiveData<Event<MondayClass>>()
-    val openMondayClass:LiveData<Event<MondayClass>>
+    private val _openMondayClass = MutableLiveData<Event<MondayClass>>()
+    val openMondayClass: LiveData<Event<MondayClass>>
         get() = _openMondayClass
 
-    fun displayMondayClassDetails(mondayClass: MondayClass){
+    private val _deleteMondayClasses = MutableLiveData<Event<Unit>>()
+    val deleteMondayClasses: LiveData<Event<Unit>>
+        get() = _deleteMondayClasses
+
+    private val job = Job()
+    private val uiScope = CoroutineScope(Dispatchers.Main + job)
+
+    fun displayMondayClassDetails(mondayClass: MondayClass) {
         _openMondayClass.value = Event(mondayClass)
 
         //Ensures that the timepickervalues object is updated before passing the arguments to mondayInput fragment
         TimePickerValues.hourMinuteSet.value = mondayClass.time
     }
 
-    fun addNewTask() {
+    fun addNewClass() {
         _addNewClass.value = Event(Unit)
         TimePickerValues.hourMinuteSet.value = ""
+    }
+
+    fun deleteList(list: List<MondayClass?>) = uiScope.launch {
+        list.forEach { mondayClass->
+            if (mondayClass != null) {
+                repository.deleteMondayClass(mondayClass)
+            }
+        }
+    }
+
+    fun getMondayClassWithId(id: Long): MondayClass?{
+        var mondayClass:MondayClass? = null
+        uiScope.launch {
+             mondayClass = repository.getMondayClassWithId(id)
+        }
+        return mondayClass
+    }
+
+    fun deleteIconPressed() {
+        _deleteMondayClasses.value = Event(Unit)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        job.cancel()
     }
 }

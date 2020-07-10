@@ -22,7 +22,7 @@
             tools:itemCount="5"
             tools:listitem="@layout/list_item_monday"
             app:listData="@{viewModel.mondayClasses}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            app:layoutManager=".timetable.days.monday.CustomLinearLayoutManager"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/monday_fab"
@@ -35,6 +35,6 @@
             android:layout_marginRight="16dp"
             android:backgroundTint="@color/colorPrimary"
             app:borderWidth="0dp"
-            android:onClick="@{()->viewModel.addNewTask()}"/>
+            android:onClick="@{()->viewModel.addNewClass()}"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

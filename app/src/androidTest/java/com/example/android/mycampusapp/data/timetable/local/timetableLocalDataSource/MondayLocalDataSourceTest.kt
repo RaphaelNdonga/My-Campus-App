@@ -9,7 +9,9 @@ import androidx.test.filters.MediumTest
 import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDatabase
 import com.example.android.mycampusapp.data.timetable.local.TimetableLocalDataSource
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -86,6 +88,16 @@ class MondayLocalDataSourceTest {
         val mondayClasses = timetableLocalDataSource.getAllMondayClasses()
 
         assertThat(mondayClasses?.get(0)?.subject, `is`(mondayClass2.subject))
+    }
+    @ExperimentalCoroutinesApi
+    @Test
+    fun getMondayClassWithId() = runBlockingTest{
+        val mondayClass = MondayClass(1, "monday_subject", "monday_time")
+        timetableLocalDataSource.addMondayClass(mondayClass)
+
+        val mondayClass2 = timetableLocalDataSource.getMondayClassWithId(mondayClass.id)
+
+        assertThat(mondayClass2, `is`(mondayClass))
     }
 
     @After
