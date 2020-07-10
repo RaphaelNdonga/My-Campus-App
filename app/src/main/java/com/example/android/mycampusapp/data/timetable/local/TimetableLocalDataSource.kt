@@ -238,53 +238,115 @@ class TimetableLocalDataSource @Inject constructor(private val timetableDao: Tim
         }
     }
 
-    override suspend fun getAllMondayClasses():List<MondayClass>? {
-        var mondayClasses:List<MondayClass>? = null
-        withContext(Dispatchers.IO){
+    override suspend fun getAllMondayClasses(): List<MondayClass>? {
+        var mondayClasses: List<MondayClass>? = null
+        withContext(Dispatchers.IO) {
             mondayClasses = timetableDao.getAllMondayClasses()
         }
         return mondayClasses
     }
-    override suspend fun getAllTuesdayClasses():List<TuesdayClass>? {
-        var tuesdayClasses:List<TuesdayClass>? = null
-        withContext(Dispatchers.IO){
+
+    override suspend fun getAllTuesdayClasses(): List<TuesdayClass>? {
+        var tuesdayClasses: List<TuesdayClass>? = null
+        withContext(Dispatchers.IO) {
             tuesdayClasses = timetableDao.getAllTuesdayClasses()
         }
         return tuesdayClasses
     }
-    override suspend fun getAllWednesdayClasses():List<WednesdayClass>? {
-        var wednesdayClasses:List<WednesdayClass>? = null
-        withContext(Dispatchers.IO){
+
+    override suspend fun getAllWednesdayClasses(): List<WednesdayClass>? {
+        var wednesdayClasses: List<WednesdayClass>? = null
+        withContext(Dispatchers.IO) {
             wednesdayClasses = timetableDao.getAllWednesdayClasses()
         }
         return wednesdayClasses
     }
-    override suspend fun getAllThursdayClasses():List<ThursdayClass>? {
-        var thursdayClasses:List<ThursdayClass>? = null
-        withContext(Dispatchers.IO){
+
+    override suspend fun getAllThursdayClasses(): List<ThursdayClass>? {
+        var thursdayClasses: List<ThursdayClass>? = null
+        withContext(Dispatchers.IO) {
             thursdayClasses = timetableDao.getAllThursdayClasses()
         }
         return thursdayClasses
     }
-    override suspend fun getAllFridayClasses():List<FridayClass>? {
-        var fridayClasses:List<FridayClass>? = null
-        withContext(Dispatchers.IO){
+
+    override suspend fun getAllFridayClasses(): List<FridayClass>? {
+        var fridayClasses: List<FridayClass>? = null
+        withContext(Dispatchers.IO) {
             fridayClasses = timetableDao.getAllFridayClasses()
         }
         return fridayClasses
     }
-    override suspend fun getAllSaturdayClasses():List<SaturdayClass>? {
-        var saturdayClasses:List<SaturdayClass>? = null
-        withContext(Dispatchers.IO){
+
+    override suspend fun getAllSaturdayClasses(): List<SaturdayClass>? {
+        var saturdayClasses: List<SaturdayClass>? = null
+        withContext(Dispatchers.IO) {
             saturdayClasses = timetableDao.getAllSaturdayClasses()
         }
         return saturdayClasses
     }
-    override suspend fun getAllSundayClasses():List<SundayClass>? {
-        var sundayClasses:List<SundayClass>? = null
-        withContext(Dispatchers.IO){
+
+    override suspend fun getAllSundayClasses(): List<SundayClass>? {
+        var sundayClasses: List<SundayClass>? = null
+        withContext(Dispatchers.IO) {
             sundayClasses = timetableDao.getAllSundayClasses()
         }
         return sundayClasses
+    }
+
+    override suspend fun getMondayClassWithId(id: Long): MondayClass {
+        var mondayClass: MondayClass
+        withContext(Dispatchers.IO) {
+            mondayClass = timetableDao.getMondayClassById(id)
+        }
+        return mondayClass
+    }
+
+    override suspend fun getTuesdayClassWithId(id: Long): TuesdayClass {
+        var tuesdayClass: TuesdayClass
+        withContext(Dispatchers.IO) {
+            tuesdayClass = timetableDao.getTuesdayClassById(id)
+        }
+        return tuesdayClass
+    }
+
+    override suspend fun getWednesdayClassWithId(id: Long): WednesdayClass {
+        var wednesdayClass: WednesdayClass
+        withContext(Dispatchers.IO) {
+            wednesdayClass = timetableDao.getWednesdayClassById(id)
+        }
+        return wednesdayClass
+    }
+
+    override suspend fun getThursdayClassWithId(id: Long): ThursdayClass {
+        var thursdayClass: ThursdayClass
+        withContext(Dispatchers.IO) {
+            thursdayClass = timetableDao.getThursdayClassById(id)
+        }
+        return thursdayClass
+    }
+
+    override suspend fun getFridayClassWithId(id: Long): FridayClass {
+        var fridayClass: FridayClass
+        withContext(Dispatchers.IO) {
+            fridayClass = timetableDao.getFridayClassById(id)
+        }
+        return fridayClass
+    }
+
+    override suspend fun getSaturdayClassWithId(id: Long): SaturdayClass {
+        var saturdayClass: SaturdayClass
+        withContext(Dispatchers.IO) {
+            saturdayClass = timetableDao.getSaturdayClassById(id)
+        }
+        return saturdayClass
+    }
+
+    override suspend fun getSundayClassWithId(id: Long): SundayClass {
+        var sundayClass: SundayClass
+        withContext(Dispatchers.IO) {
+            sundayClass = timetableDao.getSundayClassById(id)
+        }
+        return sundayClass
     }
 }

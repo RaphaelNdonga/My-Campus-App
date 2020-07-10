@@ -51,13 +51,13 @@ class MondayAdapter(val clickListener: MondayListener) :
     }
 
     override fun getItemId(position: Int): Long {
-        return getItem(position).id
+        return position.toLong()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentMondayClass = getItem(position)
         tracker?.let {
-            holder.bind(currentMondayClass, clickListener,it.isSelected(currentMondayClass.id))
+            holder.bind(currentMondayClass, clickListener,it.isSelected(position.toLong()))
         }
     }
 }

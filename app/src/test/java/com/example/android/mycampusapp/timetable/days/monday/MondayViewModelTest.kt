@@ -45,7 +45,7 @@ class MondayViewModelTest{
     }
     @Test
     fun addNewMondayClass(){
-        viewModel.addNewTask()
+        viewModel.addNewClass()
         assertThat(viewModel.addNewClass, `is`(notNullValue()))
     }
     @Test
