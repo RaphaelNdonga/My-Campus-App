@@ -47,14 +47,6 @@ class MondayViewModel(private val repository: TimetableDataSource) : ViewModel()
         }
     }
 
-    fun getMondayClassWithId(id: Long): MondayClass?{
-        var mondayClass:MondayClass? = null
-        uiScope.launch {
-             mondayClass = repository.getMondayClassWithId(id)
-        }
-        return mondayClass
-    }
-
     fun deleteIconPressed() {
         _deleteMondayClasses.value = Event(Unit)
     }

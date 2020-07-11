@@ -80,6 +80,7 @@ class MondayFragment : Fragment() {
             adapter.currentList[it.toInt()]
         }.toList()
         viewModel.deleteList(list)
+        tracker?.selection!!.removeAll { true }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
