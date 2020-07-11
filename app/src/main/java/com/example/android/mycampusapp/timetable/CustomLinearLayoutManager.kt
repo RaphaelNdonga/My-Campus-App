@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.timetable.days.monday
+package com.example.android.mycampusapp.timetable
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android.mycampusapp.MainActivity

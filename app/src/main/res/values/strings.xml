@@ -8,4 +8,8 @@
     <string name="monday_saved">The Monday class has been saved</string>
     <string name="monday_updated">Monday Class has been updated</string>
     <string name="delete">Delete selected classes</string>
+    <string name="dialog_delete">Delete</string>
+    <string name="dialog_positive">OK</string>
+    <string name="dialog_negative">CANCEL</string>
+    <string name="dialog_delete_confirm">Are you sure you want to delete?</string>
 </resources>

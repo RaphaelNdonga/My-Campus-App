@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.databinding.ListItemMondayBinding
 
-class MondayAdapter(val clickListener: MondayListener) :
+class MondayAdapter(private val clickListener: MondayListener) :
     ListAdapter<MondayClass, MondayAdapter.ViewHolder>(DiffUtilCallBack()) {
 
     var tracker: SelectionTracker<Long>? = null

@@ -2,6 +2,7 @@ package com.example.android.mycampusapp.timetable.days.monday
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,6 +18,8 @@ import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.databinding.FragmentMondayBinding
 import com.example.android.mycampusapp.di.TimetableDatabase
+import com.example.android.mycampusapp.timetable.MyItemDetailsLookup
+import com.example.android.mycampusapp.timetable.MyItemKeyProvider
 import com.example.android.mycampusapp.timetable.TimetableFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -33,7 +36,7 @@ class MondayFragment : Fragment() {
     private lateinit var tracker: SelectionTracker<Long>
     private lateinit var adapter: MondayAdapter
     private lateinit var recyclerView: RecyclerView
-    private var highlightState:Boolean = false
+    private var highlightState: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,7 +88,7 @@ class MondayFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.delete_all_classes -> {
-                viewModel.deleteIconPressed()
+                showAlertDialogBox()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -108,8 +111,12 @@ class MondayFragment : Fragment() {
         tracker = SelectionTracker.Builder(
             "mondaySelection",
             recyclerView,
-            MyItemKeyProvider(recyclerView),
-            MyItemDetailsLookup(recyclerView),
+            MyItemKeyProvider(
+                recyclerView
+            ),
+            MyItemDetailsLookup(
+                recyclerView
+            ),
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
 
@@ -123,11 +130,24 @@ class MondayFragment : Fragment() {
                         viewModel.deleteMondayClasses.observe(viewLifecycleOwner, EventObserver {
                             deleteSelectedItems(tracker.selection)
                         })
-                    if(nItems == 0){ highlightState = false }
+                    if (nItems == 0) {
+                        highlightState = false
+                    }
                     requireActivity().invalidateOptionsMenu()
                 }
 
             })
         adapter.tracker = tracker
+    }
+
+    private fun showAlertDialogBox() {
+        val builder = AlertDialog.Builder(requireActivity(),R.style.MyCampusApp_Dialog)
+        builder.setTitle(getString(R.string.dialog_delete))
+        builder.setMessage(getString(R.string.dialog_delete_confirm))
+
+        builder.setPositiveButton(getString(R.string.dialog_positive)) { _, _ -> viewModel.deleteIconPressed() }
+        builder.setNegativeButton(getString(R.string.dialog_negative)) { _, _ -> }
+
+        builder.create().show()
     }
 }

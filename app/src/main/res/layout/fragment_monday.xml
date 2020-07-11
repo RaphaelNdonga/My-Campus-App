@@ -22,7 +22,7 @@
             tools:itemCount="5"
             tools:listitem="@layout/list_item_monday"
             app:listData="@{viewModel.mondayClasses}"
-            app:layoutManager=".timetable.days.monday.CustomLinearLayoutManager"/>
+            app:layoutManager=".timetable.CustomLinearLayoutManager"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/monday_fab"
