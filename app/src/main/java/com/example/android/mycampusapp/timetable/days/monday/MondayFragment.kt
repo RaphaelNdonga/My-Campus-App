@@ -34,7 +34,7 @@ class MondayFragment : Fragment() {
     private val viewModel by viewModels<MondayViewModel> {
         MondayViewModelFactory(repository)
     }
-    private var tracker: SelectionTracker<Long>? = null
+    private lateinit var tracker: SelectionTracker<Long>
     private lateinit var adapter: MondayAdapter
     private lateinit var recyclerView: RecyclerView
 
@@ -80,7 +80,7 @@ class MondayFragment : Fragment() {
             adapter.currentList[it.toInt()]
         }.toList()
         viewModel.deleteList(list)
-        tracker?.selection!!.removeAll { true }
+        tracker.selection.removeAll { true }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -107,14 +107,14 @@ class MondayFragment : Fragment() {
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
 
-        tracker?.addObserver(
+        tracker.addObserver(
             object : SelectionTracker.SelectionObserver<Long>() {
                 override fun onSelectionChanged() {
                     super.onSelectionChanged()
-                    val nItems: Int? = tracker?.selection!!.size()
+                    val nItems: Int? = tracker.selection.size()
                     if (nItems != null)
                         viewModel.deleteMondayClasses.observe(viewLifecycleOwner, EventObserver {
-                            deleteSelectedItems(tracker?.selection!!)
+                            deleteSelectedItems(tracker.selection)
                         })
                 }
             })
