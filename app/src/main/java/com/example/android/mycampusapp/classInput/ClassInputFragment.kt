@@ -65,13 +65,9 @@ class ClassInputFragment : Fragment() {
         viewModel.hourMinuteSet.observe(viewLifecycleOwner, Observer { hourMinute->
             time.setText(hourMinute)
         })
-        return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         setupSnackbar()
         setupTimePickerDialog()
+        return binding.root
     }
 
     private fun setupSnackbar() {
