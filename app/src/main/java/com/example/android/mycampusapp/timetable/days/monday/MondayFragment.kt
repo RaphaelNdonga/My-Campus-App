@@ -2,18 +2,15 @@ package com.example.android.mycampusapp.timetable.days.monday
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.mycampusapp.Event
 import com.example.android.mycampusapp.EventObserver
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.MondayClass
@@ -21,7 +18,6 @@ import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.databinding.FragmentMondayBinding
 import com.example.android.mycampusapp.di.TimetableDatabase
 import com.example.android.mycampusapp.timetable.TimetableFragmentDirections
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -37,6 +33,7 @@ class MondayFragment : Fragment() {
     private lateinit var tracker: SelectionTracker<Long>
     private lateinit var adapter: MondayAdapter
     private lateinit var recyclerView: RecyclerView
+    private var highlightState:Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -81,6 +78,8 @@ class MondayFragment : Fragment() {
         }.toList()
         viewModel.deleteList(list)
         tracker.selection.removeAll { true }
+        highlightState = false
+        requireActivity().invalidateOptionsMenu()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -98,6 +97,13 @@ class MondayFragment : Fragment() {
         inflater.inflate(R.menu.delete_all_menu, menu)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        val item = menu.findItem(R.id.delete_all_classes)
+        item.isEnabled = highlightState
+        item.isVisible = highlightState
+    }
+
     private fun setupTracker() {
         tracker = SelectionTracker.Builder(
             "mondaySelection",
@@ -111,12 +117,16 @@ class MondayFragment : Fragment() {
             object : SelectionTracker.SelectionObserver<Long>() {
                 override fun onSelectionChanged() {
                     super.onSelectionChanged()
+                    highlightState = true
                     val nItems: Int? = tracker.selection.size()
                     if (nItems != null)
                         viewModel.deleteMondayClasses.observe(viewLifecycleOwner, EventObserver {
                             deleteSelectedItems(tracker.selection)
                         })
+                    if(nItems == 0){ highlightState = false }
+                    requireActivity().invalidateOptionsMenu()
                 }
+
             })
         adapter.tracker = tracker
     }
