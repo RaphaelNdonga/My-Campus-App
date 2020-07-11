@@ -27,7 +27,7 @@ interface TimetableDao{
     @Query("SELECT * FROM monday_table")
     fun getAllMondayClasses():List<MondayClass>
 
-    @Query("SELECT * FROM monday_table")
+    @Query("SELECT * FROM monday_table ORDER BY time ASC")
     fun observeAllMondayClasses():LiveData<List<MondayClass>>
 
 
