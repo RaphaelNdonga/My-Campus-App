@@ -1,9 +1,12 @@
 package com.example.android.mycampusapp.data
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity(tableName = "sunday_table")
 data class SundayClass(
     @PrimaryKey(autoGenerate = true)
@@ -12,4 +15,4 @@ data class SundayClass(
     var subject: String,
     @ColumnInfo(name = "time")
     var time: String
-)
+):Parcelable
