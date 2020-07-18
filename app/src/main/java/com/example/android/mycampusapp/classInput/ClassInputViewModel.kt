@@ -1,5 +1,6 @@
 package com.example.android.mycampusapp.classInput
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +15,8 @@ import java.util.*
 
 class ClassInputViewModel(
     private val timetableRepository: TimetableDataSource,
-    private val mondayClass: MondayClass?
+    private val mondayClass: MondayClass?,
+    app:Application
 ) : ViewModel() {
 
 
