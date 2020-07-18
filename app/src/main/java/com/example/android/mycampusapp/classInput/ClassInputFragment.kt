@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.EventObserver
@@ -34,13 +35,8 @@ class ClassInputFragment : Fragment() {
     lateinit var timetableRepository: TimetableDataSource
 
     private val mondayArgs by navArgs<ClassInputFragmentArgs>()
+    private lateinit var viewModel: ClassInputViewModel
 
-    private val viewModel by viewModels<ClassInputViewModel> {
-        ClassInputViewModelFactory(
-            timetableRepository as TimetableLocalDataSource,
-            mondayArgs.mondayClass
-        )
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +49,13 @@ class ClassInputFragment : Fragment() {
             container,
             false
         )
+        val app = requireActivity().application
+        viewModel = ViewModelProvider(
+            this,
+            ClassInputViewModelFactory(timetableRepository, mondayArgs.mondayClass, app)
+        ).get(ClassInputViewModel::class.java)
+
+
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
@@ -62,7 +65,7 @@ class ClassInputFragment : Fragment() {
 
         val time = binding.classTimeEditText
 
-        viewModel.hourMinuteSet.observe(viewLifecycleOwner, Observer { hourMinute->
+        viewModel.hourMinuteSet.observe(viewLifecycleOwner, Observer { hourMinute ->
             time.setText(hourMinute)
         })
 
