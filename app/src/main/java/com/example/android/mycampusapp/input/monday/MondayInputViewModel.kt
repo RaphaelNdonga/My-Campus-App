@@ -143,6 +143,7 @@ class MondayInputViewModel(
 
         val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong + dayDifferenceLong
         val triggerTime = SystemClock.elapsedRealtime() + differenceWithPresent
+
         AlarmManagerCompat.setExactAndAllowWhileIdle(
             alarmManager,
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
