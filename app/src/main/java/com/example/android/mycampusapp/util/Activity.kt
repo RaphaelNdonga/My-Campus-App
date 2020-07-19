@@ -13,6 +13,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 object TimePickerValues {
+    val hourSet = MutableLiveData<Int>()
+    val minuteSet = MutableLiveData<Int>()
     val hourMinuteSet = MutableLiveData<String>()
 }
 
@@ -21,6 +23,8 @@ fun Activity.showTimeDialog(hour: Int, minute: Int) {
         this,
         R.style.MyCampusApp_Dialog,
         TimePickerDialog.OnTimeSetListener { view, hourOfDay, minuteOfDay ->
+            TimePickerValues.hourSet.value = hourOfDay
+            TimePickerValues.minuteSet.value = minuteOfDay
             val inputTime = SimpleDateFormat("HH:mm", Locale.US).parse("$hourOfDay:$minuteOfDay")
             val tf = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US)
             val outputTime = tf.format(inputTime!!)
