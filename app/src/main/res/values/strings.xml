@@ -12,4 +12,8 @@
     <string name="dialog_positive">OK</string>
     <string name="dialog_negative">CANCEL</string>
     <string name="dialog_delete_confirm">Are you sure you want to delete?</string>
+    <string name="timetable_notification_channel_id">timetable_channel</string>
+    <string name="timetable_notification_channel_name">Timetable Classes</string>
+    <string name="class_notification_title">You have a class</string>
+    <string name="timetable_channel_description">Class Reminder</string>
 </resources>

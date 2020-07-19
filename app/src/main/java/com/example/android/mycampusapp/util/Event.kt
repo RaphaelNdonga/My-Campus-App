@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp
+package com.example.android.mycampusapp.util
 
 import androidx.lifecycle.Observer
 

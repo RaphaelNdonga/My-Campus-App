@@ -10,7 +10,7 @@ import androidx.core.app.AlarmManagerCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.android.mycampusapp.Event
+import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
@@ -68,10 +68,8 @@ class MondayInputViewModel(
             getApplication(),
             REQUEST_CODE,
             notifyIntent,
-            PendingIntent.FLAG_ONE_SHOT
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
-        Timber.i("Monday number is $monday")
-        Timber.i("Today's number is $day")
     }
 
     // Can only be tested through espresso
@@ -79,18 +77,21 @@ class MondayInputViewModel(
         val currentSubject: String? = subject.value
         val currentTime: String? = time.value
         if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank()) {
-            _snackbarText.value = Event(R.string.empty_message)
+            _snackbarText.value =
+                Event(R.string.empty_message)
             return
         } else if (mondayClassIsNull()) {
             addMondayClass(currentSubject, currentTime)
-            _snackbarText.value = Event(R.string.monday_saved)
+            _snackbarText.value =
+                Event(R.string.monday_saved)
             startTimer()
             navigateToTimetable()
 
         } else if (!mondayClassIsNull()) {
             val mondayClass = MondayClass(id.value!!, currentSubject, currentTime)
             updateMondayClass(mondayClass)
-            _snackbarText.value = Event(R.string.monday_updated)
+            _snackbarText.value =
+                Event(R.string.monday_updated)
             startTimer()
             navigateToTimetable()
         }
@@ -117,14 +118,16 @@ class MondayInputViewModel(
 
     fun setDialogBoxTime() {
         if (mondayClassIsNull()) {
-            hourMinuteDisplay.value = Event(listOf(hour, minute))
+            hourMinuteDisplay.value =
+                Event(listOf(hour, minute))
         } else {
             val time = SimpleDateFormat("HH:mm", Locale.US).parse(mondayClass?.time!!)
             val calendar = Calendar.getInstance()
             calendar.time = time!!
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
             val minutes = calendar.get(Calendar.MINUTE)
-            hourMinuteDisplay.value = Event(listOf(hour, minutes))
+            hourMinuteDisplay.value =
+                Event(listOf(hour, minutes))
         }
     }
 
@@ -142,7 +145,7 @@ class MondayInputViewModel(
         val minuteDifferenceLong = minuteDifference * minuteLong
 
         val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong + dayDifferenceLong
-        val triggerTime = SystemClock.elapsedRealtime() + differenceWithPresent
+        val triggerTime = SystemClock.elapsedRealtime() + 10_000L
 
         AlarmManagerCompat.setExactAndAllowWhileIdle(
             alarmManager,

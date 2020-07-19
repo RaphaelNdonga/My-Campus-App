@@ -4,7 +4,6 @@ import android.view.View
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.example.android.mycampusapp.Event
 import com.google.android.material.snackbar.Snackbar
 
 fun View.showSnackbar(snackbarText:Int,timeLength:Int){
@@ -13,7 +12,7 @@ fun View.showSnackbar(snackbarText:Int,timeLength:Int){
     }
 }
 
-fun View.setupSnackbar(lifecycleOwner: LifecycleOwner,snackbarEvent:LiveData<Event<Int>>,timeLength: Int){
+fun View.setupSnackbar(lifecycleOwner: LifecycleOwner, snackbarEvent:LiveData<Event<Int>>, timeLength: Int){
     snackbarEvent.observe(lifecycleOwner, Observer { event->
         event.getContentIfNotHandled()?.let {
             showSnackbar(it,timeLength)

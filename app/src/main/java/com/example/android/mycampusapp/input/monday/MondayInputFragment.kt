@@ -1,5 +1,9 @@
 package com.example.android.mycampusapp.input.monday
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.android.mycampusapp.EventObserver
+import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.databinding.FragmentClassInputBinding
@@ -54,9 +58,10 @@ class MondayInputFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        viewModel.navigator.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(MondayInputFragmentDirections.actionMondayInputFragmentToTimetableFragment())
-        })
+        viewModel.navigator.observe(viewLifecycleOwner,
+            EventObserver {
+                findNavController().navigate(MondayInputFragmentDirections.actionMondayInputFragmentToTimetableFragment())
+            })
 
         val time = binding.classTimeEditText
 
@@ -64,6 +69,10 @@ class MondayInputFragment : Fragment() {
             time.setText(hourMinute)
         })
 
+        createChannel(
+            getString(R.string.timetable_notification_channel_id),
+            getString(R.string.timetable_notification_channel_name)
+        )
         return binding.root
     }
 
@@ -79,5 +88,23 @@ class MondayInputFragment : Fragment() {
 
     private fun setupTimePickerDialog() {
         activity?.setupTimeDialog(this, viewModel.hourMinuteDisplay)
+    }
+
+    private fun createChannel(channelId: String, channelName: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationChannel = NotificationChannel(
+                channelId, channelName, NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                setShowBadge(false)
+            }
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.RED
+            notificationChannel.enableVibration(true)
+            notificationChannel.description = getString(R.string.timetable_channel_description)
+
+            val notificationManager =
+                requireActivity().getSystemService(NotificationManager::class.java)
+            notificationManager?.createNotificationChannel(notificationChannel)
+        }
     }
 }

@@ -12,7 +12,7 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.mycampusapp.EventObserver
+import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
@@ -60,17 +60,19 @@ class MondayFragment : Fragment() {
         recyclerView.adapter = adapter
 
 
-        viewModel.addNewClass.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(
-                TimetableFragmentDirections.actionTimetableFragmentToClassInputFragment()
-            )
-        })
+        viewModel.addNewClass.observe(viewLifecycleOwner,
+            EventObserver {
+                findNavController().navigate(
+                    TimetableFragmentDirections.actionTimetableFragmentToClassInputFragment()
+                )
+            })
 
-        viewModel.openMondayClass.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(
-                TimetableFragmentDirections.actionTimetableFragmentToClassInputFragment(it)
-            )
-        })
+        viewModel.openMondayClass.observe(viewLifecycleOwner,
+            EventObserver {
+                findNavController().navigate(
+                    TimetableFragmentDirections.actionTimetableFragmentToClassInputFragment(it)
+                )
+            })
         setupTracker()
         return binding.root
     }
@@ -127,9 +129,10 @@ class MondayFragment : Fragment() {
                     highlightState = true
                     val nItems: Int? = tracker.selection.size()
                     if (nItems != null)
-                        viewModel.deleteMondayClasses.observe(viewLifecycleOwner, EventObserver {
-                            deleteSelectedItems(tracker.selection)
-                        })
+                        viewModel.deleteMondayClasses.observe(viewLifecycleOwner,
+                            EventObserver {
+                                deleteSelectedItems(tracker.selection)
+                            })
                     if (nItems == 0) {
                         highlightState = false
                     }

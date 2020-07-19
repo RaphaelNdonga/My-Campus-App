@@ -3,7 +3,7 @@ package com.example.android.mycampusapp.timetable.days.monday
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.android.mycampusapp.Event
+import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.TimePickerValues
@@ -28,7 +28,8 @@ class MondayViewModel(private val repository: TimetableDataSource) : ViewModel()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     fun displayMondayClassDetails(mondayClass: MondayClass) {
-        _openMondayClass.value = Event(mondayClass)
+        _openMondayClass.value =
+            Event(mondayClass)
 
         //Ensures that the timepickervalues object is updated before passing the arguments to mondayInput fragment
         TimePickerValues.hourMinuteSet.value = mondayClass.time
@@ -48,7 +49,8 @@ class MondayViewModel(private val repository: TimetableDataSource) : ViewModel()
     }
 
     fun deleteIconPressed() {
-        _deleteMondayClasses.value = Event(Unit)
+        _deleteMondayClasses.value =
+            Event(Unit)
     }
 
     override fun onCleared() {
