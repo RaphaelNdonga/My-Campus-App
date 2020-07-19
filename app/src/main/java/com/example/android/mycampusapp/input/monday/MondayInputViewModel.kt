@@ -77,21 +77,18 @@ class MondayInputViewModel(
         val currentSubject: String? = subject.value
         val currentTime: String? = time.value
         if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank()) {
-            _snackbarText.value =
-                Event(R.string.empty_message)
+            _snackbarText.value = Event(R.string.empty_message)
             return
         } else if (mondayClassIsNull()) {
             addMondayClass(currentSubject, currentTime)
-            _snackbarText.value =
-                Event(R.string.monday_saved)
+            _snackbarText.value = Event(R.string.monday_saved)
             startTimer()
             navigateToTimetable()
 
         } else if (!mondayClassIsNull()) {
             val mondayClass = MondayClass(id.value!!, currentSubject, currentTime)
             updateMondayClass(mondayClass)
-            _snackbarText.value =
-                Event(R.string.monday_updated)
+            _snackbarText.value = Event(R.string.monday_updated)
             startTimer()
             navigateToTimetable()
         }
@@ -132,8 +129,13 @@ class MondayInputViewModel(
     }
 
     private fun startTimer() {
-        val hourDifference = TimePickerValues.hourSet.value!!.minus(hour)
-        val minuteDifference = TimePickerValues.minuteSet.value!!.minus(minute)
+        val time = SimpleDateFormat("HH:mm", Locale.US).parse(mondayClass?.time!!)
+        val calendar = Calendar.getInstance()
+        calendar.time = time!!
+        val hourSet = calendar.get(Calendar.HOUR_OF_DAY)
+        val minuteSet = calendar.get(Calendar.MINUTE)
+        val hourDifference = hourSet.minus(hour)
+        val minuteDifference = minuteSet.minus(minute)
         val totalDifference = (hourDifference * 60).plus(minuteDifference)
         var dayDifference = day.minus(monday)
         if (dayDifference < 0 || (dayDifference == 0 && totalDifference < 0)) {
