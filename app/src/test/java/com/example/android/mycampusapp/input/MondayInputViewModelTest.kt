@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.classInput
+package com.example.android.mycampusapp.input
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.android.mycampusapp.MainCoroutineRule
@@ -6,6 +6,7 @@ import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.FakeTimetableRepository
 import com.example.android.mycampusapp.getOrAwaitValue
+import com.example.android.mycampusapp.input.monday.MondayInputViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
@@ -17,8 +18,8 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class ClassInputViewModelTest{
-    private lateinit var viewModel:ClassInputViewModel
+class MondayInputViewModelTest{
+    private lateinit var viewModel: MondayInputViewModel
     private lateinit var repository: FakeTimetableRepository
 
     @get:Rule
@@ -39,7 +40,11 @@ class ClassInputViewModelTest{
         repository.addMondayClass(mondayClass2)
         repository.addMondayClass(mondayClass3)
 
-        viewModel = ClassInputViewModel(repository,mondayClass4)
+        viewModel =
+            MondayInputViewModel(
+                repository,
+                mondayClass4
+            )
     }
     @Test
     fun navigateToTimetable_setsNewNavigatorEvent(){

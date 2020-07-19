@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.classInput
+package com.example.android.mycampusapp.input.monday
 
 import android.app.AlarmManager
 import android.app.Application
@@ -6,12 +6,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
-import android.widget.TimePicker
 import androidx.core.app.AlarmManagerCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.Event
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.MondayClass
@@ -23,7 +21,7 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class ClassInputViewModel(
+class MondayInputViewModel(
     private val timetableRepository: TimetableDataSource,
     private val mondayClass: MondayClass?,
     app: Application
@@ -49,13 +47,16 @@ class ClassInputViewModel(
     private val cal: Calendar = Calendar.getInstance()
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
     private val minute = cal.get(Calendar.MINUTE)
+    private val day = cal.get(Calendar.DAY_OF_WEEK)
+    private val monday = Calendar.MONDAY
 
     private val notifyIntent = Intent(app, AlarmReceiver::class.java)
     private val notifyPendingIntent: PendingIntent
     private val REQUEST_CODE = 0
     private val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     private val minuteLong = 60_000L
-    private val hourLong = 3_600_000L
+    private val hourLong = minuteLong * 60
+    private val dayLong = hourLong * 24
 
     private val _snackbarText = MutableLiveData<Event<Int>>()
     val snackbarText: LiveData<Event<Int>>
@@ -69,6 +70,8 @@ class ClassInputViewModel(
             notifyIntent,
             PendingIntent.FLAG_ONE_SHOT
         )
+        Timber.i("Monday number is $monday")
+        Timber.i("Today's number is $day")
     }
 
     // Can only be tested through espresso
@@ -126,20 +129,24 @@ class ClassInputViewModel(
     }
 
     private fun startTimer() {
-                val hourDifference = TimePickerValues.hourSet.value!!.minus(hour)
-                val minuteDifference = TimePickerValues.minuteSet.value!!.minus(minute)
+        var dayDifference = day.minus(monday)
+        if(dayDifference < 0){
+            dayDifference += 7
+        }
+        val hourDifference = TimePickerValues.hourSet.value!!.minus(hour)
+        val minuteDifference = TimePickerValues.minuteSet.value!!.minus(minute)
 
-                val hourDifferenceLong = hourDifference * hourLong
-                val minuteDifferenceLong = minuteDifference * minuteLong
+        val dayDifferenceLong = dayDifference * dayLong
+        val hourDifferenceLong = hourDifference * hourLong
+        val minuteDifferenceLong = minuteDifference * minuteLong
 
-                val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong
-                //TODO remember to account for behind time later
-                val triggerTime = SystemClock.elapsedRealtime() + differenceWithPresent
-                AlarmManagerCompat.setExactAndAllowWhileIdle(
-                    alarmManager,
-                    AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    triggerTime,
-                    notifyPendingIntent
-                )
-            }
+        val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong + dayDifferenceLong
+        val triggerTime = SystemClock.elapsedRealtime() + differenceWithPresent
+        AlarmManagerCompat.setExactAndAllowWhileIdle(
+            alarmManager,
+            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            triggerTime,
+            notifyPendingIntent
+        )
+    }
 }

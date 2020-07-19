@@ -7,8 +7,8 @@
     >
 
     <fragment
-        android:id="@+id/classInputFragment"
-        android:name="com.example.android.mycampusapp.classInput.ClassInputFragment"
+        android:id="@+id/mondayInputFragment"
+        android:name="com.example.android.mycampusapp.input.monday.MondayInputFragment"
         android:label="Set Class"
         tools:layout="@layout/fragment_class_input">
         <argument
@@ -17,7 +17,7 @@
             app:nullable="true"
             android:defaultValue="@null" />
         <action
-            android:id="@+id/action_classInputFragment_to_timetableFragment"
+            android:id="@+id/action_mondayInputFragment_to_timetableFragment"
             app:destination="@id/timetableFragment"
             app:popUpTo="@id/timetableFragment"
             app:popUpToInclusive="true" />
@@ -28,7 +28,7 @@
         android:label="Timetable" >
         <action
             android:id="@+id/action_timetableFragment_to_classInputFragment"
-            app:destination="@id/classInputFragment" />
+            app:destination="@id/mondayInputFragment" />
     </fragment>
     <fragment
         android:id="@+id/mondayFragment"
