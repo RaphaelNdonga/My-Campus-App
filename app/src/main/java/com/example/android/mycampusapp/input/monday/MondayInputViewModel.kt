@@ -129,12 +129,13 @@ class MondayInputViewModel(
     }
 
     private fun startTimer() {
-        var dayDifference = day.minus(monday)
-        if(dayDifference < 0){
-            dayDifference += 7
-        }
         val hourDifference = TimePickerValues.hourSet.value!!.minus(hour)
         val minuteDifference = TimePickerValues.minuteSet.value!!.minus(minute)
+        val totalDifference = (hourDifference * 60).plus(minuteDifference)
+        var dayDifference = day.minus(monday)
+        if (dayDifference < 0 || (dayDifference == 0 && totalDifference < 0)) {
+            dayDifference += 7
+        }
 
         val dayDifferenceLong = dayDifference * dayLong
         val hourDifferenceLong = hourDifference * hourLong
