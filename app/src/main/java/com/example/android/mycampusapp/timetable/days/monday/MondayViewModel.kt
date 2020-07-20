@@ -32,12 +32,12 @@ class MondayViewModel(private val repository: TimetableDataSource) : ViewModel()
             Event(mondayClass)
 
         //Ensures that the timepickervalues object is updated before passing the arguments to mondayInput fragment
-        TimePickerValues.hourMinuteSet.value = mondayClass.time
+        TimePickerValues.timeSetByTimePicker.value = mondayClass.time
     }
 
     fun addNewClass() {
         _addNewClass.value = Event(Unit)
-        TimePickerValues.hourMinuteSet.value = ""
+        TimePickerValues.timeSetByTimePicker.value = ""
     }
 
     fun deleteList(list: List<MondayClass?>) = uiScope.launch {

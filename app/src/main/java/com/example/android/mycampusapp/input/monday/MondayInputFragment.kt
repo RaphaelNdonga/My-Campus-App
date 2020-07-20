@@ -19,6 +19,7 @@ import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.databinding.FragmentClassInputBinding
 import com.example.android.mycampusapp.di.TimetableDatabase
+import com.example.android.mycampusapp.receiver.AlarmReceiver
 import com.example.android.mycampusapp.util.setupTimeDialog
 import com.example.android.mycampusapp.util.setupSnackbar
 import com.google.android.material.snackbar.Snackbar
@@ -32,6 +33,8 @@ class MondayInputFragment : Fragment() {
     @TimetableDatabase
     @Inject
     lateinit var timetableRepository: TimetableDataSource
+
+    @Inject lateinit var alarmReceiver: AlarmReceiver
 
     private val mondayArgs by navArgs<MondayInputFragmentArgs>()
     private lateinit var viewModel: MondayInputViewModel
@@ -51,7 +54,7 @@ class MondayInputFragment : Fragment() {
         val app = requireActivity().application
         viewModel = ViewModelProvider(
             this,
-            MondayInputViewModelFactory(timetableRepository, mondayArgs.mondayClass, app)
+            MondayInputViewModelFactory(timetableRepository, mondayArgs.mondayClass, app, alarmReceiver)
         ).get(MondayInputViewModel::class.java)
 
 
@@ -65,7 +68,7 @@ class MondayInputFragment : Fragment() {
 
         val time = binding.classTimeEditText
 
-        viewModel.hourMinuteSet.observe(viewLifecycleOwner, Observer { hourMinute ->
+        viewModel.timeSetByTimePicker.observe(viewLifecycleOwner, Observer { hourMinute ->
             time.setText(hourMinute)
         })
 
@@ -87,7 +90,7 @@ class MondayInputFragment : Fragment() {
     }
 
     private fun setupTimePickerDialog() {
-        activity?.setupTimeDialog(this, viewModel.hourMinuteDisplay)
+        activity?.setupTimeDialog(this, viewModel.timePickerClockPosition)
     }
 
     private fun createChannel(channelId: String, channelName: String) {

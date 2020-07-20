@@ -17,14 +17,14 @@ import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.receiver.AlarmReceiver
 import com.example.android.mycampusapp.util.TimePickerValues
 import kotlinx.coroutines.*
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MondayInputViewModel(
     private val timetableRepository: TimetableDataSource,
     private val mondayClass: MondayClass?,
-    app: Application
+    app: Application,
+    private val alarmReceiver: AlarmReceiver
 ) : AndroidViewModel(app) {
 
 
@@ -34,14 +34,15 @@ class MondayInputViewModel(
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
-    private val _hourMinuteSet = TimePickerValues.hourMinuteSet
-    val hourMinuteSet: LiveData<String>
-        get() = _hourMinuteSet
+    private val _timeSetByTimePicker = TimePickerValues.timeSetByTimePicker
+    val timeSetByTimePicker: LiveData<String>
+        get() = _timeSetByTimePicker
 
-    val hourMinuteDisplay = MutableLiveData<Event<List<Int>>>()
 
-    val subject = MutableLiveData<String>(mondayClass?.subject)
-    val time = MutableLiveData<String>(mondayClass?.time)
+    val timePickerClockPosition = MutableLiveData<Event<List<Int>>>()
+
+    val textBoxSubject = MutableLiveData<String>(mondayClass?.subject)
+    val textBoxTime = MutableLiveData<String>(mondayClass?.time)
     val id = MutableLiveData<Long>(mondayClass?.id)
 
     private val cal: Calendar = Calendar.getInstance()
@@ -57,6 +58,7 @@ class MondayInputViewModel(
     private val minuteLong = 60_000L
     private val hourLong = minuteLong * 60
     private val dayLong = hourLong * 24
+    private val priorAlertTime = minuteLong * 5
 
     private val _snackbarText = MutableLiveData<Event<Int>>()
     val snackbarText: LiveData<Event<Int>>
@@ -74,8 +76,8 @@ class MondayInputViewModel(
 
     // Can only be tested through espresso
     fun save() {
-        val currentSubject: String? = subject.value
-        val currentTime: String? = time.value
+        val currentSubject: String? = textBoxSubject.value
+        val currentTime: String? = textBoxTime.value
         if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank()) {
             _snackbarText.value = Event(R.string.empty_message)
             return
@@ -113,23 +115,22 @@ class MondayInputViewModel(
         return false
     }
 
-    fun setDialogBoxTime() {
+    fun setTimePickerDialogBoxTime() {
         if (mondayClassIsNull()) {
-            hourMinuteDisplay.value =
+            timePickerClockPosition.value =
                 Event(listOf(hour, minute))
         } else {
-            val time = SimpleDateFormat("HH:mm", Locale.US).parse(mondayClass?.time!!)
+            val time = SimpleDateFormat("HH:mm", Locale.US).parse(textBoxTime.value!!)
             val calendar = Calendar.getInstance()
             calendar.time = time!!
             val hour = calendar.get(Calendar.HOUR_OF_DAY)
             val minutes = calendar.get(Calendar.MINUTE)
-            hourMinuteDisplay.value =
-                Event(listOf(hour, minutes))
+            timePickerClockPosition.value = Event(listOf(hour, minutes))
         }
     }
 
     private fun startTimer() {
-        val time = SimpleDateFormat("HH:mm", Locale.US).parse(mondayClass?.time!!)
+        val time = SimpleDateFormat("HH:mm", Locale.US).parse(textBoxTime.value!!)
         val calendar = Calendar.getInstance()
         calendar.time = time!!
         val hourSet = calendar.get(Calendar.HOUR_OF_DAY)
