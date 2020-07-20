@@ -5,6 +5,7 @@ import android.app.Application
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.os.SystemClock
 import androidx.core.app.AlarmManagerCompat
 import androidx.lifecycle.AndroidViewModel
@@ -17,16 +18,17 @@ import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.receiver.MondayClassReceiver
 import com.example.android.mycampusapp.util.TimePickerValues
 import kotlinx.coroutines.*
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MondayInputViewModel(
     private val timetableRepository: TimetableDataSource,
     private val mondayClass: MondayClass?,
-    app: Application
+    private val app: Application
 ) : AndroidViewModel(app) {
 
-
+    private val mondayClassExtra = MutableLiveData<MondayClass>()
     private val _navigator = MutableLiveData<Event<Unit>>()
     val navigator: LiveData<Event<Unit>>
         get() = _navigator
@@ -36,7 +38,6 @@ class MondayInputViewModel(
     private val _timeSetByTimePicker = TimePickerValues.timeSetByTimePicker
     val timeSetByTimePicker: LiveData<String>
         get() = _timeSetByTimePicker
-
 
     val timePickerClockPosition = MutableLiveData<Event<List<Int>>>()
 
@@ -50,10 +51,7 @@ class MondayInputViewModel(
     private val day = cal.get(Calendar.DAY_OF_WEEK)
     private val monday = Calendar.MONDAY
 
-    private val notifyIntent = Intent(app, MondayClassReceiver::class.java)
-    private val notifyPendingIntent: PendingIntent
     private val REQUEST_CODE = 0
-    private val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     private val minuteLong = 60_000L
     private val hourLong = minuteLong * 60
     private val dayLong = hourLong * 24
@@ -63,15 +61,6 @@ class MondayInputViewModel(
     val snackbarText: LiveData<Event<Int>>
         get() = _snackbarText
 
-    init {
-        notifyPendingIntent = PendingIntent.getBroadcast(
-            getApplication(),
-            REQUEST_CODE,
-            notifyIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-    }
-
     // Can only be tested through espresso
     fun save() {
         val currentSubject: String? = textBoxSubject.value
@@ -80,7 +69,9 @@ class MondayInputViewModel(
             _snackbarText.value = Event(R.string.empty_message)
             return
         } else if (mondayClassIsNull()) {
-            addMondayClass(currentSubject, currentTime)
+            val mondayClass = MondayClass(subject = currentSubject,time = currentTime)
+            addMondayClass(mondayClass)
+            mondayClassExtra.value = mondayClass
             _snackbarText.value = Event(R.string.monday_updated)
             startTimer()
             navigateToTimetable()
@@ -88,6 +79,7 @@ class MondayInputViewModel(
         } else if (!mondayClassIsNull()) {
             val mondayClass = MondayClass(id.value!!, currentSubject, currentTime)
             updateMondayClass(mondayClass)
+            mondayClassExtra.value = mondayClass
             _snackbarText.value = Event(R.string.monday_saved)
             startTimer()
             navigateToTimetable()
@@ -98,14 +90,14 @@ class MondayInputViewModel(
         timetableRepository.updateMondayClass(mondayClass)
     }
 
+    fun addMondayClass(mondayClass: MondayClass) = uiScope.launch {
+        timetableRepository.addMondayClass(mondayClass)
+    }
+
     fun navigateToTimetable() {
         _navigator.value = Event(Unit)
     }
 
-    fun addMondayClass(subject: String, time: String) = uiScope.launch {
-        val mondayClass = MondayClass(subject = subject, time = time)
-        timetableRepository.addMondayClass(mondayClass)
-    }
 
     fun mondayClassIsNull(): Boolean {
         if (mondayClass == null) {
@@ -148,6 +140,18 @@ class MondayInputViewModel(
 
         val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong + dayDifferenceLong
         val triggerTime = SystemClock.elapsedRealtime() + 10_000L
+
+        val notifyIntent = Intent(app, MondayClassReceiver::class.java).apply {
+            putExtra("mondaySubject", mondayClassExtra.value?.subject)
+            putExtra("mondayTime",mondayClassExtra.value?.time)
+        }
+        val notifyPendingIntent = PendingIntent.getBroadcast(
+            getApplication(),
+            REQUEST_CODE,
+            notifyIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         AlarmManagerCompat.setExactAndAllowWhileIdle(
             alarmManager,
