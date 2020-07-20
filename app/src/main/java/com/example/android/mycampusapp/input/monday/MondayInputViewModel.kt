@@ -72,7 +72,7 @@ class MondayInputViewModel(
             val mondayClass = MondayClass(subject = currentSubject,time = currentTime)
             addMondayClass(mondayClass)
             mondayClassExtra.value = mondayClass
-            _snackbarText.value = Event(R.string.monday_updated)
+            _snackbarText.value = Event(R.string.monday_saved)
             startTimer()
             navigateToTimetable()
 
@@ -80,7 +80,7 @@ class MondayInputViewModel(
             val mondayClass = MondayClass(id.value!!, currentSubject, currentTime)
             updateMondayClass(mondayClass)
             mondayClassExtra.value = mondayClass
-            _snackbarText.value = Event(R.string.monday_saved)
+            _snackbarText.value = Event(R.string.monday_updated)
             startTimer()
             navigateToTimetable()
         }
@@ -139,7 +139,7 @@ class MondayInputViewModel(
         val minuteDifferenceLong = minuteDifference * minuteLong
 
         val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong + dayDifferenceLong
-        val triggerTime = SystemClock.elapsedRealtime() + 10_000L
+        val triggerTime = SystemClock.elapsedRealtime() + differenceWithPresent
 
         val notifyIntent = Intent(app, MondayClassReceiver::class.java).apply {
             putExtra("mondaySubject", mondayClassExtra.value?.subject)
