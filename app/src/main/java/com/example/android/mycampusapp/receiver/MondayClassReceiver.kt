@@ -6,11 +6,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
 import com.example.android.mycampusapp.util.sendNotification
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class AlarmReceiver @Inject constructor() : BroadcastReceiver() {
+class MondayClassReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
         val notificationManager =
@@ -18,9 +15,6 @@ class AlarmReceiver @Inject constructor() : BroadcastReceiver() {
                 context,
                 NotificationManager::class.java
             ) as NotificationManager
-        notificationManager.sendNotification(
-            "You have a class right now",
-            context
-        )
+        notificationManager.sendNotification("You have a class right now", context)
     }
 }

@@ -56,14 +56,14 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_box_margin"
                 android:hint="@string/time"
-                android:onClick="@{()->viewModel.setTimePickerDialogBoxTime()}">
+                android:onClick="@{()->viewModel.setTimePickerClockPosition()}">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/class_time_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@={viewModel.textBoxTime}"
-                    android:onClick="@{()->viewModel.setTimePickerDialogBoxTime()}"
+                    android:onClick="@{()->viewModel.setTimePickerClockPosition()}"
                     android:inputType="none"
                     android:focusableInTouchMode="true"
                     android:cursorVisible="false"

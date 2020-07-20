@@ -14,7 +14,7 @@ import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
-import com.example.android.mycampusapp.receiver.AlarmReceiver
+import com.example.android.mycampusapp.receiver.MondayClassReceiver
 import com.example.android.mycampusapp.util.TimePickerValues
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
@@ -23,8 +23,7 @@ import java.util.*
 class MondayInputViewModel(
     private val timetableRepository: TimetableDataSource,
     private val mondayClass: MondayClass?,
-    app: Application,
-    private val alarmReceiver: AlarmReceiver
+    app: Application
 ) : AndroidViewModel(app) {
 
 
@@ -51,7 +50,7 @@ class MondayInputViewModel(
     private val day = cal.get(Calendar.DAY_OF_WEEK)
     private val monday = Calendar.MONDAY
 
-    private val notifyIntent = Intent(app, AlarmReceiver::class.java)
+    private val notifyIntent = Intent(app, MondayClassReceiver::class.java)
     private val notifyPendingIntent: PendingIntent
     private val REQUEST_CODE = 0
     private val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -65,7 +64,6 @@ class MondayInputViewModel(
         get() = _snackbarText
 
     init {
-
         notifyPendingIntent = PendingIntent.getBroadcast(
             getApplication(),
             REQUEST_CODE,
@@ -83,14 +81,14 @@ class MondayInputViewModel(
             return
         } else if (mondayClassIsNull()) {
             addMondayClass(currentSubject, currentTime)
-            _snackbarText.value = Event(R.string.monday_saved)
+            _snackbarText.value = Event(R.string.monday_updated)
             startTimer()
             navigateToTimetable()
 
         } else if (!mondayClassIsNull()) {
             val mondayClass = MondayClass(id.value!!, currentSubject, currentTime)
             updateMondayClass(mondayClass)
-            _snackbarText.value = Event(R.string.monday_updated)
+            _snackbarText.value = Event(R.string.monday_saved)
             startTimer()
             navigateToTimetable()
         }
@@ -105,7 +103,8 @@ class MondayInputViewModel(
     }
 
     fun addMondayClass(subject: String, time: String) = uiScope.launch {
-        timetableRepository.addMondayClass(MondayClass(subject = subject, time = time))
+        val mondayClass = MondayClass(subject = subject, time = time)
+        timetableRepository.addMondayClass(mondayClass)
     }
 
     fun mondayClassIsNull(): Boolean {
@@ -115,7 +114,7 @@ class MondayInputViewModel(
         return false
     }
 
-    fun setTimePickerDialogBoxTime() {
+    fun setTimePickerClockPosition() {
         if (mondayClassIsNull()) {
             timePickerClockPosition.value =
                 Event(listOf(hour, minute))
