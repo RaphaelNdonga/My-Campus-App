@@ -16,4 +16,6 @@
     <string name="timetable_notification_channel_name">Timetable Classes</string>
     <string name="class_notification_title">Timetable Alert</string>
     <string name="timetable_channel_description">Class Reminder</string>
+    <string name="tuesday_saved">Tuesday class has been saved</string>
+    <string name="tuesday_updated">Tuesday class has been updated</string>
 </resources>

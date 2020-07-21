@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             tools:itemCount="5"
             tools:listitem="@layout/list_item_monday"
-            app:listData="@{viewModel.mondayClasses}"
+            app:mondayListData="@{viewModel.mondayClasses}"
             app:layoutManager=".timetable.CustomLinearLayoutManager"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

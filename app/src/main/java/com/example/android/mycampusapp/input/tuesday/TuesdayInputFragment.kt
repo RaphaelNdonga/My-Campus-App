@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.input.monday
+package com.example.android.mycampusapp.input.tuesday
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -17,7 +17,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
-import com.example.android.mycampusapp.databinding.FragmentMondayInputBinding
+import com.example.android.mycampusapp.databinding.FragmentTuesdayInputBinding
 import com.example.android.mycampusapp.di.TimetableDatabase
 import com.example.android.mycampusapp.util.setupTimeDialog
 import com.example.android.mycampusapp.util.setupSnackbar
@@ -27,14 +27,14 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MondayInputFragment : Fragment() {
+class TuesdayInputFragment : Fragment() {
 
     @TimetableDatabase
     @Inject
     lateinit var timetableRepository: TimetableDataSource
 
-    private val mondayArgs by navArgs<MondayInputFragmentArgs>()
-    private lateinit var viewModel: MondayInputViewModel
+    private val tuesdayArgs by navArgs<TuesdayInputFragmentArgs>()
+    private lateinit var viewModel: TuesdayInputViewModel
 
 
     override fun onCreateView(
@@ -42,17 +42,17 @@ class MondayInputFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentMondayInputBinding>(
+        val binding = DataBindingUtil.inflate<FragmentTuesdayInputBinding>(
             inflater,
-            R.layout.fragment_monday_input,
+            R.layout.fragment_tuesday_input,
             container,
             false
         )
         val app = requireActivity().application
         viewModel = ViewModelProvider(
             this,
-            MondayInputViewModelFactory(timetableRepository, mondayArgs.mondayClass, app)
-        ).get(MondayInputViewModel::class.java)
+            TuesdayInputViewModelFactory(timetableRepository, tuesdayArgs.tuesdayClass, app)
+        ).get(TuesdayInputViewModel::class.java)
 
 
         binding.lifecycleOwner = this
@@ -60,7 +60,7 @@ class MondayInputFragment : Fragment() {
 
         viewModel.navigator.observe(viewLifecycleOwner,
             EventObserver {
-                findNavController().navigate(MondayInputFragmentDirections.actionMondayInputFragmentToTimetableFragment())
+                findNavController().navigate(TuesdayInputFragmentDirections.actionTuesdayInputFragmentToTimetableFragment())
             })
 
         val time = binding.classTimeEditText
