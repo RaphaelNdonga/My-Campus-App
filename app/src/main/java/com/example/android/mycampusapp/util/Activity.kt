@@ -21,7 +21,7 @@ fun Activity.showTimeDialog(hour: Int, minute: Int) {
     TimePickerDialog(
         this,
         R.style.MyCampusApp_Dialog,
-        TimePickerDialog.OnTimeSetListener { view, hourOfDay, minuteOfDay ->
+        TimePickerDialog.OnTimeSetListener { _, hourOfDay, minuteOfDay ->
             TimePickerValues.timePickerHourSet.value = hourOfDay
             TimePickerValues.timePickerMinuteSet.value = minuteOfDay
             val inputTime = SimpleDateFormat("HH:mm", Locale.US).parse("$hourOfDay:$minuteOfDay")

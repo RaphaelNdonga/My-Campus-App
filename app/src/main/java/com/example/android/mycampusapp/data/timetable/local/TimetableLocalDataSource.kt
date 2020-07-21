@@ -239,7 +239,7 @@ class TimetableLocalDataSource @Inject constructor(private val timetableDao: Tim
     }
 
     override suspend fun getAllMondayClasses(): List<MondayClass>? {
-        var mondayClasses: List<MondayClass>? = null
+        var mondayClasses: List<MondayClass>
         withContext(Dispatchers.IO) {
             mondayClasses = timetableDao.getAllMondayClasses()
         }
@@ -247,7 +247,7 @@ class TimetableLocalDataSource @Inject constructor(private val timetableDao: Tim
     }
 
     override suspend fun getAllTuesdayClasses(): List<TuesdayClass>? {
-        var tuesdayClasses: List<TuesdayClass>? = null
+        var tuesdayClasses: List<TuesdayClass>
         withContext(Dispatchers.IO) {
             tuesdayClasses = timetableDao.getAllTuesdayClasses()
         }
@@ -255,7 +255,7 @@ class TimetableLocalDataSource @Inject constructor(private val timetableDao: Tim
     }
 
     override suspend fun getAllWednesdayClasses(): List<WednesdayClass>? {
-        var wednesdayClasses: List<WednesdayClass>? = null
+        var wednesdayClasses: List<WednesdayClass>
         withContext(Dispatchers.IO) {
             wednesdayClasses = timetableDao.getAllWednesdayClasses()
         }
@@ -263,7 +263,7 @@ class TimetableLocalDataSource @Inject constructor(private val timetableDao: Tim
     }
 
     override suspend fun getAllThursdayClasses(): List<ThursdayClass>? {
-        var thursdayClasses: List<ThursdayClass>? = null
+        var thursdayClasses: List<ThursdayClass>
         withContext(Dispatchers.IO) {
             thursdayClasses = timetableDao.getAllThursdayClasses()
         }
@@ -271,7 +271,7 @@ class TimetableLocalDataSource @Inject constructor(private val timetableDao: Tim
     }
 
     override suspend fun getAllFridayClasses(): List<FridayClass>? {
-        var fridayClasses: List<FridayClass>? = null
+        var fridayClasses: List<FridayClass>
         withContext(Dispatchers.IO) {
             fridayClasses = timetableDao.getAllFridayClasses()
         }
@@ -279,7 +279,7 @@ class TimetableLocalDataSource @Inject constructor(private val timetableDao: Tim
     }
 
     override suspend fun getAllSaturdayClasses(): List<SaturdayClass>? {
-        var saturdayClasses: List<SaturdayClass>? = null
+        var saturdayClasses: List<SaturdayClass>
         withContext(Dispatchers.IO) {
             saturdayClasses = timetableDao.getAllSaturdayClasses()
         }
@@ -287,7 +287,7 @@ class TimetableLocalDataSource @Inject constructor(private val timetableDao: Tim
     }
 
     override suspend fun getAllSundayClasses(): List<SundayClass>? {
-        var sundayClasses: List<SundayClass>? = null
+        var sundayClasses: List<SundayClass>
         withContext(Dispatchers.IO) {
             sundayClasses = timetableDao.getAllSundayClasses()
         }
