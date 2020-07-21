@@ -10,7 +10,7 @@
 
         <variable
             name="clickListener"
-            type="com.example.android.mycampusapp.timetable.days.tuesday.TuesdayListener" />
+            type="com.example.android.mycampusapp.display.days.tuesday.TuesdayListener" />
     </data>
 
     <androidx.cardview.widget.CardView

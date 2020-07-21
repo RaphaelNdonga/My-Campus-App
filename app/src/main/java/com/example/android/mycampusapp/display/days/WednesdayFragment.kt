@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.timetable.days
+package com.example.android.mycampusapp.display.days
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,17 +7,17 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.FragmentFridayBinding
+import com.example.android.mycampusapp.databinding.FragmentWednesdayBinding
 
-class FridayFragment : Fragment() {
+class WednesdayFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentFridayBinding>(
+        val binding = DataBindingUtil.inflate<FragmentWednesdayBinding>(
             inflater,
-            R.layout.fragment_friday,
+            R.layout.fragment_wednesday,
             container,
             false
         )

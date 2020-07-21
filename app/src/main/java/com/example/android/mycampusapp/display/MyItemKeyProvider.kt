@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.timetable
+package com.example.android.mycampusapp.display
 
 import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.widget.RecyclerView

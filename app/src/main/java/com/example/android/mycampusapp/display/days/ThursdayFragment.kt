@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.timetable.days
+package com.example.android.mycampusapp.display.days
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.timetable
+package com.example.android.mycampusapp.display
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.android.mycampusapp.MainActivity

@@ -5,8 +5,8 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.TuesdayClass
-import com.example.android.mycampusapp.timetable.days.monday.MondayAdapter
-import com.example.android.mycampusapp.timetable.days.tuesday.TuesdayAdapter
+import com.example.android.mycampusapp.display.days.monday.MondayAdapter
+import com.example.android.mycampusapp.display.days.tuesday.TuesdayAdapter
 
 @BindingAdapter("mondaySubject")
 fun TextView.bindMondaySubject(item:MondayClass?){

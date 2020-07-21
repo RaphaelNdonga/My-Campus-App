@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.timetable.days.monday
+package com.example.android.mycampusapp.display.days.tuesday
 
 import android.os.Bundle
 import android.view.*
@@ -14,26 +14,26 @@ import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.data.MondayClass
+import com.example.android.mycampusapp.data.TuesdayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
-import com.example.android.mycampusapp.databinding.FragmentMondayBinding
+import com.example.android.mycampusapp.databinding.FragmentTuesdayBinding
 import com.example.android.mycampusapp.di.TimetableDatabase
-import com.example.android.mycampusapp.timetable.MyItemKeyProvider
-import com.example.android.mycampusapp.timetable.TimetableFragmentDirections
+import com.example.android.mycampusapp.display.MyItemKeyProvider
+import com.example.android.mycampusapp.display.TimetableFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MondayFragment : Fragment() {
+class TuesdayFragment : Fragment() {
     @TimetableDatabase
     @Inject
     lateinit var repository: TimetableDataSource
 
-    private val viewModel by viewModels<MondayViewModel> {
-        MondayViewModelFactory(repository)
+    private val viewModel by viewModels<TuesdayViewModel> {
+        TuesdayViewModelFactory(repository)
     }
     private lateinit var tracker: SelectionTracker<Long>
-    private lateinit var adapter: MondayAdapter
+    private lateinit var adapter: TuesdayAdapter
     private lateinit var recyclerView: RecyclerView
     private var highlightState: Boolean = false
 
@@ -42,9 +42,9 @@ class MondayFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentMondayBinding>(
+        val binding = DataBindingUtil.inflate<FragmentTuesdayBinding>(
             inflater,
-            R.layout.fragment_monday,
+            R.layout.fragment_tuesday,
             container,
             false
         )
@@ -52,9 +52,9 @@ class MondayFragment : Fragment() {
         setHasOptionsMenu(true)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        recyclerView = binding.mondayRecyclerView
-        adapter = MondayAdapter(MondayListener {
-            viewModel.displayMondayClassDetails(it)
+        recyclerView = binding.tuesdayRecyclerView
+        adapter = TuesdayAdapter(TuesdayListener {
+            viewModel.displayTuesdayClassDetails(it)
         })
         recyclerView.adapter = adapter
 
@@ -62,14 +62,14 @@ class MondayFragment : Fragment() {
         viewModel.addNewClass.observe(viewLifecycleOwner,
             EventObserver {
                 findNavController().navigate(
-                    TimetableFragmentDirections.actionTimetableFragmentToMondayInputFragment()
+                    TimetableFragmentDirections.actionTimetableFragmentToTuesdayInputFragment()
                 )
             })
 
-        viewModel.openMondayClass.observe(viewLifecycleOwner,
+        viewModel.openTuesdayClass.observe(viewLifecycleOwner,
             EventObserver {
                 findNavController().navigate(
-                    TimetableFragmentDirections.actionTimetableFragmentToMondayInputFragment(it)
+                    TimetableFragmentDirections.actionTimetableFragmentToTuesdayInputFragment(it)
                 )
             })
         setupTracker()
@@ -77,7 +77,7 @@ class MondayFragment : Fragment() {
     }
 
     private fun deleteSelectedItems(selection: Selection<Long>) {
-        val list: List<MondayClass?> = selection.map {
+        val list: List<TuesdayClass?> = selection.map {
             adapter.currentList[it.toInt()]
         }.toList()
         viewModel.deleteList(list)
@@ -110,12 +110,12 @@ class MondayFragment : Fragment() {
 
     private fun setupTracker() {
         tracker = SelectionTracker.Builder(
-            "mondaySelection",
+            "tuesdaySelection",
             recyclerView,
             MyItemKeyProvider(
                 recyclerView
             ),
-            MondayItemDetailsLookup(
+            TuesdayItemDetailsLookup(
                 recyclerView
             ),
             StorageStrategy.createLongStorage()
@@ -128,7 +128,7 @@ class MondayFragment : Fragment() {
                     highlightState = true
                     val nItems: Int? = tracker.selection.size()
                     if (nItems != null)
-                        viewModel.deleteMondayClasses.observe(viewLifecycleOwner,
+                        viewModel.deleteTuesdayClasses.observe(viewLifecycleOwner,
                             EventObserver {
                                 deleteSelectedItems(tracker.selection)
                             })

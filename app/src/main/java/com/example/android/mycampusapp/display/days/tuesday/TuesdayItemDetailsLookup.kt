@@ -1,9 +1,8 @@
-package com.example.android.mycampusapp.timetable.days.tuesday
+package com.example.android.mycampusapp.display.days.tuesday
 
 import android.view.MotionEvent
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.mycampusapp.timetable.days.tuesday.TuesdayAdapter
 
 class TuesdayItemDetailsLookup(private val recyclerView:RecyclerView):ItemDetailsLookup<Long>() {
     override fun getItemDetails(event: MotionEvent): ItemDetails<Long>? {

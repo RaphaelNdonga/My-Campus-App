@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.timetable.days.tuesday.TuesdayViewModel" />
+            type="com.example.android.mycampusapp.display.days.tuesday.TuesdayViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -22,7 +22,7 @@
             tools:itemCount="5"
             tools:listitem="@layout/list_item_tuesday"
             app:tuesdayListData="@{viewModel.tuesdayClasses}"
-            app:layoutManager=".timetable.CustomLinearLayoutManager"/>
+            app:layoutManager=".display.CustomLinearLayoutManager"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/tuesday_fab"

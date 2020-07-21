@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.timetable.days.monday
+package com.example.android.mycampusapp.display.days.monday
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.android.mycampusapp.MainCoroutineRule

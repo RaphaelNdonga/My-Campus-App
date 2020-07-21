@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.timetable.days.tuesday
+package com.example.android.mycampusapp.display.days.tuesday
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
