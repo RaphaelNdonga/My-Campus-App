@@ -3,12 +3,12 @@ package com.example.android.mycampusapp.util
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.mycampusapp.data.MondayClass
-import com.example.android.mycampusapp.data.SundayClass
-import com.example.android.mycampusapp.data.TuesdayClass
+import com.example.android.mycampusapp.data.*
 import com.example.android.mycampusapp.display.days.monday.MondayAdapter
 import com.example.android.mycampusapp.display.days.sunday.SundayAdapter
+import com.example.android.mycampusapp.display.days.thursday.ThursdayAdapter
 import com.example.android.mycampusapp.display.days.tuesday.TuesdayAdapter
+import com.example.android.mycampusapp.display.days.wednesday.WednesdayAdapter
 
 @BindingAdapter("mondaySubject")
 fun TextView.bindMondaySubject(item:MondayClass?){
@@ -48,6 +48,34 @@ fun bindTuesdayRecyclerView(recyclerView:RecyclerView, data: List<TuesdayClass>?
     adapter.submitList(data)
 }
 
+@BindingAdapter("wednesdaySubject")
+fun TextView.bindWednesdaySubject(item: WednesdayClass?){
+    text = item?.subject
+}
+@BindingAdapter("wednesdayTime")
+fun TextView.bindWednesdayTime(item:WednesdayClass?){
+    text = item?.time
+}
+@BindingAdapter("wednesdayListData")
+fun bindWednesdayRecyclerView(recyclerView: RecyclerView,data: List<WednesdayClass>?){
+    val adapter = recyclerView.adapter as WednesdayAdapter
+    adapter.submitList(data)
+}
+
+@BindingAdapter("thursdaySubject")
+fun TextView.bindThursdaySubject(item:ThursdayClass?){
+    text = item?.subject
+}
+@BindingAdapter("thursdayTime")
+fun TextView.bindThursdayTime(item:ThursdayClass?){
+    text = item?.time
+}
+@BindingAdapter("thursdayListData")
+fun bindThursdayRecyclerView(recyclerView:RecyclerView, data:List<ThursdayClass>?){
+    val adapter = recyclerView.adapter as ThursdayAdapter
+    adapter.submitList(data)
+}
+
 @BindingAdapter("sundaySubject")
 fun TextView.bindSundaySubject(item:SundayClass?){
     text = item?.subject
@@ -61,3 +89,4 @@ fun bindRecyclerView(recyclerView: RecyclerView,data: List<SundayClass>?){
     val adapter = recyclerView.adapter as SundayAdapter
     adapter.submitList(data)
 }
+

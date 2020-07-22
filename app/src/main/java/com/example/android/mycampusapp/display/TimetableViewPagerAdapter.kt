@@ -5,7 +5,9 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.android.mycampusapp.display.days.*
 import com.example.android.mycampusapp.display.days.monday.MondayFragment
 import com.example.android.mycampusapp.display.days.sunday.SundayFragment
+import com.example.android.mycampusapp.display.days.thursday.ThursdayFragment
 import com.example.android.mycampusapp.display.days.tuesday.TuesdayFragment
+import com.example.android.mycampusapp.display.days.wednesday.WednesdayFragment
 
 class TimetableViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int {

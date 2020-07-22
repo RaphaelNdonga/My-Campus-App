@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="wednesdayClass"
+            type="com.example.android.mycampusapp.data.WednesdayClass" />
+
+        <variable
+            name="clickListener"
+            type="com.example.android.mycampusapp.display.days.wednesday.WednesdayListener" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="@{()->clickListener.onClick(wednesdayClass)}"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@drawable/item_background">
+
+            <TextView
+                android:id="@+id/list_item_subject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_box_margin"
+                android:text="@string/subject"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
+                app:wednesdaySubject="@{wednesdayClass}" />
+
+            <TextView
+                android:id="@+id/list_item_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_box_margin"
+                android:text="@string/time"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                app:wednesdayTime="@{wednesdayClass}" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>
