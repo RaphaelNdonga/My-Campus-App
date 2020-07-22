@@ -21,6 +21,7 @@ import com.example.android.mycampusapp.di.TimetableDatabase
 import com.example.android.mycampusapp.display.MyItemKeyProvider
 import com.example.android.mycampusapp.display.TimetableFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -48,6 +49,7 @@ class MondayFragment : Fragment() {
             container,
             false
         )
+        Timber.i("monday fragment created")
 
         setHasOptionsMenu(true)
         binding.viewModel = viewModel
@@ -143,7 +145,7 @@ class MondayFragment : Fragment() {
     }
 
     private fun showAlertDialogBox() {
-        val builder = AlertDialog.Builder(requireActivity(),R.style.MyCampusApp_Dialog)
+        val builder = AlertDialog.Builder(requireActivity(), R.style.MyCampusApp_Dialog)
         builder.setTitle(getString(R.string.dialog_delete))
         builder.setMessage(getString(R.string.dialog_delete_confirm))
 

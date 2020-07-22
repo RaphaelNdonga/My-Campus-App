@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.input.tuesday
+package com.example.android.mycampusapp.input.sunday
 
 import android.app.AlarmManager
 import android.app.Application
@@ -13,22 +13,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.data.TuesdayClass
+import com.example.android.mycampusapp.data.SundayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
-import com.example.android.mycampusapp.receiver.TuesdayClassReceiver
+import com.example.android.mycampusapp.receiver.SundayClassReceiver
 import com.example.android.mycampusapp.util.TimePickerValues
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TuesdayInputViewModel(
+class SundayInputViewModel(
     private val timetableRepository: TimetableDataSource,
-    private val tuesdayClass: TuesdayClass?,
+    private val sundayClass: SundayClass?,
     private val app: Application
 ) : AndroidViewModel(app) {
 
-    private val tuesdayClassExtra = MutableLiveData<TuesdayClass>()
+    private val sundayClassExtra = MutableLiveData<SundayClass>()
     private val _navigator = MutableLiveData<Event<Unit>>()
     val navigator: LiveData<Event<Unit>>
         get() = _navigator
@@ -41,17 +41,17 @@ class TuesdayInputViewModel(
 
     val timePickerClockPosition = MutableLiveData<Event<List<Int>>>()
 
-    val textBoxSubject = MutableLiveData<String>(tuesdayClass?.subject)
-    val textBoxTime = MutableLiveData<String>(tuesdayClass?.time)
-    val id = MutableLiveData<Long>(tuesdayClass?.id)
+    val textBoxSubject = MutableLiveData<String>(sundayClass?.subject)
+    val textBoxTime = MutableLiveData<String>(sundayClass?.time)
+    val id = MutableLiveData<Long>(sundayClass?.id)
 
     private val cal: Calendar = Calendar.getInstance()
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
     private val minute = cal.get(Calendar.MINUTE)
     private val day = cal.get(Calendar.DAY_OF_WEEK)
-    private val tuesday = Calendar.TUESDAY
+    private val sunday = Calendar.MONDAY
 
-    private val REQUEST_CODE = 1
+    private val REQUEST_CODE = 0
     private val minuteLong = 60_000L
     private val hourLong = minuteLong * 60
     private val dayLong = hourLong * 24
@@ -68,30 +68,30 @@ class TuesdayInputViewModel(
         if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank()) {
             _snackbarText.value = Event(R.string.empty_message)
             return
-        } else if (tuesdayClassIsNull()) {
-            val tuesdayClass = TuesdayClass(subject = currentSubject,time = currentTime)
-            addTuesdayClass(tuesdayClass)
-            tuesdayClassExtra.value = tuesdayClass
-            _snackbarText.value = Event(R.string.tuesday_saved)
+        } else if (sundayClassIsNull()) {
+            val sundayClass = SundayClass(subject = currentSubject,time = currentTime)
+            addSundayClass(sundayClass)
+            sundayClassExtra.value = sundayClass
+            _snackbarText.value = Event(R.string.sunday_saved)
             startTimer()
             navigateToTimetable()
 
-        } else if (!tuesdayClassIsNull()) {
-            val tuesdayClass = TuesdayClass(id.value!!, currentSubject, currentTime)
-            updateTuesdayClass(tuesdayClass)
-            tuesdayClassExtra.value = tuesdayClass
-            _snackbarText.value = Event(R.string.tuesday_updated)
+        } else if (!sundayClassIsNull()) {
+            val sundayClass = SundayClass(id.value!!, currentSubject, currentTime)
+            updateSundayClass(sundayClass)
+            sundayClassExtra.value = sundayClass
+            _snackbarText.value = Event(R.string.sunday_updated)
             startTimer()
             navigateToTimetable()
         }
     }
 
-    fun updateTuesdayClass(tuesdayClass: TuesdayClass) = uiScope.launch {
-        timetableRepository.updateTuesdayClass(tuesdayClass)
+    fun updateSundayClass(sundayClass: SundayClass) = uiScope.launch {
+        timetableRepository.updateSundayClass(sundayClass)
     }
 
-    fun addTuesdayClass(tuesdayClass: TuesdayClass) = uiScope.launch {
-        timetableRepository.addTuesdayClass(tuesdayClass)
+    fun addSundayClass(sundayClass: SundayClass) = uiScope.launch {
+        timetableRepository.addSundayClass(sundayClass)
     }
 
     fun navigateToTimetable() {
@@ -99,15 +99,15 @@ class TuesdayInputViewModel(
     }
 
 
-    fun tuesdayClassIsNull(): Boolean {
-        if (tuesdayClass == null) {
+    fun sundayClassIsNull(): Boolean {
+        if (sundayClass == null) {
             return true
         }
         return false
     }
 
     fun setTimePickerClockPosition() {
-        if (tuesdayClassIsNull()) {
+        if (sundayClassIsNull()) {
             timePickerClockPosition.value =
                 Event(listOf(hour, minute))
         } else {
@@ -129,7 +129,7 @@ class TuesdayInputViewModel(
         val hourDifference = hourSet.minus(hour)
         val minuteDifference = minuteSet.minus(minute)
         val totalDifference = (hourDifference * 60).plus(minuteDifference)
-        var dayDifference = day.minus(tuesday)
+        var dayDifference = day.minus(sunday)
         if (dayDifference < 0 || (dayDifference == 0 && totalDifference < 0)) {
             dayDifference += 7
         }
@@ -141,9 +141,9 @@ class TuesdayInputViewModel(
         val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong + dayDifferenceLong
         val triggerTime = SystemClock.elapsedRealtime() + 5_000L
 
-        val notifyIntent = Intent(app, TuesdayClassReceiver::class.java).apply {
-            putExtra("tuesdaySubject", tuesdayClassExtra.value?.subject)
-            putExtra("tuesdayTime",tuesdayClassExtra.value?.time)
+        val notifyIntent = Intent(app, SundayClassReceiver::class.java).apply {
+            putExtra("sundaySubject", sundayClassExtra.value?.subject)
+            putExtra("sundayTime",sundayClassExtra.value?.time)
         }
         val notifyPendingIntent = PendingIntent.getBroadcast(
             getApplication(),

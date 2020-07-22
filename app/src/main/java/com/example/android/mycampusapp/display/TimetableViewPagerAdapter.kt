@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.android.mycampusapp.display.days.*
 import com.example.android.mycampusapp.display.days.monday.MondayFragment
+import com.example.android.mycampusapp.display.days.sunday.SundayFragment
 import com.example.android.mycampusapp.display.days.tuesday.TuesdayFragment
 
 class TimetableViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {

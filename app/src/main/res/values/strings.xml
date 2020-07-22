@@ -18,4 +18,6 @@
     <string name="timetable_channel_description">Class Reminder</string>
     <string name="tuesday_saved">Tuesday class has been saved</string>
     <string name="tuesday_updated">Tuesday class has been updated</string>
+    <string name="sunday_saved">Sunday class has been saved</string>
+    <string name="sunday_updated">Sunday class has been updated</string>
 </resources>

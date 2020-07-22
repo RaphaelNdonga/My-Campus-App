@@ -139,7 +139,7 @@ class MondayInputViewModel(
         val minuteDifferenceLong = minuteDifference * minuteLong
 
         val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong + dayDifferenceLong
-        val triggerTime = SystemClock.elapsedRealtime() + differenceWithPresent
+        val triggerTime = SystemClock.elapsedRealtime() + 5_000L
 
         val notifyIntent = Intent(app, MondayClassReceiver::class.java).apply {
             putExtra("mondaySubject", mondayClassExtra.value?.subject)
