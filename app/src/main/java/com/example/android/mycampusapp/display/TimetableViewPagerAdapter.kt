@@ -2,9 +2,9 @@ package com.example.android.mycampusapp.display
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.android.mycampusapp.display.days.*
 import com.example.android.mycampusapp.display.days.friday.FridayFragment
 import com.example.android.mycampusapp.display.days.monday.MondayFragment
+import com.example.android.mycampusapp.display.days.saturday.SaturdayFragment
 import com.example.android.mycampusapp.display.days.sunday.SundayFragment
 import com.example.android.mycampusapp.display.days.thursday.ThursdayFragment
 import com.example.android.mycampusapp.display.days.tuesday.TuesdayFragment

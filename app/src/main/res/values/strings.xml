@@ -26,4 +26,6 @@
     <string name="thursday_updated">Thursday  class has been updated</string>
     <string name="friday_saved">Friday class has been saved</string>
     <string name="friday_updated">Friday class has been saved</string>
+    <string name="saturday_saved">Saturday class has been saved</string>
+    <string name="saturday_updated">Saturday class has been updated</string>
 </resources>

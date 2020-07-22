@@ -28,27 +28,10 @@
         <action
             android:id="@+id/action_timetableFragment_to_fridayInputFragment"
             app:destination="@id/fridayInputFragment" />
+        <action
+            android:id="@+id/action_timetableFragment_to_saturdayInputFragment"
+            app:destination="@id/saturdayInputFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/mondayFragment"
-        android:name="com.example.android.mycampusapp.display.days.monday.MondayFragment"
-        android:label="MondayFragment" />
-    <fragment
-        android:id="@+id/tuesdayFragment"
-        android:name="com.example.android.mycampusapp.display.days.tuesday.TuesdayFragment"
-        android:label="TuesdayFragment" />
-    <fragment
-        android:id="@+id/wednesdayFragment"
-        android:name="com.example.android.mycampusapp.display.days.wednesday.WednesdayFragment"
-        android:label="WednesdayFragment" />
-    <fragment
-        android:id="@+id/thursdayFragment"
-        android:name="com.example.android.mycampusapp.display.days.thursday.ThursdayFragment"
-        android:label="ThursdayFragment" />
-    <fragment
-        android:id="@+id/saturdayFragment"
-        android:name="com.example.android.mycampusapp.display.days.SaturdayFragment"
-        android:label="SaturdayFragment" />
     <fragment
         android:id="@+id/mondayInputFragment"
         android:name="com.example.android.mycampusapp.input.monday.MondayInputFragment"
@@ -97,7 +80,7 @@
     <fragment
         android:id="@+id/wednesdayInputFragment"
         android:name="com.example.android.mycampusapp.input.wednesday.WednesdayInputFragment"
-        android:label="WednesdayInputFragment" >
+        android:label="set wednesday class">
         <action
             android:id="@+id/action_wednesdayInputFragment_to_timetableFragment"
             app:destination="@id/timetableFragment"
@@ -105,14 +88,14 @@
             app:popUpToInclusive="true" />
         <argument
             android:name="wednesdayClass"
+            android:defaultValue="@null"
             app:argType="com.example.android.mycampusapp.data.WednesdayClass"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/thursdayInputFragment"
         android:name="com.example.android.mycampusapp.input.thursday.ThursdayInputFragment"
-        android:label="ThursdayInputFragment" >
+        android:label="set thursday class">
         <action
             android:id="@+id/action_thursdayInputFragment_to_timetableFragment"
             app:destination="@id/timetableFragment"
@@ -120,14 +103,14 @@
             app:popUpToInclusive="true" />
         <argument
             android:name="thursdayClass"
+            android:defaultValue="@null"
             app:argType="com.example.android.mycampusapp.data.ThursdayClass"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/fridayInputFragment"
         android:name="com.example.android.mycampusapp.input.friday.FridayInputFragment"
-        android:label="FridayInputFragment" >
+        android:label="set friday class">
         <action
             android:id="@+id/action_fridayInputFragment_to_timetableFragment"
             app:destination="@id/timetableFragment"
@@ -135,8 +118,23 @@
             app:popUpToInclusive="true" />
         <argument
             android:name="fridayClass"
+            android:defaultValue="@null"
             app:argType="com.example.android.mycampusapp.data.FridayClass"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/saturdayInputFragment"
+        android:name="com.example.android.mycampusapp.input.saturday.SaturdayInputFragment"
+        android:label="set saturday class">
+        <action
+            android:id="@+id/action_saturdayInputFragment_to_timetableFragment"
+            app:destination="@id/timetableFragment"
+            app:popUpTo="@id/timetableFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="saturdayClass"
+            android:defaultValue="@null"
+            app:argType="com.example.android.mycampusapp.data.SaturdayClass"
+            app:nullable="true" />
     </fragment>
 </navigation>
