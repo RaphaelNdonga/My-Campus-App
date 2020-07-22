@@ -4,6 +4,7 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.data.*
+import com.example.android.mycampusapp.display.days.friday.FridayAdapter
 import com.example.android.mycampusapp.display.days.monday.MondayAdapter
 import com.example.android.mycampusapp.display.days.sunday.SundayAdapter
 import com.example.android.mycampusapp.display.days.thursday.ThursdayAdapter
@@ -76,6 +77,20 @@ fun bindThursdayRecyclerView(recyclerView:RecyclerView, data:List<ThursdayClass>
     adapter.submitList(data)
 }
 
+@BindingAdapter("fridaySubject")
+fun TextView.bindFridaySubject(item:FridayClass?){
+    text = item?.subject
+}
+@BindingAdapter("fridayTime")
+fun TextView.bindFridayTime(item:FridayClass?){
+    text = item?.time
+}
+@BindingAdapter("fridayListData")
+fun bindFridayRecyclerview(recyclerView: RecyclerView, data: List<FridayClass>?){
+    val adapter = recyclerView.adapter as FridayAdapter
+    adapter.submitList(data)
+}
+
 @BindingAdapter("sundaySubject")
 fun TextView.bindSundaySubject(item:SundayClass?){
     text = item?.subject
@@ -89,4 +104,5 @@ fun bindRecyclerView(recyclerView: RecyclerView,data: List<SundayClass>?){
     val adapter = recyclerView.adapter as SundayAdapter
     adapter.submitList(data)
 }
+
 

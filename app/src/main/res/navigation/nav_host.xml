@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_timetableFragment_to_thursdayInputFragment"
             app:destination="@id/thursdayInputFragment" />
+        <action
+            android:id="@+id/action_timetableFragment_to_fridayInputFragment"
+            app:destination="@id/fridayInputFragment" />
     </fragment>
     <fragment
         android:id="@+id/mondayFragment"
@@ -43,17 +46,9 @@
         android:name="com.example.android.mycampusapp.display.days.thursday.ThursdayFragment"
         android:label="ThursdayFragment" />
     <fragment
-        android:id="@+id/fridayFragment"
-        android:name="com.example.android.mycampusapp.display.days.FridayFragment"
-        android:label="FridayFragment" />
-    <fragment
         android:id="@+id/saturdayFragment"
         android:name="com.example.android.mycampusapp.display.days.SaturdayFragment"
         android:label="SaturdayFragment" />
-    <fragment
-        android:id="@+id/sundayFragment"
-        android:name="com.example.android.mycampusapp.display.days.SundayFragment"
-        android:label="SundayFragment" />
     <fragment
         android:id="@+id/mondayInputFragment"
         android:name="com.example.android.mycampusapp.input.monday.MondayInputFragment"
@@ -126,6 +121,21 @@
         <argument
             android:name="thursdayClass"
             app:argType="com.example.android.mycampusapp.data.ThursdayClass"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
+    <fragment
+        android:id="@+id/fridayInputFragment"
+        android:name="com.example.android.mycampusapp.input.friday.FridayInputFragment"
+        android:label="FridayInputFragment" >
+        <action
+            android:id="@+id/action_fridayInputFragment_to_timetableFragment"
+            app:destination="@id/timetableFragment"
+            app:popUpTo="@id/timetableFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="fridayClass"
+            app:argType="com.example.android.mycampusapp.data.FridayClass"
             app:nullable="true"
             android:defaultValue="@null" />
     </fragment>

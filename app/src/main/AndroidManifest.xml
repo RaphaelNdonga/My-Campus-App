@@ -39,6 +39,10 @@
             android:enabled="true"
             android:exported="false">
         </receiver>
+        <receiver android:name=".receiver.FridayClassReceiver"
+            android:enabled="true"
+            android:exported="false">
+        </receiver>
     </application>
 
 </manifest>
