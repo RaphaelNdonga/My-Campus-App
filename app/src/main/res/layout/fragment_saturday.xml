@@ -15,6 +15,9 @@
         android:orientation="vertical">
 
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/saturday_recycler_view"
             android:layout_width="match_parent"
@@ -23,6 +26,15 @@
             tools:listitem="@layout/list_item_saturday"
             app:saturdayListData="@{viewModel.saturdayClasses}"
             app:layoutManager=".display.CustomLinearLayoutManager"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:saturdayDataStatus="@{viewModel.status}"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/saturday_fab"

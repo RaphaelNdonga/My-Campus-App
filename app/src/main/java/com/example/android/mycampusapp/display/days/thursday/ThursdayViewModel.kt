@@ -14,6 +14,9 @@ class ThursdayViewModel(private val repository: TimetableDataSource) : ViewModel
 
     val thursdayClasses = repository.observeAllThursdayClasses()
 
+    private val _status = MutableLiveData<ThursdayDataStatus>()
+    val status:LiveData<ThursdayDataStatus> = _status
+
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
 
@@ -29,7 +32,7 @@ class ThursdayViewModel(private val repository: TimetableDataSource) : ViewModel
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     init {
-        Timber.i("thursday view model initialized")
+        _status.value = ThursdayDataStatus.EMPTY
     }
     fun displayThursdayClassDetails(thursdayClass: ThursdayClass) {
         _openThursdayClass.value =
@@ -62,4 +65,8 @@ class ThursdayViewModel(private val repository: TimetableDataSource) : ViewModel
         super.onCleared()
         job.cancel()
     }
+}
+
+enum class ThursdayDataStatus {
+    EMPTY, NOT_EMPTY
 }

@@ -8,10 +8,16 @@ import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.TimePickerValues
 import kotlinx.coroutines.*
+import timber.log.Timber
 
 class MondayViewModel(private val repository: TimetableDataSource) : ViewModel() {
 
-    val mondayClasses = repository.observeAllMondayClasses()
+    val mondayClasses: LiveData<List<MondayClass>> = repository.observeAllMondayClasses()
+
+    private  var mondayClassesList: List<MondayClass>? = null
+
+    private val _status = MutableLiveData<MondayDataStatus>()
+    val status: LiveData<MondayDataStatus> = _status
 
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
@@ -27,6 +33,20 @@ class MondayViewModel(private val repository: TimetableDataSource) : ViewModel()
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
+    init {
+        refreshMondayClasses()
+        checkMondayDataStatus()
+    }
+
+    private fun checkMondayDataStatus() {
+//        if(mondayClassesList.isNullOrEmpty()){
+//            _status.value = MondayDataStatus.NOT_EMPTY
+//            return
+//        }
+        _status.value = MondayDataStatus.EMPTY
+    }
+
+
     fun displayMondayClassDetails(mondayClass: MondayClass) {
         _openMondayClass.value =
             Event(mondayClass)
@@ -41,20 +61,33 @@ class MondayViewModel(private val repository: TimetableDataSource) : ViewModel()
     }
 
     fun deleteList(list: List<MondayClass?>) = uiScope.launch {
-        list.forEach { mondayClass->
+        list.forEach { mondayClass ->
             if (mondayClass != null) {
                 repository.deleteMondayClass(mondayClass)
             }
         }
+        refreshMondayClasses()
+        checkMondayDataStatus()
     }
 
     fun deleteIconPressed() {
         _deleteMondayClasses.value =
             Event(Unit)
     }
+    private fun refreshMondayClasses(){
+        uiScope.launch {
+            mondayClassesList = repository.getAllMondayClasses()
+        }
+    }
+
 
     override fun onCleared() {
         super.onCleared()
         job.cancel()
     }
 }
+
+enum class MondayDataStatus {
+    EMPTY, NOT_EMPTY
+}
+
