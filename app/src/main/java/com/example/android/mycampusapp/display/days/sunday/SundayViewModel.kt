@@ -9,10 +9,15 @@ import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.TimePickerValues
 import kotlinx.coroutines.*
 import timber.log.Timber
+import java.lang.Exception
+import java.lang.NullPointerException
 
 class SundayViewModel(private val repository: TimetableDataSource) : ViewModel() {
 
     val sundayClasses = repository.observeAllSundayClasses()
+
+    private val _status = MutableLiveData<SundayDataStatus>()
+    val status:LiveData<SundayDataStatus> = _status
 
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
@@ -29,8 +34,21 @@ class SundayViewModel(private val repository: TimetableDataSource) : ViewModel()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     init {
-        Timber.i("sunday view model initialized")
+        checkSundayDataStatus()
     }
+
+    private fun checkSundayDataStatus() = uiScope.launch {
+        val sundayClasses = repository.getAllSundayClasses()
+        try {
+            if(sundayClasses.isNullOrEmpty()){
+                throw NullPointerException()
+            }
+            _status.value = SundayDataStatus.NOT_EMPTY
+        }catch (e:Exception){
+            _status.value = SundayDataStatus.EMPTY
+        }
+    }
+
     fun displaySundayClassDetails(sundayClass: SundayClass) {
         _openSundayClass.value =
             Event(sundayClass)
@@ -51,6 +69,7 @@ class SundayViewModel(private val repository: TimetableDataSource) : ViewModel()
                 repository.deleteSundayClass(sundayClass)
             }
         }
+        checkSundayDataStatus()
     }
 
     fun deleteIconPressed() {
@@ -62,4 +81,8 @@ class SundayViewModel(private val repository: TimetableDataSource) : ViewModel()
         super.onCleared()
         job.cancel()
     }
+}
+
+enum class SundayDataStatus {
+    EMPTY, NOT_EMPTY
 }

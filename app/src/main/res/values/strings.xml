@@ -28,4 +28,5 @@
     <string name="friday_updated">Friday class has been saved</string>
     <string name="saturday_saved">Saturday class has been saved</string>
     <string name="saturday_updated">Saturday class has been updated</string>
+    <string name="empty_fragment_message">No Classes today!</string>
 </resources>

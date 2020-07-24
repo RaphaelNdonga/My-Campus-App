@@ -8,10 +8,15 @@ import com.example.android.mycampusapp.data.WednesdayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.TimePickerValues
 import kotlinx.coroutines.*
+import java.lang.Exception
+import java.lang.NullPointerException
 
 class WednesdayViewModel(private val repository: TimetableDataSource) : ViewModel() {
 
     val wednesdayClasses = repository.observeAllWednesdayClasses()
+
+    private val _status = MutableLiveData<WednesdayDataStatus>()
+    val status: LiveData<WednesdayDataStatus> = _status
 
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
@@ -27,6 +32,22 @@ class WednesdayViewModel(private val repository: TimetableDataSource) : ViewMode
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
+    init {
+        checkWednesdayDataStatus()
+    }
+
+    private fun checkWednesdayDataStatus() = uiScope.launch {
+        val wednesdayClasses = repository.getAllWednesdayClasses()
+        try {
+            if(wednesdayClasses.isNullOrEmpty()){
+                throw NullPointerException()
+            }
+            _status.value = WednesdayDataStatus.NOT_EMPTY
+        }catch (e:Exception){
+            _status.value = WednesdayDataStatus.EMPTY
+        }
+    }
+
     fun displayWednesdayClassDetails(wednesdayClass: WednesdayClass) {
         _openWednesdayClass.value =
             Event(wednesdayClass)
@@ -41,11 +62,12 @@ class WednesdayViewModel(private val repository: TimetableDataSource) : ViewMode
     }
 
     fun deleteList(list: List<WednesdayClass?>) = uiScope.launch {
-        list.forEach { wednesdayClass->
+        list.forEach { wednesdayClass ->
             if (wednesdayClass != null) {
                 repository.deleteWednesdayClass(wednesdayClass)
             }
         }
+        checkWednesdayDataStatus()
     }
 
     fun deleteIconPressed() {
@@ -57,4 +79,9 @@ class WednesdayViewModel(private val repository: TimetableDataSource) : ViewMode
         super.onCleared()
         job.cancel()
     }
+}
+
+enum class WednesdayDataStatus {
+    EMPTY, NOT_EMPTY
+
 }

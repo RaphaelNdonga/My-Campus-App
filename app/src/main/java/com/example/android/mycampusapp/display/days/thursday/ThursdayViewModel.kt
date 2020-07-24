@@ -9,10 +9,14 @@ import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.TimePickerValues
 import kotlinx.coroutines.*
 import timber.log.Timber
+import java.lang.Exception
 
 class ThursdayViewModel(private val repository: TimetableDataSource) : ViewModel() {
 
     val thursdayClasses = repository.observeAllThursdayClasses()
+
+    private val _status = MutableLiveData<ThursdayDataStatus>()
+    val status:LiveData<ThursdayDataStatus> = _status
 
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
@@ -29,8 +33,21 @@ class ThursdayViewModel(private val repository: TimetableDataSource) : ViewModel
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     init {
-        Timber.i("thursday view model initialized")
+        checkThursdayDataStatus()
     }
+
+    private fun checkThursdayDataStatus() = uiScope.launch {
+        val thursdayClasses = repository.getAllThursdayClasses()
+        try {
+            if(thursdayClasses.isNullOrEmpty()){
+                throw NullPointerException()
+            }
+            _status.value = ThursdayDataStatus.NOT_EMPTY
+        }catch (e:Exception){
+            _status.value = ThursdayDataStatus.EMPTY
+        }
+    }
+
     fun displayThursdayClassDetails(thursdayClass: ThursdayClass) {
         _openThursdayClass.value =
             Event(thursdayClass)
@@ -51,6 +68,7 @@ class ThursdayViewModel(private val repository: TimetableDataSource) : ViewModel
                 repository.deleteThursdayClass(thursdayClass)
             }
         }
+        checkThursdayDataStatus()
     }
 
     fun deleteIconPressed() {
@@ -62,4 +80,8 @@ class ThursdayViewModel(private val repository: TimetableDataSource) : ViewModel
         super.onCleared()
         job.cancel()
     }
+}
+
+enum class ThursdayDataStatus {
+    EMPTY, NOT_EMPTY
 }
