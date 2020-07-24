@@ -8,16 +8,15 @@ import com.example.android.mycampusapp.data.MondayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.TimePickerValues
 import kotlinx.coroutines.*
-import timber.log.Timber
+import java.lang.NullPointerException
 
 class MondayViewModel(private val repository: TimetableDataSource) : ViewModel() {
 
     val mondayClasses: LiveData<List<MondayClass>> = repository.observeAllMondayClasses()
 
-    private  var mondayClassesList: List<MondayClass>? = null
-
     private val _status = MutableLiveData<MondayDataStatus>()
-    val status: LiveData<MondayDataStatus> = _status
+    val status: LiveData<MondayDataStatus>
+        get() = _status
 
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
@@ -34,16 +33,7 @@ class MondayViewModel(private val repository: TimetableDataSource) : ViewModel()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     init {
-        refreshMondayClasses()
         checkMondayDataStatus()
-    }
-
-    private fun checkMondayDataStatus() {
-//        if(mondayClassesList.isNullOrEmpty()){
-//            _status.value = MondayDataStatus.NOT_EMPTY
-//            return
-//        }
-        _status.value = MondayDataStatus.EMPTY
     }
 
 
@@ -66,7 +56,6 @@ class MondayViewModel(private val repository: TimetableDataSource) : ViewModel()
                 repository.deleteMondayClass(mondayClass)
             }
         }
-        refreshMondayClasses()
         checkMondayDataStatus()
     }
 
@@ -74,9 +63,18 @@ class MondayViewModel(private val repository: TimetableDataSource) : ViewModel()
         _deleteMondayClasses.value =
             Event(Unit)
     }
-    private fun refreshMondayClasses(){
+
+    private fun checkMondayDataStatus() {
         uiScope.launch {
-            mondayClassesList = repository.getAllMondayClasses()
+            val mondayClasses: List<MondayClass>? = repository.getAllMondayClasses()
+            try {
+                if (mondayClasses.isNullOrEmpty()) {
+                    throw NullPointerException()
+                }
+                _status.value = MondayDataStatus.NOT_EMPTY
+            } catch (e: Exception) {
+                _status.value = MondayDataStatus.EMPTY
+            }
         }
     }
 

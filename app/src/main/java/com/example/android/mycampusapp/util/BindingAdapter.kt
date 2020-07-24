@@ -40,7 +40,7 @@ fun bindMondayRecyclerView(recyclerView: RecyclerView,data:List<MondayClass>?){
     adapter.submitList(data)
 }
 @BindingAdapter("mondayDataStatus")
-fun bindMondayStatus(statusImgView:ImageView,mondayStatus:MondayDataStatus){
+fun bindMondayStatus(statusImgView:ImageView,mondayStatus:MondayDataStatus?){
     when(mondayStatus){
         MondayDataStatus.EMPTY->{
             statusImgView.visibility = View.VISIBLE
@@ -72,7 +72,7 @@ fun bindTuesdayRecyclerView(recyclerView:RecyclerView, data: List<TuesdayClass>?
     adapter.submitList(data)
 }
 @BindingAdapter("tuesdayDataStatus")
-fun bindTuesdayDataStatus(statusImgView: ImageView, status: TuesdayDataStatus){
+fun bindTuesdayDataStatus(statusImgView: ImageView, status: TuesdayDataStatus?){
     when(status){
         TuesdayDataStatus.EMPTY ->{
             statusImgView.visibility = View.VISIBLE
@@ -98,7 +98,7 @@ fun bindWednesdayRecyclerView(recyclerView: RecyclerView,data: List<WednesdayCla
     adapter.submitList(data)
 }
 @BindingAdapter("wednesdayDataStatus")
-fun bindWednesdayDataStatus(statusImgView: ImageView, status: WednesdayDataStatus){
+fun bindWednesdayDataStatus(statusImgView: ImageView, status: WednesdayDataStatus?){
     when(status){
         WednesdayDataStatus.EMPTY -> {
             statusImgView.visibility = View.VISIBLE
@@ -124,7 +124,7 @@ fun bindThursdayRecyclerView(recyclerView:RecyclerView, data:List<ThursdayClass>
     adapter.submitList(data)
 }
 @BindingAdapter("thursdayDataStatus")
-fun bindThursdayDataStatus(statusImgView: ImageView, status: ThursdayDataStatus){
+fun bindThursdayDataStatus(statusImgView: ImageView, status: ThursdayDataStatus?){
     when(status){
         ThursdayDataStatus.EMPTY -> {
             statusImgView.visibility = View.VISIBLE
@@ -150,7 +150,7 @@ fun bindFridayRecyclerview(recyclerView: RecyclerView, data: List<FridayClass>?)
     adapter.submitList(data)
 }
 @BindingAdapter("fridayDataStatus")
-fun bindFridayDataStatus(statusImgView: ImageView, status: FridayDataStatus){
+fun bindFridayDataStatus(statusImgView: ImageView, status: FridayDataStatus?){
     when(status){
         FridayDataStatus.EMPTY->{
             statusImgView.visibility = View.VISIBLE
@@ -176,7 +176,7 @@ fun bindSaturdayRecyclerView(recyclerView: RecyclerView, data: List<SaturdayClas
     adapter.submitList(data)
 }
 @BindingAdapter("saturdayDataStatus")
-fun bindSaturdayDataStatus(statusImgView: ImageView, status: SaturdayDataStatus){
+fun bindSaturdayDataStatus(statusImgView: ImageView, status: SaturdayDataStatus?){
     when(status){
         SaturdayDataStatus.EMPTY ->{
             statusImgView.visibility = View.VISIBLE
@@ -202,7 +202,7 @@ fun bindRecyclerView(recyclerView: RecyclerView,data: List<SundayClass>?){
     adapter.submitList(data)
 }
 @BindingAdapter("sundayDataStatus")
-fun bindSundayDataStatus(statusImgView: ImageView, status: SundayDataStatus){
+fun bindSundayDataStatus(statusImgView: ImageView, status: SundayDataStatus?){
     when(status){
         SundayDataStatus.EMPTY -> {
             statusImgView.visibility = View.VISIBLE

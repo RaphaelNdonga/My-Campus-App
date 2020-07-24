@@ -8,6 +8,8 @@ import com.example.android.mycampusapp.data.FridayClass
 import com.example.android.mycampusapp.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.TimePickerValues
 import kotlinx.coroutines.*
+import java.lang.Exception
+import java.lang.NullPointerException
 
 class FridayViewModel(private val repository: TimetableDataSource) : ViewModel() {
 
@@ -31,7 +33,19 @@ class FridayViewModel(private val repository: TimetableDataSource) : ViewModel()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     init {
-        _status.value = FridayDataStatus.EMPTY
+        checkFridayDataStatus()
+    }
+
+    private fun checkFridayDataStatus() = uiScope.launch{
+        val fridayClasses = repository.getAllFridayClasses()
+        try {
+            if(fridayClasses.isNullOrEmpty()){
+                throw NullPointerException()
+            }
+            _status.value = FridayDataStatus.NOT_EMPTY
+        }catch (e:Exception){
+            _status.value = FridayDataStatus.EMPTY
+        }
     }
 
     fun displayFridayClassDetails(fridayClass: FridayClass) {
@@ -53,6 +67,7 @@ class FridayViewModel(private val repository: TimetableDataSource) : ViewModel()
                 repository.deleteFridayClass(fridayClass)
             }
         }
+        checkFridayDataStatus()
     }
 
     fun deleteIconPressed() {
