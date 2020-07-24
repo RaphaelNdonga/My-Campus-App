@@ -27,9 +27,12 @@
                 app:layoutManager=".display.CustomLinearLayoutManager"
                 app:wednesdayListData="@{viewModel.wednesdayClasses}"
                 tools:itemCount="5"
+                tools:layout_editor_absoluteX="-80dp"
+                tools:layout_editor_absoluteY="-16dp"
                 tools:listitem="@layout/list_item_wednesday" />
 
             <ImageView
+                android:id="@+id/imageView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -37,6 +40,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:wednesdayDataStatus="@{viewModel.status}" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/toolbar_padding"
+                android:text="@string/empty_fragment_message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView8"
+                app:wednesdayTextStatus="@{viewModel.status}"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -30,6 +30,7 @@
                 tools:listitem="@layout/list_item_monday" />
 
             <ImageView
+                android:id="@+id/imageView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -37,6 +38,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:mondayDataStatus="@{viewModel.status}" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/toolbar_padding"
+                android:text="@string/empty_fragment_message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView2"
+                app:mondayTextStatus="@{viewModel.status}"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

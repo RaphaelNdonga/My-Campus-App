@@ -26,14 +26,27 @@
             tools:listitem="@layout/list_item_thursday"
             app:thursdayListData="@{viewModel.thursdayClasses}"
             app:layoutManager=".display.CustomLinearLayoutManager"/>
+
             <ImageView
+                android:id="@+id/imageView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:thursdayDataStatus="@{viewModel.status}"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:thursdayDataStatus="@{viewModel.status}" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/toolbar_padding"
+                android:text="@string/empty_fragment_message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView4"
+                app:thursdayTextStatus="@{viewModel.status}"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
