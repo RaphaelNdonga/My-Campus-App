@@ -23,26 +23,29 @@ import com.example.android.mycampusapp.display.days.wednesday.WednesdayAdapter
 import com.example.android.mycampusapp.display.days.wednesday.WednesdayDataStatus
 
 @BindingAdapter("mondaySubject")
-fun TextView.bindMondaySubject(item:MondayClass?){
+fun TextView.bindMondaySubject(item: MondayClass?) {
     item?.let {
         text = item.subject
     }
 }
+
 @BindingAdapter("mondayTime")
-fun TextView.bindMondayTime(item:MondayClass?){
+fun TextView.bindMondayTime(item: MondayClass?) {
     item?.let {
         text = item.time
     }
 }
+
 @BindingAdapter("mondayListData")
-fun bindMondayRecyclerView(recyclerView: RecyclerView,data:List<MondayClass>?){
-    val adapter:MondayAdapter = recyclerView.adapter as MondayAdapter
+fun bindMondayRecyclerView(recyclerView: RecyclerView, data: List<MondayClass>?) {
+    val adapter: MondayAdapter = recyclerView.adapter as MondayAdapter
     adapter.submitList(data)
 }
+
 @BindingAdapter("mondayDataStatus")
-fun bindMondayStatus(statusImgView:ImageView,mondayStatus:MondayDataStatus?){
-    when(mondayStatus){
-        MondayDataStatus.EMPTY->{
+fun bindMondayImageStatus(statusImgView: ImageView, mondayStatus: MondayDataStatus?) {
+    when (mondayStatus) {
+        MondayDataStatus.EMPTY -> {
             statusImgView.visibility = View.VISIBLE
             statusImgView.setImageResource(R.drawable.ic_no_classes)
         }
@@ -52,29 +55,42 @@ fun bindMondayStatus(statusImgView:ImageView,mondayStatus:MondayDataStatus?){
     }
 }
 
+@BindingAdapter("mondayTextStatus")
+fun bindMondayTextStatus(statusTextView: TextView, mondayStatus: MondayDataStatus?) {
+    when (mondayStatus) {
+        MondayDataStatus.EMPTY -> {
+            statusTextView.visibility = View.VISIBLE
+        }
+        MondayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
+        }
+    }
+}
+
 @BindingAdapter("tuesdaySubject")
-fun TextView.bindTuesdaySubject(item: TuesdayClass?){
-    item?.let{
+fun TextView.bindTuesdaySubject(item: TuesdayClass?) {
+    item?.let {
         text = item.subject
     }
 }
 
 @BindingAdapter("tuesdayTime")
-fun TextView.bindTuesdayTime(item: TuesdayClass?){
+fun TextView.bindTuesdayTime(item: TuesdayClass?) {
     item?.let {
         text = item.time
     }
 }
 
 @BindingAdapter("tuesdayListData")
-fun bindTuesdayRecyclerView(recyclerView:RecyclerView, data: List<TuesdayClass>?){
+fun bindTuesdayRecyclerView(recyclerView: RecyclerView, data: List<TuesdayClass>?) {
     val adapter = recyclerView.adapter as TuesdayAdapter
     adapter.submitList(data)
 }
+
 @BindingAdapter("tuesdayDataStatus")
-fun bindTuesdayDataStatus(statusImgView: ImageView, status: TuesdayDataStatus?){
-    when(status){
-        TuesdayDataStatus.EMPTY ->{
+fun bindTuesdayImageStatus(statusImgView: ImageView, status: TuesdayDataStatus?) {
+    when (status) {
+        TuesdayDataStatus.EMPTY -> {
             statusImgView.visibility = View.VISIBLE
             statusImgView.setImageResource(R.drawable.ic_no_classes)
         }
@@ -84,22 +100,37 @@ fun bindTuesdayDataStatus(statusImgView: ImageView, status: TuesdayDataStatus?){
     }
 }
 
+@BindingAdapter("tuesdayTextStatus")
+fun bindTuesdayTextStatus(statusTextView: TextView, status: TuesdayDataStatus?) {
+    when (status) {
+        TuesdayDataStatus.EMPTY -> {
+            statusTextView.visibility = View.VISIBLE
+        }
+        TuesdayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
+        }
+    }
+}
+
 @BindingAdapter("wednesdaySubject")
-fun TextView.bindWednesdaySubject(item: WednesdayClass?){
+fun TextView.bindWednesdaySubject(item: WednesdayClass?) {
     text = item?.subject
 }
+
 @BindingAdapter("wednesdayTime")
-fun TextView.bindWednesdayTime(item:WednesdayClass?){
+fun TextView.bindWednesdayTime(item: WednesdayClass?) {
     text = item?.time
 }
+
 @BindingAdapter("wednesdayListData")
-fun bindWednesdayRecyclerView(recyclerView: RecyclerView,data: List<WednesdayClass>?){
+fun bindWednesdayRecyclerView(recyclerView: RecyclerView, data: List<WednesdayClass>?) {
     val adapter = recyclerView.adapter as WednesdayAdapter
     adapter.submitList(data)
 }
+
 @BindingAdapter("wednesdayDataStatus")
-fun bindWednesdayDataStatus(statusImgView: ImageView, status: WednesdayDataStatus?){
-    when(status){
+fun bindWednesdayImageStatus(statusImgView: ImageView, status: WednesdayDataStatus?) {
+    when (status) {
         WednesdayDataStatus.EMPTY -> {
             statusImgView.visibility = View.VISIBLE
             statusImgView.setImageResource(R.drawable.ic_no_classes)
@@ -109,23 +140,37 @@ fun bindWednesdayDataStatus(statusImgView: ImageView, status: WednesdayDataStatu
         }
     }
 }
+@BindingAdapter("wednesdayTextStatus")
+fun bindWednesdayTextStatus(statusTextView: TextView, status:WednesdayDataStatus?){
+    when (status){
+        WednesdayDataStatus.EMPTY -> {
+            statusTextView.visibility = View.VISIBLE
+        }
+        WednesdayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
+        }
+    }
+}
 
 @BindingAdapter("thursdaySubject")
-fun TextView.bindThursdaySubject(item:ThursdayClass?){
+fun TextView.bindThursdaySubject(item: ThursdayClass?) {
     text = item?.subject
 }
+
 @BindingAdapter("thursdayTime")
-fun TextView.bindThursdayTime(item:ThursdayClass?){
+fun TextView.bindThursdayTime(item: ThursdayClass?) {
     text = item?.time
 }
+
 @BindingAdapter("thursdayListData")
-fun bindThursdayRecyclerView(recyclerView:RecyclerView, data:List<ThursdayClass>?){
+fun bindThursdayRecyclerView(recyclerView: RecyclerView, data: List<ThursdayClass>?) {
     val adapter = recyclerView.adapter as ThursdayAdapter
     adapter.submitList(data)
 }
+
 @BindingAdapter("thursdayDataStatus")
-fun bindThursdayDataStatus(statusImgView: ImageView, status: ThursdayDataStatus?){
-    when(status){
+fun bindThursdayImageStatus(statusImgView: ImageView, status: ThursdayDataStatus?) {
+    when (status) {
         ThursdayDataStatus.EMPTY -> {
             statusImgView.visibility = View.VISIBLE
             statusImgView.setImageResource(R.drawable.ic_no_classes)
@@ -135,81 +180,134 @@ fun bindThursdayDataStatus(statusImgView: ImageView, status: ThursdayDataStatus?
         }
     }
 }
+@BindingAdapter("thursdayTextStatus")
+fun bindThursdayTextStatus(statusTextView: TextView, status: ThursdayDataStatus?){
+    when(status){
+        ThursdayDataStatus.EMPTY -> {
+            statusTextView.visibility = View.VISIBLE
+        }
+        ThursdayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
+        }
+    }
+}
 
 @BindingAdapter("fridaySubject")
-fun TextView.bindFridaySubject(item:FridayClass?){
+fun TextView.bindFridaySubject(item: FridayClass?) {
     text = item?.subject
 }
+
 @BindingAdapter("fridayTime")
-fun TextView.bindFridayTime(item:FridayClass?){
+fun TextView.bindFridayTime(item: FridayClass?) {
     text = item?.time
 }
+
 @BindingAdapter("fridayListData")
-fun bindFridayRecyclerview(recyclerView: RecyclerView, data: List<FridayClass>?){
+fun bindFridayRecyclerview(recyclerView: RecyclerView, data: List<FridayClass>?) {
     val adapter = recyclerView.adapter as FridayAdapter
     adapter.submitList(data)
 }
+
 @BindingAdapter("fridayDataStatus")
-fun bindFridayDataStatus(statusImgView: ImageView, status: FridayDataStatus?){
-    when(status){
-        FridayDataStatus.EMPTY->{
+fun bindFridayImageStatus(statusImgView: ImageView, status: FridayDataStatus?) {
+    when (status) {
+        FridayDataStatus.EMPTY -> {
             statusImgView.visibility = View.VISIBLE
             statusImgView.setImageResource(R.drawable.ic_no_classes)
         }
-        FridayDataStatus.NOT_EMPTY->{
+        FridayDataStatus.NOT_EMPTY -> {
             statusImgView.visibility = View.GONE
+        }
+    }
+}
+@BindingAdapter("fridayTextStatus")
+fun bindFridayTextStatus(statusTextView: TextView, status:FridayDataStatus?){
+    when(status){
+        FridayDataStatus.EMPTY -> {
+            statusTextView.visibility = View.VISIBLE
+        }
+        FridayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
         }
     }
 }
 
 @BindingAdapter("saturdaySubject")
-fun TextView.bindSaturdaySubject(item:SaturdayClass?){
+fun TextView.bindSaturdaySubject(item: SaturdayClass?) {
     text = item?.subject
 }
+
 @BindingAdapter("saturdayTime")
-fun TextView.bindSaturdayTime(item:SaturdayClass?){
+fun TextView.bindSaturdayTime(item: SaturdayClass?) {
     text = item?.time
 }
+
 @BindingAdapter("saturdayListData")
-fun bindSaturdayRecyclerView(recyclerView: RecyclerView, data: List<SaturdayClass>?){
+fun bindSaturdayRecyclerView(recyclerView: RecyclerView, data: List<SaturdayClass>?) {
     val adapter = recyclerView.adapter as SaturdayAdapter
     adapter.submitList(data)
 }
+
 @BindingAdapter("saturdayDataStatus")
-fun bindSaturdayDataStatus(statusImgView: ImageView, status: SaturdayDataStatus?){
-    when(status){
-        SaturdayDataStatus.EMPTY ->{
+fun bindSaturdayImageStatus(statusImgView: ImageView, status: SaturdayDataStatus?) {
+    when (status) {
+        SaturdayDataStatus.EMPTY -> {
             statusImgView.visibility = View.VISIBLE
             statusImgView.setImageResource(R.drawable.ic_no_classes)
         }
-        SaturdayDataStatus.NOT_EMPTY ->{
+        SaturdayDataStatus.NOT_EMPTY -> {
             statusImgView.visibility = View.GONE
+        }
+    }
+}
+@BindingAdapter("saturdayTextStatus")
+fun bindSaturdayTextStatus(statusTextView: TextView, status: SaturdayDataStatus?){
+    when(status){
+        SaturdayDataStatus.EMPTY -> {
+            statusTextView.visibility = View.VISIBLE
+        }
+        SaturdayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
         }
     }
 }
 
 @BindingAdapter("sundaySubject")
-fun TextView.bindSundaySubject(item:SundayClass?){
+fun TextView.bindSundaySubject(item: SundayClass?) {
     text = item?.subject
 }
+
 @BindingAdapter("sundayTime")
-fun TextView.bindSundayTime(item:SundayClass?){
+fun TextView.bindSundayTime(item: SundayClass?) {
     text = item?.time
 }
+
 @BindingAdapter("sundayListData")
-fun bindRecyclerView(recyclerView: RecyclerView,data: List<SundayClass>?){
+fun bindRecyclerView(recyclerView: RecyclerView, data: List<SundayClass>?) {
     val adapter = recyclerView.adapter as SundayAdapter
     adapter.submitList(data)
 }
+
 @BindingAdapter("sundayDataStatus")
-fun bindSundayDataStatus(statusImgView: ImageView, status: SundayDataStatus?){
-    when(status){
+fun bindSundayImageStatus(statusImgView: ImageView, status: SundayDataStatus?) {
+    when (status) {
         SundayDataStatus.EMPTY -> {
             statusImgView.visibility = View.VISIBLE
             statusImgView.setImageResource(R.drawable.ic_no_classes)
         }
         SundayDataStatus.NOT_EMPTY -> {
             statusImgView.visibility = View.GONE
+        }
+    }
+}
+@BindingAdapter("sundayTextStatus")
+fun bindSundayTextStatus(statusTextView: TextView, status: SundayDataStatus?){
+    when(status){
+        SundayDataStatus.EMPTY -> {
+            statusTextView.visibility = View.VISIBLE
+        }
+        SundayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
         }
     }
 }

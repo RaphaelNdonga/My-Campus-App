@@ -28,14 +28,27 @@
                 app:tuesdayListData="@{viewModel.tuesdayClasses}"
                 tools:itemCount="5"
                 tools:listitem="@layout/list_item_tuesday" />
+
             <ImageView
+                android:id="@+id/imageView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:tuesdayDataStatus="@{viewModel.status}"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:tuesdayDataStatus="@{viewModel.status}" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/toolbar_padding"
+                android:text="@string/empty_fragment_message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageView7"
+                app:tuesdayTextStatus="@{viewModel.status}"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
