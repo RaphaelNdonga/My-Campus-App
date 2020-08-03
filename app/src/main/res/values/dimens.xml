@@ -2,4 +2,6 @@
 <resources>
     <dimen name="text_box_margin">4dp</dimen>
     <dimen name="toolbar_padding">8dp</dimen>
+    <dimen name="nav_header_dimen">176dp</dimen>
+    <dimen name="nav_header_padding">16dp</dimen>
 </resources>
