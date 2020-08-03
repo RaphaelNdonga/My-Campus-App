@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.display.days.sunday.SundayViewModel" />
+            type="com.example.android.mycampusapp.timetable.display.days.sunday.SundayViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -24,7 +24,7 @@
                 android:id="@+id/sunday_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layoutManager=".display.CustomLinearLayoutManager"
+                app:layoutManager=".timetable.display.CustomLinearLayoutManager"
                 app:sundayListData="@{viewModel.sundayClasses}"
                 tools:itemCount="5"
                 tools:listitem="@layout/list_item_sunday" />

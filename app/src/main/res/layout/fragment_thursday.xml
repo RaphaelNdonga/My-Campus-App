@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.display.days.thursday.ThursdayViewModel" />
+            type="com.example.android.mycampusapp.timetable.display.days.thursday.ThursdayViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -25,7 +25,7 @@
             tools:itemCount="5"
             tools:listitem="@layout/list_item_thursday"
             app:thursdayListData="@{viewModel.thursdayClasses}"
-            app:layoutManager=".display.CustomLinearLayoutManager"/>
+            app:layoutManager=".timetable.display.CustomLinearLayoutManager"/>
 
             <ImageView
                 android:id="@+id/imageView4"

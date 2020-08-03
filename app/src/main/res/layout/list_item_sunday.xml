@@ -6,11 +6,11 @@
 
         <variable
             name="sundayClass"
-            type="com.example.android.mycampusapp.data.SundayClass" />
+            type="com.example.android.mycampusapp.timetable.data.SundayClass" />
 
         <variable
             name="clickListener"
-            type="com.example.android.mycampusapp.display.days.sunday.SundayListener" />
+            type="com.example.android.mycampusapp.timetable.display.days.sunday.SundayListener" />
     </data>
 
     <androidx.cardview.widget.CardView

@@ -6,14 +6,14 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.input.sunday.SundayInputViewModel" />
+            type="com.example.android.mycampusapp.timetable.input.sunday.SundayInputViewModel" />
     </data>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/classInputPageBackgroundColor"
-        tools:context=".input.sunday.SundayInputFragment">
+        tools:context=".timetable.input.sunday.SundayInputFragment">
 
         <LinearLayout
             android:layout_width="match_parent"

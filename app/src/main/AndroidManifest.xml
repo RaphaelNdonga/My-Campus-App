@@ -18,32 +18,32 @@
             </intent-filter>
         </activity>
         <receiver
-            android:name=".receiver.MondayClassReceiver"
+            android:name=".timetable.receiver.MondayClassReceiver"
             android:enabled="true"
             android:exported="false">
         </receiver>
         <receiver
-            android:name=".receiver.TuesdayClassReceiver"
+            android:name=".timetable.receiver.TuesdayClassReceiver"
             android:enabled="true"
             android:exported="false">
         </receiver>
-        <receiver android:name=".receiver.SundayClassReceiver"
+        <receiver android:name=".timetable.receiver.SundayClassReceiver"
             android:enabled="true"
             android:exported="false">
         </receiver>
-        <receiver android:name=".receiver.WednesdayClassReceiver"
+        <receiver android:name=".timetable.receiver.WednesdayClassReceiver"
             android:enabled="true"
             android:exported="false">
         </receiver>
-        <receiver android:name=".receiver.ThursdayClassReceiver"
+        <receiver android:name=".timetable.receiver.ThursdayClassReceiver"
             android:enabled="true"
             android:exported="false">
         </receiver>
-        <receiver android:name=".receiver.FridayClassReceiver"
+        <receiver android:name=".timetable.receiver.FridayClassReceiver"
             android:enabled="true"
             android:exported="false">
         </receiver>
-        <receiver android:name=".receiver.SaturdayClassReceiver"
+        <receiver android:name=".timetable.receiver.SaturdayClassReceiver"
             android:enabled="true"
             android:exported="false">
         </receiver>

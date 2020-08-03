@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_host"
-    app:startDestination="@id/timetableFragment"
-    >
+    app:startDestination="@id/timetableFragment">
 
     <fragment
         android:id="@+id/timetableFragment"
-        android:name="com.example.android.mycampusapp.display.TimetableFragment"
-        android:label="Timetable" >
+        android:name="com.example.android.mycampusapp.timetable.display.TimetableFragment"
+        android:label="Timetable">
         <action
             android:id="@+id/action_timetableFragment_to_mondayInputFragment"
             app:destination="@id/mondayInputFragment" />
@@ -34,7 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/mondayInputFragment"
-        android:name="com.example.android.mycampusapp.input.monday.MondayInputFragment"
+        android:name="com.example.android.mycampusapp.timetable.input.monday.MondayInputFragment"
         android:label="Set Monday Class">
         <action
             android:id="@+id/action_mondayInputFragment_to_timetableFragment"
@@ -44,12 +42,12 @@
         <argument
             android:name="mondayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.data.MondayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.MondayClass"
             app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/tuesdayInputFragment"
-        android:name="com.example.android.mycampusapp.input.tuesday.TuesdayInputFragment"
+        android:name="com.example.android.mycampusapp.timetable.input.tuesday.TuesdayInputFragment"
         android:label="Set Tuesday Class">
         <action
             android:id="@+id/action_tuesdayInputFragment_to_timetableFragment"
@@ -59,12 +57,12 @@
         <argument
             android:name="tuesdayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.data.TuesdayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.TuesdayClass"
             app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/sundayInputFragment"
-        android:name="com.example.android.mycampusapp.input.sunday.SundayInputFragment"
+        android:name="com.example.android.mycampusapp.timetable.input.sunday.SundayInputFragment"
         android:label="Set Sunday Class">
         <action
             android:id="@+id/action_sundayInputFragment_to_timetableFragment"
@@ -74,12 +72,12 @@
         <argument
             android:name="sundayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.data.SundayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.SundayClass"
             app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/wednesdayInputFragment"
-        android:name="com.example.android.mycampusapp.input.wednesday.WednesdayInputFragment"
+        android:name="com.example.android.mycampusapp.timetable.input.wednesday.WednesdayInputFragment"
         android:label="set wednesday class">
         <action
             android:id="@+id/action_wednesdayInputFragment_to_timetableFragment"
@@ -89,12 +87,12 @@
         <argument
             android:name="wednesdayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.data.WednesdayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.WednesdayClass"
             app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/thursdayInputFragment"
-        android:name="com.example.android.mycampusapp.input.thursday.ThursdayInputFragment"
+        android:name="com.example.android.mycampusapp.timetable.input.thursday.ThursdayInputFragment"
         android:label="set thursday class">
         <action
             android:id="@+id/action_thursdayInputFragment_to_timetableFragment"
@@ -104,12 +102,12 @@
         <argument
             android:name="thursdayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.data.ThursdayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.ThursdayClass"
             app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/fridayInputFragment"
-        android:name="com.example.android.mycampusapp.input.friday.FridayInputFragment"
+        android:name="com.example.android.mycampusapp.timetable.input.friday.FridayInputFragment"
         android:label="set friday class">
         <action
             android:id="@+id/action_fridayInputFragment_to_timetableFragment"
@@ -119,12 +117,12 @@
         <argument
             android:name="fridayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.data.FridayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.FridayClass"
             app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/saturdayInputFragment"
-        android:name="com.example.android.mycampusapp.input.saturday.SaturdayInputFragment"
+        android:name="com.example.android.mycampusapp.timetable.input.saturday.SaturdayInputFragment"
         android:label="set saturday class">
         <action
             android:id="@+id/action_saturdayInputFragment_to_timetableFragment"
@@ -134,7 +132,7 @@
         <argument
             android:name="saturdayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.data.SaturdayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.SaturdayClass"
             app:nullable="true" />
     </fragment>
 </navigation>

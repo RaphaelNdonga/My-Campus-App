@@ -2,8 +2,8 @@ package com.example.android.mycampusapp.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.android.mycampusapp.data.timetable.local.TimetableDao
-import com.example.android.mycampusapp.data.timetable.local.TimetableDatabase
+import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableDao
+import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +21,7 @@ object DatabaseModule {
             .fallbackToDestructiveMigration().build()
     }
     @Provides
-    fun provideDao(database:TimetableDatabase):TimetableDao{
+    fun provideDao(database: TimetableDatabase): TimetableDao {
         return database.timetableDao()
     }
 

@@ -6,21 +6,21 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.data.*
-import com.example.android.mycampusapp.display.days.friday.FridayAdapter
-import com.example.android.mycampusapp.display.days.friday.FridayDataStatus
-import com.example.android.mycampusapp.display.days.monday.MondayAdapter
-import com.example.android.mycampusapp.display.days.monday.MondayDataStatus
-import com.example.android.mycampusapp.display.days.saturday.SaturdayAdapter
-import com.example.android.mycampusapp.display.days.saturday.SaturdayDataStatus
-import com.example.android.mycampusapp.display.days.sunday.SundayAdapter
-import com.example.android.mycampusapp.display.days.sunday.SundayDataStatus
-import com.example.android.mycampusapp.display.days.thursday.ThursdayAdapter
-import com.example.android.mycampusapp.display.days.thursday.ThursdayDataStatus
-import com.example.android.mycampusapp.display.days.tuesday.TuesdayAdapter
-import com.example.android.mycampusapp.display.days.tuesday.TuesdayDataStatus
-import com.example.android.mycampusapp.display.days.wednesday.WednesdayAdapter
-import com.example.android.mycampusapp.display.days.wednesday.WednesdayDataStatus
+import com.example.android.mycampusapp.timetable.data.*
+import com.example.android.mycampusapp.timetable.display.days.friday.FridayAdapter
+import com.example.android.mycampusapp.timetable.display.days.friday.FridayDataStatus
+import com.example.android.mycampusapp.timetable.display.days.monday.MondayAdapter
+import com.example.android.mycampusapp.timetable.display.days.monday.MondayDataStatus
+import com.example.android.mycampusapp.timetable.display.days.saturday.SaturdayAdapter
+import com.example.android.mycampusapp.timetable.display.days.saturday.SaturdayDataStatus
+import com.example.android.mycampusapp.timetable.display.days.sunday.SundayAdapter
+import com.example.android.mycampusapp.timetable.display.days.sunday.SundayDataStatus
+import com.example.android.mycampusapp.timetable.display.days.thursday.ThursdayAdapter
+import com.example.android.mycampusapp.timetable.display.days.thursday.ThursdayDataStatus
+import com.example.android.mycampusapp.timetable.display.days.tuesday.TuesdayAdapter
+import com.example.android.mycampusapp.timetable.display.days.tuesday.TuesdayDataStatus
+import com.example.android.mycampusapp.timetable.display.days.wednesday.WednesdayAdapter
+import com.example.android.mycampusapp.timetable.display.days.wednesday.WednesdayDataStatus
 
 @BindingAdapter("mondaySubject")
 fun TextView.bindMondaySubject(item: MondayClass?) {
@@ -141,7 +141,7 @@ fun bindWednesdayImageStatus(statusImgView: ImageView, status: WednesdayDataStat
     }
 }
 @BindingAdapter("wednesdayTextStatus")
-fun bindWednesdayTextStatus(statusTextView: TextView, status:WednesdayDataStatus?){
+fun bindWednesdayTextStatus(statusTextView: TextView, status: WednesdayDataStatus?){
     when (status){
         WednesdayDataStatus.EMPTY -> {
             statusTextView.visibility = View.VISIBLE
@@ -221,7 +221,7 @@ fun bindFridayImageStatus(statusImgView: ImageView, status: FridayDataStatus?) {
     }
 }
 @BindingAdapter("fridayTextStatus")
-fun bindFridayTextStatus(statusTextView: TextView, status:FridayDataStatus?){
+fun bindFridayTextStatus(statusTextView: TextView, status: FridayDataStatus?){
     when(status){
         FridayDataStatus.EMPTY -> {
             statusTextView.visibility = View.VISIBLE
