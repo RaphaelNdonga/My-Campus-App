@@ -64,7 +64,8 @@ class AssignmentsFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        docReference.addSnapshotListener(requireActivity()) { documentSnapshot: DocumentSnapshot?, firestoreException: FirebaseFirestoreException? ->
+        docReference.addSnapshotListener(requireActivity()) {
+                documentSnapshot: DocumentSnapshot?,firestoreException: FirebaseFirestoreException? ->
             if (documentSnapshot != null) {
                 quoteText = documentSnapshot.getString(QUOTE_KEY)!!
                 authorText = documentSnapshot.getString(AUTHOR_KEY)!!

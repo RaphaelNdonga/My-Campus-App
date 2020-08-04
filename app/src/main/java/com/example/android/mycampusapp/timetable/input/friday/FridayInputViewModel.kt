@@ -16,19 +16,23 @@ import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableD
 import com.example.android.mycampusapp.timetable.receiver.FridayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 class FridayInputViewModel(
     private val timetableRepository: TimetableDataSource,
     private val fridayClass: FridayClass?,
-    private val app: Application
+    private val app: Application,
+    private val firestore: FirebaseFirestore
 ) : AndroidViewModel(app) {
 
+    private val fridayFirestore = firestore.collection("friday")
     private val fridayClassExtra = MutableLiveData<FridayClass>()
     private val _navigator = MutableLiveData<Event<Unit>>()
     val navigator: LiveData<Event<Unit>>
@@ -75,7 +79,12 @@ class FridayInputViewModel(
                     subject = currentSubject,
                     time = currentTime
                 )
-            addFridayClass(fridayClass)
+            fridayFirestore.add(fridayClass).addOnSuccessListener {
+                Timber.i("Friday Class added successfully")
+            }.addOnFailureListener{exception->
+                Timber.i("Friday Class not saved because of $exception ")
+            }
+//            addFridayClass(fridayClass)
             fridayClassExtra.value = fridayClass
             _snackbarText.value = Event(R.string.friday_saved)
             startTimer()

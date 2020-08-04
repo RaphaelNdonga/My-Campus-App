@@ -22,6 +22,7 @@ import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.util.setupSnackbar
 import com.example.android.mycampusapp.util.setupTimeDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -32,6 +33,8 @@ class FridayInputFragment : Fragment() {
     @TimetableDatabase
     @Inject
     lateinit var timetableRepository: TimetableDataSource
+    @Inject
+    lateinit var firestore:FirebaseFirestore
 
     private val fridayArgs by navArgs<FridayInputFragmentArgs>()
     private lateinit var viewModel: FridayInputViewModel
@@ -54,7 +57,8 @@ class FridayInputFragment : Fragment() {
             FridayInputViewModelFactory(
                 timetableRepository,
                 fridayArgs.fridayClass,
-                app
+                app,
+                firestore
             )
         ).get(FridayInputViewModel::class.java)
 
