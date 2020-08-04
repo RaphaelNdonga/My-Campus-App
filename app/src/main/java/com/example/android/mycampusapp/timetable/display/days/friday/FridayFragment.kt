@@ -5,7 +5,7 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionPredicates
@@ -20,6 +20,9 @@ import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableD
 import com.example.android.mycampusapp.timetable.display.MyItemKeyProvider
 import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
 import com.example.android.mycampusapp.util.EventObserver
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -30,15 +33,14 @@ class FridayFragment : Fragment() {
     @Inject
     lateinit var repository: TimetableDataSource
 
-    private val viewModel by viewModels<FridayViewModel> {
-        FridayViewModelFactory(
-            repository
-        )
-    }
+    @Inject
+    lateinit var firestore: FirebaseFirestore
+
     private lateinit var tracker: SelectionTracker<Long>
     private lateinit var adapter: FridayAdapter
     private lateinit var recyclerView: RecyclerView
     private var highlightState: Boolean = false
+    private lateinit var viewModel: FridayViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,7 +53,10 @@ class FridayFragment : Fragment() {
             container,
             false
         )
-        Timber.i("friday fragment created")
+
+        viewModel = ViewModelProvider(this, FridayViewModelFactory(repository)).get(
+            FridayViewModel::class.java
+        )
 
         setHasOptionsMenu(true)
         binding.viewModel = viewModel
@@ -91,6 +96,27 @@ class FridayFragment : Fragment() {
         highlightState = false
         requireActivity().invalidateOptionsMenu()
     }
+
+    override fun onStart() {
+        super.onStart()
+        val fridayFirestore = firestore.collection("friday")
+        fridayFirestore.addSnapshotListener(this.requireActivity()) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+            val mutableList: MutableList<FridayClass> = mutableListOf()
+                querySnapshot?.documents?.forEach { document ->
+                    Timber.i("We are in the loop")
+                    val id = document.getLong("id")
+                    val subject = document.getString("subject")
+                    val time = document.getString("time")
+                    if (id != null && subject != null && time != null) {
+                        val fridayClass = FridayClass(id, subject, time)
+                        mutableList.add(fridayClass)
+                    }
+                }
+                viewModel.updateData(mutableList)
+                viewModel.checkFridayDataStatus()
+            }
+        }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {

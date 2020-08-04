@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             tools:itemCount="5"
             tools:listitem="@layout/list_item_friday"
-            app:fridayListData="@{viewModel.fridayClasses}"
+            app:fridayListData="@{viewModel.fridayClasses2}"
             app:layoutManager=".timetable.display.CustomLinearLayoutManager"/>
 
             <ImageView

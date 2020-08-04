@@ -12,12 +12,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class FridayViewModel(private val repository: TimetableDataSource) : ViewModel() {
+class FridayViewModel(
+    private val repository: TimetableDataSource
+) : ViewModel() {
 
     val fridayClasses = repository.observeAllFridayClasses()
+    private val _fridayClasses2 = MutableLiveData<List<FridayClass>>()
+    val fridayClasses2: LiveData<List<FridayClass>>
+        get() = _fridayClasses2
+
 
     private val _status = MutableLiveData<FridayDataStatus>()
-    val status:LiveData<FridayDataStatus> = _status
+    val status: LiveData<FridayDataStatus> = _status
 
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
@@ -37,17 +43,15 @@ class FridayViewModel(private val repository: TimetableDataSource) : ViewModel()
         checkFridayDataStatus()
     }
 
-    private fun checkFridayDataStatus() = uiScope.launch{
-        val fridayClasses = repository.getAllFridayClasses()
+    fun checkFridayDataStatus() = uiScope.launch {
+        val fridayClasses = _fridayClasses2.value
         try {
-            if(fridayClasses.isNullOrEmpty()){
+            if (fridayClasses.isNullOrEmpty()) {
                 throw NullPointerException()
             }
-            _status.value =
-                FridayDataStatus.NOT_EMPTY
-        }catch (e:Exception){
-            _status.value =
-                FridayDataStatus.EMPTY
+            _status.value = FridayDataStatus.NOT_EMPTY
+        } catch (e: Exception) {
+            _status.value = FridayDataStatus.EMPTY
         }
     }
 
@@ -65,7 +69,7 @@ class FridayViewModel(private val repository: TimetableDataSource) : ViewModel()
     }
 
     fun deleteList(list: List<FridayClass?>) = uiScope.launch {
-        list.forEach { fridayClass->
+        list.forEach { fridayClass ->
             if (fridayClass != null) {
                 repository.deleteFridayClass(fridayClass)
             }
@@ -81,6 +85,10 @@ class FridayViewModel(private val repository: TimetableDataSource) : ViewModel()
     override fun onCleared() {
         super.onCleared()
         job.cancel()
+    }
+
+    fun updateData(mutableList: MutableList<FridayClass>) {
+        _fridayClasses2.value = mutableList
     }
 }
 
