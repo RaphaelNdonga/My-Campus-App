@@ -96,11 +96,11 @@ class FridayInputViewModel(
         }
     }
 
-    fun updateFridayClass(fridayClass: FridayClass) = uiScope.launch {
+    private fun updateFridayClass(fridayClass: FridayClass) = uiScope.launch {
         timetableRepository.updateFridayClass(fridayClass)
     }
 
-    fun addFridayClass(fridayClass: FridayClass) = uiScope.launch {
+    private fun addFridayClass(fridayClass: FridayClass) = uiScope.launch {
         timetableRepository.addFridayClass(fridayClass)
     }
 
@@ -109,7 +109,7 @@ class FridayInputViewModel(
     }
 
 
-    fun fridayClassIsNull(): Boolean {
+    private fun fridayClassIsNull(): Boolean {
         if (fridayClass == null) {
             return true
         }

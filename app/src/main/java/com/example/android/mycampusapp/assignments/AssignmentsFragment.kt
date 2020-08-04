@@ -14,9 +14,14 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AssignmentsFragment : Fragment() {
+    @Inject
+    lateinit var firestore: FirebaseFirestore
     private lateinit var fetchText: TextView
     val QUOTE_KEY = "quote"
     val AUTHOR_KEY = "author"
@@ -25,8 +30,7 @@ class AssignmentsFragment : Fragment() {
     private lateinit var authorView: EditText
     private lateinit var quoteText: String
     private lateinit var authorText: String
-    private val docReference: DocumentReference =
-        FirebaseFirestore.getInstance().document("sampleData/inspiration")
+    private lateinit var docReference: DocumentReference
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +44,7 @@ class AssignmentsFragment : Fragment() {
             false
         )
 
+        docReference = firestore.document("sampleData/inspiration")
         quoteView = binding.quoteEdit
         authorView = binding.philosopherEdit
         val sendBtn = binding.sendDataBtn
@@ -59,8 +64,7 @@ class AssignmentsFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        docReference.addSnapshotListener(requireActivity()) {
-                documentSnapshot: DocumentSnapshot?, firestoreException: FirebaseFirestoreException? ->
+        docReference.addSnapshotListener(requireActivity()) { documentSnapshot: DocumentSnapshot?, firestoreException: FirebaseFirestoreException? ->
             if (documentSnapshot != null) {
                 quoteText = documentSnapshot.getString(QUOTE_KEY)!!
                 authorText = documentSnapshot.getString(AUTHOR_KEY)!!
