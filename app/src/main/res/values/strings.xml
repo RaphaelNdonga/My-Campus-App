@@ -30,4 +30,5 @@
     <string name="saturday_updated">Saturday class has been updated</string>
     <string name="empty_fragment_message">No classes today!</string>
     <string name="timetable_menu">Timetable</string>
+    <string name="assignments_menu">Assignments</string>
 </resources>

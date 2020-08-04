@@ -5,4 +5,8 @@
         android:id="@+id/timetableFragment"
         android:icon="@drawable/ic_timetable"
         android:title="@string/timetable_menu" />
+    <item
+        android:id="@+id/assignmentsFragment"
+        android:icon="@drawable/ic_assignments"
+        android:title="@string/assignments_menu" />
 </menu>
