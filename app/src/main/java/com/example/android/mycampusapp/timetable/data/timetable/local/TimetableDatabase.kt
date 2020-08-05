@@ -14,7 +14,7 @@ import com.example.android.mycampusapp.timetable.data.*
         FridayClass::class,
         SaturdayClass::class,
         SundayClass::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class TimetableDatabase : RoomDatabase() {

@@ -57,7 +57,7 @@ interface TimetableDataSource {
     suspend fun getTuesdayClassWithId(id:Long): TuesdayClass
     suspend fun getWednesdayClassWithId(id:Long): WednesdayClass
     suspend fun getThursdayClassWithId(id:Long): ThursdayClass
-    suspend fun getFridayClassWithId(id:Long): FridayClass
+    suspend fun getFridayClassWithId(id:String): FridayClass
     suspend fun getSaturdayClassWithId(id:Long): SaturdayClass
     suspend fun getSundayClassWithId(id:Long): SundayClass
 }

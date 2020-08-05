@@ -121,10 +121,7 @@ interface TimetableDao{
     fun deleteAllFridayClasses()
 
     @Query("SELECT * FROM friday_table WHERE id = :fridayId")
-    fun getFridayClassById(fridayId: Long): FridayClass
-
-    @Query("SELECT * FROM friday_table WHERE id = :fridayId")
-    fun observeFridayClassById(fridayId: Long): LiveData<FridayClass>
+    fun getFridayClassById(fridayId: String): FridayClass
 
     @Query("SELECT * FROM friday_table")
     fun getAllFridayClasses(): List<FridayClass>

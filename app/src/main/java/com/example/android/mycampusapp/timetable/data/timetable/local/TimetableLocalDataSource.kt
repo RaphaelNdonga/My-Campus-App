@@ -325,7 +325,7 @@ class TimetableLocalDataSource @Inject constructor(private val timetableDao: Tim
         return thursdayClass
     }
 
-    override suspend fun getFridayClassWithId(id: Long): FridayClass {
+    override suspend fun getFridayClassWithId(id: String): FridayClass {
         var fridayClass: FridayClass
         withContext(Dispatchers.IO) {
             fridayClass = timetableDao.getFridayClassById(id)
