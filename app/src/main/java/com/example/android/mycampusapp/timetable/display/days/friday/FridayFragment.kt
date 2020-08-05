@@ -104,7 +104,7 @@ class FridayFragment : Fragment() {
             val mutableList: MutableList<FridayClass> = mutableListOf()
                 querySnapshot?.documents?.forEach { document ->
                     Timber.i("We are in the loop")
-                    val id = document.getLong("id")
+                    val id = document.getString("id")
                     val subject = document.getString("subject")
                     val time = document.getString("time")
                     if (id != null && subject != null && time != null) {
