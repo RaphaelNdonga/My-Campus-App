@@ -12,22 +12,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.timetable.data.WednesdayClass
-import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.timetable.receiver.WednesdayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 class WednesdayInputViewModel(
-    private val timetableRepository: TimetableDataSource,
+    private val firestore: FirebaseFirestore,
     private val wednesdayClass: WednesdayClass?,
     private val app: Application
 ) : AndroidViewModel(app) {
+
+    private val wednesdayFirestore = firestore.collection("wednesday")
 
     private val wednesdayClassExtra = MutableLiveData<WednesdayClass>()
     private val _navigator = MutableLiveData<Event<Unit>>()
@@ -44,7 +46,7 @@ class WednesdayInputViewModel(
 
     val textBoxSubject = MutableLiveData<String>(wednesdayClass?.subject)
     val textBoxTime = MutableLiveData<String>(wednesdayClass?.time)
-    val id = MutableLiveData<Long>(wednesdayClass?.id)
+    val id = MutableLiveData<String>(wednesdayClass?.id)
 
     private val cal: Calendar = Calendar.getInstance()
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
@@ -75,7 +77,7 @@ class WednesdayInputViewModel(
                     subject = currentSubject,
                     time = currentTime
                 )
-            addWednesdayClass(wednesdayClass)
+            addFirestoreData(wednesdayClass)
             wednesdayClassExtra.value = wednesdayClass
             _snackbarText.value = Event(R.string.wednesday_saved)
             startTimer()
@@ -88,7 +90,7 @@ class WednesdayInputViewModel(
                     currentSubject,
                     currentTime
                 )
-            updateWednesdayClass(wednesdayClass)
+            addFirestoreData(wednesdayClass)
             wednesdayClassExtra.value = wednesdayClass
             _snackbarText.value = Event(R.string.wednesday_updated)
             startTimer()
@@ -96,14 +98,13 @@ class WednesdayInputViewModel(
         }
     }
 
-    fun updateWednesdayClass(wednesdayClass: WednesdayClass) = uiScope.launch {
-        timetableRepository.updateWednesdayClass(wednesdayClass)
+    private fun addFirestoreData(wednesdayClass: WednesdayClass){
+        wednesdayFirestore.document(wednesdayClass.id).set(wednesdayClass).addOnSuccessListener {
+            Timber.i("Data was added successfully")
+        }.addOnFailureListener { exception ->
+            Timber.i("Data failed to upload because of $exception")
+        }
     }
-
-    fun addWednesdayClass(wednesdayClass: WednesdayClass) = uiScope.launch {
-        timetableRepository.addWednesdayClass(wednesdayClass)
-    }
-
     fun navigateToTimetable() {
         _navigator.value = Event(Unit)
     }

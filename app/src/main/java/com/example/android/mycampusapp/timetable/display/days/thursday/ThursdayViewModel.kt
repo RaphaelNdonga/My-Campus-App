@@ -4,18 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.timetable.data.ThursdayClass
-import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class ThursdayViewModel(private val repository: TimetableDataSource) : ViewModel() {
+class ThursdayViewModel(private val firestore: FirebaseFirestore) : ViewModel() {
 
-    val thursdayClasses = repository.observeAllThursdayClasses()
+    private val _thursdayClasses2 = MutableLiveData<List<ThursdayClass>>()
+    val thursdayClasses2:LiveData<List<ThursdayClass>>
+        get() = _thursdayClasses2
 
     private val _status = MutableLiveData<ThursdayDataStatus>()
     val status:LiveData<ThursdayDataStatus> = _status
@@ -38,8 +40,8 @@ class ThursdayViewModel(private val repository: TimetableDataSource) : ViewModel
         checkThursdayDataStatus()
     }
 
-    private fun checkThursdayDataStatus() = uiScope.launch {
-        val thursdayClasses = repository.getAllThursdayClasses()
+    fun checkThursdayDataStatus() = uiScope.launch {
+        val thursdayClasses = _thursdayClasses2.value
         try {
             if(thursdayClasses.isNullOrEmpty()){
                 throw NullPointerException()
@@ -69,7 +71,8 @@ class ThursdayViewModel(private val repository: TimetableDataSource) : ViewModel
     fun deleteList(list: List<ThursdayClass?>) = uiScope.launch {
         list.forEach { thursdayClass->
             if (thursdayClass != null) {
-                repository.deleteThursdayClass(thursdayClass)
+                val thursdayFirestore = firestore.collection("thursday")
+                thursdayFirestore.document(thursdayClass.id).delete()
             }
         }
         checkThursdayDataStatus()
@@ -83,6 +86,10 @@ class ThursdayViewModel(private val repository: TimetableDataSource) : ViewModel
     override fun onCleared() {
         super.onCleared()
         job.cancel()
+    }
+
+    fun update(mutableList: MutableList<ThursdayClass>) {
+        _thursdayClasses2.value = mutableList
     }
 }
 

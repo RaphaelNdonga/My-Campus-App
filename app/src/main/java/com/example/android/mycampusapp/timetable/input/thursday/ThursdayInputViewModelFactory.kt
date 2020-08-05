@@ -4,17 +4,17 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.android.mycampusapp.timetable.data.ThursdayClass
-import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableDataSource
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ThursdayInputViewModelFactory(
-    private val timetableRepository: TimetableDataSource,
+    private val firestore: FirebaseFirestore,
     private val thursdayClass: ThursdayClass?,
     private val app:Application
 ) : ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return ThursdayInputViewModel(
-            timetableRepository,
+            firestore,
             thursdayClass,
             app
         ) as T

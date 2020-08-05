@@ -12,23 +12,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.timetable.data.TuesdayClass
-import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.timetable.receiver.TuesdayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 class TuesdayInputViewModel(
-    private val timetableRepository: TimetableDataSource,
+    firestore: FirebaseFirestore,
     private val tuesdayClass: TuesdayClass?,
     private val app: Application
 ) : AndroidViewModel(app) {
 
+    private val tuesdayFirestore = firestore.collection("tuesday")
     private val tuesdayClassExtra = MutableLiveData<TuesdayClass>()
     private val _navigator = MutableLiveData<Event<Unit>>()
     val navigator: LiveData<Event<Unit>>
@@ -44,7 +44,7 @@ class TuesdayInputViewModel(
 
     val textBoxSubject = MutableLiveData<String>(tuesdayClass?.subject)
     val textBoxTime = MutableLiveData<String>(tuesdayClass?.time)
-    val id = MutableLiveData<Long>(tuesdayClass?.id)
+    val id = MutableLiveData<String>(tuesdayClass?.id)
 
     private val cal: Calendar = Calendar.getInstance()
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
@@ -75,7 +75,7 @@ class TuesdayInputViewModel(
                     subject = currentSubject,
                     time = currentTime
                 )
-            addTuesdayClass(tuesdayClass)
+            addFirestoreData(tuesdayClass)
             tuesdayClassExtra.value = tuesdayClass
             _snackbarText.value = Event(R.string.tuesday_saved)
             startTimer()
@@ -88,20 +88,15 @@ class TuesdayInputViewModel(
                     currentSubject,
                     currentTime
                 )
-            updateTuesdayClass(tuesdayClass)
+            addFirestoreData(tuesdayClass)
             tuesdayClassExtra.value = tuesdayClass
             _snackbarText.value = Event(R.string.tuesday_updated)
             startTimer()
             navigateToTimetable()
         }
     }
-
-    fun updateTuesdayClass(tuesdayClass: TuesdayClass) = uiScope.launch {
-        timetableRepository.updateTuesdayClass(tuesdayClass)
-    }
-
-    fun addTuesdayClass(tuesdayClass: TuesdayClass) = uiScope.launch {
-        timetableRepository.addTuesdayClass(tuesdayClass)
+    private fun addFirestoreData(tuesdayClass: TuesdayClass){
+        tuesdayFirestore.document(tuesdayClass.id).set(tuesdayClass)
     }
 
     fun navigateToTimetable() {

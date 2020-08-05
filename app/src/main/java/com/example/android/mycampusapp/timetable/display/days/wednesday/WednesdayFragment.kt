@@ -14,25 +14,25 @@ import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentWednesdayBinding
-import com.example.android.mycampusapp.di.TimetableDatabase
 import com.example.android.mycampusapp.timetable.data.WednesdayClass
-import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.timetable.display.MyItemKeyProvider
 import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
 import com.example.android.mycampusapp.util.EventObserver
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class WednesdayFragment : Fragment() {
-    @TimetableDatabase
     @Inject
-    lateinit var repository: TimetableDataSource
+    lateinit var firestore: FirebaseFirestore
 
     private val viewModel by viewModels<WednesdayViewModel> {
         WednesdayViewModelFactory(
-            repository
+            firestore
         )
     }
     private lateinit var tracker: SelectionTracker<Long>
@@ -80,6 +80,25 @@ class WednesdayFragment : Fragment() {
             })
         setupTracker()
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val wednesdayFirestore = firestore.collection("wednesday")
+        wednesdayFirestore.addSnapshotListener(this.requireActivity()){ querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+            val mutableList:MutableList<WednesdayClass> = mutableListOf()
+            querySnapshot?.documents?.forEach { document->
+                val id = document.getString("id")
+                val subject = document.getString("subject")
+                val time = document.getString("time")
+                if(id!=null && subject!=null && time!=null){
+                    val wednesdayClass = WednesdayClass(id,subject,time)
+                    mutableList.add(wednesdayClass)
+                }
+            }
+            viewModel.updateData(mutableList)
+            viewModel.checkWednesdayDataStatus()
+        }
     }
 
     private fun deleteSelectedItems(selection: Selection<Long>) {

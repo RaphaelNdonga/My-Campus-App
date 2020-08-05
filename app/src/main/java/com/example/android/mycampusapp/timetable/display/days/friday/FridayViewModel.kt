@@ -4,22 +4,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.timetable.data.FridayClass
-import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class FridayViewModel(
-    private val repository: TimetableDataSource
-) : ViewModel() {
+class FridayViewModel(private val firestore: FirebaseFirestore) : ViewModel() {
 
-    val fridayClasses = repository.observeAllFridayClasses()
     private val _fridayClasses2 = MutableLiveData<List<FridayClass>>()
     val fridayClasses2: LiveData<List<FridayClass>>
         get() = _fridayClasses2
+
+    private val fridayFirestore = firestore.collection("friday")
 
 
     private val _status = MutableLiveData<FridayDataStatus>()
@@ -71,7 +70,7 @@ class FridayViewModel(
     fun deleteList(list: List<FridayClass?>) = uiScope.launch {
         list.forEach { fridayClass ->
             if (fridayClass != null) {
-                repository.deleteFridayClass(fridayClass)
+                fridayFirestore.document(fridayClass.id).delete()
             }
         }
         checkFridayDataStatus()

@@ -16,12 +16,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentWednesdayInputBinding
-import com.example.android.mycampusapp.di.TimetableDatabase
-import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.util.setupSnackbar
 import com.example.android.mycampusapp.util.setupTimeDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -29,9 +28,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class WednesdayInputFragment : Fragment() {
 
-    @TimetableDatabase
     @Inject
-    lateinit var timetableRepository: TimetableDataSource
+    lateinit var firestore: FirebaseFirestore
 
     private val wednesdayArgs by navArgs<WednesdayInputFragmentArgs>()
     private lateinit var viewModel: WednesdayInputViewModel
@@ -52,7 +50,7 @@ class WednesdayInputFragment : Fragment() {
         viewModel = ViewModelProvider(
             this,
             WednesdayInputViewModelFactory(
-                timetableRepository,
+                firestore,
                 wednesdayArgs.wednesdayClass,
                 app
             )

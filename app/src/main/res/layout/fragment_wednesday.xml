@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager=".timetable.display.CustomLinearLayoutManager"
-                app:wednesdayListData="@{viewModel.wednesdayClasses}"
+                app:wednesdayListData="@{viewModel.wednesdayClasses2}"
                 tools:itemCount="5"
                 tools:layout_editor_absoluteX="-80dp"
                 tools:layout_editor_absoluteY="-16dp"

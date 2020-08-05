@@ -4,18 +4,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.timetable.data.SundayClass
-import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class SundayViewModel(private val repository: TimetableDataSource) : ViewModel() {
+class SundayViewModel(private val firestore: FirebaseFirestore) : ViewModel() {
 
-    val sundayClasses = repository.observeAllSundayClasses()
+    private val _sundayClasses2 = MutableLiveData<List<SundayClass>>()
+    val sundayClasses2:LiveData<List<SundayClass>>
+        get() = _sundayClasses2
+
 
     private val _status = MutableLiveData<SundayDataStatus>()
     val status:LiveData<SundayDataStatus> = _status
@@ -38,8 +41,8 @@ class SundayViewModel(private val repository: TimetableDataSource) : ViewModel()
         checkSundayDataStatus()
     }
 
-    private fun checkSundayDataStatus() = uiScope.launch {
-        val sundayClasses = repository.getAllSundayClasses()
+    fun checkSundayDataStatus() = uiScope.launch {
+        val sundayClasses = _sundayClasses2.value
         try {
             if(sundayClasses.isNullOrEmpty()){
                 throw NullPointerException()
@@ -69,7 +72,8 @@ class SundayViewModel(private val repository: TimetableDataSource) : ViewModel()
     fun deleteList(list: List<SundayClass?>) = uiScope.launch {
         list.forEach { sundayClass->
             if (sundayClass != null) {
-                repository.deleteSundayClass(sundayClass)
+                val sundayFirestore = firestore.collection("sunday")
+                sundayFirestore.document(sundayClass.id).delete()
             }
         }
         checkSundayDataStatus()
@@ -83,6 +87,10 @@ class SundayViewModel(private val repository: TimetableDataSource) : ViewModel()
     override fun onCleared() {
         super.onCleared()
         job.cancel()
+    }
+
+    fun updateData(mutableList: MutableList<SundayClass>) {
+        _sundayClasses2.value = mutableList
     }
 }
 

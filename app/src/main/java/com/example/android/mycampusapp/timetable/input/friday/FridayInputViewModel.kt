@@ -12,7 +12,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.timetable.data.FridayClass
-import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.timetable.receiver.FridayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
@@ -25,10 +24,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class FridayInputViewModel(
-    private val timetableRepository: TimetableDataSource,
     private val fridayClass: FridayClass?,
     private val app: Application,
-    private val firestore: FirebaseFirestore
+    firestore: FirebaseFirestore
 ) : AndroidViewModel(app) {
 
     private val fridayFirestore = firestore.collection("friday")
@@ -78,11 +76,7 @@ class FridayInputViewModel(
                     subject = currentSubject,
                     time = currentTime
                 )
-            fridayFirestore.document(fridayClass.id).set(fridayClass).addOnSuccessListener {
-                Timber.i("Friday Class added successfully")
-            }.addOnFailureListener{exception->
-                Timber.i("Friday Class not saved because of $exception ")
-            }
+            addFirestoreData(fridayClass)
             fridayClassExtra.value = fridayClass
             _snackbarText.value = Event(R.string.friday_saved)
             startTimer()
@@ -95,15 +89,18 @@ class FridayInputViewModel(
                     currentSubject,
                     currentTime
                 )
-            fridayFirestore.document(fridayClass.id).set(fridayClass).addOnSuccessListener {
-                Timber.i("Friday class updated successfully")
-            }.addOnFailureListener { exception->
-                Timber.i("Friday class not saved because of $exception")
-            }
+            addFirestoreData(fridayClass)
             fridayClassExtra.value = fridayClass
             _snackbarText.value = Event(R.string.friday_updated)
             startTimer()
             navigateToTimetable()
+        }
+    }
+    private fun addFirestoreData(fridayClass: FridayClass){
+        fridayFirestore.document(fridayClass.id).set(fridayClass).addOnSuccessListener {
+            Timber.i("Data was added successfully")
+        }.addOnFailureListener { exception->
+            Timber.i("Data failed to add because of $exception")
         }
     }
 

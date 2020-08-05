@@ -14,25 +14,25 @@ import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentSaturdayBinding
-import com.example.android.mycampusapp.di.TimetableDatabase
 import com.example.android.mycampusapp.timetable.data.SaturdayClass
-import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.timetable.display.MyItemKeyProvider
 import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
 import com.example.android.mycampusapp.util.EventObserver
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class SaturdayFragment : Fragment() {
-    @TimetableDatabase
     @Inject
-    lateinit var repository: TimetableDataSource
+    lateinit var firestore: FirebaseFirestore
 
     private val viewModel by viewModels<SaturdayViewModel> {
         SaturdayViewModelFactory(
-            repository
+            firestore
         )
     }
     private lateinit var tracker: SelectionTracker<Long>
@@ -80,6 +80,25 @@ class SaturdayFragment : Fragment() {
             })
         setupTracker()
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val saturdayFirestore = firestore.collection("saturday")
+        saturdayFirestore.addSnapshotListener(this.requireActivity()) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+            val mutableList: MutableList<SaturdayClass> = mutableListOf()
+            querySnapshot?.documents?.forEach { document ->
+                val id = document.getString("id")
+                val subject = document.getString("subject")
+                val time = document.getString("time")
+                if (id != null && subject != null && time != null) {
+                    val saturdayClass = SaturdayClass(id, subject, time)
+                    mutableList.add(saturdayClass)
+                }
+            }
+            viewModel.updateData(mutableList)
+            viewModel.checkSaturdayDataStatus()
+        }
     }
 
     private fun deleteSelectedItems(selection: Selection<Long>) {

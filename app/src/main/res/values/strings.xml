@@ -31,4 +31,5 @@
     <string name="empty_fragment_message">No classes today!</string>
     <string name="timetable_menu">Timetable</string>
     <string name="assignments_menu">Assignments</string>
+    <string name="successful_upload">Data added successfully</string>
 </resources>

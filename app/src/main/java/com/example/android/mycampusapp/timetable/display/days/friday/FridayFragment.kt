@@ -14,9 +14,7 @@ import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentFridayBinding
-import com.example.android.mycampusapp.di.TimetableDatabase
 import com.example.android.mycampusapp.timetable.data.FridayClass
-import com.example.android.mycampusapp.timetable.data.timetable.local.TimetableDataSource
 import com.example.android.mycampusapp.timetable.display.MyItemKeyProvider
 import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
 import com.example.android.mycampusapp.util.EventObserver
@@ -29,9 +27,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class FridayFragment : Fragment() {
-    @TimetableDatabase
-    @Inject
-    lateinit var repository: TimetableDataSource
 
     @Inject
     lateinit var firestore: FirebaseFirestore
@@ -54,7 +49,7 @@ class FridayFragment : Fragment() {
             false
         )
 
-        viewModel = ViewModelProvider(this, FridayViewModelFactory(repository)).get(
+        viewModel = ViewModelProvider(this, FridayViewModelFactory(firestore)).get(
             FridayViewModel::class.java
         )
 

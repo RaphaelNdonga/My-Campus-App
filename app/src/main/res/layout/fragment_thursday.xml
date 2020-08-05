@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             tools:itemCount="5"
             tools:listitem="@layout/list_item_thursday"
-            app:thursdayListData="@{viewModel.thursdayClasses}"
+            app:thursdayListData="@{viewModel.thursdayClasses2}"
             app:layoutManager=".timetable.display.CustomLinearLayoutManager"/>
 
             <ImageView
