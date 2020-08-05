@@ -20,7 +20,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -48,7 +47,7 @@ class FridayInputViewModel(
 
     val textBoxSubject = MutableLiveData<String>(fridayClass?.subject)
     val textBoxTime = MutableLiveData<String>(fridayClass?.time)
-    val id = MutableLiveData<Long>(fridayClass?.id)
+    val id = MutableLiveData<String>(fridayClass?.id)
 
     private val cal: Calendar = Calendar.getInstance()
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
@@ -79,12 +78,11 @@ class FridayInputViewModel(
                     subject = currentSubject,
                     time = currentTime
                 )
-            fridayFirestore.add(fridayClass).addOnSuccessListener {
+            fridayFirestore.document(fridayClass.id).set(fridayClass).addOnSuccessListener {
                 Timber.i("Friday Class added successfully")
             }.addOnFailureListener{exception->
                 Timber.i("Friday Class not saved because of $exception ")
             }
-//            addFridayClass(fridayClass)
             fridayClassExtra.value = fridayClass
             _snackbarText.value = Event(R.string.friday_saved)
             startTimer()
@@ -97,20 +95,16 @@ class FridayInputViewModel(
                     currentSubject,
                     currentTime
                 )
-            updateFridayClass(fridayClass)
+            fridayFirestore.document(fridayClass.id).set(fridayClass).addOnSuccessListener {
+                Timber.i("Friday class updated successfully")
+            }.addOnFailureListener { exception->
+                Timber.i("Friday class not saved because of $exception")
+            }
             fridayClassExtra.value = fridayClass
             _snackbarText.value = Event(R.string.friday_updated)
             startTimer()
             navigateToTimetable()
         }
-    }
-
-    private fun updateFridayClass(fridayClass: FridayClass) = uiScope.launch {
-        timetableRepository.updateFridayClass(fridayClass)
-    }
-
-    private fun addFridayClass(fridayClass: FridayClass) = uiScope.launch {
-        timetableRepository.addFridayClass(fridayClass)
     }
 
     fun navigateToTimetable() {
