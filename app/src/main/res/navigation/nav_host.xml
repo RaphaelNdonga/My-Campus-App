@@ -139,4 +139,14 @@
         android:id="@+id/assignmentsFragment"
         android:name="com.example.android.mycampusapp.assignments.AssignmentsFragment"
         android:label="@string/assignments_menu" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.android.mycampusapp.settings.SettingsFragment"
+        android:label="Settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_timetableFragment"
+            app:destination="@id/timetableFragment"
+            app:popUpTo="@id/timetableFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

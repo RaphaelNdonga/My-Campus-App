@@ -97,20 +97,20 @@ class FridayFragment : Fragment() {
         val fridayFirestore = firestore.collection("friday")
         fridayFirestore.addSnapshotListener(this.requireActivity()) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<FridayClass> = mutableListOf()
-                querySnapshot?.documents?.forEach { document ->
-                    Timber.i("We are in the loop")
-                    val id = document.getString("id")
-                    val subject = document.getString("subject")
-                    val time = document.getString("time")
-                    if (id != null && subject != null && time != null) {
-                        val fridayClass = FridayClass(id, subject, time)
-                        mutableList.add(fridayClass)
-                    }
+            querySnapshot?.documents?.forEach { document ->
+                Timber.i("We are in the loop")
+                val id = document.getString("id")
+                val subject = document.getString("subject")
+                val time = document.getString("time")
+                if (id != null && subject != null && time != null) {
+                    val fridayClass = FridayClass(id, subject, time)
+                    mutableList.add(fridayClass)
                 }
-                viewModel.updateData(mutableList)
-                viewModel.checkFridayDataStatus()
             }
+            viewModel.updateData(mutableList)
+            viewModel.checkFridayDataStatus()
         }
+    }
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -125,7 +125,7 @@ class FridayFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.delete_all_menu, menu)
+        inflater.inflate(R.menu.toolbar_menu, menu)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {

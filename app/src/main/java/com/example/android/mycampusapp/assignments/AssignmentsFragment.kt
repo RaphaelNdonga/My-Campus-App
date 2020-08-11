@@ -1,5 +1,6 @@
 package com.example.android.mycampusapp.assignments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -86,7 +87,9 @@ class AssignmentsFragment : Fragment() {
                 fetchText.text = combinedText
             }
         }
-
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+        val quote = sharedPref?.getString(authorText, "no quote")
+        Timber.i("The quote in the shared preferences is $quote")
     }
 
     private fun sendData() {
@@ -99,6 +102,13 @@ class AssignmentsFragment : Fragment() {
         val dataToSave = HashMap<String, Any>()
         dataToSave[QUOTE_KEY] = quoteText
         dataToSave[AUTHOR_KEY] = authorText
+
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with(sharedPref.edit()) {
+            putString(authorText, quoteText)
+            apply()
+        }
+
 
         docReference.set(dataToSave).addOnSuccessListener {
             Timber.i("Document has been saved!")

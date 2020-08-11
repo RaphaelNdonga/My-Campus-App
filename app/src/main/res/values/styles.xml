@@ -4,17 +4,18 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorPrimaryLight</item>
-        <item name="android:textColorPrimary">@color/colorSecondaryDark</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="fontFamily">@font/open_sans</item>
         <item name="android:fontFamily">@font/open_sans</item>
     </style>
 
     <style name="Widget.MyCampusApp.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="hintTextAppearance">@style/TextAppearance.MyCampusApp.TextInputLayout.HintText</item>
+        <item name="hintTextAppearance">@style/TextAppearance.MyCampusApp.TextInputLayout.HintText
+        </item>
         <item name="hintTextColor">@color/textColorPrimary</item>
         <item name="android:paddingBottom">8dp</item>
-        <item name="boxStrokeColor">@color/textInputOutlineColor</item>
+        <item name="boxStrokeColor">@color/colorPrimary</item>
     </style>
 
     <style name="TextAppearance.MyCampusApp.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle2">
@@ -23,14 +24,16 @@
 
     <style name="Widget.MyCampusApp.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="backgroundTint">?attr/colorPrimaryDark</item>
+        <item name="backgroundTint">?attr/colorPrimary</item>
         <item name="android:stateListAnimator" tools:ignore="NewApi">
             @animator/save_button_state_list_animator
         </item>
     </style>
+
     <style name="TextAppearance.MyCampusApp.RecyclerViewItemTitle" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="font">@font/open_sans</item>
     </style>
+
     <style name="TextAppearance.MyCampusApp.RecyclerViewItemDetails" parent="TextAppearance.MaterialComponents.Body1">
         <item name="font">@font/open_sans</item>
     </style>
@@ -44,7 +47,6 @@
 
     <style name="TextAppearance.MyCampusApp.Toolbar" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textSize">16sp</item>
-        <item name="android:fontFamily">@font/montserrat_bold</item>
     </style>
 
     <style name="MyCampusApp.Dialog" parent="Theme.MaterialComponents.Light.Dialog">

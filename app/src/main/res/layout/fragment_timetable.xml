@@ -15,9 +15,7 @@
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabIndicatorColor="@color/colorSecondaryLight"
-            app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/colorSecondaryLight" />
+            app:tabMode="scrollable" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/view_pager"

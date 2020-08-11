@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
         android:id="@+id/timetableFragment"
         android:icon="@drawable/ic_timetable"
@@ -9,4 +8,9 @@
         android:id="@+id/assignmentsFragment"
         android:icon="@drawable/ic_assignments"
         android:title="@string/assignments_menu" />
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings_menu" />
+
 </menu>

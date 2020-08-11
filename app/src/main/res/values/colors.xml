@@ -1,13 +1,12 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-  <color name="colorPrimary">#adefd1</color>
-  <color name="colorPrimaryLight">#e0ffff</color>
-  <color name="colorPrimaryDark">#7cbca0</color>
-  <color name="colorSecondary">#00203f</color>
-  <color name="colorSecondaryLight">#31476a</color>
-  <color name="colorSecondaryDark">#00001a</color>
+  <color name="colorPrimary">#7cbca0</color>
+  <color name="colorPrimaryLight">#adefd1</color>
+  <color name="colorPrimaryDark">#4d8c72</color>
+  <color name="colorSecondary">#31476a</color>
+  <color name="colorSecondaryLight">#5e7298</color>
+  <color name="colorSecondaryDark">#00203f</color>
   <color name="textColorPrimary">#000000</color>
   <color name="textColorSecondary">#ffffff</color>
-  <color name="textInputOutlineColor">#7cbca0</color>
   <color name="classInputPageBackgroundColor">#FFFFFF</color>
 </resources>
