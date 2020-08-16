@@ -104,7 +104,7 @@ class FridayInputViewModel(
         }
     }
 
-    fun navigateToTimetable() {
+    private fun navigateToTimetable() {
         _navigator.value = Event(Unit)
     }
 
@@ -149,7 +149,7 @@ class FridayInputViewModel(
         val minuteDifferenceLong = minuteDifference * minuteLong
 
         val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong + dayDifferenceLong
-        val triggerTime = SystemClock.elapsedRealtime() + 5_000L
+        val triggerTime = SystemClock.elapsedRealtime() + differenceWithPresent
 
         val notifyIntent = Intent(app, FridayClassReceiver::class.java).apply {
             putExtra("fridaySubject", fridayClassExtra.value?.subject)

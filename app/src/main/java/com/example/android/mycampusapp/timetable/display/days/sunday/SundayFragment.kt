@@ -20,6 +20,7 @@ import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirect
 import com.example.android.mycampusapp.util.EventObserver
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -27,6 +28,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class SundayFragment : Fragment() {
+    private lateinit var snapshotListener: ListenerRegistration
     @Inject
     lateinit var firestore: FirebaseFirestore
 
@@ -86,7 +88,7 @@ class SundayFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         val sundayFirestore = firestore.collection("sunday")
-        sundayFirestore.addSnapshotListener(this.requireActivity()) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+        snapshotListener = sundayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<SundayClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
                 val id = document.getString("id")
@@ -100,6 +102,11 @@ class SundayFragment : Fragment() {
             viewModel.updateData(mutableList)
             viewModel.checkSundayDataStatus()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        snapshotListener.remove()
     }
 
     private fun deleteSelectedItems(selection: Selection<Long>) {

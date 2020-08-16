@@ -20,6 +20,7 @@ import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirect
 import com.example.android.mycampusapp.util.EventObserver
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -29,6 +30,8 @@ import javax.inject.Inject
 class MondayFragment : Fragment() {
     @Inject
     lateinit var firestore: FirebaseFirestore
+
+    private lateinit var snapshotListener:ListenerRegistration
 
     private val viewModel by viewModels<MondayViewModel> {
         MondayViewModelFactory(
@@ -85,21 +88,26 @@ class MondayFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         val mondayFirestore = firestore.collection("monday")
-        mondayFirestore.addSnapshotListener(this.requireActivity()){ querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
-            val mutableList:MutableList<MondayClass> = mutableListOf()
-            querySnapshot?.documents?.forEach{ document->
-                val id = document.getString("id")
-                val subject = document.getString("subject")
-                val time = document.getString("time")
-                if(id!=null && subject!=null && time!=null){
-                    val mondayClass = MondayClass(id,subject,time)
-                    mutableList.add(mondayClass)
+        snapshotListener = mondayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+                val mutableList: MutableList<MondayClass> = mutableListOf()
+                querySnapshot?.documents?.forEach { document ->
+                    val id = document.getString("id")
+                    val subject = document.getString("subject")
+                    val time = document.getString("time")
+                    if (id != null && subject != null && time != null) {
+                        val mondayClass = MondayClass(id, subject, time)
+                        mutableList.add(mondayClass)
+                    }
                 }
-            }
-            viewModel.updateData(mutableList)
-            viewModel.checkMondayDataStatus()
+                viewModel.updateData(mutableList)
+                viewModel.checkMondayDataStatus()
 
-        }
+            }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        snapshotListener.remove()
     }
 
     private fun deleteSelectedItems(selection: Selection<Long>) {

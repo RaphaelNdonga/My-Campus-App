@@ -31,7 +31,7 @@ fun Activity.showTimeDialog(hour: Int, minute: Int) {
         },
         hour,
         minute,
-        true
+        false
     ).run { show() }
 }
 
