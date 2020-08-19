@@ -51,7 +51,7 @@ class FridayInputViewModel(
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
     private val minute = cal.get(Calendar.MINUTE)
     private val day = cal.get(Calendar.DAY_OF_WEEK)
-    private val friday = Calendar.MONDAY
+    private val friday = Calendar.FRIDAY
 
     private val REQUEST_CODE = 0
     private val minuteLong = 60_000L
@@ -131,7 +131,7 @@ class FridayInputViewModel(
     }
 
     private fun startTimer() {
-        val time = SimpleDateFormat("HH:mm", Locale.US).parse(textBoxTime.value!!)
+        val time = SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
         val calendar = Calendar.getInstance()
         calendar.time = time!!
         val hourSet = calendar.get(Calendar.HOUR_OF_DAY)

@@ -51,7 +51,7 @@ class ThursdayInputViewModel(
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
     private val minute = cal.get(Calendar.MINUTE)
     private val day = cal.get(Calendar.DAY_OF_WEEK)
-    private val thursday = Calendar.MONDAY
+    private val thursday = Calendar.THURSDAY
 
     private val REQUEST_CODE = 0
     private val minuteLong = 60_000L
@@ -133,7 +133,7 @@ class ThursdayInputViewModel(
 
     private fun startTimer() {
 
-        val time = SimpleDateFormat("HH:mm", Locale.US).parse(textBoxTime.value!!)
+        val time = SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
         val calendar = Calendar.getInstance()
         calendar.time = time!!
         val hourSet = calendar.get(Calendar.HOUR_OF_DAY)
@@ -151,7 +151,7 @@ class ThursdayInputViewModel(
         val minuteDifferenceLong = minuteDifference * minuteLong
 
         val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong + dayDifferenceLong
-        val triggerTime = SystemClock.elapsedRealtime() + 5_000L
+        val triggerTime = SystemClock.elapsedRealtime() + differenceWithPresent
 
         val notifyIntent = Intent(app, ThursdayClassReceiver::class.java).apply {
             putExtra("thursdaySubject", thursdayClassExtra.value?.subject)

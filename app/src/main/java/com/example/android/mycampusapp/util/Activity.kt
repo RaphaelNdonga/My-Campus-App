@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.android.mycampusapp.R
+import timber.log.Timber
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,9 +26,11 @@ fun Activity.showTimeDialog(hour: Int, minute: Int) {
             TimePickerValues.timePickerHourSet.value = hourOfDay
             TimePickerValues.timePickerMinuteSet.value = minuteOfDay
             val inputTime = SimpleDateFormat("HH:mm", Locale.US).parse("$hourOfDay:$minuteOfDay")
+            Timber.i("The hour of day is $hourOfDay")
             val tf = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US)
             val outputTime = tf.format(inputTime!!)
             TimePickerValues.timeSetByTimePicker.value = outputTime.toString()
+            Timber.i("The time set by the time picker is $outputTime")
         },
         hour,
         minute,

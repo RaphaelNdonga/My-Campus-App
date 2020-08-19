@@ -106,12 +106,12 @@ class MondayInputViewModel(
         }
     }
 
-    fun navigateToTimetable() {
+    private fun navigateToTimetable() {
         _navigator.value = Event(Unit)
     }
 
 
-    fun mondayClassIsNull(): Boolean {
+    private fun mondayClassIsNull(): Boolean {
         if (mondayClass == null) {
             return true
         }
@@ -133,7 +133,9 @@ class MondayInputViewModel(
     }
 
     private fun startTimer() {
-        val time = SimpleDateFormat("HH:mm", Locale.US).parse(textBoxTime.value!!)
+        //Problem located here
+        val time = SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
+        Timber.i("The timer reads the time as $time")
         val calendar = Calendar.getInstance()
         calendar.time = time!!
         val hourSet = calendar.get(Calendar.HOUR_OF_DAY)
@@ -151,7 +153,7 @@ class MondayInputViewModel(
         val minuteDifferenceLong = minuteDifference * minuteLong
 
         val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong + dayDifferenceLong
-        val triggerTime = SystemClock.elapsedRealtime() + 5_000L
+        val triggerTime = SystemClock.elapsedRealtime() + differenceWithPresent
 
         val notifyIntent = Intent(app, MondayClassReceiver::class.java).apply {
             putExtra("mondaySubject", mondayClassExtra.value?.subject)

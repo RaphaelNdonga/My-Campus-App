@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -126,7 +127,8 @@ class TuesdayInputViewModel(
     }
 
     private fun startTimer() {
-        val time = SimpleDateFormat("HH:mm", Locale.US).parse(textBoxTime.value!!)
+        val time = SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
+        Timber.i("The time set on tuesday is $time")
         val calendar = Calendar.getInstance()
         calendar.time = time!!
         val hourSet = calendar.get(Calendar.HOUR_OF_DAY)
@@ -144,7 +146,7 @@ class TuesdayInputViewModel(
         val minuteDifferenceLong = minuteDifference * minuteLong
 
         val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong + dayDifferenceLong
-        val triggerTime = SystemClock.elapsedRealtime() + 5_000L
+        val triggerTime = SystemClock.elapsedRealtime() + differenceWithPresent
 
         val notifyIntent = Intent(app, TuesdayClassReceiver::class.java).apply {
             putExtra("tuesdaySubject", tuesdayClassExtra.value?.subject)
