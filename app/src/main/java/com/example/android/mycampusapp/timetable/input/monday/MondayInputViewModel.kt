@@ -133,7 +133,6 @@ class MondayInputViewModel(
     }
 
     private fun startTimer() {
-        //Problem located here
         val time = SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
         Timber.i("The timer reads the time as $time")
         val calendar = Calendar.getInstance()
