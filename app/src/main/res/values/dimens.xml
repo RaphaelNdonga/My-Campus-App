@@ -4,4 +4,6 @@
     <dimen name="toolbar_padding">8dp</dimen>
     <dimen name="nav_header_dimen">176dp</dimen>
     <dimen name="nav_header_padding">16dp</dimen>
+    <dimen name="linear_layout_padding">24dp</dimen>
+    <dimen name="signup_view_margin">10dp</dimen>
 </resources>

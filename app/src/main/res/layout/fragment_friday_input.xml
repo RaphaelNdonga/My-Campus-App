@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.example.android.mycampusapp.timetable.input.friday.FridayInputViewModel" />
@@ -62,12 +63,12 @@
                     android:id="@+id/class_time_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@={viewModel.textBoxTime}"
-                    android:onClick="@{()->viewModel.setTimePickerClockPosition()}"
-                    android:inputType="none"
-                    android:focusableInTouchMode="true"
                     android:cursorVisible="false"
-                    android:focusable="false"/>
+                    android:focusable="false"
+                    android:focusableInTouchMode="true"
+                    android:inputType="none"
+                    android:onClick="@{()->viewModel.setTimePickerClockPosition()}"
+                    android:text="@={viewModel.textBoxTime}" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
@@ -78,8 +79,6 @@
                 android:layout_gravity="center_horizontal"
                 android:onClick="@{()->viewModel.save()}"
                 android:text="@string/save" />
-
-
         </LinearLayout>
     </ScrollView>
 </layout>

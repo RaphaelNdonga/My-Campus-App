@@ -33,4 +33,6 @@
     <string name="assignments_menu">Assignments</string>
     <string name="successful_upload">Data added successfully</string>
     <string name="settings_menu">Settings</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
 </resources>
