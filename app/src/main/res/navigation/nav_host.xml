@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_host"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/timetableFragment">
 
     <fragment
         android:id="@+id/timetableFragment"
@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_timetableFragment_to_saturdayInputFragment"
             app:destination="@id/saturdayInputFragment" />
+        <action
+            android:id="@+id/action_timetableFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/mondayInputFragment"

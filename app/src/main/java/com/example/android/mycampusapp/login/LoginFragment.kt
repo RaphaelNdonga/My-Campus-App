@@ -19,6 +19,11 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
+
+    companion object{
+        fun newInstance(): LoginFragment = LoginFragment()
+    }
+
     private lateinit var viewModel: LoginViewModel
 
     @Inject
