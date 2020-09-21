@@ -12,5 +12,9 @@
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_settings"
         android:title="@string/settings_menu" />
+    <item
+        android:id="@+id/loginFragment"
+        android:icon="@drawable/ic_logout"
+        android:title="@string/log_out" />
 
 </menu>

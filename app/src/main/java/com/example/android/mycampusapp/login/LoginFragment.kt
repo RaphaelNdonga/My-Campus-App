@@ -58,6 +58,11 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
+    override fun onStart() {
+        super.onStart()
+        auth.signOut()
+    }
+
     private fun signInUser(email: String?, password: String?) {
         if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
             Timber.i("values are null")
