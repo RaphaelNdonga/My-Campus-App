@@ -18,6 +18,9 @@ import com.example.android.mycampusapp.timetable.data.MondayClass
 import com.example.android.mycampusapp.timetable.display.MyItemKeyProvider
 import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
 import com.example.android.mycampusapp.util.EventObserver
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GetTokenResult
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
@@ -31,7 +34,10 @@ class MondayFragment : Fragment() {
     @Inject
     lateinit var firestore: FirebaseFirestore
 
-    private lateinit var snapshotListener:ListenerRegistration
+    @Inject
+    lateinit var auth: FirebaseAuth
+
+    private lateinit var snapshotListener: ListenerRegistration
 
     private val viewModel by viewModels<MondayViewModel> {
         MondayViewModelFactory(
@@ -42,6 +48,7 @@ class MondayFragment : Fragment() {
     private lateinit var adapter: MondayAdapter
     private lateinit var recyclerView: RecyclerView
     private var highlightState: Boolean = false
+    private var isAdmin: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +63,8 @@ class MondayFragment : Fragment() {
         )
         Timber.i("monday fragment created")
 
+        val fab = binding.mondayFab
+
         setHasOptionsMenu(true)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -63,7 +72,9 @@ class MondayFragment : Fragment() {
         adapter =
             MondayAdapter(
                 MondayListener {
-                    viewModel.displayMondayClassDetails(it)
+                    if(isAdmin){
+                        viewModel.displayMondayClassDetails(it)
+                    }
                 })
         recyclerView.adapter = adapter
 
@@ -81,6 +92,14 @@ class MondayFragment : Fragment() {
                     TimetableFragmentDirections.actionTimetableFragmentToMondayInputFragment(it)
                 )
             })
+        val currentUser: FirebaseUser = auth.currentUser!!
+        currentUser.getIdToken(false).addOnSuccessListener { result: GetTokenResult? ->
+            val isModerator: Boolean? = result?.claims?.get("admin") as Boolean?
+            if (isModerator != null) {
+                isAdmin = isModerator
+                fab.visibility = View.VISIBLE
+            }
+        }
         setupTracker()
         return binding.root
     }
@@ -88,7 +107,8 @@ class MondayFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         val mondayFirestore = firestore.collection("monday")
-        snapshotListener = mondayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+        snapshotListener =
+            mondayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
                 val mutableList: MutableList<MondayClass> = mutableListOf()
                 querySnapshot?.documents?.forEach { document ->
                     val id = document.getString("id")
@@ -155,24 +175,26 @@ class MondayFragment : Fragment() {
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
 
-        tracker.addObserver(
-            object : SelectionTracker.SelectionObserver<Long>() {
-                override fun onSelectionChanged() {
-                    super.onSelectionChanged()
-                    highlightState = true
-                    val nItems: Int? = tracker.selection.size()
-                    if (nItems != null)
-                        viewModel.deleteMondayClasses.observe(viewLifecycleOwner,
-                            EventObserver {
-                                deleteSelectedItems(tracker.selection)
-                            })
-                    if (nItems == 0) {
-                        highlightState = false
+        if (isAdmin) {
+            tracker.addObserver(
+                object : SelectionTracker.SelectionObserver<Long>() {
+                    override fun onSelectionChanged() {
+                        super.onSelectionChanged()
+                        highlightState = true
+                        val nItems: Int? = tracker.selection.size()
+                        if (nItems != null)
+                            viewModel.deleteMondayClasses.observe(viewLifecycleOwner,
+                                EventObserver {
+                                    deleteSelectedItems(tracker.selection)
+                                })
+                        if (nItems == 0) {
+                            highlightState = false
+                        }
+                        requireActivity().invalidateOptionsMenu()
                     }
-                    requireActivity().invalidateOptionsMenu()
-                }
 
-            })
+                })
+        }
         adapter.tracker = tracker
     }
 

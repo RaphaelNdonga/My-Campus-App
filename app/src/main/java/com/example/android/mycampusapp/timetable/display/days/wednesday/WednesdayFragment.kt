@@ -18,6 +18,8 @@ import com.example.android.mycampusapp.timetable.data.WednesdayClass
 import com.example.android.mycampusapp.timetable.display.MyItemKeyProvider
 import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
 import com.example.android.mycampusapp.util.EventObserver
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GetTokenResult
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
@@ -29,8 +31,12 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class WednesdayFragment : Fragment() {
     private lateinit var snapshotListener: ListenerRegistration
+
     @Inject
     lateinit var firestore: FirebaseFirestore
+
+    @Inject
+    lateinit var auth: FirebaseAuth
 
     private val viewModel by viewModels<WednesdayViewModel> {
         WednesdayViewModelFactory(
@@ -41,6 +47,7 @@ class WednesdayFragment : Fragment() {
     private lateinit var adapter: WednesdayAdapter
     private lateinit var recyclerView: RecyclerView
     private var highlightState: Boolean = false
+    private var isAdmin: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,6 +62,7 @@ class WednesdayFragment : Fragment() {
         )
         Timber.i("wednesday fragment created")
 
+        val fab = binding.wednesdayFab
         setHasOptionsMenu(true)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -62,7 +70,8 @@ class WednesdayFragment : Fragment() {
         adapter =
             WednesdayAdapter(
                 WednesdayListener {
-                    viewModel.displayWednesdayClassDetails(it)
+                    if (isAdmin)
+                        viewModel.displayWednesdayClassDetails(it)
                 })
         recyclerView.adapter = adapter
 
@@ -80,6 +89,14 @@ class WednesdayFragment : Fragment() {
                     TimetableFragmentDirections.actionTimetableFragmentToWednesdayInputFragment(it)
                 )
             })
+        val currentUser = auth.currentUser!!
+        currentUser.getIdToken(false).addOnSuccessListener { result: GetTokenResult? ->
+            val isModerator = result?.claims?.get("admin") as Boolean?
+            if (isModerator != null) {
+                isAdmin = isModerator
+                fab.visibility = View.VISIBLE
+            }
+        }
         setupTracker()
         return binding.root
     }
@@ -87,20 +104,21 @@ class WednesdayFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         val wednesdayFirestore = firestore.collection("wednesday")
-        snapshotListener = wednesdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
-            val mutableList:MutableList<WednesdayClass> = mutableListOf()
-            querySnapshot?.documents?.forEach { document->
-                val id = document.getString("id")
-                val subject = document.getString("subject")
-                val time = document.getString("time")
-                if(id!=null && subject!=null && time!=null){
-                    val wednesdayClass = WednesdayClass(id,subject,time)
-                    mutableList.add(wednesdayClass)
+        snapshotListener =
+            wednesdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+                val mutableList: MutableList<WednesdayClass> = mutableListOf()
+                querySnapshot?.documents?.forEach { document ->
+                    val id = document.getString("id")
+                    val subject = document.getString("subject")
+                    val time = document.getString("time")
+                    if (id != null && subject != null && time != null) {
+                        val wednesdayClass = WednesdayClass(id, subject, time)
+                        mutableList.add(wednesdayClass)
+                    }
                 }
+                viewModel.updateData(mutableList)
+                viewModel.checkWednesdayDataStatus()
             }
-            viewModel.updateData(mutableList)
-            viewModel.checkWednesdayDataStatus()
-        }
     }
 
     override fun onPause() {
@@ -153,24 +171,26 @@ class WednesdayFragment : Fragment() {
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
 
-        tracker.addObserver(
-            object : SelectionTracker.SelectionObserver<Long>() {
-                override fun onSelectionChanged() {
-                    super.onSelectionChanged()
-                    highlightState = true
-                    val nItems: Int? = tracker.selection.size()
-                    if (nItems != null)
-                        viewModel.deleteWednesdayClasses.observe(viewLifecycleOwner,
-                            EventObserver {
-                                deleteSelectedItems(tracker.selection)
-                            })
-                    if (nItems == 0) {
-                        highlightState = false
+        if (isAdmin) {
+            tracker.addObserver(
+                object : SelectionTracker.SelectionObserver<Long>() {
+                    override fun onSelectionChanged() {
+                        super.onSelectionChanged()
+                        highlightState = true
+                        val nItems: Int? = tracker.selection.size()
+                        if (nItems != null)
+                            viewModel.deleteWednesdayClasses.observe(viewLifecycleOwner,
+                                EventObserver {
+                                    deleteSelectedItems(tracker.selection)
+                                })
+                        if (nItems == 0) {
+                            highlightState = false
+                        }
+                        requireActivity().invalidateOptionsMenu()
                     }
-                    requireActivity().invalidateOptionsMenu()
-                }
 
-            })
+                })
+        }
         adapter.tracker = tracker
     }
 

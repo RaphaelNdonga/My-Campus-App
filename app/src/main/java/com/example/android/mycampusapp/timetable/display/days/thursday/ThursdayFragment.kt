@@ -18,6 +18,8 @@ import com.example.android.mycampusapp.timetable.data.ThursdayClass
 import com.example.android.mycampusapp.timetable.display.MyItemKeyProvider
 import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
 import com.example.android.mycampusapp.util.EventObserver
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GetTokenResult
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
@@ -29,8 +31,12 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class ThursdayFragment : Fragment() {
     private lateinit var snapshotListener: ListenerRegistration
+
     @Inject
     lateinit var firestore: FirebaseFirestore
+
+    @Inject
+    lateinit var auth: FirebaseAuth
 
     private val viewModel by viewModels<ThursdayViewModel> {
         ThursdayViewModelFactory(
@@ -41,6 +47,7 @@ class ThursdayFragment : Fragment() {
     private lateinit var adapter: ThursdayAdapter
     private lateinit var recyclerView: RecyclerView
     private var highlightState: Boolean = false
+    private var isAdmin: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,6 +62,7 @@ class ThursdayFragment : Fragment() {
         )
         Timber.i("thursday fragment created")
 
+        val fab = binding.thursdayFab
         setHasOptionsMenu(true)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -62,7 +70,9 @@ class ThursdayFragment : Fragment() {
         adapter =
             ThursdayAdapter(
                 ThursdayListener {
-                    viewModel.displayThursdayClassDetails(it)
+                    if (isAdmin) {
+                        viewModel.displayThursdayClassDetails(it)
+                    }
                 })
         recyclerView.adapter = adapter
 
@@ -81,6 +91,14 @@ class ThursdayFragment : Fragment() {
                     TimetableFragmentDirections.actionTimetableFragmentToThursdayInputFragment(it)
                 )
             })
+        val currentUser = auth.currentUser!!
+        currentUser.getIdToken(false).addOnSuccessListener { result: GetTokenResult? ->
+            val isModerator = result?.claims?.get("admin") as Boolean?
+            if (isModerator != null) {
+                isAdmin = isModerator
+                fab.visibility = View.VISIBLE
+            }
+        }
         setupTracker()
         return binding.root
     }
@@ -88,20 +106,21 @@ class ThursdayFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         val thursdayFirestore = firestore.collection("thursday")
-        snapshotListener = thursdayFirestore.addSnapshotListener{ querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
-            val mutableList: MutableList<ThursdayClass> = mutableListOf()
-            querySnapshot?.documents?.forEach { document ->
-                val id = document.getString("id")
-                val subject = document.getString("subject")
-                val time = document.getString("time")
-                if (id != null && subject != null && time != null) {
-                    val thursdayClass = ThursdayClass(id, subject, time)
-                    mutableList.add(thursdayClass)
+        snapshotListener =
+            thursdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+                val mutableList: MutableList<ThursdayClass> = mutableListOf()
+                querySnapshot?.documents?.forEach { document ->
+                    val id = document.getString("id")
+                    val subject = document.getString("subject")
+                    val time = document.getString("time")
+                    if (id != null && subject != null && time != null) {
+                        val thursdayClass = ThursdayClass(id, subject, time)
+                        mutableList.add(thursdayClass)
+                    }
                 }
+                viewModel.update(mutableList)
+                viewModel.checkThursdayDataStatus()
             }
-            viewModel.update(mutableList)
-            viewModel.checkThursdayDataStatus()
-        }
     }
 
     override fun onPause() {
@@ -154,24 +173,26 @@ class ThursdayFragment : Fragment() {
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
 
-        tracker.addObserver(
-            object : SelectionTracker.SelectionObserver<Long>() {
-                override fun onSelectionChanged() {
-                    super.onSelectionChanged()
-                    highlightState = true
-                    val nItems: Int? = tracker.selection.size()
-                    if (nItems != null)
-                        viewModel.deleteThursdayClasses.observe(viewLifecycleOwner,
-                            EventObserver {
-                                deleteSelectedItems(tracker.selection)
-                            })
-                    if (nItems == 0) {
-                        highlightState = false
+        if (isAdmin) {
+            tracker.addObserver(
+                object : SelectionTracker.SelectionObserver<Long>() {
+                    override fun onSelectionChanged() {
+                        super.onSelectionChanged()
+                        highlightState = true
+                        val nItems: Int? = tracker.selection.size()
+                        if (nItems != null)
+                            viewModel.deleteThursdayClasses.observe(viewLifecycleOwner,
+                                EventObserver {
+                                    deleteSelectedItems(tracker.selection)
+                                })
+                        if (nItems == 0) {
+                            highlightState = false
+                        }
+                        requireActivity().invalidateOptionsMenu()
                     }
-                    requireActivity().invalidateOptionsMenu()
-                }
 
-            })
+                })
+        }
         adapter.tracker = tracker
     }
 
