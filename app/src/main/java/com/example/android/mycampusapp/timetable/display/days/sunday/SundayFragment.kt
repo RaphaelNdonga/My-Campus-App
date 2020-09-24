@@ -156,8 +156,8 @@ class SundayFragment : Fragment() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         val item = menu.findItem(R.id.delete_all_classes)
-        item.isEnabled = highlightState
-        item.isVisible = highlightState
+        item.isEnabled = highlightState && isAdmin
+        item.isVisible = highlightState && isAdmin
     }
 
     private fun setupTracker() {
@@ -173,25 +173,24 @@ class SundayFragment : Fragment() {
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
 
-        if (isAdmin)
-            tracker.addObserver(
-                object : SelectionTracker.SelectionObserver<Long>() {
-                    override fun onSelectionChanged() {
-                        super.onSelectionChanged()
-                        highlightState = true
-                        val nItems: Int? = tracker.selection.size()
-                        if (nItems != null)
-                            viewModel.deleteSundayClasses.observe(viewLifecycleOwner,
-                                EventObserver {
-                                    deleteSelectedItems(tracker.selection)
-                                })
-                        if (nItems == 0) {
-                            highlightState = false
-                        }
-                        requireActivity().invalidateOptionsMenu()
+        tracker.addObserver(
+            object : SelectionTracker.SelectionObserver<Long>() {
+                override fun onSelectionChanged() {
+                    super.onSelectionChanged()
+                    highlightState = true
+                    val nItems: Int? = tracker.selection.size()
+                    if (nItems != null)
+                        viewModel.deleteSundayClasses.observe(viewLifecycleOwner,
+                            EventObserver {
+                                deleteSelectedItems(tracker.selection)
+                            })
+                    if (nItems == 0) {
+                        highlightState = false
                     }
+                    requireActivity().invalidateOptionsMenu()
+                }
 
-                })
+            })
         adapter.tracker = tracker
     }
 

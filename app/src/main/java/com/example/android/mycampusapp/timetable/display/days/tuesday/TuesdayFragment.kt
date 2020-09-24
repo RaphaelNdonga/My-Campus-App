@@ -34,8 +34,9 @@ class TuesdayFragment : Fragment() {
 
     @Inject
     lateinit var firestore: FirebaseFirestore
+
     @Inject
-    lateinit var auth:FirebaseAuth
+    lateinit var auth: FirebaseAuth
 
     private val viewModel by viewModels<TuesdayViewModel> {
         TuesdayViewModelFactory(
@@ -91,9 +92,9 @@ class TuesdayFragment : Fragment() {
             })
 
         val currentUser = auth.currentUser!!
-        currentUser.getIdToken(false).addOnSuccessListener {result:GetTokenResult?->
-            val isModerator:Boolean? = result?.claims?.get("admin") as Boolean?
-            if(isModerator!=null){
+        currentUser.getIdToken(false).addOnSuccessListener { result: GetTokenResult? ->
+            val isModerator: Boolean? = result?.claims?.get("admin") as Boolean?
+            if (isModerator != null) {
                 isAdmin = isModerator
                 fab.visibility = View.VISIBLE
             }
@@ -155,8 +156,8 @@ class TuesdayFragment : Fragment() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         val item = menu.findItem(R.id.delete_all_classes)
-        item.isEnabled = highlightState
-        item.isVisible = highlightState
+        item.isEnabled = highlightState && isAdmin
+        item.isVisible = highlightState && isAdmin
     }
 
     private fun setupTracker() {
@@ -172,26 +173,25 @@ class TuesdayFragment : Fragment() {
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
 
-        if (isAdmin) {
-            tracker.addObserver(
-                object : SelectionTracker.SelectionObserver<Long>() {
-                    override fun onSelectionChanged() {
-                        super.onSelectionChanged()
-                        highlightState = true
-                        val nItems: Int? = tracker.selection.size()
-                        if (nItems != null)
-                            viewModel.deleteTuesdayClasses.observe(viewLifecycleOwner,
-                                EventObserver {
-                                    deleteSelectedItems(tracker.selection)
-                                })
-                        if (nItems == 0) {
-                            highlightState = false
-                        }
-                        requireActivity().invalidateOptionsMenu()
+        tracker.addObserver(
+            object : SelectionTracker.SelectionObserver<Long>() {
+                override fun onSelectionChanged() {
+                    super.onSelectionChanged()
+                    highlightState = true
+                    val nItems: Int? = tracker.selection.size()
+                    if (nItems != null)
+                        viewModel.deleteTuesdayClasses.observe(viewLifecycleOwner,
+                            EventObserver {
+                                deleteSelectedItems(tracker.selection)
+                            })
+                    if (nItems == 0) {
+                        highlightState = false
                     }
+                    requireActivity().invalidateOptionsMenu()
+                }
 
-                })
-        }
+            })
+
         adapter.tracker = tracker
     }
 

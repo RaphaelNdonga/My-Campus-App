@@ -158,8 +158,8 @@ class FridayFragment : Fragment() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         val item = menu.findItem(R.id.delete_all_classes)
-        item.isEnabled = highlightState
-        item.isVisible = highlightState
+        item.isEnabled = highlightState && isAdmin
+        item.isVisible = highlightState && isAdmin
     }
 
     private fun setupTracker() {
@@ -175,7 +175,6 @@ class FridayFragment : Fragment() {
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
 
-        if (isAdmin) {
             tracker.addObserver(
                 object : SelectionTracker.SelectionObserver<Long>() {
                     override fun onSelectionChanged() {
@@ -194,7 +193,6 @@ class FridayFragment : Fragment() {
                     }
 
                 })
-        }
         adapter.tracker = tracker
     }
 
