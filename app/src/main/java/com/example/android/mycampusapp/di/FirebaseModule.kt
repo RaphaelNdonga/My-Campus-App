@@ -2,6 +2,7 @@ package com.example.android.mycampusapp.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.functions.FirebaseFunctions
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,6 +21,11 @@ object FirebaseModule {
     @Provides
     fun provideAuthentication():FirebaseAuth{
         return FirebaseAuth.getInstance()
+    }
+    @Singleton
+    @Provides
+    fun provideFunctions(): FirebaseFunctions{
+        return FirebaseFunctions.getInstance()
     }
 }
 //dummy data to cause conflict

@@ -12,6 +12,7 @@ import com.example.android.mycampusapp.databinding.FragmentTimetableBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GetTokenResult
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -54,8 +55,17 @@ class TimetableFragment : Fragment() {
         val currentUser: FirebaseUser? = auth.currentUser
         if (currentUser == null) {
             findNavController().navigate(TimetableFragmentDirections.actionTimetableFragmentToLoginFragment())
+            return
         }
-        Timber.i("The current user is ${currentUser.toString()}")
+        currentUser.getIdToken(false).addOnSuccessListener { result: GetTokenResult? ->
+            val isModerator: Boolean? = result?.claims?.get("admin") as Boolean?
+            if (isModerator!=null) {
+                Timber.i("This user is an admin")
+            }else{
+                Timber.i("This user is not an admin")
+            }
+        }
+        Timber.i("The current user is ${currentUser.email}")
     }
 
 }

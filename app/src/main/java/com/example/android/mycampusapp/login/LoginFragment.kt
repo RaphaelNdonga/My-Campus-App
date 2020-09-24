@@ -20,7 +20,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
 
-    companion object{
+    companion object {
         fun newInstance(): LoginFragment = LoginFragment()
     }
 
@@ -45,14 +45,22 @@ class LoginFragment : Fragment() {
 
         val nextBtn = binding.loginNextButton
 
-        viewModel.navigator.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToSignUpClassRepFragment())
+        viewModel.adminNavigator.observe(viewLifecycleOwner, EventObserver {
+            findNavController().navigate(
+                LoginFragmentDirections.actionLoginFragmentToSignUpFragment(StudentStatus.ADMIN)
+            )
+        })
+
+        viewModel.regularNavigator.observe(viewLifecycleOwner,EventObserver{
+            findNavController().navigate(
+                LoginFragmentDirections.actionLoginFragmentToSignUpFragment(StudentStatus.REGULAR)
+            )
         })
 
         nextBtn.setOnClickListener {
             val email = viewModel.email.value
             val password = viewModel.password.value
-            signInUser(email,password)
+            signInUser(email, password)
         }
 
         return binding.root

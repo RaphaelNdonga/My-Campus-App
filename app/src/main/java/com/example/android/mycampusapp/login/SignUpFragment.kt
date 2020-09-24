@@ -9,38 +9,47 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.FragmentClassRepBinding
+import com.example.android.mycampusapp.databinding.FragmentSignUpBinding
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.functions.HttpsCallableResult
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class ClassRepFragment : Fragment() {
+class SignUpFragment : Fragment() {
 
     companion object {
-        fun newInstance() = ClassRepFragment()
+        fun newInstance() = SignUpFragment()
     }
 
-    private lateinit var viewModel: ClassRepViewModel
+    private lateinit var viewModel: SignUpViewModel
 
     @Inject
     lateinit var auth: FirebaseAuth
+
+    @Inject
+    lateinit var functions:FirebaseFunctions
+
+    private val status by navArgs<SignUpFragmentArgs>()
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentClassRepBinding>(
+        val binding = DataBindingUtil.inflate<FragmentSignUpBinding>(
             inflater,
-            R.layout.fragment_class_rep,
+            R.layout.fragment_sign_up,
             container,
             false
         )
         binding.lifecycleOwner = this
-        viewModel = ViewModelProvider(this).get(ClassRepViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SignUpViewModel::class.java)
         binding.viewModel = viewModel
 
 
@@ -63,12 +72,33 @@ class ClassRepFragment : Fragment() {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Timber.i("User created successfully with Email")
-                findNavController().navigate(ClassRepFragmentDirections.actionSignUpClassRepFragmentToLoginFragment())
+
+                findNavController().navigate(SignUpFragmentDirections.actionSignUpFragmentToLoginFragment())
+                checkStudentStatus(status.studentStatus,email)
                 return@addOnCompleteListener
             }
             Timber.i("Failed to create user with email ")
             Toast.makeText(this.context, "Failed to create user with email", Toast.LENGTH_SHORT)
                 .show()
+        }
+    }
+    private fun makeAdmin(email:String?): Task<String> {
+        Timber.i("Making admin...")
+
+        return functions.getHttpsCallable("addAdmin").call(email).continueWith { task: Task<HttpsCallableResult> ->
+            // This continuation runs on either success or failure, but if the task
+            // has failed then result will throw an Exception which will be
+            // propagated down.
+            Timber.i("Made admin!")
+            val result = task.result?.data as String
+            result
+        }
+    }
+    private fun checkStudentStatus(status: StudentStatus,email: String?){
+        when(status){
+            StudentStatus.ADMIN -> makeAdmin(email)
+            StudentStatus.REGULAR -> return
+            StudentStatus.UNDEFINED -> return
         }
     }
 }

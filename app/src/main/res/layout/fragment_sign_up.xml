@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.login.ClassRepViewModel" />
+            type="com.example.android.mycampusapp.login.SignUpViewModel" />
     </data>
 
     <LinearLayout
@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="@dimen/linear_layout_padding"
-        tools:context=".login.ClassRepFragment">
+        tools:context=".login.SignUpFragment">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/class_rep_username"
