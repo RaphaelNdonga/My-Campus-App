@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         val navView = binding.navView
         navController = this.findNavController(R.id.nav_host_fragment)
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.loginFragment) {
+            if (destination.id == R.id.loginFragment || destination.id == R.id.signUpFragment) {
                 toolbar.visibility = View.GONE
                 return@addOnDestinationChangedListener
             }

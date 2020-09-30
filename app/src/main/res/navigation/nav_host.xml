@@ -160,7 +160,9 @@
         android:label="LoginFragment" >
         <action
             android:id="@+id/action_loginFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
+            app:destination="@id/signUpFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_in" />
         <action
             android:id="@+id/action_loginFragment_to_timetableFragment"
             app:destination="@id/timetableFragment"
@@ -173,7 +175,9 @@
         android:label="Sign Up" >
         <action
             android:id="@+id/action_signUpFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_in" />
         <argument
             android:name="studentStatus"
             android:defaultValue="UNDEFINED"
