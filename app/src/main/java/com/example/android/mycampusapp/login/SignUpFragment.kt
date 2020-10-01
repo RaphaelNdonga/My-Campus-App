@@ -55,16 +55,23 @@ class SignUpFragment : Fragment() {
 
         val submitBtn = binding.classRepSignedUpBtn
         submitBtn.setOnClickListener {
-            val email = viewModel.email.value
+            val email: String? = viewModel.email.value
             val password = viewModel.password.value
-            createUser(email,password)
+            val courseId = viewModel.username.value
+            val data = hashMapOf<String?,String?>(
+                "email" to email,
+                "courseId" to courseId
+            )
+            createUser(data,password)
         }
 
 
         return binding.root
     }
 
-    private fun createUser(email: String?, password: String?) {
+    private fun createUser(data:HashMap<String?,String?>, password: String?) {
+        val email = data["email"]
+
         if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
             Timber.i("values are null")
             return
@@ -74,7 +81,8 @@ class SignUpFragment : Fragment() {
                 Timber.i("User created successfully with Email")
 
                 findNavController().navigate(SignUpFragmentDirections.actionSignUpFragmentToLoginFragment())
-                checkStudentStatus(status.studentStatus,email)
+                checkStudentStatus(status.studentStatus,data)
+                setCourseId(data)
                 return@addOnCompleteListener
             }
             Timber.i("Failed to create user with email ")
@@ -82,10 +90,10 @@ class SignUpFragment : Fragment() {
                 .show()
         }
     }
-    private fun makeAdmin(email:String?): Task<String> {
+    private fun makeAdmin(data: HashMap<String?, String?>): Task<String> {
         Timber.i("Making admin...")
 
-        return functions.getHttpsCallable("addAdmin").call(email).continueWith { task: Task<HttpsCallableResult> ->
+        return functions.getHttpsCallable("addAdmin").call(data).continueWith { task: Task<HttpsCallableResult> ->
             // This continuation runs on either success or failure, but if the task
             // has failed then result will throw an Exception which will be
             // propagated down.
@@ -94,11 +102,19 @@ class SignUpFragment : Fragment() {
             result
         }
     }
-    private fun checkStudentStatus(status: StudentStatus,email: String?){
+    private fun checkStudentStatus(status: StudentStatus,data: HashMap<String?, String?>){
         when(status){
-            StudentStatus.ADMIN -> makeAdmin(email)
+            StudentStatus.ADMIN -> makeAdmin(data)
             StudentStatus.REGULAR -> return
             StudentStatus.UNDEFINED -> return
+        }
+    }
+    private fun setCourseId(data:HashMap<String?,String?>):Task<String>{
+        return functions.getHttpsCallable("addCourseId").call(data).continueWith { task:Task<HttpsCallableResult>->
+
+            Timber.i("Setting course id")
+            val result = task.result?.data as String
+            result
         }
     }
 }
