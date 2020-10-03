@@ -32,7 +32,7 @@ async function setAdminCourseId(email:string,courseId:string): Promise<void> {
     functions.logger.info("This is an already registered user",{structuredData: true})
     return 
   }
-  functions.logger.info(`setting ${email} as administrator`,{structuredData:true})
+  functions.logger.info(`setting ${email} as administrator with course id ${courseId}`,{structuredData:true})
   return admin.auth().setCustomUserClaims(user.uid,{
     admin:true,
     courseId:courseId
