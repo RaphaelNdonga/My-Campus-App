@@ -82,7 +82,6 @@ class SignUpFragment : Fragment() {
 
                 findNavController().navigate(SignUpFragmentDirections.actionSignUpFragmentToLoginFragment())
                 checkStudentStatus(status.studentStatus,data)
-                setCourseId(data)
                 return@addOnCompleteListener
             }
             Timber.i("Failed to create user with email ")
@@ -90,10 +89,10 @@ class SignUpFragment : Fragment() {
                 .show()
         }
     }
-    private fun makeAdmin(data: HashMap<String?, String?>): Task<String> {
+    private fun setAdminCourseId(data: HashMap<String?, String?>): Task<String> {
         Timber.i("Making admin...")
 
-        return functions.getHttpsCallable("addAdmin").call(data).continueWith { task: Task<HttpsCallableResult> ->
+        return functions.getHttpsCallable("addAdminCourseId").call(data).continueWith { task: Task<HttpsCallableResult> ->
             // This continuation runs on either success or failure, but if the task
             // has failed then result will throw an Exception which will be
             // propagated down.
@@ -104,8 +103,8 @@ class SignUpFragment : Fragment() {
     }
     private fun checkStudentStatus(status: StudentStatus,data: HashMap<String?, String?>){
         when(status){
-            StudentStatus.ADMIN -> makeAdmin(data)
-            StudentStatus.REGULAR -> return
+            StudentStatus.ADMIN -> setAdminCourseId(data)
+            StudentStatus.REGULAR -> setCourseId(data)
             StudentStatus.UNDEFINED -> return
         }
     }

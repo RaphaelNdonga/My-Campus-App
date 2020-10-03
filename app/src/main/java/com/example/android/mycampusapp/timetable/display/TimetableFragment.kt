@@ -64,6 +64,8 @@ class TimetableFragment : Fragment() {
             }else{
                 Timber.i("This user is not an admin")
             }
+            val courseId:String? = result?.claims?.get("courseId") as String?
+            Timber.i("The course id is $courseId")
         }
         Timber.i("The current user is ${currentUser.email}")
     }
