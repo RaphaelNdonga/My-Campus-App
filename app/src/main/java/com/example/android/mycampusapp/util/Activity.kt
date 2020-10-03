@@ -4,19 +4,12 @@ import android.app.Activity
 import android.app.TimePickerDialog
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.example.android.mycampusapp.R
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-
-object TimePickerValues {
-    val timePickerHourSet = MutableLiveData<Int>()
-    val timePickerMinuteSet = MutableLiveData<Int>()
-    val timeSetByTimePicker = MutableLiveData<String>()
-}
 
 fun Activity.showTimeDialog(hour: Int, minute: Int) {
     TimePickerDialog(
