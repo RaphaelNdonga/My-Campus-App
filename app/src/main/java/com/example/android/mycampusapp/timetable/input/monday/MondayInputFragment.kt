@@ -2,6 +2,8 @@ package com.example.android.mycampusapp.timetable.input.monday
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -16,10 +18,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentMondayInputBinding
-import com.example.android.mycampusapp.util.EventObserver
-import com.example.android.mycampusapp.util.setupSnackbar
-import com.example.android.mycampusapp.util.setupTimeDialog
+import com.example.android.mycampusapp.util.*
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -31,8 +32,13 @@ class MondayInputFragment : Fragment() {
     @Inject
     lateinit var firestore: FirebaseFirestore
 
+    @Inject
+    lateinit var coursesCollection: CollectionReference
+
     private val mondayArgs by navArgs<MondayInputFragmentArgs>()
     private lateinit var viewModel: MondayInputViewModel
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var courseId:String
 
 
     override fun onCreateView(
@@ -40,6 +46,8 @@ class MondayInputFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        sharedPreferences = requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        courseId = sharedPreferences.getString(COURSE_ID,"")!!
         val binding = DataBindingUtil.inflate<FragmentMondayInputBinding>(
             inflater,
             R.layout.fragment_monday_input,
@@ -50,7 +58,7 @@ class MondayInputFragment : Fragment() {
         viewModel = ViewModelProvider(
             this,
             MondayInputViewModelFactory(
-                firestore,
+                coursesCollection.document(courseId),
                 mondayArgs.mondayClass,
                 app
             )

@@ -1,11 +1,13 @@
 package com.example.android.mycampusapp.timetable.display.days.monday
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionPredicates
@@ -17,14 +19,12 @@ import com.example.android.mycampusapp.databinding.FragmentMondayBinding
 import com.example.android.mycampusapp.timetable.data.MondayClass
 import com.example.android.mycampusapp.timetable.display.MyItemKeyProvider
 import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
+import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver
+import com.example.android.mycampusapp.util.IS_ADMIN
+import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GetTokenResult
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -37,24 +37,32 @@ class MondayFragment : Fragment() {
     @Inject
     lateinit var auth: FirebaseAuth
 
+    @Inject
+    lateinit var courseCollection: CollectionReference
+
     private lateinit var snapshotListener: ListenerRegistration
 
-    private val viewModel by viewModels<MondayViewModel> {
-        MondayViewModelFactory(
-            firestore
-        )
-    }
+    private lateinit var viewModel: MondayViewModel
     private lateinit var tracker: SelectionTracker<Long>
     private lateinit var adapter: MondayAdapter
     private lateinit var recyclerView: RecyclerView
     private var highlightState: Boolean = false
     private var isAdmin: Boolean = false
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var courseId: String
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        sharedPreferences =
+            requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
+        courseId = sharedPreferences.getString(COURSE_ID, "")!!
+
         val binding = DataBindingUtil.inflate<FragmentMondayBinding>(
             inflater,
             R.layout.fragment_monday,
@@ -64,6 +72,13 @@ class MondayFragment : Fragment() {
         Timber.i("monday fragment created")
 
         val fab = binding.mondayFab
+        if (isAdmin) {
+            fab.visibility = View.VISIBLE
+        }
+        viewModel = ViewModelProvider(
+            this,
+            MondayViewModelFactory(courseCollection.document(courseId))
+        ).get(MondayViewModel::class.java)
 
         setHasOptionsMenu(true)
         binding.viewModel = viewModel
@@ -92,21 +107,14 @@ class MondayFragment : Fragment() {
                     TimetableFragmentDirections.actionTimetableFragmentToMondayInputFragment(it)
                 )
             })
-        val currentUser: FirebaseUser = auth.currentUser!!
-        currentUser.getIdToken(false).addOnSuccessListener { result: GetTokenResult? ->
-            val isModerator: Boolean? = result?.claims?.get("admin") as Boolean?
-            if (isModerator != null) {
-                isAdmin = isModerator
-                fab.visibility = View.VISIBLE
-            }
-        }
+
         setupTracker()
         return binding.root
     }
 
     override fun onStart() {
         super.onStart()
-        val mondayFirestore = firestore.collection("monday")
+        val mondayFirestore = courseCollection.document(courseId).collection("monday")
         snapshotListener =
             mondayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
                 val mutableList: MutableList<MondayClass> = mutableListOf()

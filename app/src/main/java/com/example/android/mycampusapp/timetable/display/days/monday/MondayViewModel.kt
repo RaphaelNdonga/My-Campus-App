@@ -6,19 +6,19 @@ import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.timetable.data.MondayClass
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.DocumentReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class MondayViewModel(private val firestore: FirebaseFirestore) : ViewModel() {
+class MondayViewModel(courseId: DocumentReference) : ViewModel() {
 
     private val _mondayClasses2 = MutableLiveData<List<MondayClass>>()
     val mondayClasses2:LiveData<List<MondayClass>>
         get() = _mondayClasses2
 
-    private val mondayFirestore = firestore.collection("monday")
+    private val mondayFirestore = courseId.collection("monday")
 
     private val _status = MutableLiveData<MondayDataStatus>()
     val status: LiveData<MondayDataStatus>

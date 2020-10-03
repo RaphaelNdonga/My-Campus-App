@@ -1,5 +1,7 @@
 package com.example.android.mycampusapp.login
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +13,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentLoginBinding
+import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver
+import com.example.android.mycampusapp.util.IS_ADMIN
+import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GetTokenResult
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -26,6 +32,7 @@ class LoginFragment : Fragment() {
     }
 
     private lateinit var viewModel: LoginViewModel
+    private lateinit var sharedPreferences: SharedPreferences
 
     @Inject
     lateinit var auth: FirebaseAuth
@@ -34,7 +41,11 @@ class LoginFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate<FragmentLoginBinding>(
+
+        sharedPreferences =
+            requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
+        binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_login,
             container,
@@ -53,7 +64,7 @@ class LoginFragment : Fragment() {
             )
         })
 
-        viewModel.regularNavigator.observe(viewLifecycleOwner,EventObserver{
+        viewModel.regularNavigator.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(
                 LoginFragmentDirections.actionLoginFragmentToSignUpFragment(StudentStatus.REGULAR)
             )
@@ -82,8 +93,23 @@ class LoginFragment : Fragment() {
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Timber.i("Signed in successfully with email and password")
-                findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToTimetableFragment())
-                finishLoading()
+                auth.currentUser?.getIdToken(false)
+                    ?.addOnSuccessListener { result: GetTokenResult? ->
+                        val sharedPrefEdit = sharedPreferences.edit()
+                        val isModerator: Boolean? = result?.claims?.get("admin") as Boolean?
+                        if (isModerator != null) {
+                            Timber.i("This user is an admin")
+                            sharedPrefEdit.putBoolean(IS_ADMIN, isModerator)
+                        } else {
+                            Timber.i("This user is not an admin")
+                        }
+                        val courseId: String? = result?.claims?.get("courseId") as String?
+                        sharedPrefEdit.putString(COURSE_ID, courseId)
+                        sharedPrefEdit.apply()
+                        Timber.i("The course id is $courseId")
+                        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToTimetableFragment())
+                        finishLoading()
+                    }
                 return@addOnCompleteListener
             }
             Timber.i("Sign in with email and password failed")
@@ -93,7 +119,8 @@ class LoginFragment : Fragment() {
 
         }
     }
-    private fun startLoading(){
+
+    private fun startLoading() {
         binding.myCampusAppLogo.visibility = View.GONE
         binding.myCampusAppName.visibility = View.GONE
         binding.loginEmail.visibility = View.GONE
@@ -106,7 +133,8 @@ class LoginFragment : Fragment() {
         binding.loggingInTxt.visibility = View.VISIBLE
         binding.progressBar.visibility = View.VISIBLE
     }
-    private fun finishLoading(){
+
+    private fun finishLoading() {
         binding.myCampusAppLogo.visibility = View.VISIBLE
         binding.myCampusAppName.visibility = View.VISIBLE
         binding.loginEmail.visibility = View.VISIBLE

@@ -15,7 +15,7 @@ import com.example.android.mycampusapp.timetable.data.MondayClass
 import com.example.android.mycampusapp.timetable.receiver.MondayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.DocumentReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,12 +24,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MondayInputViewModel(
-    firestore: FirebaseFirestore,
+    coursesDocument: DocumentReference,
     private val mondayClass: MondayClass?,
     private val app: Application
 ) : AndroidViewModel(app) {
 
-    private val mondayFirestore = firestore.collection("monday")
+    private val mondayFirestore = coursesDocument.collection("monday")
 
     private val mondayClassExtra = MutableLiveData<MondayClass>()
     private val _navigator = MutableLiveData<Event<Unit>>()
