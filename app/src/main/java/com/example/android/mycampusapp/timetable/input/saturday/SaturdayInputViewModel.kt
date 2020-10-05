@@ -15,27 +15,22 @@ import com.example.android.mycampusapp.timetable.data.SaturdayClass
 import com.example.android.mycampusapp.timetable.receiver.SaturdayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
-import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import com.google.firebase.firestore.DocumentReference
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 class SaturdayInputViewModel(
-    private val firestore: FirebaseFirestore,
+    private val courseDocument: DocumentReference,
     private val saturdayClass: SaturdayClass?,
     private val app: Application
 ) : AndroidViewModel(app) {
-    private val saturdayFirestore = firestore.collection("saturday")
+    private val saturdayFirestore = courseDocument.collection("saturday")
 
     private val saturdayClassExtra = MutableLiveData<SaturdayClass>()
     private val _navigator = MutableLiveData<Event<Unit>>()
     val navigator: LiveData<Event<Unit>>
         get() = _navigator
-    private val job = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     private val _timeSetByTimePicker = TimePickerValues.timeSetByTimePicker
     val timeSetByTimePicker: LiveData<String>

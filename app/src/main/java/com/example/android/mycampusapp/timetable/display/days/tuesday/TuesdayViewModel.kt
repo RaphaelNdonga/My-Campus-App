@@ -6,13 +6,13 @@ import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.timetable.data.TuesdayClass
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.DocumentReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class TuesdayViewModel(private val firestore: FirebaseFirestore) : ViewModel() {
+class TuesdayViewModel(private val courseDocument:DocumentReference) : ViewModel() {
 
     private val _tuesdayClasses2 = MutableLiveData<List<TuesdayClass>>()
     val tuesdayClasses2:LiveData<List<TuesdayClass>>
@@ -71,7 +71,7 @@ class TuesdayViewModel(private val firestore: FirebaseFirestore) : ViewModel() {
     fun deleteList(list: List<TuesdayClass?>) = uiScope.launch {
         list.forEach { tuesdayClass->
             if (tuesdayClass != null) {
-                val tuesdayFirestore = firestore.collection("tuesday")
+                val tuesdayFirestore = courseDocument.collection("tuesday")
                 tuesdayFirestore.document(tuesdayClass.id).delete()
             }
         }

@@ -1,5 +1,7 @@
 package com.example.android.mycampusapp.timetable.display.days.tuesday
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
@@ -17,13 +19,12 @@ import com.example.android.mycampusapp.databinding.FragmentTuesdayBinding
 import com.example.android.mycampusapp.timetable.data.TuesdayClass
 import com.example.android.mycampusapp.timetable.display.MyItemKeyProvider
 import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
+import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver
+import com.example.android.mycampusapp.util.IS_ADMIN
+import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GetTokenResult
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -38,22 +39,35 @@ class TuesdayFragment : Fragment() {
     @Inject
     lateinit var auth: FirebaseAuth
 
+    @Inject
+    lateinit var courseCollection:CollectionReference
+
     private val viewModel by viewModels<TuesdayViewModel> {
         TuesdayViewModelFactory(
-            firestore
+            courseCollection.document(courseId)
         )
     }
     private lateinit var tracker: SelectionTracker<Long>
     private lateinit var adapter: TuesdayAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var sharedPreferences: SharedPreferences
     private var highlightState: Boolean = false
     private var isAdmin: Boolean = false
+    private lateinit var courseId:String
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        sharedPreferences =
+            requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+
+        isAdmin = sharedPreferences.getBoolean(IS_ADMIN,false)
+        courseId = sharedPreferences.getString(COURSE_ID,"")!!
+
+
         val binding = DataBindingUtil.inflate<FragmentTuesdayBinding>(
             inflater,
             R.layout.fragment_tuesday,
@@ -63,6 +77,9 @@ class TuesdayFragment : Fragment() {
         Timber.i("tuesday fragment created")
 
         val fab = binding.tuesdayFab
+        if (isAdmin) {
+            fab.visibility = View.VISIBLE
+        }
         setHasOptionsMenu(true)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -90,22 +107,13 @@ class TuesdayFragment : Fragment() {
                     TimetableFragmentDirections.actionTimetableFragmentToTuesdayInputFragment(it)
                 )
             })
-
-        val currentUser = auth.currentUser!!
-        currentUser.getIdToken(false).addOnSuccessListener { result: GetTokenResult? ->
-            val isModerator: Boolean? = result?.claims?.get("admin") as Boolean?
-            if (isModerator != null) {
-                isAdmin = isModerator
-                fab.visibility = View.VISIBLE
-            }
-        }
         setupTracker()
         return binding.root
     }
 
     override fun onStart() {
         super.onStart()
-        val tuesdayFirestore = firestore.collection("tuesday")
+        val tuesdayFirestore = courseCollection.document(courseId).collection("tuesday")
         snapshotListener =
             tuesdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
                 val mutableList: MutableList<TuesdayClass> = mutableListOf()

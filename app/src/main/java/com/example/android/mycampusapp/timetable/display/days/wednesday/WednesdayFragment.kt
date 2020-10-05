@@ -1,5 +1,7 @@
 package com.example.android.mycampusapp.timetable.display.days.wednesday
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AlertDialog
@@ -17,10 +19,12 @@ import com.example.android.mycampusapp.databinding.FragmentWednesdayBinding
 import com.example.android.mycampusapp.timetable.data.WednesdayClass
 import com.example.android.mycampusapp.timetable.display.MyItemKeyProvider
 import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
+import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver
+import com.example.android.mycampusapp.util.IS_ADMIN
+import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GetTokenResult
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
@@ -33,14 +37,14 @@ class WednesdayFragment : Fragment() {
     private lateinit var snapshotListener: ListenerRegistration
 
     @Inject
-    lateinit var firestore: FirebaseFirestore
+    lateinit var auth: FirebaseAuth
 
     @Inject
-    lateinit var auth: FirebaseAuth
+    lateinit var courseCollection:CollectionReference
 
     private val viewModel by viewModels<WednesdayViewModel> {
         WednesdayViewModelFactory(
-            firestore
+            courseCollection.document(courseId)
         )
     }
     private lateinit var tracker: SelectionTracker<Long>
@@ -48,12 +52,17 @@ class WednesdayFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var highlightState: Boolean = false
     private var isAdmin: Boolean = false
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var courseId:String
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        sharedPreferences = requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        courseId = sharedPreferences.getString(COURSE_ID,"")!!
+        isAdmin = sharedPreferences.getBoolean(IS_ADMIN,false)
         val binding = DataBindingUtil.inflate<FragmentWednesdayBinding>(
             inflater,
             R.layout.fragment_wednesday,
@@ -63,6 +72,9 @@ class WednesdayFragment : Fragment() {
         Timber.i("wednesday fragment created")
 
         val fab = binding.wednesdayFab
+        if(isAdmin){
+            fab.visibility = View.VISIBLE
+        }
         setHasOptionsMenu(true)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
@@ -89,21 +101,13 @@ class WednesdayFragment : Fragment() {
                     TimetableFragmentDirections.actionTimetableFragmentToWednesdayInputFragment(it)
                 )
             })
-        val currentUser = auth.currentUser!!
-        currentUser.getIdToken(false).addOnSuccessListener { result: GetTokenResult? ->
-            val isModerator = result?.claims?.get("admin") as Boolean?
-            if (isModerator != null) {
-                isAdmin = isModerator
-                fab.visibility = View.VISIBLE
-            }
-        }
         setupTracker()
         return binding.root
     }
 
     override fun onStart() {
         super.onStart()
-        val wednesdayFirestore = firestore.collection("wednesday")
+        val wednesdayFirestore = courseCollection.document(courseId).collection("wednesday")
         snapshotListener =
             wednesdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
                 val mutableList: MutableList<WednesdayClass> = mutableListOf()

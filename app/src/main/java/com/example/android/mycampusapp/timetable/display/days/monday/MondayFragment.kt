@@ -61,6 +61,7 @@ class MondayFragment : Fragment() {
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
+        Timber.i("The value of isAdmin is $isAdmin")
         courseId = sharedPreferences.getString(COURSE_ID, "")!!
 
         val binding = DataBindingUtil.inflate<FragmentMondayBinding>(

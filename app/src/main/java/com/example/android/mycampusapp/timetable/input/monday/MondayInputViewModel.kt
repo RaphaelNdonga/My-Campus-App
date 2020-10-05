@@ -16,9 +16,6 @@ import com.example.android.mycampusapp.timetable.receiver.MondayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
 import com.google.firebase.firestore.DocumentReference
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,8 +32,6 @@ class MondayInputViewModel(
     private val _navigator = MutableLiveData<Event<Unit>>()
     val navigator: LiveData<Event<Unit>>
         get() = _navigator
-    private val job = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     private val _timeSetByTimePicker = TimePickerValues.timeSetByTimePicker
     val timeSetByTimePicker: LiveData<String>

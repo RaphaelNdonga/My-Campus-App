@@ -82,6 +82,7 @@ class LoginFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         auth.signOut()
+        sharedPreferences.edit().clear().apply()
     }
 
     private fun signInUser(email: String?, password: String?) {

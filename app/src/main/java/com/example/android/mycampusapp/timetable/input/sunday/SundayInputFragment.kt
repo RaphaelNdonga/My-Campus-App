@@ -2,6 +2,8 @@ package com.example.android.mycampusapp.timetable.input.sunday
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -16,11 +18,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentSundayInputBinding
-import com.example.android.mycampusapp.util.EventObserver
-import com.example.android.mycampusapp.util.setupSnackbar
-import com.example.android.mycampusapp.util.setupTimeDialog
+import com.example.android.mycampusapp.util.*
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.CollectionReference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -29,10 +29,12 @@ import javax.inject.Inject
 class SundayInputFragment : Fragment() {
 
     @Inject
-    lateinit var firestore: FirebaseFirestore
+    lateinit var courseCollection:CollectionReference
 
     private val sundayArgs by navArgs<SundayInputFragmentArgs>()
     private lateinit var viewModel: SundayInputViewModel
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var courseId:String
 
 
     override fun onCreateView(
@@ -40,6 +42,8 @@ class SundayInputFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        sharedPreferences = requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        courseId = sharedPreferences.getString(COURSE_ID,"")!!
         val binding = DataBindingUtil.inflate<FragmentSundayInputBinding>(
             inflater,
             R.layout.fragment_sunday_input,
@@ -50,7 +54,7 @@ class SundayInputFragment : Fragment() {
         viewModel = ViewModelProvider(
             this,
             SundayInputViewModelFactory(
-                firestore,
+                courseCollection.document(courseId),
                 sundayArgs.sundayClass,
                 app
             )
