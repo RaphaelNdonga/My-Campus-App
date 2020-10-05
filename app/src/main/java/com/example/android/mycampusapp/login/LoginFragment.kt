@@ -6,21 +6,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentLoginBinding
-import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver
-import com.example.android.mycampusapp.util.IS_ADMIN
+import com.example.android.mycampusapp.util.setupSnackbar
 import com.example.android.mycampusapp.util.sharedPrefFile
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GetTokenResult
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -52,7 +49,9 @@ class LoginFragment : Fragment() {
             false
         )
 
-        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+        viewModel = ViewModelProvider(this, LoginViewModelFactory(auth, sharedPreferences)).get(
+            LoginViewModel::class.java
+        )
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
@@ -70,10 +69,24 @@ class LoginFragment : Fragment() {
             )
         })
 
+        viewModel.mainNavigator.observe(viewLifecycleOwner, EventObserver {
+            findNavController().navigate(
+                LoginFragmentDirections.actionLoginFragmentToTimetableFragment()
+            )
+        })
+
+        viewModel.loadFinish.observe(viewLifecycleOwner, EventObserver {
+            finishLoading()
+        })
+
+        viewModel.loadStart.observe(viewLifecycleOwner, EventObserver {
+            startLoading()
+        })
+
         nextBtn.setOnClickListener {
             val email = viewModel.email.value
             val password = viewModel.password.value
-            signInUser(email, password)
+            viewModel.signInUser(email, password)
         }
 
         return binding.root
@@ -85,41 +98,6 @@ class LoginFragment : Fragment() {
         sharedPreferences.edit().clear().apply()
     }
 
-    private fun signInUser(email: String?, password: String?) {
-        if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
-            Timber.i("values are null")
-            return
-        }
-        startLoading()
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                Timber.i("Signed in successfully with email and password")
-                auth.currentUser?.getIdToken(false)
-                    ?.addOnSuccessListener { result: GetTokenResult? ->
-                        val sharedPrefEdit = sharedPreferences.edit()
-                        val isModerator: Boolean? = result?.claims?.get("admin") as Boolean?
-                        if (isModerator != null) {
-                            Timber.i("This user is an admin")
-                            sharedPrefEdit.putBoolean(IS_ADMIN, isModerator)
-                        } else {
-                            Timber.i("This user is not an admin")
-                        }
-                        val courseId: String? = result?.claims?.get("courseId") as String?
-                        sharedPrefEdit.putString(COURSE_ID, courseId)
-                        sharedPrefEdit.apply()
-                        Timber.i("The course id is $courseId")
-                        findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToTimetableFragment())
-                        finishLoading()
-                    }
-                return@addOnCompleteListener
-            }
-            Timber.i("Sign in with email and password failed")
-            Timber.i("$email and $password are the email and password put in")
-            finishLoading()
-            Toast.makeText(this.context, "Failed to sign in", Toast.LENGTH_SHORT).show()
-
-        }
-    }
 
     private fun startLoading() {
         binding.myCampusAppLogo.visibility = View.GONE
@@ -147,5 +125,13 @@ class LoginFragment : Fragment() {
         binding.regularStudentSignUpBtn.visibility = View.VISIBLE
         binding.loggingInTxt.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupSnackBar()
+    }
+    private fun setupSnackBar(){
+        view?.setupSnackbar(viewLifecycleOwner,viewModel.snackBarText,Snackbar.LENGTH_SHORT)
     }
 }

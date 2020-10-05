@@ -17,17 +17,17 @@
         tools:context=".login.SignUpFragment">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/class_rep_username"
+            android:id="@+id/class_rep_course_name"
             style="@style/Widget.MyCampusApp.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/signup_view_margin"
-            android:hint="Course Id">
+            android:hint="Course Name">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@={viewModel.username}" />
+                android:text="@={viewModel.courseName}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout

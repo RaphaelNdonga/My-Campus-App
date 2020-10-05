@@ -24,7 +24,10 @@ import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.util.IS_ADMIN
 import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -32,9 +35,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class TuesdayFragment : Fragment() {
     private lateinit var snapshotListener: ListenerRegistration
-
-    @Inject
-    lateinit var firestore: FirebaseFirestore
 
     @Inject
     lateinit var auth: FirebaseAuth

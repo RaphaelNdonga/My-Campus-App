@@ -37,4 +37,7 @@
     <string name="password">Password</string>
     <string name="log_out">Logout</string>
     <string name="logging_in_text">Logging in</string>
+    <string name="successful_signup">User created successfully with Email</string>
+    <string name="failed_signup">Failed to create user.</string>
+    <string name="login_failure">Failed to log in.</string>
 </resources>
