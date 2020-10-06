@@ -7,12 +7,16 @@ import com.example.android.mycampusapp.timetable.data.FridayClass
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class FridayViewModel(private val courseDocument: DocumentReference) : ViewModel() {
+class FridayViewModel(courseDocument: DocumentReference) : ViewModel() {
 
     private val _fridayClasses2 = MutableLiveData<List<FridayClass>>()
     val fridayClasses2: LiveData<List<FridayClass>>
@@ -38,11 +42,7 @@ class FridayViewModel(private val courseDocument: DocumentReference) : ViewModel
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
-    init {
-        checkFridayDataStatus()
-    }
-
-    fun checkFridayDataStatus() = uiScope.launch {
+    private fun checkFridayDataStatus() = uiScope.launch {
         val fridayClasses = _fridayClasses2.value
         try {
             if (fridayClasses.isNullOrEmpty()) {
@@ -86,11 +86,30 @@ class FridayViewModel(private val courseDocument: DocumentReference) : ViewModel
         job.cancel()
     }
 
-    fun updateData(mutableList: MutableList<FridayClass>) {
+    private fun updateData(mutableList: MutableList<FridayClass>) {
         _fridayClasses2.value = mutableList
+        checkFridayDataStatus()
+    }
+
+    fun addSnapshotListener(): ListenerRegistration {
+        _status.value = FridayDataStatus.LOADING
+        return fridayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+            val mutableList: MutableList<FridayClass> = mutableListOf()
+            querySnapshot?.documents?.forEach { document ->
+                Timber.i("We are in the loop")
+                val id = document.getString("id")
+                val subject = document.getString("subject")
+                val time = document.getString("time")
+                if (id != null && subject != null && time != null) {
+                    val fridayClass = FridayClass(id, subject, time)
+                    mutableList.add(fridayClass)
+                }
+            }
+            updateData(mutableList)
+        }
     }
 }
 
 enum class FridayDataStatus {
-    EMPTY, NOT_EMPTY
+    EMPTY, NOT_EMPTY, LOADING
 }

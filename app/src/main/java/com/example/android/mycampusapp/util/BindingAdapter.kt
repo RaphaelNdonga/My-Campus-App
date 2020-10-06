@@ -52,6 +52,10 @@ fun bindMondayImageStatus(statusImgView: ImageView, mondayStatus: MondayDataStat
         MondayDataStatus.NOT_EMPTY -> {
             statusImgView.visibility = View.GONE
         }
+        MondayDataStatus.LOADING -> {
+            statusImgView.visibility = View.VISIBLE
+            statusImgView.setImageResource(R.drawable.loading_animation)
+        }
     }
 }
 
@@ -62,6 +66,9 @@ fun bindMondayTextStatus(statusTextView: TextView, mondayStatus: MondayDataStatu
             statusTextView.visibility = View.VISIBLE
         }
         MondayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
+        }
+        MondayDataStatus.LOADING -> {
             statusTextView.visibility = View.GONE
         }
     }
@@ -97,6 +104,10 @@ fun bindTuesdayImageStatus(statusImgView: ImageView, status: TuesdayDataStatus?)
         TuesdayDataStatus.NOT_EMPTY -> {
             statusImgView.visibility = View.GONE
         }
+        TuesdayDataStatus.LOADING -> {
+            statusImgView.visibility = View.VISIBLE
+            statusImgView.setImageResource(R.drawable.loading_animation)
+        }
     }
 }
 
@@ -107,6 +118,9 @@ fun bindTuesdayTextStatus(statusTextView: TextView, status: TuesdayDataStatus?) 
             statusTextView.visibility = View.VISIBLE
         }
         TuesdayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
+        }
+        TuesdayDataStatus.LOADING -> {
             statusTextView.visibility = View.GONE
         }
     }
@@ -138,6 +152,10 @@ fun bindWednesdayImageStatus(statusImgView: ImageView, status: WednesdayDataStat
         WednesdayDataStatus.NOT_EMPTY -> {
             statusImgView.visibility = View.GONE
         }
+        WednesdayDataStatus.LOADING -> {
+            statusImgView.visibility = View.VISIBLE
+            statusImgView.setImageResource(R.drawable.loading_animation)
+        }
     }
 }
 @BindingAdapter("wednesdayTextStatus")
@@ -147,6 +165,9 @@ fun bindWednesdayTextStatus(statusTextView: TextView, status: WednesdayDataStatu
             statusTextView.visibility = View.VISIBLE
         }
         WednesdayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
+        }
+        WednesdayDataStatus.LOADING -> {
             statusTextView.visibility = View.GONE
         }
     }
@@ -178,6 +199,10 @@ fun bindThursdayImageStatus(statusImgView: ImageView, status: ThursdayDataStatus
         ThursdayDataStatus.NOT_EMPTY -> {
             statusImgView.visibility = View.GONE
         }
+        ThursdayDataStatus.LOADING -> {
+            statusImgView.visibility = View.VISIBLE
+            statusImgView.setImageResource(R.drawable.loading_animation)
+        }
     }
 }
 @BindingAdapter("thursdayTextStatus")
@@ -187,6 +212,9 @@ fun bindThursdayTextStatus(statusTextView: TextView, status: ThursdayDataStatus?
             statusTextView.visibility = View.VISIBLE
         }
         ThursdayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
+        }
+        ThursdayDataStatus.LOADING -> {
             statusTextView.visibility = View.GONE
         }
     }
@@ -218,6 +246,10 @@ fun bindFridayImageStatus(statusImgView: ImageView, status: FridayDataStatus?) {
         FridayDataStatus.NOT_EMPTY -> {
             statusImgView.visibility = View.GONE
         }
+        FridayDataStatus.LOADING -> {
+            statusImgView.visibility = View.VISIBLE
+            statusImgView.setImageResource(R.drawable.loading_animation)
+        }
     }
 }
 @BindingAdapter("fridayTextStatus")
@@ -227,6 +259,9 @@ fun bindFridayTextStatus(statusTextView: TextView, status: FridayDataStatus?){
             statusTextView.visibility = View.VISIBLE
         }
         FridayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
+        }
+        FridayDataStatus.LOADING -> {
             statusTextView.visibility = View.GONE
         }
     }
@@ -258,6 +293,10 @@ fun bindSaturdayImageStatus(statusImgView: ImageView, status: SaturdayDataStatus
         SaturdayDataStatus.NOT_EMPTY -> {
             statusImgView.visibility = View.GONE
         }
+        SaturdayDataStatus.LOADING -> {
+            statusImgView.visibility = View.VISIBLE
+            statusImgView.setImageResource(R.drawable.loading_animation)
+        }
     }
 }
 @BindingAdapter("saturdayTextStatus")
@@ -267,6 +306,9 @@ fun bindSaturdayTextStatus(statusTextView: TextView, status: SaturdayDataStatus?
             statusTextView.visibility = View.VISIBLE
         }
         SaturdayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
+        }
+        SaturdayDataStatus.LOADING -> {
             statusTextView.visibility = View.GONE
         }
     }
@@ -298,6 +340,10 @@ fun bindSundayImageStatus(statusImgView: ImageView, status: SundayDataStatus?) {
         SundayDataStatus.NOT_EMPTY -> {
             statusImgView.visibility = View.GONE
         }
+        SundayDataStatus.LOADING -> {
+            statusImgView.visibility = View.VISIBLE
+            statusImgView.setImageResource(R.drawable.loading_animation)
+        }
     }
 }
 @BindingAdapter("sundayTextStatus")
@@ -307,6 +353,9 @@ fun bindSundayTextStatus(statusTextView: TextView, status: SundayDataStatus?){
             statusTextView.visibility = View.VISIBLE
         }
         SundayDataStatus.NOT_EMPTY -> {
+            statusTextView.visibility = View.GONE
+        }
+        SundayDataStatus.LOADING -> {
             statusTextView.visibility = View.GONE
         }
     }

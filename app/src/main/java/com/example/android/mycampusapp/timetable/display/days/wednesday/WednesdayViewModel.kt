@@ -7,6 +7,9 @@ import com.example.android.mycampusapp.timetable.data.WednesdayClass
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -32,14 +35,12 @@ class WednesdayViewModel(private val courseDocument: DocumentReference) : ViewMo
     val deleteWednesdayClasses: LiveData<Event<Unit>>
         get() = _deleteWednesdayClasses
 
+    private val wednesdayFirestore = courseDocument.collection("wednesday")
+
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
-    init {
-        checkWednesdayDataStatus()
-    }
-
-    fun checkWednesdayDataStatus() = uiScope.launch {
+    private fun checkWednesdayDataStatus() = uiScope.launch {
         val wednesdayClasses = _wednesdayClasses2.value
         try {
             if(wednesdayClasses.isNullOrEmpty()){
@@ -69,7 +70,6 @@ class WednesdayViewModel(private val courseDocument: DocumentReference) : ViewMo
     fun deleteList(list: List<WednesdayClass?>) = uiScope.launch {
         list.forEach { wednesdayClass ->
             if (wednesdayClass != null) {
-                val wednesdayFirestore = courseDocument.collection("wednesday")
                 wednesdayFirestore.document(wednesdayClass.id).delete()
             }
         }
@@ -86,12 +86,29 @@ class WednesdayViewModel(private val courseDocument: DocumentReference) : ViewMo
         job.cancel()
     }
 
-    fun updateData(mutableList: MutableList<WednesdayClass>) {
+    private fun updateData(mutableList: MutableList<WednesdayClass>) {
         _wednesdayClasses2.value = mutableList
+        checkWednesdayDataStatus()
+    }
+    fun addSnapshotListener():ListenerRegistration{
+        _status.value = WednesdayDataStatus.LOADING
+        return wednesdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+            val mutableList: MutableList<WednesdayClass> = mutableListOf()
+            querySnapshot?.documents?.forEach { document ->
+                val id = document.getString("id")
+                val subject = document.getString("subject")
+                val time = document.getString("time")
+                if (id != null && subject != null && time != null) {
+                    val wednesdayClass = WednesdayClass(id, subject, time)
+                    mutableList.add(wednesdayClass)
+                }
+            }
+            updateData(mutableList)
+        }
     }
 }
 
 enum class WednesdayDataStatus {
-    EMPTY, NOT_EMPTY
+    EMPTY, NOT_EMPTY,LOADING
 
 }

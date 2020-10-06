@@ -25,9 +25,7 @@ import com.example.android.mycampusapp.util.IS_ADMIN
 import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.QuerySnapshot
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -113,22 +111,7 @@ class TuesdayFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        val tuesdayFirestore = courseCollection.document(courseId).collection("tuesday")
-        snapshotListener =
-            tuesdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
-                val mutableList: MutableList<TuesdayClass> = mutableListOf()
-                querySnapshot?.documents?.forEach { document ->
-                    val id = document.getString("id")
-                    val subject = document.getString("subject")
-                    val time = document.getString("time")
-                    if (id != null && subject != null && time != null) {
-                        val tuesdayClass = TuesdayClass(id, subject, time)
-                        mutableList.add(tuesdayClass)
-                    }
-                }
-                viewModel.updateData(mutableList)
-                viewModel.checkTuesdayDataStatus()
-            }
+        snapshotListener = viewModel.addSnapshotListener()
     }
 
     override fun onPause() {

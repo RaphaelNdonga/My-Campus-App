@@ -7,6 +7,9 @@ import com.example.android.mycampusapp.timetable.data.TuesdayClass
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,6 +23,9 @@ class TuesdayViewModel(private val courseDocument:DocumentReference) : ViewModel
 
     private val _status = MutableLiveData<TuesdayDataStatus>()
     val status:LiveData<TuesdayDataStatus> = _status
+
+    private val tuesdayFirestore = courseDocument.collection("tuesday")
+
 
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
@@ -35,11 +41,8 @@ class TuesdayViewModel(private val courseDocument:DocumentReference) : ViewModel
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
-    init {
-        checkTuesdayDataStatus()
-    }
 
-    fun checkTuesdayDataStatus() = uiScope.launch {
+    private fun checkTuesdayDataStatus() = uiScope.launch {
         val tuesdayClasses = _tuesdayClasses2.value
         try {
             if(tuesdayClasses.isNullOrEmpty()){
@@ -71,7 +74,6 @@ class TuesdayViewModel(private val courseDocument:DocumentReference) : ViewModel
     fun deleteList(list: List<TuesdayClass?>) = uiScope.launch {
         list.forEach { tuesdayClass->
             if (tuesdayClass != null) {
-                val tuesdayFirestore = courseDocument.collection("tuesday")
                 tuesdayFirestore.document(tuesdayClass.id).delete()
             }
         }
@@ -88,9 +90,26 @@ class TuesdayViewModel(private val courseDocument:DocumentReference) : ViewModel
         job.cancel()
     }
 
-    fun updateData(mutableList: MutableList<TuesdayClass>) {
+    private fun updateData(mutableList: MutableList<TuesdayClass>) {
         _tuesdayClasses2.value = mutableList
+        checkTuesdayDataStatus()
+    }
+    fun addSnapshotListener():ListenerRegistration{
+        _status.value = TuesdayDataStatus.LOADING
+        return  tuesdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+                val mutableList: MutableList<TuesdayClass> = mutableListOf()
+                querySnapshot?.documents?.forEach { document ->
+                    val id = document.getString("id")
+                    val subject = document.getString("subject")
+                    val time = document.getString("time")
+                    if (id != null && subject != null && time != null) {
+                        val tuesdayClass = TuesdayClass(id, subject, time)
+                        mutableList.add(tuesdayClass)
+                    }
+                }
+                updateData(mutableList)
+            }
     }
 }
 
-enum class TuesdayDataStatus {EMPTY, NOT_EMPTY}
+enum class TuesdayDataStatus {EMPTY, NOT_EMPTY, LOADING}

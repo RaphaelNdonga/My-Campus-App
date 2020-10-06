@@ -7,6 +7,9 @@ import com.example.android.mycampusapp.timetable.data.MondayClass
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -38,10 +41,6 @@ class MondayViewModel(courseId: DocumentReference) : ViewModel() {
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
-    init {
-        checkMondayDataStatus()
-    }
-
 
     fun displayMondayClassDetails(mondayClass: MondayClass) {
         _openMondayClass.value =
@@ -70,7 +69,7 @@ class MondayViewModel(courseId: DocumentReference) : ViewModel() {
             Event(Unit)
     }
 
-    fun checkMondayDataStatus() {
+    private fun checkMondayDataStatus() {
         uiScope.launch {
             val mondayClasses: List<MondayClass>? = _mondayClasses2.value
             try {
@@ -92,12 +91,29 @@ class MondayViewModel(courseId: DocumentReference) : ViewModel() {
         job.cancel()
     }
 
-    fun updateData(mutableList: MutableList<MondayClass>) {
+    private fun updateData(mutableList: MutableList<MondayClass>) {
         _mondayClasses2.value = mutableList
+        checkMondayDataStatus()
+    }
+    fun addSnapshotListener():ListenerRegistration{
+        _status.value = MondayDataStatus.LOADING
+        return mondayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+            val mutableList: MutableList<MondayClass> = mutableListOf()
+            querySnapshot?.documents?.forEach { document ->
+                val id = document.getString("id")
+                val subject = document.getString("subject")
+                val time = document.getString("time")
+                if (id != null && subject != null && time != null) {
+                    val mondayClass = MondayClass(id, subject, time)
+                    mutableList.add(mondayClass)
+                }
+            }
+            updateData(mutableList)
+        }
     }
 }
 
 enum class MondayDataStatus {
-    EMPTY, NOT_EMPTY
+    EMPTY, NOT_EMPTY, LOADING
 }
 
