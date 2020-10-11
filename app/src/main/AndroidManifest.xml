@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.mycampusapp">
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
     <application
         android:name=".MyCampusApplication"
         android:allowBackup="true"
@@ -47,6 +49,7 @@
             android:enabled="true"
             android:exported="false">
         </receiver>
+        <service android:name=".timetable.service.TimetableService"/>
     </application>
 
 </manifest>

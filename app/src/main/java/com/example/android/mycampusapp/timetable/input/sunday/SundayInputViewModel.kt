@@ -53,7 +53,7 @@ class SundayInputViewModel(
     private val day = cal.get(Calendar.DAY_OF_WEEK)
     private val sunday = Calendar.SUNDAY
 
-    private val REQUEST_CODE = 0
+    private val REQUEST_CODE = Random().nextInt(Integer.MAX_VALUE)
     private val minuteLong = 60_000L
     private val hourLong = minuteLong * 60
     private val dayLong = hourLong * 24

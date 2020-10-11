@@ -1,12 +1,13 @@
 package com.example.android.mycampusapp.timetable.receiver
 
-import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import com.example.android.mycampusapp.util.sendNotification
+import com.example.android.mycampusapp.timetable.service.TimetableService
+import com.example.android.mycampusapp.util.SUBJECT
+import com.example.android.mycampusapp.util.TIME
 
 class TuesdayClassReceiver : BroadcastReceiver() {
 
@@ -14,14 +15,15 @@ class TuesdayClassReceiver : BroadcastReceiver() {
         val bundle: Bundle? = intent?.extras
         val tuesdaySubject = bundle?.getString("tuesdaySubject")
         val tuesdayTime = bundle?.getString("tuesdayTime")
-        val notificationManager =
-            ContextCompat.getSystemService(
-                context,
-                NotificationManager::class.java
-            ) as NotificationManager
-        notificationManager.sendNotification(
-            "$tuesdaySubject at $tuesdayTime",
-            context
-        )
+
+        val timetableServiceIntent = Intent(context,TimetableService::class.java)
+        timetableServiceIntent.putExtra(SUBJECT,tuesdaySubject)
+        timetableServiceIntent.putExtra(TIME,tuesdayTime)
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            context.startForegroundService(timetableServiceIntent)
+            return
+        }
+        context.startService(timetableServiceIntent)
     }
 }
