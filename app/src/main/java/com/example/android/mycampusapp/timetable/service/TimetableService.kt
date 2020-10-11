@@ -25,6 +25,6 @@ class TimetableService : Service() {
             ) as NotificationManager
             notificationManager.sendNotification("$subject at $time",this)
         }
-        return super.onStartCommand(intent, flags, startId)
+        return START_STICKY
     }
 }
