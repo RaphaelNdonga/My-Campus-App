@@ -167,7 +167,7 @@ class SundayInputViewModel(
         AlarmManagerCompat.setExactAndAllowWhileIdle(
             alarmManager,
             AlarmManager.ELAPSED_REALTIME_WAKEUP,
-            triggerTime,
+            10000L,
             notifyPendingIntent
         )
     }
