@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import com.example.android.mycampusapp.timetable.service.TimetableService
 import com.example.android.mycampusapp.util.SUBJECT
+import com.example.android.mycampusapp.util.TIME
 
 class MondayClassReceiver : BroadcastReceiver() {
 
@@ -17,7 +18,7 @@ class MondayClassReceiver : BroadcastReceiver() {
 
         val timetableServiceIntent = Intent(context,TimetableService::class.java)
         timetableServiceIntent.putExtra(SUBJECT,mondaySubject)
-        timetableServiceIntent.putExtra(SUBJECT,mondayTime)
+        timetableServiceIntent.putExtra(TIME,mondayTime)
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             context.startForegroundService(timetableServiceIntent)
