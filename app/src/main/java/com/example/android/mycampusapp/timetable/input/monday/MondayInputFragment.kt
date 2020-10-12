@@ -1,11 +1,7 @@
 package com.example.android.mycampusapp.timetable.input.monday
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -38,7 +34,7 @@ class MondayInputFragment : Fragment() {
     private val mondayArgs by navArgs<MondayInputFragmentArgs>()
     private lateinit var viewModel: MondayInputViewModel
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var courseId:String
+    private lateinit var courseId: String
 
 
     override fun onCreateView(
@@ -46,8 +42,9 @@ class MondayInputFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        sharedPreferences = requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        courseId = sharedPreferences.getString(COURSE_ID,"")!!
+        sharedPreferences =
+            requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        courseId = sharedPreferences.getString(COURSE_ID, "")!!
         val binding = DataBindingUtil.inflate<FragmentMondayInputBinding>(
             inflater,
             R.layout.fragment_monday_input,
@@ -78,11 +75,6 @@ class MondayInputFragment : Fragment() {
         viewModel.timeSetByTimePicker.observe(viewLifecycleOwner, Observer { hourMinute ->
             time.setText(hourMinute)
         })
-
-        createChannel(
-            getString(R.string.timetable_notification_channel_id),
-            getString(R.string.timetable_notification_channel_name)
-        )
         return binding.root
     }
 
@@ -98,23 +90,5 @@ class MondayInputFragment : Fragment() {
 
     private fun setupTimePickerDialog() {
         activity?.setupTimeDialog(this, viewModel.timePickerClockPosition)
-    }
-
-    private fun createChannel(channelId: String, channelName: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(
-                channelId, channelName, NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                setShowBadge(false)
-            }
-            notificationChannel.enableLights(true)
-            notificationChannel.lightColor = Color.RED
-            notificationChannel.enableVibration(true)
-            notificationChannel.description = getString(R.string.timetable_channel_description)
-
-            val notificationManager =
-                requireActivity().getSystemService(NotificationManager::class.java)
-            notificationManager?.createNotificationChannel(notificationChannel)
-        }
     }
 }

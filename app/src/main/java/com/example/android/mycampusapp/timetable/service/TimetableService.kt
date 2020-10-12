@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import com.example.android.mycampusapp.util.SUBJECT
 import com.example.android.mycampusapp.util.TIME
 import com.example.android.mycampusapp.util.sendNotification
+import timber.log.Timber
 
 class TimetableService : Service() {
     override fun onBind(intent: Intent?): IBinder? {
@@ -18,6 +19,7 @@ class TimetableService : Service() {
         intent?.let {
             val subject = intent.getStringExtra(SUBJECT)
             val time = intent.getStringExtra(TIME)
+            Timber.i("I have been summoned")
 
             val notificationManager = ContextCompat.getSystemService(
                 this,

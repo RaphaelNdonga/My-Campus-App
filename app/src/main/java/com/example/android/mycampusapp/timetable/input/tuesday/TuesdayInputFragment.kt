@@ -1,11 +1,7 @@
 package com.example.android.mycampusapp.timetable.input.tuesday
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -80,10 +76,6 @@ class TuesdayInputFragment : Fragment() {
             time.setText(hourMinute)
         })
 
-        createChannel(
-            getString(R.string.timetable_notification_channel_id),
-            getString(R.string.timetable_notification_channel_name)
-        )
         return binding.root
     }
 
@@ -99,23 +91,5 @@ class TuesdayInputFragment : Fragment() {
 
     private fun setupTimePickerDialog() {
         activity?.setupTimeDialog(this, viewModel.timePickerClockPosition)
-    }
-
-    private fun createChannel(channelId: String, channelName: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationChannel = NotificationChannel(
-                channelId, channelName, NotificationManager.IMPORTANCE_HIGH
-            ).apply {
-                setShowBadge(false)
-            }
-            notificationChannel.enableLights(true)
-            notificationChannel.lightColor = Color.RED
-            notificationChannel.enableVibration(true)
-            notificationChannel.description = getString(R.string.timetable_channel_description)
-
-            val notificationManager =
-                requireActivity().getSystemService(NotificationManager::class.java)
-            notificationManager?.createNotificationChannel(notificationChannel)
-        }
     }
 }
