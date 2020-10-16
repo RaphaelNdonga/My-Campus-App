@@ -6,5 +6,4 @@ object TimePickerValues {
     val timePickerHourSet = MutableLiveData<Int>()
     val timePickerMinuteSet = MutableLiveData<Int>()
     val timeSetByTimePicker = MutableLiveData<String>()
-    val is24HourFormat = MutableLiveData<Boolean>()
 }

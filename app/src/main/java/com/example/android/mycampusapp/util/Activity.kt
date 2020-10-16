@@ -2,6 +2,7 @@ package com.example.android.mycampusapp.util
 
 import android.app.Activity
 import android.app.TimePickerDialog
+import android.text.format.DateFormat.is24HourFormat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -12,6 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 fun Activity.showTimeDialog(hour: Int, minute: Int) {
+    val is24HourFormat = is24HourFormat(this)
     TimePickerDialog(
         this,
         R.style.MyCampusApp_Dialog,
@@ -20,7 +22,7 @@ fun Activity.showTimeDialog(hour: Int, minute: Int) {
             TimePickerValues.timePickerMinuteSet.value = minuteOfDay
             val inputTime = SimpleDateFormat("HH:mm", Locale.US).parse("$hourOfDay:$minuteOfDay")
             Timber.i("The hour of day is $hourOfDay")
-            if (TimePickerValues.is24HourFormat.value!!) {
+            if (is24HourFormat) {
                 val tf = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.UK)
                 val outputTime = tf.format(inputTime!!)
                 TimePickerValues.timeSetByTimePicker.value = outputTime.toString()
@@ -35,7 +37,7 @@ fun Activity.showTimeDialog(hour: Int, minute: Int) {
         },
         hour,
         minute,
-        TimePickerValues.is24HourFormat.value!!
+        is24HourFormat
     ).run { show() }
 }
 

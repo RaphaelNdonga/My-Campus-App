@@ -4,7 +4,6 @@ import java.util.*
 
 const val IS_ADMIN = "admin"
 const val COURSE_ID: String = "courseId"
-const val IS_24_HOUR = "is24hour"
 const val sharedPrefFile = "com.example.android.mycampusapp"
 const val SUBJECT = "SUBJECT"
 const val TIME = "TIME"
