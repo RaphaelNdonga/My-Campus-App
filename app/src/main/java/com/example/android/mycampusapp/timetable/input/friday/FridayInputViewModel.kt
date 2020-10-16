@@ -5,8 +5,6 @@ import android.app.Application
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.SystemClock
-import androidx.core.app.AlarmManagerCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +12,9 @@ import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.timetable.data.FridayClass
 import com.example.android.mycampusapp.timetable.receiver.FridayClassReceiver
 import com.example.android.mycampusapp.util.Event
+import com.example.android.mycampusapp.util.RUN_DAILY
 import com.example.android.mycampusapp.util.TimePickerValues
+import com.example.android.mycampusapp.util.initializeTimetableCalendar
 import com.google.firebase.firestore.DocumentReference
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -91,10 +91,11 @@ class FridayInputViewModel(
             navigateToTimetable()
         }
     }
-    private fun addFirestoreData(fridayClass: FridayClass){
+
+    private fun addFirestoreData(fridayClass: FridayClass) {
         fridayFirestore.document(fridayClass.id).set(fridayClass).addOnSuccessListener {
             Timber.i("Data was added successfully")
-        }.addOnFailureListener { exception->
+        }.addOnFailureListener { exception ->
             Timber.i("Data failed to add because of $exception")
         }
     }
@@ -115,40 +116,31 @@ class FridayInputViewModel(
         if (fridayClassIsNull()) {
             timePickerClockPosition.value =
                 Event(listOf(hour, minute))
-        } else {
-            val time = SimpleDateFormat("HH:mm", Locale.US).parse(textBoxTime.value!!)
-            val calendar = Calendar.getInstance()
-            calendar.time = time!!
-            val hour = calendar.get(Calendar.HOUR_OF_DAY)
-            val minutes = calendar.get(Calendar.MINUTE)
-            timePickerClockPosition.value = Event(listOf(hour, minutes))
+            return
         }
+        val time = SimpleDateFormat("HH:mm", Locale.US).parse(textBoxTime.value!!)
+        val calendar = Calendar.getInstance()
+        calendar.time = time!!
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minutes = calendar.get(Calendar.MINUTE)
+        timePickerClockPosition.value = Event(listOf(hour, minutes))
     }
+
 
     private fun startTimer() {
         val time = SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
         val calendar = Calendar.getInstance()
         calendar.time = time!!
-        val hourSet = calendar.get(Calendar.HOUR_OF_DAY)
-        val minuteSet = calendar.get(Calendar.MINUTE)
-        val hourDifference = hourSet.minus(hour)
-        val minuteDifference = minuteSet.minus(minute)
-        val totalDifference = (hourDifference * 60).plus(minuteDifference)
-        var dayDifference = day.minus(friday)
-        if (dayDifference < 0 || (dayDifference == 0 && totalDifference < 0)) {
-            dayDifference += 7
+        initializeTimetableCalendar(calendar)
+
+        if (calendar.timeInMillis <= System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1)
         }
-
-        val dayDifferenceLong = dayDifference * dayLong
-        val hourDifferenceLong = hourDifference * hourLong
-        val minuteDifferenceLong = minuteDifference * minuteLong
-
-        val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong + dayDifferenceLong
-        val triggerTime = SystemClock.elapsedRealtime() + differenceWithPresent
+        val triggerTime = calendar.timeInMillis
 
         val notifyIntent = Intent(app, FridayClassReceiver::class.java).apply {
             putExtra("fridaySubject", fridayClassExtra.value?.subject)
-            putExtra("fridayTime",fridayClassExtra.value?.time)
+            putExtra("fridayTime", fridayClassExtra.value?.time)
         }
         val notifyPendingIntent = PendingIntent.getBroadcast(
             getApplication(),
@@ -157,12 +149,12 @@ class FridayInputViewModel(
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        AlarmManagerCompat.setExactAndAllowWhileIdle(
-            alarmManager,
-            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
             triggerTime,
+            RUN_DAILY,
             notifyPendingIntent
         )
+
     }
 }

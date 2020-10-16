@@ -20,14 +20,22 @@ fun Activity.showTimeDialog(hour: Int, minute: Int) {
             TimePickerValues.timePickerMinuteSet.value = minuteOfDay
             val inputTime = SimpleDateFormat("HH:mm", Locale.US).parse("$hourOfDay:$minuteOfDay")
             Timber.i("The hour of day is $hourOfDay")
-            val tf = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US)
-            val outputTime = tf.format(inputTime!!)
-            TimePickerValues.timeSetByTimePicker.value = outputTime.toString()
-            Timber.i("The time set by the time picker is $outputTime")
+            if (TimePickerValues.is24HourFormat.value!!) {
+                val tf = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.UK)
+                val outputTime = tf.format(inputTime!!)
+                TimePickerValues.timeSetByTimePicker.value = outputTime.toString()
+                Timber.i("The time set by the time picker is $outputTime")
+            }else{
+                val tf = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.US)
+                val outputTime = tf.format(inputTime!!)
+                TimePickerValues.timeSetByTimePicker.value = outputTime.toString()
+                Timber.i("The time set by the time picker is $outputTime")
+            }
+
         },
         hour,
         minute,
-        false
+        TimePickerValues.is24HourFormat.value!!
     ).run { show() }
 }
 

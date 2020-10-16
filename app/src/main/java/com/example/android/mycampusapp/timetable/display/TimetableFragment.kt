@@ -1,6 +1,7 @@
 package com.example.android.mycampusapp.timetable.display
 
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentTimetableBinding
+import com.example.android.mycampusapp.util.TimePickerValues
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -68,6 +70,9 @@ class TimetableFragment : Fragment() {
             Timber.i("The course id is $courseId")
         }
         Timber.i("The current user is ${currentUser.email}")
+        val isDateFormat = DateFormat.is24HourFormat(this.context)
+        TimePickerValues.is24HourFormat.value = isDateFormat
+        Timber.i("Is it 24 hour format? $isDateFormat")
     }
 
 }

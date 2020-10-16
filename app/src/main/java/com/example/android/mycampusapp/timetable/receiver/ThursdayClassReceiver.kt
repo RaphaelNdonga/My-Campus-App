@@ -7,6 +7,9 @@ import android.os.Build
 import com.example.android.mycampusapp.timetable.service.TimetableService
 import com.example.android.mycampusapp.util.SUBJECT
 import com.example.android.mycampusapp.util.TIME
+import com.example.android.mycampusapp.util.isNotificationDay
+import timber.log.Timber
+import java.util.*
 
 class ThursdayClassReceiver : BroadcastReceiver() {
 
@@ -15,14 +18,19 @@ class ThursdayClassReceiver : BroadcastReceiver() {
         val thursdaySubject = bundle?.getString("thursdaySubject")
         val thursdayTime = bundle?.getString("thursdayTime")
 
-        val timetableServiceIntent =Intent(context,TimetableService::class.java)
-        timetableServiceIntent.putExtra(SUBJECT,thursdaySubject)
-        timetableServiceIntent.putExtra(TIME,thursdayTime)
+        val calendar = Calendar.getInstance()
+        Timber.i("notification day is ${isNotificationDay(calendar, Calendar.THURSDAY)}")
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            context.startForegroundService(timetableServiceIntent)
-            return
+        if (isNotificationDay(calendar, Calendar.THURSDAY)) {
+            val timetableServiceIntent = Intent(context, TimetableService::class.java)
+            timetableServiceIntent.putExtra(SUBJECT, thursdaySubject)
+            timetableServiceIntent.putExtra(TIME, thursdayTime)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(timetableServiceIntent)
+                return
+            }
+            context.startService(timetableServiceIntent)
         }
-        context.startService(timetableServiceIntent)
     }
 }

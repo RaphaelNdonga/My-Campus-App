@@ -41,9 +41,9 @@ class TimetableService : Service() {
             this,
             getString(R.string.timetable_notification_channel_id)
         )
+            .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .setSmallIcon(R.drawable.ic_open_book)
-            .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentTitle(getString(R.string.class_notification_title))
             .setContentText(message)

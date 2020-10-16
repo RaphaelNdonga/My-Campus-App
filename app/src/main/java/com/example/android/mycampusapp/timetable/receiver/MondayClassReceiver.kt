@@ -8,6 +8,8 @@ import android.os.Bundle
 import com.example.android.mycampusapp.timetable.service.TimetableService
 import com.example.android.mycampusapp.util.SUBJECT
 import com.example.android.mycampusapp.util.TIME
+import com.example.android.mycampusapp.util.isNotificationDay
+import java.util.*
 
 class MondayClassReceiver : BroadcastReceiver() {
 
@@ -16,14 +18,17 @@ class MondayClassReceiver : BroadcastReceiver() {
         val mondaySubject = bundle?.getString("mondaySubject")
         val mondayTime = bundle?.getString("mondayTime")
 
-        val timetableServiceIntent = Intent(context,TimetableService::class.java)
-        timetableServiceIntent.putExtra(SUBJECT,mondaySubject)
-        timetableServiceIntent.putExtra(TIME,mondayTime)
+        val calendar = Calendar.getInstance()
+        if (isNotificationDay(calendar, Calendar.MONDAY)) {
+            val timetableServiceIntent = Intent(context, TimetableService::class.java)
+            timetableServiceIntent.putExtra(SUBJECT, mondaySubject)
+            timetableServiceIntent.putExtra(TIME, mondayTime)
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            context.startForegroundService(timetableServiceIntent)
-            return
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(timetableServiceIntent)
+                return
+            }
+            context.startService(timetableServiceIntent)
         }
-        context.startService(timetableServiceIntent)
     }
 }

@@ -5,8 +5,6 @@ import android.app.Application
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.os.SystemClock
-import androidx.core.app.AlarmManagerCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +12,9 @@ import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.timetable.data.WednesdayClass
 import com.example.android.mycampusapp.timetable.receiver.WednesdayClassReceiver
 import com.example.android.mycampusapp.util.Event
+import com.example.android.mycampusapp.util.RUN_DAILY
 import com.example.android.mycampusapp.util.TimePickerValues
+import com.example.android.mycampusapp.util.initializeTimetableCalendar
 import com.google.firebase.firestore.DocumentReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -98,13 +98,14 @@ class WednesdayInputViewModel(
         }
     }
 
-    private fun addFirestoreData(wednesdayClass: WednesdayClass){
+    private fun addFirestoreData(wednesdayClass: WednesdayClass) {
         wednesdayFirestore.document(wednesdayClass.id).set(wednesdayClass).addOnSuccessListener {
             Timber.i("Data was added successfully")
         }.addOnFailureListener { exception ->
             Timber.i("Data failed to upload because of $exception")
         }
     }
+
     fun navigateToTimetable() {
         _navigator.value = Event(Unit)
     }
@@ -133,28 +134,21 @@ class WednesdayInputViewModel(
 
     private fun startTimer() {
         val time = SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
+        Timber.i("the time in the textbox is $time")
         val calendar = Calendar.getInstance()
         calendar.time = time!!
-        val hourSet = calendar.get(Calendar.HOUR_OF_DAY)
-        val minuteSet = calendar.get(Calendar.MINUTE)
-        val hourDifference = hourSet.minus(hour)
-        val minuteDifference = minuteSet.minus(minute)
-        val totalDifference = (hourDifference * 60).plus(minuteDifference)
-        var dayDifference = day.minus(wednesday)
-        if (dayDifference < 0 || (dayDifference == 0 && totalDifference < 0)) {
-            dayDifference += 7
+        initializeTimetableCalendar(calendar)
+        Timber.i("the time set is ${calendar.time}")
+
+        if (calendar.timeInMillis <= System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1)
         }
 
-        val dayDifferenceLong = dayDifference * dayLong
-        val hourDifferenceLong = hourDifference * hourLong
-        val minuteDifferenceLong = minuteDifference * minuteLong
-
-        val differenceWithPresent = hourDifferenceLong + minuteDifferenceLong + dayDifferenceLong
-        val triggerTime = SystemClock.elapsedRealtime() + differenceWithPresent
+        val triggerTime = calendar.timeInMillis
 
         val notifyIntent = Intent(app, WednesdayClassReceiver::class.java).apply {
             putExtra("wednesdaySubject", wednesdayClassExtra.value?.subject)
-            putExtra("wednesdayTime",wednesdayClassExtra.value?.time)
+            putExtra("wednesdayTime", wednesdayClassExtra.value?.time)
         }
         val notifyPendingIntent = PendingIntent.getBroadcast(
             getApplication(),
@@ -164,10 +158,10 @@ class WednesdayInputViewModel(
         )
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        AlarmManagerCompat.setExactAndAllowWhileIdle(
-            alarmManager,
-            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
             triggerTime,
+            RUN_DAILY,
             notifyPendingIntent
         )
     }
