@@ -20,6 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import timber.log.Timber
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -132,8 +133,12 @@ class ThursdayInputViewModel(
     }
 
     private fun startTimer() {
-
-        val time = SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
+        val time = try {
+            SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
+        }catch (parseException:ParseException){
+            Timber.i("The exception is $parseException")
+            SimpleDateFormat("HH:mm", Locale.UK).parse(textBoxTime.value!!)
+        }
         val calendar = Calendar.getInstance()
         calendar.time = time!!
         initializeTimetableCalendar(calendar)

@@ -17,6 +17,7 @@ import com.example.android.mycampusapp.util.TimePickerValues
 import com.example.android.mycampusapp.util.initializeTimetableCalendar
 import com.google.firebase.firestore.DocumentReference
 import timber.log.Timber
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -123,7 +124,12 @@ class TuesdayInputViewModel(
     }
 
     private fun startTimer() {
-        val time = SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
+        val time = try {
+            SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
+        }catch (parseException:ParseException){
+            Timber.i("The exception is $parseException")
+            SimpleDateFormat("HH:mm",Locale.UK).parse(textBoxTime.value!!)
+        }
         Timber.i("The time set on tuesday is $time")
         val calendar = Calendar.getInstance()
         calendar.time = time!!
