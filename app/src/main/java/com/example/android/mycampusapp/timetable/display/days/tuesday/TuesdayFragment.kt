@@ -85,7 +85,7 @@ class TuesdayFragment : Fragment() {
         adapter =
             TuesdayAdapter(
                 TuesdayListener {
-                    if (isAdmin) {
+                    if (isAdmin && !highlightState) {
                         viewModel.displayTuesdayClassDetails(it)
                     }
                 })

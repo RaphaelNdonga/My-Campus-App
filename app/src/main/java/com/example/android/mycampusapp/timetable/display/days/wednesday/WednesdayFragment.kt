@@ -80,7 +80,7 @@ class WednesdayFragment : Fragment() {
         adapter =
             WednesdayAdapter(
                 WednesdayListener {
-                    if (isAdmin)
+                    if (isAdmin && !highlightState)
                         viewModel.displayWednesdayClassDetails(it)
                 })
         recyclerView.adapter = adapter

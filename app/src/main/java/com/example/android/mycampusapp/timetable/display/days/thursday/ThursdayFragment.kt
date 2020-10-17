@@ -71,7 +71,7 @@ class ThursdayFragment : Fragment() {
         Timber.i("thursday fragment created")
 
         val fab = binding.thursdayFab
-        if(isAdmin){
+        if(isAdmin && !highlightState){
             fab.visibility = View.VISIBLE
         }
         setHasOptionsMenu(true)

@@ -80,7 +80,7 @@ class FridayFragment : Fragment() {
         adapter =
             FridayAdapter(
                 FridayListener {
-                    if (isAdmin) {
+                    if (isAdmin && !highlightState) {
                         viewModel.displayFridayClassDetails(it)
                     }
                 })
