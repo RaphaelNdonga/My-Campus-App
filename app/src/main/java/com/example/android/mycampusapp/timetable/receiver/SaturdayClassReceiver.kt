@@ -5,8 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import com.example.android.mycampusapp.timetable.service.TimetableService
 import com.example.android.mycampusapp.util.SUBJECT
+import com.example.android.mycampusapp.util.isNotificationDay
+import java.util.*
 
 class SaturdayClassReceiver : BroadcastReceiver() {
 
@@ -14,15 +17,19 @@ class SaturdayClassReceiver : BroadcastReceiver() {
         val bundle: Bundle? = intent?.extras
         val saturdaySubject = bundle?.getString("saturdaySubject")
         val saturdayTime = bundle?.getString("saturdayTime")
+        Toast.makeText(context,"My Campus App Saturday alarm Received", Toast.LENGTH_SHORT).show()
 
-        val timetableServiceIntent = Intent(context,TimetableService::class.java)
-        timetableServiceIntent.putExtra(SUBJECT,saturdaySubject)
-        timetableServiceIntent.putExtra(SUBJECT,saturdayTime)
+        val calendar = Calendar.getInstance()
+        if (isNotificationDay(calendar, Calendar.SATURDAY)) {
+            val timetableServiceIntent = Intent(context, TimetableService::class.java)
+            timetableServiceIntent.putExtra(SUBJECT, saturdaySubject)
+            timetableServiceIntent.putExtra(SUBJECT, saturdayTime)
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            context.startForegroundService(timetableServiceIntent)
-            return
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(timetableServiceIntent)
+                return
+            }
+            context.startService(timetableServiceIntent)
         }
-        context.startService(timetableServiceIntent)
     }
 }

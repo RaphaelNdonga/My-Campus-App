@@ -140,7 +140,7 @@ class SaturdayInputViewModel(
         initializeTimetableCalendar(calendar)
 
         if (calendar.timeInMillis >= System.currentTimeMillis()) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
+            calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH + 1))
         }
         val triggerTime = calendar.timeInMillis
 

@@ -5,11 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import com.example.android.mycampusapp.timetable.service.TimetableService
 import com.example.android.mycampusapp.util.SUBJECT
 import com.example.android.mycampusapp.util.TIME
 import com.example.android.mycampusapp.util.isNotificationDay
-import timber.log.Timber
 import java.util.*
 
 class TuesdayClassReceiver : BroadcastReceiver() {
@@ -18,9 +18,9 @@ class TuesdayClassReceiver : BroadcastReceiver() {
         val bundle: Bundle? = intent?.extras
         val tuesdaySubject = bundle?.getString("tuesdaySubject")
         val tuesdayTime = bundle?.getString("tuesdayTime")
+        Toast.makeText(context,"My Campus App Tuesday alarm Received", Toast.LENGTH_SHORT).show()
 
         val calendar = Calendar.getInstance()
-        Timber.i("${isNotificationDay(calendar,Calendar.TUESDAY)}")
         if (isNotificationDay(calendar,Calendar.TUESDAY)) {
             val timetableServiceIntent = Intent(context, TimetableService::class.java)
             timetableServiceIntent.putExtra(SUBJECT, tuesdaySubject)

@@ -78,7 +78,15 @@ class DiffUtilCallBack : DiffUtil.ItemCallback<FridayClass>() {
     }
 
     override fun areContentsTheSame(oldItem: FridayClass, newItem: FridayClass): Boolean {
-        return oldItem == newItem
+        /*
+Previous was return oldItem == newItem.
+An error runtime error was persisting whereby the contents were being regarded as the same
+even when they weren't the same.
+I chose to always return false because very rarely, if ever, will 2 classes be scheduled at
+the same time. And even when so, they will not be many such cases, therefore the value for
+oldItem == newItem is very low
+ */
+        return false
     }
 
 }

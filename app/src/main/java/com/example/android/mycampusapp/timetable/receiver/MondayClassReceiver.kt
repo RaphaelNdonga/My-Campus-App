@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import com.example.android.mycampusapp.timetable.service.TimetableService
 import com.example.android.mycampusapp.util.SUBJECT
 import com.example.android.mycampusapp.util.TIME
@@ -17,6 +18,7 @@ class MondayClassReceiver : BroadcastReceiver() {
         val bundle: Bundle? = intent?.extras
         val mondaySubject = bundle?.getString("mondaySubject")
         val mondayTime = bundle?.getString("mondayTime")
+        Toast.makeText(context,"My Campus App Monday alarm Received", Toast.LENGTH_SHORT).show()
 
         val calendar = Calendar.getInstance()
         if (isNotificationDay(calendar, Calendar.MONDAY)) {
