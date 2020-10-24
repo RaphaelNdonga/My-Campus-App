@@ -43,7 +43,7 @@
             style="@style/Widget.MyCampusApp.TextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="@dimen/big_distance_margin"
             android:layout_marginBottom="@dimen/text_box_margin"
             android:hint="@string/email"
             app:layout_constraintEnd_toEndOf="parent"

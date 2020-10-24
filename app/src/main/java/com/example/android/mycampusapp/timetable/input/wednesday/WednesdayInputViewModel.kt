@@ -156,6 +156,7 @@ class WednesdayInputViewModel(
             putExtra("wednesdaySubject", wednesdayClassExtra.value?.subject)
             putExtra("wednesdayTime", wednesdayClassExtra.value?.time)
         }
+        //TODO:Maybe the pending intent flag should be 0?
         val notifyPendingIntent = PendingIntent.getBroadcast(
             getApplication(),
             REQUEST_CODE,

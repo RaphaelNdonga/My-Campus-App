@@ -2,6 +2,7 @@ package com.example.android.mycampusapp.util
 
 import java.util.*
 
+const val USER_EMAIL = "email"
 const val IS_ADMIN = "admin"
 const val COURSE_ID: String = "courseId"
 const val sharedPrefFile = "com.example.android.mycampusapp"

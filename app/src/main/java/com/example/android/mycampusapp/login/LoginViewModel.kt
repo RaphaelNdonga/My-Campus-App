@@ -8,6 +8,7 @@ import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.IS_ADMIN
+import com.example.android.mycampusapp.util.USER_EMAIL
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GetTokenResult
 import timber.log.Timber
@@ -55,10 +56,12 @@ class LoginViewModel(private val auth:FirebaseAuth,private val sharedPreferences
         initiateEvent(_loadStart)
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
+                val sharedPrefEdit = sharedPreferences.edit()
+                sharedPrefEdit.putString(USER_EMAIL,email)
+
                 Timber.i("Signed in successfully with email and password")
                 auth.currentUser?.getIdToken(false)
                     ?.addOnSuccessListener { result: GetTokenResult? ->
-                        val sharedPrefEdit = sharedPreferences.edit()
                         val isModerator: Boolean? = result?.claims?.get("admin") as Boolean?
                         if (isModerator != null) {
                             Timber.i("This user is an admin")
@@ -71,7 +74,7 @@ class LoginViewModel(private val auth:FirebaseAuth,private val sharedPreferences
                         sharedPrefEdit.apply()
                         Timber.i("The course id is $courseId")
                         initiateEvent(_mainNavigator)
-                        initiateEvent(_loadFinish)
+//                        initiateEvent(_loadFinish)
                     }
                 return@addOnCompleteListener
             }

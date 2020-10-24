@@ -1,6 +1,7 @@
 package com.example.android.mycampusapp.login
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.android.mycampusapp.MainActivity
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentLoginBinding
 import com.example.android.mycampusapp.util.EventObserver
@@ -70,9 +72,9 @@ class LoginFragment : Fragment() {
         })
 
         viewModel.mainNavigator.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(
-                LoginFragmentDirections.actionLoginFragmentToTimetableFragment()
-            )
+            val mainIntent = Intent(this.context, MainActivity::class.java)
+            startActivity(mainIntent)
+            requireActivity().finish()
         })
 
         viewModel.loadFinish.observe(viewLifecycleOwner, EventObserver {
@@ -94,8 +96,12 @@ class LoginFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        auth.signOut()
-        sharedPreferences.edit().clear().apply()
+        val currentUser = auth.currentUser
+        if(currentUser!=null){
+            startLoading()
+            val mainIntent = Intent(this.context,MainActivity::class.java)
+            startActivity(mainIntent)
+        }
     }
 
 

@@ -1,12 +1,13 @@
 package com.example.android.mycampusapp.timetable.display
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
+import com.example.android.mycampusapp.LoginActivity
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentTimetableBinding
 import com.google.android.material.tabs.TabLayoutMediator
@@ -54,7 +55,8 @@ class TimetableFragment : Fragment() {
         super.onStart()
         val currentUser: FirebaseUser? = auth.currentUser
         if (currentUser == null) {
-            findNavController().navigate(TimetableFragmentDirections.actionTimetableFragmentToLoginFragment())
+            val loginIntent = Intent(this.context,LoginActivity::class.java)
+            startActivity(loginIntent)
             return
         }
         currentUser.getIdToken(false).addOnSuccessListener { result: GetTokenResult? ->

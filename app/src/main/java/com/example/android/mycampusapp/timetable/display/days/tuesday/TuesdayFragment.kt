@@ -141,7 +141,7 @@ class TuesdayFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.toolbar_menu, menu)
+        inflater.inflate(R.menu.timetable_toolbar_menu, menu)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
