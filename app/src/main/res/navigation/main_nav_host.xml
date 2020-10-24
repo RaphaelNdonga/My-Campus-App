@@ -153,5 +153,5 @@
     <fragment
         android:id="@+id/manageAccountFragment"
         android:name="com.example.android.mycampusapp.acmanagement.ManageAccountFragment"
-        android:label="ManageAccountFragment" />
+        android:label="Manage Account" />
 </navigation>

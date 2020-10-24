@@ -12,7 +12,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.example.android.mycampusapp.LoginActivity
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.ManageAccountFragmentBinding
+import com.example.android.mycampusapp.databinding.FragmentAccountManagementBinding
 import com.example.android.mycampusapp.util.USER_EMAIL
 import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.auth.FirebaseAuth
@@ -29,9 +29,9 @@ class ManageAccountFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<ManageAccountFragmentBinding>(
+        val binding = DataBindingUtil.inflate<FragmentAccountManagementBinding>(
             inflater,
-            R.layout.manage_account_fragment,
+            R.layout.fragment_account_management,
             container,
             false
         )
