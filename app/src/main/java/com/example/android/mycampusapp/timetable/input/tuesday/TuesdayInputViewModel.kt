@@ -11,10 +11,10 @@ import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.timetable.data.TuesdayClass
 import com.example.android.mycampusapp.timetable.receiver.TuesdayClassReceiver
+import com.example.android.mycampusapp.util.CalendarUtils
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.RUN_DAILY
 import com.example.android.mycampusapp.util.TimePickerValues
-import com.example.android.mycampusapp.util.initializeTimetableCalendar
 import com.google.firebase.firestore.DocumentReference
 import timber.log.Timber
 import java.text.ParseException
@@ -41,19 +41,14 @@ class TuesdayInputViewModel(
 
     val textBoxSubject = MutableLiveData<String>(tuesdayClass?.subject)
     val textBoxTime = MutableLiveData<String>(tuesdayClass?.time)
-    val id = MutableLiveData<String>(tuesdayClass?.id)
+    private val id = tuesdayClass?.id
+    private val alarmRequestCode = tuesdayClass?.alarmRequestCode
 
     private val cal: Calendar = Calendar.getInstance()
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
     private val minute = cal.get(Calendar.MINUTE)
     private val day = cal.get(Calendar.DAY_OF_WEEK)
     private val tuesday = Calendar.TUESDAY
-
-    private val REQUEST_CODE = Random().nextInt(Integer.MAX_VALUE)
-    private val minuteLong = 60_000L
-    private val hourLong = minuteLong * 60
-    private val dayLong = hourLong * 24
-    private val priorAlertTime = minuteLong * 5
 
     private val _snackbarText = MutableLiveData<Event<Int>>()
     val snackbarText: LiveData<Event<Int>>
@@ -75,20 +70,21 @@ class TuesdayInputViewModel(
             addFirestoreData(tuesdayClass)
             tuesdayClassExtra.value = tuesdayClass
             _snackbarText.value = Event(R.string.tuesday_saved)
-            startTimer()
+            startTimer(tuesdayClass)
             navigateToTimetable()
 
         } else if (!tuesdayClassIsNull()) {
             val tuesdayClass =
                 TuesdayClass(
-                    id.value!!,
+                    id!!,
                     currentSubject,
-                    currentTime
+                    currentTime,
+                    alarmRequestCode!!
                 )
             addFirestoreData(tuesdayClass)
             tuesdayClassExtra.value = tuesdayClass
             _snackbarText.value = Event(R.string.tuesday_updated)
-            startTimer()
+            startTimer(tuesdayClass)
             navigateToTimetable()
         }
     }
@@ -97,12 +93,12 @@ class TuesdayInputViewModel(
         tuesdayFirestore.document(tuesdayClass.id).set(tuesdayClass)
     }
 
-    fun navigateToTimetable() {
+    private fun navigateToTimetable() {
         _navigator.value = Event(Unit)
     }
 
 
-    fun tuesdayClassIsNull(): Boolean {
+    private fun tuesdayClassIsNull(): Boolean {
         if (tuesdayClass == null) {
             return true
         }
@@ -123,20 +119,20 @@ class TuesdayInputViewModel(
         }
     }
 
-    private fun startTimer() {
+    private fun startTimer(tuesdayClass: TuesdayClass) {
         val time = try {
             SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
-        }catch (parseException:ParseException){
+        } catch (parseException: ParseException) {
             Timber.i("The exception is $parseException")
-            SimpleDateFormat("HH:mm",Locale.UK).parse(textBoxTime.value!!)
+            SimpleDateFormat("HH:mm", Locale.UK).parse(textBoxTime.value!!)
         }
         Timber.i("The time set on tuesday is $time")
         val calendar = Calendar.getInstance()
         calendar.time = time!!
-        initializeTimetableCalendar(calendar)
+        CalendarUtils.initializeTimetableCalendar(calendar)
         Timber.i("The calendar time is ${calendar.time}")
-        if(calendar.timeInMillis <= System.currentTimeMillis()){
-            calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH + 1))
+        if (calendar.timeInMillis <= System.currentTimeMillis() && day == tuesday) {
+            calendar.set(Calendar.WEEK_OF_MONTH, calendar.get(Calendar.WEEK_OF_MONTH + 1))
         }
         val triggerTime = calendar.timeInMillis
 
@@ -146,7 +142,7 @@ class TuesdayInputViewModel(
         }
         val notifyPendingIntent = PendingIntent.getBroadcast(
             getApplication(),
-            REQUEST_CODE,
+            tuesdayClass.alarmRequestCode,
             notifyIntent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )

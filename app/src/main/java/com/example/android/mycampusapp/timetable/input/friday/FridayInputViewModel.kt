@@ -11,10 +11,10 @@ import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.timetable.data.FridayClass
 import com.example.android.mycampusapp.timetable.receiver.FridayClassReceiver
+import com.example.android.mycampusapp.util.CalendarUtils
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.RUN_DAILY
 import com.example.android.mycampusapp.util.TimePickerValues
-import com.example.android.mycampusapp.util.initializeTimetableCalendar
 import com.google.firebase.firestore.DocumentReference
 import timber.log.Timber
 import java.text.ParseException
@@ -41,19 +41,14 @@ class FridayInputViewModel(
 
     val textBoxSubject = MutableLiveData<String>(fridayClass?.subject)
     val textBoxTime = MutableLiveData<String>(fridayClass?.time)
-    val id = MutableLiveData<String>(fridayClass?.id)
+    private val id = fridayClass?.id
+    private val alarmRequestCode = fridayClass?.alarmRequestCode
 
     private val cal: Calendar = Calendar.getInstance()
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
     private val minute = cal.get(Calendar.MINUTE)
     private val day = cal.get(Calendar.DAY_OF_WEEK)
     private val friday = Calendar.FRIDAY
-
-    private val REQUEST_CODE = Random().nextInt(Integer.MAX_VALUE)
-    private val minuteLong = 60_000L
-    private val hourLong = minuteLong * 60
-    private val dayLong = hourLong * 24
-    private val priorAlertTime = minuteLong * 5
 
     private val _snackbarText = MutableLiveData<Event<Int>>()
     val snackbarText: LiveData<Event<Int>>
@@ -75,20 +70,21 @@ class FridayInputViewModel(
             addFirestoreData(fridayClass)
             fridayClassExtra.value = fridayClass
             _snackbarText.value = Event(R.string.friday_saved)
-            startTimer()
+            startTimer(fridayClass)
             navigateToTimetable()
 
         } else if (!fridayClassIsNull()) {
             val fridayClass =
                 FridayClass(
-                    id.value!!,
+                    id!!,
                     currentSubject,
-                    currentTime
+                    currentTime,
+                    alarmRequestCode!!
                 )
             addFirestoreData(fridayClass)
             fridayClassExtra.value = fridayClass
             _snackbarText.value = Event(R.string.friday_updated)
-            startTimer()
+            startTimer(fridayClass)
             navigateToTimetable()
         }
     }
@@ -128,19 +124,20 @@ class FridayInputViewModel(
     }
 
 
-    private fun startTimer() {
+    private fun startTimer(fridayClass: FridayClass) {
         val time = try {
             SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
-        }catch (parseException:ParseException){
+        } catch (parseException: ParseException) {
             Timber.i("The exception caught is $parseException")
             SimpleDateFormat("HH:mm", Locale.UK).parse(textBoxTime.value!!)
         }
         val calendar = Calendar.getInstance()
         calendar.time = time!!
-        initializeTimetableCalendar(calendar)
+        CalendarUtils.initializeTimetableCalendar(calendar)
 
-        if (calendar.timeInMillis <= System.currentTimeMillis()) {
-            calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH + 1))
+        if (calendar.timeInMillis <= System.currentTimeMillis() && day == friday
+        ) {
+            calendar.set(Calendar.WEEK_OF_MONTH, calendar.get(Calendar.WEEK_OF_MONTH + 1))
         }
         val triggerTime = calendar.timeInMillis
 
@@ -150,7 +147,7 @@ class FridayInputViewModel(
         }
         val notifyPendingIntent = PendingIntent.getBroadcast(
             getApplication(),
-            REQUEST_CODE,
+            fridayClass.alarmRequestCode,
             notifyIntent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )

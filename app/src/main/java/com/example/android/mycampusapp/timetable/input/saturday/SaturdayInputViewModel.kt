@@ -11,10 +11,10 @@ import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.timetable.data.SaturdayClass
 import com.example.android.mycampusapp.timetable.receiver.SaturdayClassReceiver
+import com.example.android.mycampusapp.util.CalendarUtils
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.RUN_DAILY
 import com.example.android.mycampusapp.util.TimePickerValues
-import com.example.android.mycampusapp.util.initializeTimetableCalendar
 import com.google.firebase.firestore.DocumentReference
 import timber.log.Timber
 import java.text.ParseException
@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class SaturdayInputViewModel(
-    private val courseDocument: DocumentReference,
+    courseDocument: DocumentReference,
     private val saturdayClass: SaturdayClass?,
     private val app: Application
 ) : AndroidViewModel(app) {
@@ -41,7 +41,8 @@ class SaturdayInputViewModel(
 
     val textBoxSubject = MutableLiveData<String>(saturdayClass?.subject)
     val textBoxTime = MutableLiveData<String>(saturdayClass?.time)
-    val id = MutableLiveData<String>(saturdayClass?.id)
+    private val id = saturdayClass?.id
+    private val alarmRequestCode = saturdayClass?.alarmRequestCode
 
     private val cal: Calendar = Calendar.getInstance()
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
@@ -49,19 +50,13 @@ class SaturdayInputViewModel(
     private val day = cal.get(Calendar.DAY_OF_WEEK)
     private val saturday = Calendar.SATURDAY
 
-    private val REQUEST_CODE = Random().nextInt(Integer.MAX_VALUE)
-    private val minuteLong = 60_000L
-    private val hourLong = minuteLong * 60
-    private val dayLong = hourLong * 24
-    private val priorAlertTime = minuteLong * 5
-
     private val _snackbarText = MutableLiveData<Event<Int>>()
     val snackbarText: LiveData<Event<Int>>
         get() = _snackbarText
 
     // Can only be tested through espresso
     fun save() {
-        val currentSubject: String? = textBoxSubject.value
+        val currentSubject: String? = this.textBoxSubject.value
         val currentTime: String? = textBoxTime.value
         if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank()) {
             _snackbarText.value = Event(R.string.empty_message)
@@ -75,20 +70,21 @@ class SaturdayInputViewModel(
             addFirestoreData(saturdayClass)
             saturdayClassExtra.value = saturdayClass
             _snackbarText.value = Event(R.string.saturday_saved)
-            startTimer()
+            startTimer(saturdayClass)
             navigateToTimetable()
 
         } else if (!saturdayClassIsNull()) {
             val saturdayClass =
                 SaturdayClass(
-                    id.value!!,
+                    id!!,
                     currentSubject,
-                    currentTime
+                    currentTime,
+                    alarmRequestCode!!
                 )
             addFirestoreData(saturdayClass)
             saturdayClassExtra.value = saturdayClass
             _snackbarText.value = Event(R.string.saturday_updated)
-            startTimer()
+            startTimer(saturdayClass)
             navigateToTimetable()
         }
     }
@@ -101,12 +97,12 @@ class SaturdayInputViewModel(
         }
     }
 
-    fun navigateToTimetable() {
+    private fun navigateToTimetable() {
         _navigator.value = Event(Unit)
     }
 
 
-    fun saturdayClassIsNull(): Boolean {
+    private fun saturdayClassIsNull(): Boolean {
         if (saturdayClass == null) {
             return true
         }
@@ -128,19 +124,19 @@ class SaturdayInputViewModel(
     }
 
 
-    private fun startTimer() {
+    private fun startTimer(saturdayClass: SaturdayClass) {
         val time = try {
             SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
-        }catch (parseException:ParseException){
+        } catch (parseException: ParseException) {
             Timber.i("The exception is $parseException")
             SimpleDateFormat("HH:mm", Locale.UK).parse(textBoxTime.value!!)
         }
         val calendar = Calendar.getInstance()
         calendar.time = time!!
-        initializeTimetableCalendar(calendar)
+        CalendarUtils.initializeTimetableCalendar(calendar)
 
-        if (calendar.timeInMillis >= System.currentTimeMillis()) {
-            calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH + 1))
+        if (calendar.timeInMillis >= System.currentTimeMillis() && day == saturday) {
+            calendar.set(Calendar.WEEK_OF_MONTH, calendar.get(Calendar.WEEK_OF_MONTH + 1))
         }
         val triggerTime = calendar.timeInMillis
 
@@ -150,7 +146,7 @@ class SaturdayInputViewModel(
         }
         val notifyPendingIntent = PendingIntent.getBroadcast(
             getApplication(),
-            REQUEST_CODE,
+            saturdayClass.alarmRequestCode,
             notifyIntent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
