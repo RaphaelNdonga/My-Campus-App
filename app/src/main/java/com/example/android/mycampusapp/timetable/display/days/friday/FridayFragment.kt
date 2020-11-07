@@ -104,7 +104,6 @@ class FridayFragment : Fragment() {
                     TimetableFragmentDirections.actionTimetableFragmentToFridayInputFragment(it)
                 )
             })
-        setupTracker()
         return binding.root
     }
 
@@ -120,6 +119,7 @@ class FridayFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        setupTracker()
         snapshotListener = viewModel.addSnapshotListener()
     }
 

@@ -108,12 +108,12 @@ class MondayFragment : Fragment() {
                 )
             })
 
-        setupTracker()
         return binding.root
     }
 
     override fun onStart() {
         super.onStart()
+        setupTracker()
         snapshotListener = viewModel.addSnapshotListener()
     }
 

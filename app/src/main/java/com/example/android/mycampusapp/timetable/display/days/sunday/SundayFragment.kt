@@ -102,12 +102,12 @@ class SundayFragment : Fragment() {
                     TimetableFragmentDirections.actionTimetableFragmentToSundayInputFragment(it)
                 )
             })
-        setupTracker()
         return binding.root
     }
 
     override fun onStart() {
         super.onStart()
+        setupTracker()
         snapshotListener = viewModel.addSnapshotListener()
     }
 
