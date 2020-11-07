@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
@@ -35,8 +34,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/subject"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
-                app:tuesdaySubject="@{tuesdayClass}" />
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle" />
 
             <TextView
                 android:id="@+id/list_item_time"
@@ -44,8 +42,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/time"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
-                app:tuesdayTime="@{tuesdayClass}" />
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"/>
 
         </LinearLayout>
 
