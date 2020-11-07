@@ -7,9 +7,9 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import com.example.android.mycampusapp.timetable.service.TimetableService
+import com.example.android.mycampusapp.util.CalendarUtils
 import com.example.android.mycampusapp.util.SUBJECT
 import com.example.android.mycampusapp.util.TIME
-import com.example.android.mycampusapp.util.isNotificationDay
 import java.util.*
 
 class FridayClassReceiver : BroadcastReceiver() {
@@ -22,7 +22,7 @@ class FridayClassReceiver : BroadcastReceiver() {
 
 
         val calendar = Calendar.getInstance()
-        if (isNotificationDay(calendar, Calendar.FRIDAY)) {
+        if (CalendarUtils.isNotificationDay(calendar, Calendar.FRIDAY)) {
             val timetableServiceIntent = Intent(context, TimetableService::class.java)
             timetableServiceIntent.putExtra(SUBJECT, fridaySubject)
             timetableServiceIntent.putExtra(TIME, fridayTime)

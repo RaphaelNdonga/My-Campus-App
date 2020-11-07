@@ -22,20 +22,6 @@ import com.example.android.mycampusapp.timetable.display.days.tuesday.TuesdayDat
 import com.example.android.mycampusapp.timetable.display.days.wednesday.WednesdayAdapter
 import com.example.android.mycampusapp.timetable.display.days.wednesday.WednesdayDataStatus
 
-@BindingAdapter("mondaySubject")
-fun TextView.bindMondaySubject(item: MondayClass?) {
-    item?.let {
-        text = item.subject
-    }
-}
-
-@BindingAdapter("mondayTime")
-fun TextView.bindMondayTime(item: MondayClass?) {
-    item?.let {
-        text = item.time
-    }
-}
-
 @BindingAdapter("mondayListData")
 fun bindMondayRecyclerView(recyclerView: RecyclerView, data: List<MondayClass>?) {
     val adapter: MondayAdapter = recyclerView.adapter as MondayAdapter
@@ -71,20 +57,6 @@ fun bindMondayTextStatus(statusTextView: TextView, mondayStatus: MondayDataStatu
         MondayDataStatus.LOADING -> {
             statusTextView.visibility = View.GONE
         }
-    }
-}
-
-@BindingAdapter("tuesdaySubject")
-fun TextView.bindTuesdaySubject(item: TuesdayClass?) {
-    item?.let {
-        text = item.subject
-    }
-}
-
-@BindingAdapter("tuesdayTime")
-fun TextView.bindTuesdayTime(item: TuesdayClass?) {
-    item?.let {
-        text = item.time
     }
 }
 
@@ -126,16 +98,6 @@ fun bindTuesdayTextStatus(statusTextView: TextView, status: TuesdayDataStatus?) 
     }
 }
 
-@BindingAdapter("wednesdaySubject")
-fun TextView.bindWednesdaySubject(item: WednesdayClass?) {
-    text = item?.subject
-}
-
-@BindingAdapter("wednesdayTime")
-fun TextView.bindWednesdayTime(item: WednesdayClass?) {
-    text = item?.time
-}
-
 @BindingAdapter("wednesdayListData")
 fun bindWednesdayRecyclerView(recyclerView: RecyclerView, data: List<WednesdayClass>?) {
     val adapter = recyclerView.adapter as WednesdayAdapter
@@ -171,16 +133,6 @@ fun bindWednesdayTextStatus(statusTextView: TextView, status: WednesdayDataStatu
             statusTextView.visibility = View.GONE
         }
     }
-}
-
-@BindingAdapter("thursdaySubject")
-fun TextView.bindThursdaySubject(item: ThursdayClass?) {
-    text = item?.subject
-}
-
-@BindingAdapter("thursdayTime")
-fun TextView.bindThursdayTime(item: ThursdayClass?) {
-    text = item?.time
 }
 
 @BindingAdapter("thursdayListData")
@@ -220,16 +172,6 @@ fun bindThursdayTextStatus(statusTextView: TextView, status: ThursdayDataStatus?
     }
 }
 
-@BindingAdapter("fridaySubject")
-fun TextView.bindFridaySubject(item: FridayClass?) {
-    text = item?.subject
-}
-
-@BindingAdapter("fridayTime")
-fun TextView.bindFridayTime(item: FridayClass?) {
-    text = item?.time
-}
-
 @BindingAdapter("fridayListData")
 fun bindFridayRecyclerview(recyclerView: RecyclerView, data: List<FridayClass>?) {
     val adapter = recyclerView.adapter as FridayAdapter
@@ -267,16 +209,6 @@ fun bindFridayTextStatus(statusTextView: TextView, status: FridayDataStatus?){
     }
 }
 
-@BindingAdapter("saturdaySubject")
-fun TextView.bindSaturdaySubject(item: SaturdayClass?) {
-    text = item?.subject
-}
-
-@BindingAdapter("saturdayTime")
-fun TextView.bindSaturdayTime(item: SaturdayClass?) {
-    text = item?.time
-}
-
 @BindingAdapter("saturdayListData")
 fun bindSaturdayRecyclerView(recyclerView: RecyclerView, data: List<SaturdayClass>?) {
     val adapter = recyclerView.adapter as SaturdayAdapter
@@ -312,16 +244,6 @@ fun bindSaturdayTextStatus(statusTextView: TextView, status: SaturdayDataStatus?
             statusTextView.visibility = View.GONE
         }
     }
-}
-
-@BindingAdapter("sundaySubject")
-fun TextView.bindSundaySubject(item: SundayClass?) {
-    text = item?.subject
-}
-
-@BindingAdapter("sundayTime")
-fun TextView.bindSundayTime(item: SundayClass?) {
-    text = item?.time
 }
 
 @BindingAdapter("sundayListData")
