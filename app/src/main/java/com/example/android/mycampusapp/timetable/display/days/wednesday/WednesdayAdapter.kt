@@ -17,7 +17,8 @@ class WednesdayAdapter(private val clickListener: WednesdayListener) :
 
     var tracker: SelectionTracker<Long>? = null
 
-    class ViewHolder(val binding: ListItemWednesdayBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(val binding: ListItemWednesdayBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
@@ -35,6 +36,8 @@ class WednesdayAdapter(private val clickListener: WednesdayListener) :
         ) {
             binding.executePendingBindings()
             binding.wednesdayClass = wednesdayClass
+            binding.listItemSubject.text = wednesdayClass.subject
+            binding.listItemTime.text = wednesdayClass.time
             binding.clickListener = clickListener
             itemView.isActivated = isActivated
         }
@@ -63,7 +66,7 @@ class WednesdayAdapter(private val clickListener: WednesdayListener) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentWednesdayClass = getItem(position)
         tracker?.let {
-            holder.bind(currentWednesdayClass, clickListener,it.isSelected(position.toLong()))
+            holder.bind(currentWednesdayClass, clickListener, it.isSelected(position.toLong()))
         }
     }
 }

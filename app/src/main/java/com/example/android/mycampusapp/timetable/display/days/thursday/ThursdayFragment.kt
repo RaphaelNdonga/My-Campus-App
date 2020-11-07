@@ -7,7 +7,7 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionPredicates
@@ -40,11 +40,7 @@ class ThursdayFragment : Fragment() {
     @Inject
     lateinit var auth: FirebaseAuth
 
-    private val viewModel by viewModels<ThursdayViewModel> {
-        ThursdayViewModelFactory(
-            courseCollection.document(courseId)
-        )
-    }
+    private lateinit var viewModel: ThursdayViewModel
     private lateinit var tracker: SelectionTracker<Long>
     private lateinit var adapter: ThursdayAdapter
     private lateinit var recyclerView: RecyclerView
@@ -60,8 +56,8 @@ class ThursdayFragment : Fragment() {
     ): View? {
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        courseId = sharedPreferences.getString(COURSE_ID,"")!!
-        isAdmin = sharedPreferences.getBoolean(IS_ADMIN,false)
+        courseId = sharedPreferences.getString(COURSE_ID, "")!!
+        isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
         val binding = DataBindingUtil.inflate<FragmentThursdayBinding>(
             inflater,
             R.layout.fragment_thursday,
@@ -71,10 +67,15 @@ class ThursdayFragment : Fragment() {
         Timber.i("thursday fragment created")
 
         val fab = binding.thursdayFab
-        if(isAdmin && !highlightState){
+        if (isAdmin && !highlightState) {
             fab.visibility = View.VISIBLE
         }
         setHasOptionsMenu(true)
+        val app = requireActivity().application
+        viewModel = ViewModelProvider(
+            this,
+            ThursdayViewModelFactory(courseCollection.document(courseId), app)
+        ).get(ThursdayViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         recyclerView = binding.thursdayRecyclerView

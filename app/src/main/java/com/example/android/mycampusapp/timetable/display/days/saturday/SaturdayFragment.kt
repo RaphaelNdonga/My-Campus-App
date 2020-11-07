@@ -7,7 +7,7 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionPredicates
@@ -35,32 +35,29 @@ class SaturdayFragment : Fragment() {
     private lateinit var snapshotListener: ListenerRegistration
 
     @Inject
-    lateinit var courseCollection:CollectionReference
+    lateinit var courseCollection: CollectionReference
 
     @Inject
     lateinit var auth: FirebaseAuth
 
-    private val viewModel by viewModels<SaturdayViewModel> {
-        SaturdayViewModelFactory(
-            courseCollection.document(courseId)
-        )
-    }
+    private lateinit var viewModel: SaturdayViewModel
     private lateinit var tracker: SelectionTracker<Long>
     private lateinit var adapter: SaturdayAdapter
     private lateinit var recyclerView: RecyclerView
     private var highlightState: Boolean = false
     private var isAdmin: Boolean = false
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var courseId:String
+    private lateinit var courseId: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        sharedPreferences = requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        courseId = sharedPreferences.getString(COURSE_ID,"")!!
-        isAdmin = sharedPreferences.getBoolean(IS_ADMIN,false)
+        sharedPreferences =
+            requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        courseId = sharedPreferences.getString(COURSE_ID, "")!!
+        isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
         val binding = DataBindingUtil.inflate<FragmentSaturdayBinding>(
             inflater,
             R.layout.fragment_saturday,
@@ -70,10 +67,16 @@ class SaturdayFragment : Fragment() {
         Timber.i("saturday fragment created")
 
         val fab = binding.saturdayFab
-        if(isAdmin){
+        if (isAdmin) {
             fab.visibility = View.VISIBLE
         }
         setHasOptionsMenu(true)
+
+        val app = requireActivity().application
+        viewModel = ViewModelProvider(
+            this,
+            SaturdayViewModelFactory(courseCollection.document(courseId), app)
+        ).get(SaturdayViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         recyclerView = binding.saturdayRecyclerView

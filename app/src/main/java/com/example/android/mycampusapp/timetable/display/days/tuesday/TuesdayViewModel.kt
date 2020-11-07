@@ -1,9 +1,15 @@
 package com.example.android.mycampusapp.timetable.display.days.tuesday
 
+import android.app.AlarmManager
+import android.app.Application
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.timetable.data.TuesdayClass
+import com.example.android.mycampusapp.timetable.receiver.TuesdayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
 import com.google.firebase.firestore.DocumentReference
@@ -15,14 +21,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class TuesdayViewModel(private val courseDocument:DocumentReference) : ViewModel() {
+class TuesdayViewModel(courseDocument: DocumentReference, private val app: Application) :
+    AndroidViewModel(app) {
 
     private val _tuesdayClasses2 = MutableLiveData<List<TuesdayClass>>()
-    val tuesdayClasses2:LiveData<List<TuesdayClass>>
+    val tuesdayClasses2: LiveData<List<TuesdayClass>>
         get() = _tuesdayClasses2
 
     private val _status = MutableLiveData<TuesdayDataStatus>()
-    val status:LiveData<TuesdayDataStatus> = _status
+    val status: LiveData<TuesdayDataStatus> = _status
 
     private val tuesdayFirestore = courseDocument.collection("tuesday")
 
@@ -45,13 +52,12 @@ class TuesdayViewModel(private val courseDocument:DocumentReference) : ViewModel
     private fun checkTuesdayDataStatus() = uiScope.launch {
         val tuesdayClasses = _tuesdayClasses2.value
         try {
-            if(tuesdayClasses.isNullOrEmpty()){
+            if (tuesdayClasses.isNullOrEmpty()) {
                 throw NullPointerException()
             }
             _status.value =
                 TuesdayDataStatus.NOT_EMPTY
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             _status.value =
                 TuesdayDataStatus.EMPTY
         }
@@ -72,9 +78,10 @@ class TuesdayViewModel(private val courseDocument:DocumentReference) : ViewModel
     }
 
     fun deleteList(list: List<TuesdayClass?>) = uiScope.launch {
-        list.forEach { tuesdayClass->
+        list.forEach { tuesdayClass ->
             if (tuesdayClass != null) {
                 tuesdayFirestore.document(tuesdayClass.id).delete()
+                cancelAlarm(tuesdayClass)
             }
         }
         checkTuesdayDataStatus()
@@ -94,22 +101,35 @@ class TuesdayViewModel(private val courseDocument:DocumentReference) : ViewModel
         _tuesdayClasses2.value = mutableList
         checkTuesdayDataStatus()
     }
-    fun addSnapshotListener():ListenerRegistration{
+
+    fun addSnapshotListener(): ListenerRegistration {
         _status.value = TuesdayDataStatus.LOADING
-        return  tuesdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
-                val mutableList: MutableList<TuesdayClass> = mutableListOf()
-                querySnapshot?.documents?.forEach { document ->
-                    val id = document.getString("id")
-                    val subject = document.getString("subject")
-                    val time = document.getString("time")
-                    if (id != null && subject != null && time != null) {
-                        val tuesdayClass = TuesdayClass(id, subject, time)
-                        mutableList.add(tuesdayClass)
-                    }
+        return tuesdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+            val mutableList: MutableList<TuesdayClass> = mutableListOf()
+            querySnapshot?.documents?.forEach { document ->
+                val id = document.getString("id")
+                val subject = document.getString("subject")
+                val time = document.getString("time")
+                if (id != null && subject != null && time != null) {
+                    val tuesdayClass = TuesdayClass(id, subject, time)
+                    mutableList.add(tuesdayClass)
                 }
-                updateData(mutableList)
             }
+            updateData(mutableList)
+        }
+    }
+
+    private fun cancelAlarm(tuesdayClass: TuesdayClass) {
+        val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(app, TuesdayClassReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            app,
+            tuesdayClass.alarmRequestCode,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        alarmManager.cancel(pendingIntent)
     }
 }
 
-enum class TuesdayDataStatus {EMPTY, NOT_EMPTY, LOADING}
+enum class TuesdayDataStatus { EMPTY, NOT_EMPTY, LOADING }

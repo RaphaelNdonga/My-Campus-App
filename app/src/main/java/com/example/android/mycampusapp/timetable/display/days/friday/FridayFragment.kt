@@ -34,7 +34,7 @@ class FridayFragment : Fragment() {
 
 
     @Inject
-    lateinit var courseCollection:CollectionReference
+    lateinit var courseCollection: CollectionReference
 
     @Inject
     lateinit var auth: FirebaseAuth
@@ -48,29 +48,33 @@ class FridayFragment : Fragment() {
     private var isAdmin: Boolean = false
     private lateinit var viewModel: FridayViewModel
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var courseId:String
+    private lateinit var courseId: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        sharedPreferences = requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        courseId = sharedPreferences.getString(COURSE_ID,"")!!
-        isAdmin = sharedPreferences.getBoolean(IS_ADMIN,false)
+        sharedPreferences =
+            requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        courseId = sharedPreferences.getString(COURSE_ID, "")!!
+        isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
         val binding = DataBindingUtil.inflate<FragmentFridayBinding>(
             inflater,
             R.layout.fragment_friday,
             container,
             false
         )
-
-        viewModel = ViewModelProvider(this, FridayViewModelFactory(courseCollection.document(courseId))).get(
+        val app = requireActivity().application
+        viewModel = ViewModelProvider(
+            this,
+            FridayViewModelFactory(courseCollection.document(courseId), app)
+        ).get(
             FridayViewModel::class.java
         )
 
         val fab = binding.fridayFab
-        if(isAdmin){
+        if (isAdmin) {
             fab.visibility = View.VISIBLE
         }
         setHasOptionsMenu(true)
@@ -160,24 +164,24 @@ class FridayFragment : Fragment() {
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
 
-            tracker.addObserver(
-                object : SelectionTracker.SelectionObserver<Long>() {
-                    override fun onSelectionChanged() {
-                        super.onSelectionChanged()
-                        highlightState = true
-                        val nItems: Int? = tracker.selection.size()
-                        if (nItems != null)
-                            viewModel.deleteFridayClasses.observe(viewLifecycleOwner,
-                                EventObserver {
-                                    deleteSelectedItems(tracker.selection)
-                                })
-                        if (nItems == 0) {
-                            highlightState = false
-                        }
-                        requireActivity().invalidateOptionsMenu()
+        tracker.addObserver(
+            object : SelectionTracker.SelectionObserver<Long>() {
+                override fun onSelectionChanged() {
+                    super.onSelectionChanged()
+                    highlightState = true
+                    val nItems: Int? = tracker.selection.size()
+                    if (nItems != null)
+                        viewModel.deleteFridayClasses.observe(viewLifecycleOwner,
+                            EventObserver {
+                                deleteSelectedItems(tracker.selection)
+                            })
+                    if (nItems == 0) {
+                        highlightState = false
                     }
+                    requireActivity().invalidateOptionsMenu()
+                }
 
-                })
+            })
         adapter.tracker = tracker
     }
 

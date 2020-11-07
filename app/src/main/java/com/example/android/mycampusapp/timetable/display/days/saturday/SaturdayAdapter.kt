@@ -34,6 +34,8 @@ class SaturdayAdapter(private val clickListener: SaturdayListener) :
             isActivated: Boolean = false
         ) {
             binding.executePendingBindings()
+            binding.listItemSubject.text = saturdayClass.subject
+            binding.listItemTime.text = saturdayClass.time
             binding.saturdayClass = saturdayClass
             binding.clickListener = clickListener
             itemView.isActivated = isActivated

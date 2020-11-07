@@ -1,9 +1,15 @@
 package com.example.android.mycampusapp.timetable.display.days.friday
 
+import android.app.AlarmManager
+import android.app.Application
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.timetable.data.FridayClass
+import com.example.android.mycampusapp.timetable.receiver.FridayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
 import com.google.firebase.firestore.DocumentReference
@@ -16,7 +22,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class FridayViewModel(courseDocument: DocumentReference) : ViewModel() {
+class FridayViewModel(courseDocument: DocumentReference,private val app: Application) : AndroidViewModel(app) {
 
     private val _fridayClasses2 = MutableLiveData<List<FridayClass>>()
     val fridayClasses2: LiveData<List<FridayClass>>
@@ -71,6 +77,7 @@ class FridayViewModel(courseDocument: DocumentReference) : ViewModel() {
         list.forEach { fridayClass ->
             if (fridayClass != null) {
                 fridayFirestore.document(fridayClass.id).delete()
+                cancelAlarm(fridayClass)
             }
         }
         checkFridayDataStatus()
@@ -107,6 +114,17 @@ class FridayViewModel(courseDocument: DocumentReference) : ViewModel() {
             }
             updateData(mutableList)
         }
+    }
+    private fun cancelAlarm(fridayClass: FridayClass) {
+        val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(app, FridayClassReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            app,
+            fridayClass.alarmRequestCode,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        alarmManager.cancel(pendingIntent)
     }
 }
 

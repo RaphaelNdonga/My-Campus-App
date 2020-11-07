@@ -1,9 +1,15 @@
 package com.example.android.mycampusapp.timetable.display.days.monday
 
+import android.app.AlarmManager
+import android.app.Application
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.timetable.data.MondayClass
+import com.example.android.mycampusapp.timetable.receiver.MondayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
 import com.google.firebase.firestore.DocumentReference
@@ -15,10 +21,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class MondayViewModel(courseId: DocumentReference) : ViewModel() {
+class MondayViewModel(courseId: DocumentReference, private val app: Application) :
+    AndroidViewModel(app) {
 
     private val _mondayClasses2 = MutableLiveData<List<MondayClass>>()
-    val mondayClasses2:LiveData<List<MondayClass>>
+    val mondayClasses2: LiveData<List<MondayClass>>
         get() = _mondayClasses2
 
     private val mondayFirestore = courseId.collection("monday")
@@ -59,6 +66,7 @@ class MondayViewModel(courseId: DocumentReference) : ViewModel() {
         list.forEach { mondayClass ->
             if (mondayClass != null) {
                 mondayFirestore.document(mondayClass.id).delete()
+                cancelAlarm(mondayClass)
             }
         }
         checkMondayDataStatus()
@@ -95,7 +103,8 @@ class MondayViewModel(courseId: DocumentReference) : ViewModel() {
         _mondayClasses2.value = mutableList
         checkMondayDataStatus()
     }
-    fun addSnapshotListener():ListenerRegistration{
+
+    fun addSnapshotListener(): ListenerRegistration {
         _status.value = MondayDataStatus.LOADING
         return mondayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<MondayClass> = mutableListOf()
@@ -110,6 +119,18 @@ class MondayViewModel(courseId: DocumentReference) : ViewModel() {
             }
             updateData(mutableList)
         }
+    }
+
+    private fun cancelAlarm(mondayClass: MondayClass) {
+        val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(app, MondayClassReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            app,
+            mondayClass.alarmRequestCode,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        alarmManager.cancel(pendingIntent)
     }
 }
 

@@ -74,9 +74,10 @@ class MondayFragment : Fragment() {
         if (isAdmin) {
             fab.visibility = View.VISIBLE
         }
+        val app = requireActivity().application
         viewModel = ViewModelProvider(
             this,
-            MondayViewModelFactory(courseCollection.document(courseId))
+            MondayViewModelFactory(courseCollection.document(courseId),app)
         ).get(MondayViewModel::class.java)
 
         setHasOptionsMenu(true)

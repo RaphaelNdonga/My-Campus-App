@@ -35,6 +35,8 @@ class MondayAdapter(private val clickListener: MondayListener) :
         ) {
             binding.executePendingBindings()
             binding.mondayClass = mondayClass
+            binding.listItemSubject.text = mondayClass.subject
+            binding.listItemTime.text = mondayClass.time
             binding.clickListener = clickListener
             itemView.isActivated = isActivated
         }

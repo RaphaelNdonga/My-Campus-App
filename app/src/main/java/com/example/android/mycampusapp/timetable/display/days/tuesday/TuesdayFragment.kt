@@ -7,7 +7,7 @@ import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionPredicates
@@ -38,20 +38,16 @@ class TuesdayFragment : Fragment() {
     lateinit var auth: FirebaseAuth
 
     @Inject
-    lateinit var courseCollection:CollectionReference
+    lateinit var courseCollection: CollectionReference
 
-    private val viewModel by viewModels<TuesdayViewModel> {
-        TuesdayViewModelFactory(
-            courseCollection.document(courseId)
-        )
-    }
+    private lateinit var viewModel: TuesdayViewModel
     private lateinit var tracker: SelectionTracker<Long>
     private lateinit var adapter: TuesdayAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var sharedPreferences: SharedPreferences
     private var highlightState: Boolean = false
     private var isAdmin: Boolean = false
-    private lateinit var courseId:String
+    private lateinit var courseId: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,8 +58,8 @@ class TuesdayFragment : Fragment() {
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
 
-        isAdmin = sharedPreferences.getBoolean(IS_ADMIN,false)
-        courseId = sharedPreferences.getString(COURSE_ID,"")!!
+        isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
+        courseId = sharedPreferences.getString(COURSE_ID, "")!!
 
 
         val binding = DataBindingUtil.inflate<FragmentTuesdayBinding>(
@@ -79,6 +75,11 @@ class TuesdayFragment : Fragment() {
             fab.visibility = View.VISIBLE
         }
         setHasOptionsMenu(true)
+        val app = requireActivity().application
+        viewModel = ViewModelProvider(
+            this,
+            TuesdayViewModelFactory(courseCollection.document(courseId), app)
+        ).get(TuesdayViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         recyclerView = binding.tuesdayRecyclerView

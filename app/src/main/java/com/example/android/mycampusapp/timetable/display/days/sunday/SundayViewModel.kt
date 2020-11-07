@@ -1,9 +1,15 @@
 package com.example.android.mycampusapp.timetable.display.days.sunday
 
+import android.app.AlarmManager
+import android.app.Application
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.timetable.data.SundayClass
+import com.example.android.mycampusapp.timetable.receiver.SundayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
 import com.google.firebase.firestore.DocumentReference
@@ -16,16 +22,17 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class SundayViewModel(courseDocument: DocumentReference) : ViewModel() {
+class SundayViewModel(courseDocument: DocumentReference, private val app: Application) :
+    AndroidViewModel(app) {
 
     private val sundayFirestore = courseDocument.collection("sunday")
     private val _sundayClasses2 = MutableLiveData<List<SundayClass>>()
-    val sundayClasses2:LiveData<List<SundayClass>>
+    val sundayClasses2: LiveData<List<SundayClass>>
         get() = _sundayClasses2
 
 
     private val _status = MutableLiveData<SundayDataStatus>()
-    val status:LiveData<SundayDataStatus> = _status
+    val status: LiveData<SundayDataStatus> = _status
 
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
@@ -44,12 +51,12 @@ class SundayViewModel(courseDocument: DocumentReference) : ViewModel() {
     private fun checkSundayDataStatus() = uiScope.launch {
         val sundayClasses = _sundayClasses2.value
         try {
-            if(sundayClasses.isNullOrEmpty()){
+            if (sundayClasses.isNullOrEmpty()) {
                 throw NullPointerException()
             }
             _status.value =
                 SundayDataStatus.NOT_EMPTY
-        }catch (e:Exception){
+        } catch (e: Exception) {
             _status.value =
                 SundayDataStatus.EMPTY
         }
@@ -70,9 +77,10 @@ class SundayViewModel(courseDocument: DocumentReference) : ViewModel() {
     }
 
     fun deleteList(list: List<SundayClass?>) = uiScope.launch {
-        list.forEach { sundayClass->
+        list.forEach { sundayClass ->
             if (sundayClass != null) {
                 sundayFirestore.document(sundayClass.id).delete()
+                cancelAlarm(sundayClass)
             }
         }
         checkSundayDataStatus()
@@ -109,7 +117,20 @@ class SundayViewModel(courseDocument: DocumentReference) : ViewModel() {
             updateData(mutableList)
         }
     }
+
+    private fun cancelAlarm(sundayClass: SundayClass) {
+        val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(app, SundayClassReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            app,
+            sundayClass.alarmRequestCode,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        alarmManager.cancel(pendingIntent)
+    }
 }
+
 enum class SundayDataStatus {
     EMPTY, NOT_EMPTY, LOADING
 }

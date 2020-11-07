@@ -35,6 +35,8 @@ class FridayAdapter(private val clickListener: FridayListener) :
         ) {
             binding.executePendingBindings()
             binding.fridayClass = fridayClass
+            binding.listItemSubject.text = fridayClass.subject
+            binding.listItemTime.text = fridayClass.time
             binding.clickListener = clickListener
             itemView.isActivated = isActivated
         }
@@ -78,7 +80,7 @@ class DiffUtilCallBack : DiffUtil.ItemCallback<FridayClass>() {
     }
 
     override fun areContentsTheSame(oldItem: FridayClass, newItem: FridayClass): Boolean {
-        /*
+        /**
 Previous was return oldItem == newItem.
 An error runtime error was persisting whereby the contents were being regarded as the same
 even when they weren't the same.
