@@ -40,7 +40,6 @@ class LoginFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
 
@@ -50,6 +49,7 @@ class LoginFragment : Fragment() {
             container,
             false
         )
+        checkCurrentUser()
 
         viewModel = ViewModelProvider(this, LoginViewModelFactory(auth, sharedPreferences)).get(
             LoginViewModel::class.java
@@ -94,16 +94,6 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
-    override fun onStart() {
-        super.onStart()
-        val currentUser = auth.currentUser
-        if(currentUser!=null){
-            startLoading()
-            val mainIntent = Intent(this.context,MainActivity::class.java)
-            startActivity(mainIntent)
-        }
-    }
-
 
     private fun startLoading() {
         binding.myCampusAppLogo.visibility = View.GONE
@@ -139,5 +129,13 @@ class LoginFragment : Fragment() {
     }
     private fun setupSnackBar(){
         view?.setupSnackbar(viewLifecycleOwner,viewModel.snackBarText,Snackbar.LENGTH_SHORT)
+    }
+    private fun checkCurrentUser(){
+        val currentUser = auth.currentUser
+        if(currentUser!=null){
+            startLoading()
+            val mainIntent = Intent(this.context,MainActivity::class.java)
+            startActivity(mainIntent)
+        }
     }
 }
