@@ -42,7 +42,7 @@
         <argument
             android:name="mondayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.timetable.data.MondayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.TimetableClass"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -57,7 +57,7 @@
         <argument
             android:name="tuesdayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.timetable.data.TuesdayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.TimetableClass"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -72,7 +72,7 @@
         <argument
             android:name="sundayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.timetable.data.SundayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.TimetableClass"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -87,7 +87,7 @@
         <argument
             android:name="wednesdayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.timetable.data.WednesdayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.TimetableClass"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -102,7 +102,7 @@
         <argument
             android:name="thursdayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.timetable.data.ThursdayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.TimetableClass"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -117,7 +117,7 @@
         <argument
             android:name="fridayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.timetable.data.FridayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.TimetableClass"
             app:nullable="true" />
     </fragment>
     <fragment
@@ -132,7 +132,7 @@
         <argument
             android:name="saturdayClass"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.timetable.data.SaturdayClass"
+            app:argType="com.example.android.mycampusapp.timetable.data.TimetableClass"
             app:nullable="true" />
     </fragment>
     <fragment

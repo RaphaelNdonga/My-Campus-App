@@ -9,7 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.timetable.data.FridayClass
+import com.example.android.mycampusapp.timetable.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.FridayClassReceiver
 import com.example.android.mycampusapp.util.CalendarUtils
 import com.example.android.mycampusapp.util.Event
@@ -22,16 +22,16 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class FridayInputViewModel(
-    private val fridayClass: FridayClass?,
+    private val fridayClass: TimetableClass?,
     private val app: Application,
     courseDocument: DocumentReference
 ) : AndroidViewModel(app) {
 
     private val fridayFirestore = courseDocument.collection("friday")
-    private val fridayClassExtra = MutableLiveData<FridayClass>()
-    private val _navigator = MutableLiveData<Event<Unit>>()
-    val navigator: LiveData<Event<Unit>>
-        get() = _navigator
+    private val fridayClassExtra = MutableLiveData<TimetableClass>()
+    private val _displayNavigator = MutableLiveData<Event<Unit>>()
+    val displayNavigator: LiveData<Event<Unit>>
+        get() = _displayNavigator
 
     private val _timeSetByTimePicker = TimePickerValues.timeSetByTimePicker
     val timeSetByTimePicker: LiveData<String>
@@ -41,6 +41,7 @@ class FridayInputViewModel(
 
     val textBoxSubject = MutableLiveData<String>(fridayClass?.subject)
     val textBoxTime = MutableLiveData<String>(fridayClass?.time)
+    val textBoxLocation = MutableLiveData<String>(fridayClass?.location)
     private val id = fridayClass?.id
     private val alarmRequestCode = fridayClass?.alarmRequestCode
 
@@ -58,14 +59,16 @@ class FridayInputViewModel(
     fun save() {
         val currentSubject: String? = textBoxSubject.value
         val currentTime: String? = textBoxTime.value
-        if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank()) {
+        val currentLocation:String? = textBoxLocation.value
+        if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank() || currentLocation.isNullOrBlank()) {
             _snackbarText.value = Event(R.string.empty_message)
             return
         } else if (fridayClassIsNull()) {
             val fridayClass =
-                FridayClass(
+                TimetableClass(
                     subject = currentSubject,
-                    time = currentTime
+                    time = currentTime,
+                    location = currentLocation
                 )
             addFirestoreData(fridayClass)
             fridayClassExtra.value = fridayClass
@@ -75,10 +78,11 @@ class FridayInputViewModel(
 
         } else if (!fridayClassIsNull()) {
             val fridayClass =
-                FridayClass(
+                TimetableClass(
                     id!!,
                     currentSubject,
                     currentTime,
+                    currentLocation,
                     alarmRequestCode!!
                 )
             addFirestoreData(fridayClass)
@@ -89,7 +93,7 @@ class FridayInputViewModel(
         }
     }
 
-    private fun addFirestoreData(fridayClass: FridayClass) {
+    private fun addFirestoreData(fridayClass: TimetableClass) {
         fridayFirestore.document(fridayClass.id).set(fridayClass).addOnSuccessListener {
             Timber.i("Data was added successfully")
         }.addOnFailureListener { exception ->
@@ -98,7 +102,7 @@ class FridayInputViewModel(
     }
 
     private fun navigateToTimetable() {
-        _navigator.value = Event(Unit)
+        _displayNavigator.value = Event(Unit)
     }
 
 
@@ -124,7 +128,7 @@ class FridayInputViewModel(
     }
 
 
-    private fun startTimer(fridayClass: FridayClass) {
+    private fun startTimer(fridayClass: TimetableClass) {
         val time = try {
             SimpleDateFormat("hh:mm a", Locale.US).parse(textBoxTime.value!!)
         } catch (parseException: ParseException) {

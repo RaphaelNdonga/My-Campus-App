@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.timetable.display.days.tuesday
+package com.example.android.mycampusapp.timetable.display
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,21 +7,21 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.mycampusapp.databinding.ListItemTuesdayBinding
-import com.example.android.mycampusapp.timetable.data.TuesdayClass
+import com.example.android.mycampusapp.databinding.ListItemTimetableBinding
+import com.example.android.mycampusapp.timetable.data.TimetableClass
 
-class TuesdayAdapter(private val clickListener: TuesdayListener) :
-    ListAdapter<TuesdayClass, TuesdayAdapter.ViewHolder>(
+class TimetableAdapter(private val clickListener: TimetableListener) :
+    ListAdapter<TimetableClass, TimetableAdapter.ViewHolder>(
         DiffUtilCallBack()
     ) {
 
     var tracker: SelectionTracker<Long>? = null
 
-    class ViewHolder(val binding: ListItemTuesdayBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(val binding: ListItemTimetableBinding) : RecyclerView.ViewHolder(binding.root) {
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemTuesdayBinding.inflate(layoutInflater, parent, false)
+                val binding = ListItemTimetableBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(
                     binding
                 )
@@ -29,14 +29,15 @@ class TuesdayAdapter(private val clickListener: TuesdayListener) :
         }
 
         fun bind(
-            tuesdayClass: TuesdayClass,
-            clickListener: TuesdayListener,
+            timetableClass: TimetableClass,
+            clickListener: TimetableListener,
             isActivated: Boolean = false
         ) {
             binding.executePendingBindings()
-            binding.tuesdayClass = tuesdayClass
-            binding.listItemTime.text = tuesdayClass.time
-            binding.listItemSubject.text = tuesdayClass.subject
+            binding.timetableClass = timetableClass
+            binding.listItemSubject.text = timetableClass.subject
+            binding.listItemTime.text = timetableClass.time
+            binding.listItemLocation.text = timetableClass.location
             binding.clickListener = clickListener
             itemView.isActivated = isActivated
         }
@@ -63,24 +64,24 @@ class TuesdayAdapter(private val clickListener: TuesdayListener) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val currentTuesdayClass = getItem(position)
+        val currentFridayClass = getItem(position)
         tracker?.let {
-            holder.bind(currentTuesdayClass, clickListener,it.isSelected(position.toLong()))
+            holder.bind(currentFridayClass, clickListener, it.isSelected(position.toLong()))
         }
     }
 }
 
-class TuesdayListener(val clickListener: (tuesdayClass: TuesdayClass) -> Unit) {
-    fun onClick(tuesdayClass: TuesdayClass) = clickListener(tuesdayClass)
+class TimetableListener(val clickListener: (timetableClass: TimetableClass) -> Unit) {
+    fun onClick(timetableClass: TimetableClass) = clickListener(timetableClass)
 }
 
-class DiffUtilCallBack : DiffUtil.ItemCallback<TuesdayClass>() {
-    override fun areItemsTheSame(oldItem: TuesdayClass, newItem: TuesdayClass): Boolean {
+class DiffUtilCallBack : DiffUtil.ItemCallback<TimetableClass>() {
+    override fun areItemsTheSame(oldItem: TimetableClass, newItem: TimetableClass): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: TuesdayClass, newItem: TuesdayClass): Boolean {
-        /*
+    override fun areContentsTheSame(oldItem: TimetableClass, newItem: TimetableClass): Boolean {
+        /**
         Previous was return oldItem == newItem.
         An error runtime error was persisting whereby the contents were being regarded as the same
         even when they weren't the same.

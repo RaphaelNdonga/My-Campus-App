@@ -3,12 +3,12 @@ package com.example.android.mycampusapp.timetable.input.thursday
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.android.mycampusapp.timetable.data.ThursdayClass
+import com.example.android.mycampusapp.timetable.data.TimetableClass
 import com.google.firebase.firestore.DocumentReference
 
 class ThursdayInputViewModelFactory(
     private val courseDocument: DocumentReference,
-    private val thursdayClass: ThursdayClass?,
+    private val thursdayClass: TimetableClass?,
     private val app:Application
 ) : ViewModelProvider.NewInstanceFactory() {
     @Suppress("UNCHECKED_CAST")

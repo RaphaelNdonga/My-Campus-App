@@ -65,7 +65,7 @@ class MondayInputFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        viewModel.navigator.observe(viewLifecycleOwner,
+        viewModel.displayNavigator.observe(viewLifecycleOwner,
             EventObserver {
                 findNavController().navigate(MondayInputFragmentDirections.actionMondayInputFragmentToTimetableFragment())
             })

@@ -16,9 +16,8 @@ import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentMondayBinding
-import com.example.android.mycampusapp.timetable.data.MondayClass
-import com.example.android.mycampusapp.timetable.display.MyItemKeyProvider
-import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
+import com.example.android.mycampusapp.timetable.data.TimetableClass
+import com.example.android.mycampusapp.timetable.display.*
 import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.util.IS_ADMIN
@@ -42,7 +41,7 @@ class MondayFragment : Fragment() {
 
     private lateinit var viewModel: MondayViewModel
     private lateinit var tracker: SelectionTracker<Long>
-    private lateinit var adapter: MondayAdapter
+    private lateinit var adapter: TimetableAdapter
     private lateinit var recyclerView: RecyclerView
     private var highlightState: Boolean = false
     private var isAdmin: Boolean = false
@@ -85,8 +84,8 @@ class MondayFragment : Fragment() {
         binding.lifecycleOwner = this
         recyclerView = binding.mondayRecyclerView
         adapter =
-            MondayAdapter(
-                MondayListener {
+            TimetableAdapter(
+                TimetableListener {
                     if (isAdmin && !highlightState) {
                         viewModel.displayMondayClassDetails(it)
                     }
@@ -123,7 +122,7 @@ class MondayFragment : Fragment() {
     }
 
     private fun deleteSelectedItems(selection: Selection<Long>) {
-        val list: List<MondayClass?> = selection.map {
+        val list: List<TimetableClass?> = selection.map {
             adapter.currentList[it.toInt()]
         }.toList()
         viewModel.deleteList(list)
@@ -161,7 +160,7 @@ class MondayFragment : Fragment() {
             MyItemKeyProvider(
                 recyclerView
             ),
-            MondayItemDetailsLookup(
+            TimetableItemDetailsLookup(
                 recyclerView
             ),
             StorageStrategy.createLongStorage()

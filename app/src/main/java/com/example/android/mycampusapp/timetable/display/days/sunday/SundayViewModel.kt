@@ -8,7 +8,7 @@ import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.android.mycampusapp.timetable.data.SundayClass
+import com.example.android.mycampusapp.timetable.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.SundayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
@@ -26,8 +26,8 @@ class SundayViewModel(courseDocument: DocumentReference, private val app: Applic
     AndroidViewModel(app) {
 
     private val sundayFirestore = courseDocument.collection("sunday")
-    private val _sundayClasses2 = MutableLiveData<List<SundayClass>>()
-    val sundayClasses2: LiveData<List<SundayClass>>
+    private val _sundayClasses2 = MutableLiveData<List<TimetableClass>>()
+    val sundayClasses2: LiveData<List<TimetableClass>>
         get() = _sundayClasses2
 
 
@@ -37,8 +37,8 @@ class SundayViewModel(courseDocument: DocumentReference, private val app: Applic
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
 
-    private val _openSundayClass = MutableLiveData<Event<SundayClass>>()
-    val openSundayClass: LiveData<Event<SundayClass>>
+    private val _openSundayClass = MutableLiveData<Event<TimetableClass>>()
+    val openSundayClass: LiveData<Event<TimetableClass>>
         get() = _openSundayClass
 
     private val _deleteSundayClasses = MutableLiveData<Event<Unit>>()
@@ -62,7 +62,7 @@ class SundayViewModel(courseDocument: DocumentReference, private val app: Applic
         }
     }
 
-    fun displaySundayClassDetails(sundayClass: SundayClass) {
+    fun displaySundayClassDetails(sundayClass: TimetableClass) {
         _openSundayClass.value =
             Event(sundayClass)
 
@@ -76,7 +76,7 @@ class SundayViewModel(courseDocument: DocumentReference, private val app: Applic
         TimePickerValues.timeSetByTimePicker.value = ""
     }
 
-    fun deleteList(list: List<SundayClass?>) = uiScope.launch {
+    fun deleteList(list: List<TimetableClass?>) = uiScope.launch {
         list.forEach { sundayClass ->
             if (sundayClass != null) {
                 sundayFirestore.document(sundayClass.id).delete()
@@ -96,7 +96,7 @@ class SundayViewModel(courseDocument: DocumentReference, private val app: Applic
         job.cancel()
     }
 
-    private fun updateData(mutableList: MutableList<SundayClass>) {
+    private fun updateData(mutableList: MutableList<TimetableClass>) {
         _sundayClasses2.value = mutableList
         checkSundayDataStatus()
     }
@@ -104,13 +104,15 @@ class SundayViewModel(courseDocument: DocumentReference, private val app: Applic
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = SundayDataStatus.LOADING
         return sundayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
-            val mutableList: MutableList<SundayClass> = mutableListOf()
+            val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
                 val id = document.getString("id")
                 val subject = document.getString("subject")
                 val time = document.getString("time")
-                if (id != null && subject != null && time != null) {
-                    val sundayClass = SundayClass(id, subject, time)
+                val location = document.getString("location")
+                val alarmRequestCode = document.getLong("alarmRequestCode")?.toInt()
+                if (id != null && subject != null && time != null && location!=null && alarmRequestCode!=null) {
+                    val sundayClass = TimetableClass(id, subject, time,location,alarmRequestCode)
                     mutableList.add(sundayClass)
                 }
             }
@@ -118,7 +120,7 @@ class SundayViewModel(courseDocument: DocumentReference, private val app: Applic
         }
     }
 
-    private fun cancelAlarm(sundayClass: SundayClass) {
+    private fun cancelAlarm(sundayClass: TimetableClass) {
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(app, SundayClassReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(

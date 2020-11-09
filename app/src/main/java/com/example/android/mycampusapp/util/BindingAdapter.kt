@@ -6,25 +6,19 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.timetable.data.*
-import com.example.android.mycampusapp.timetable.display.days.friday.FridayAdapter
+import com.example.android.mycampusapp.timetable.data.TimetableClass
+import com.example.android.mycampusapp.timetable.display.TimetableAdapter
 import com.example.android.mycampusapp.timetable.display.days.friday.FridayDataStatus
-import com.example.android.mycampusapp.timetable.display.days.monday.MondayAdapter
 import com.example.android.mycampusapp.timetable.display.days.monday.MondayDataStatus
-import com.example.android.mycampusapp.timetable.display.days.saturday.SaturdayAdapter
 import com.example.android.mycampusapp.timetable.display.days.saturday.SaturdayDataStatus
-import com.example.android.mycampusapp.timetable.display.days.sunday.SundayAdapter
 import com.example.android.mycampusapp.timetable.display.days.sunday.SundayDataStatus
-import com.example.android.mycampusapp.timetable.display.days.thursday.ThursdayAdapter
 import com.example.android.mycampusapp.timetable.display.days.thursday.ThursdayDataStatus
-import com.example.android.mycampusapp.timetable.display.days.tuesday.TuesdayAdapter
 import com.example.android.mycampusapp.timetable.display.days.tuesday.TuesdayDataStatus
-import com.example.android.mycampusapp.timetable.display.days.wednesday.WednesdayAdapter
 import com.example.android.mycampusapp.timetable.display.days.wednesday.WednesdayDataStatus
 
 @BindingAdapter("mondayListData")
-fun bindMondayRecyclerView(recyclerView: RecyclerView, data: List<MondayClass>?) {
-    val adapter: MondayAdapter = recyclerView.adapter as MondayAdapter
+fun bindMondayRecyclerView(recyclerView: RecyclerView, data: List<TimetableClass>?) {
+    val adapter: TimetableAdapter = recyclerView.adapter as TimetableAdapter
     adapter.submitList(data)
 }
 
@@ -61,8 +55,8 @@ fun bindMondayTextStatus(statusTextView: TextView, mondayStatus: MondayDataStatu
 }
 
 @BindingAdapter("tuesdayListData")
-fun bindTuesdayRecyclerView(recyclerView: RecyclerView, data: List<TuesdayClass>?) {
-    val adapter = recyclerView.adapter as TuesdayAdapter
+fun bindTuesdayRecyclerView(recyclerView: RecyclerView, data: List<TimetableClass>?) {
+    val adapter = recyclerView.adapter as TimetableAdapter
     adapter.submitList(data)
 }
 
@@ -99,8 +93,8 @@ fun bindTuesdayTextStatus(statusTextView: TextView, status: TuesdayDataStatus?) 
 }
 
 @BindingAdapter("wednesdayListData")
-fun bindWednesdayRecyclerView(recyclerView: RecyclerView, data: List<WednesdayClass>?) {
-    val adapter = recyclerView.adapter as WednesdayAdapter
+fun bindWednesdayRecyclerView(recyclerView: RecyclerView, data: List<TimetableClass>?) {
+    val adapter = recyclerView.adapter as TimetableAdapter
     adapter.submitList(data)
 }
 
@@ -136,8 +130,8 @@ fun bindWednesdayTextStatus(statusTextView: TextView, status: WednesdayDataStatu
 }
 
 @BindingAdapter("thursdayListData")
-fun bindThursdayRecyclerView(recyclerView: RecyclerView, data: List<ThursdayClass>?) {
-    val adapter = recyclerView.adapter as ThursdayAdapter
+fun bindThursdayRecyclerView(recyclerView: RecyclerView, data: List<TimetableClass>?) {
+    val adapter = recyclerView.adapter as TimetableAdapter
     adapter.submitList(data)
 }
 
@@ -173,8 +167,8 @@ fun bindThursdayTextStatus(statusTextView: TextView, status: ThursdayDataStatus?
 }
 
 @BindingAdapter("fridayListData")
-fun bindFridayRecyclerview(recyclerView: RecyclerView, data: List<FridayClass>?) {
-    val adapter = recyclerView.adapter as FridayAdapter
+fun bindFridayRecyclerview(recyclerView: RecyclerView, data: List<TimetableClass>?) {
+    val adapter = recyclerView.adapter as TimetableAdapter
     adapter.submitList(data)
 }
 
@@ -210,8 +204,8 @@ fun bindFridayTextStatus(statusTextView: TextView, status: FridayDataStatus?){
 }
 
 @BindingAdapter("saturdayListData")
-fun bindSaturdayRecyclerView(recyclerView: RecyclerView, data: List<SaturdayClass>?) {
-    val adapter = recyclerView.adapter as SaturdayAdapter
+fun bindSaturdayRecyclerView(recyclerView: RecyclerView, data: List<TimetableClass>?) {
+    val adapter = recyclerView.adapter as TimetableAdapter
     adapter.submitList(data)
 }
 
@@ -247,8 +241,8 @@ fun bindSaturdayTextStatus(statusTextView: TextView, status: SaturdayDataStatus?
 }
 
 @BindingAdapter("sundayListData")
-fun bindRecyclerView(recyclerView: RecyclerView, data: List<SundayClass>?) {
-    val adapter = recyclerView.adapter as SundayAdapter
+fun bindRecyclerView(recyclerView: RecyclerView, data: List<TimetableClass>?) {
+    val adapter = recyclerView.adapter as TimetableAdapter
     adapter.submitList(data)
 }
 

@@ -8,7 +8,7 @@ import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.android.mycampusapp.timetable.data.FridayClass
+import com.example.android.mycampusapp.timetable.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.FridayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
@@ -24,8 +24,8 @@ import timber.log.Timber
 
 class FridayViewModel(courseDocument: DocumentReference,private val app: Application) : AndroidViewModel(app) {
 
-    private val _fridayClasses2 = MutableLiveData<List<FridayClass>>()
-    val fridayClasses2: LiveData<List<FridayClass>>
+    private val _fridayClasses2 = MutableLiveData<List<TimetableClass>>()
+    val fridayClasses2: LiveData<List<TimetableClass>>
         get() = _fridayClasses2
 
     private val fridayFirestore = courseDocument.collection("friday")
@@ -37,8 +37,8 @@ class FridayViewModel(courseDocument: DocumentReference,private val app: Applica
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
 
-    private val _openFridayClass = MutableLiveData<Event<FridayClass>>()
-    val openFridayClass: LiveData<Event<FridayClass>>
+    private val _openFridayClass = MutableLiveData<Event<TimetableClass>>()
+    val openFridayClass: LiveData<Event<TimetableClass>>
         get() = _openFridayClass
 
     private val _deleteFridayClasses = MutableLiveData<Event<Unit>>()
@@ -60,7 +60,7 @@ class FridayViewModel(courseDocument: DocumentReference,private val app: Applica
         }
     }
 
-    fun displayFridayClassDetails(fridayClass: FridayClass) {
+    fun displayFridayClassDetails(fridayClass: TimetableClass) {
         _openFridayClass.value =
             Event(fridayClass)
 
@@ -73,7 +73,7 @@ class FridayViewModel(courseDocument: DocumentReference,private val app: Applica
         TimePickerValues.timeSetByTimePicker.value = ""
     }
 
-    fun deleteList(list: List<FridayClass?>) = uiScope.launch {
+    fun deleteList(list: List<TimetableClass?>) = uiScope.launch {
         list.forEach { fridayClass ->
             if (fridayClass != null) {
                 fridayFirestore.document(fridayClass.id).delete()
@@ -93,7 +93,7 @@ class FridayViewModel(courseDocument: DocumentReference,private val app: Applica
         job.cancel()
     }
 
-    private fun updateData(mutableList: MutableList<FridayClass>) {
+    private fun updateData(mutableList: MutableList<TimetableClass>) {
         _fridayClasses2.value = mutableList
         checkFridayDataStatus()
     }
@@ -101,21 +101,23 @@ class FridayViewModel(courseDocument: DocumentReference,private val app: Applica
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = FridayDataStatus.LOADING
         return fridayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
-            val mutableList: MutableList<FridayClass> = mutableListOf()
+            val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
                 Timber.i("We are in the loop")
                 val id = document.getString("id")
                 val subject = document.getString("subject")
                 val time = document.getString("time")
-                if (id != null && subject != null && time != null) {
-                    val fridayClass = FridayClass(id, subject, time)
+                val location = document.getString("location")
+                val alarmRequestCode = document.getLong("alarmRequestCode")?.toInt()
+                if (id != null && subject != null && time != null && location!=null && alarmRequestCode!=null) {
+                    val fridayClass = TimetableClass(id, subject, time,location,alarmRequestCode)
                     mutableList.add(fridayClass)
                 }
             }
             updateData(mutableList)
         }
     }
-    private fun cancelAlarm(fridayClass: FridayClass) {
+    private fun cancelAlarm(fridayClass: TimetableClass) {
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(app, FridayClassReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(

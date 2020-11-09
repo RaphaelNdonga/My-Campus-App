@@ -8,7 +8,7 @@ import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.android.mycampusapp.timetable.data.WednesdayClass
+import com.example.android.mycampusapp.timetable.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.WednesdayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
@@ -26,8 +26,8 @@ class WednesdayViewModel(
     private val app: Application
 ) : AndroidViewModel(app) {
 
-    private val _wednesdayClasses2 = MutableLiveData<List<WednesdayClass>>()
-    val wednesdayClasses2: LiveData<List<WednesdayClass>>
+    private val _wednesdayClasses2 = MutableLiveData<List<TimetableClass>>()
+    val wednesdayClasses2: LiveData<List<TimetableClass>>
         get() = _wednesdayClasses2
 
     private val _status = MutableLiveData<WednesdayDataStatus>()
@@ -36,8 +36,8 @@ class WednesdayViewModel(
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
 
-    private val _openWednesdayClass = MutableLiveData<Event<WednesdayClass>>()
-    val openWednesdayClass: LiveData<Event<WednesdayClass>>
+    private val _openWednesdayClass = MutableLiveData<Event<TimetableClass>>()
+    val openWednesdayClass: LiveData<Event<TimetableClass>>
         get() = _openWednesdayClass
 
     private val _deleteWednesdayClasses = MutableLiveData<Event<Unit>>()
@@ -63,7 +63,7 @@ class WednesdayViewModel(
         }
     }
 
-    fun displayWednesdayClassDetails(wednesdayClass: WednesdayClass) {
+    fun displayWednesdayClassDetails(wednesdayClass: TimetableClass) {
         _openWednesdayClass.value =
             Event(wednesdayClass)
 
@@ -76,7 +76,7 @@ class WednesdayViewModel(
         TimePickerValues.timeSetByTimePicker.value = ""
     }
 
-    fun deleteList(list: List<WednesdayClass?>) = uiScope.launch {
+    fun deleteList(list: List<TimetableClass?>) = uiScope.launch {
         list.forEach { wednesdayClass ->
             if (wednesdayClass != null) {
                 wednesdayFirestore.document(wednesdayClass.id).delete()
@@ -96,7 +96,7 @@ class WednesdayViewModel(
         job.cancel()
     }
 
-    private fun updateData(mutableList: MutableList<WednesdayClass>) {
+    private fun updateData(mutableList: MutableList<TimetableClass>) {
         _wednesdayClasses2.value = mutableList
         checkWednesdayDataStatus()
     }
@@ -104,13 +104,16 @@ class WednesdayViewModel(
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = WednesdayDataStatus.LOADING
         return wednesdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
-            val mutableList: MutableList<WednesdayClass> = mutableListOf()
+            val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
                 val id = document.getString("id")
                 val subject = document.getString("subject")
                 val time = document.getString("time")
-                if (id != null && subject != null && time != null) {
-                    val wednesdayClass = WednesdayClass(id, subject, time)
+                val location = document.getString("location")
+                val alarmRequestCode = document.getLong("alarmRequestCode")?.toInt()
+                if (id != null && subject != null && time != null && location != null && alarmRequestCode != null) {
+                    val wednesdayClass =
+                        TimetableClass(id, subject, time, location, alarmRequestCode)
                     mutableList.add(wednesdayClass)
                 }
             }
@@ -118,7 +121,7 @@ class WednesdayViewModel(
         }
     }
 
-    private fun cancelAlarm(wednesdayClass: WednesdayClass) {
+    private fun cancelAlarm(wednesdayClass: TimetableClass) {
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(app, WednesdayClassReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(

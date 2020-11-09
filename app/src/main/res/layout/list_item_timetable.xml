@@ -4,12 +4,12 @@
     <data>
 
         <variable
-            name="wednesdayClass"
-            type="com.example.android.mycampusapp.timetable.data.WednesdayClass" />
+            name="timetableClass"
+            type="com.example.android.mycampusapp.timetable.data.TimetableClass" />
 
         <variable
             name="clickListener"
-            type="com.example.android.mycampusapp.timetable.display.days.wednesday.WednesdayListener" />
+            type="com.example.android.mycampusapp.timetable.display.TimetableListener" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -18,7 +18,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:onClick="@{()->clickListener.onClick(wednesdayClass)}"
+        android:onClick="@{()->clickListener.onClick(timetableClass)}"
         android:orientation="vertical">
 
         <LinearLayout
@@ -42,7 +42,14 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/time"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"/>
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails" />
+            <TextView
+                android:id="@+id/list_item_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_box_margin"
+                android:text="@string/location"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails" />
 
         </LinearLayout>
 

@@ -8,7 +8,7 @@ import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.android.mycampusapp.timetable.data.MondayClass
+import com.example.android.mycampusapp.timetable.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.MondayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
@@ -24,8 +24,8 @@ import kotlinx.coroutines.launch
 class MondayViewModel(courseId: DocumentReference, private val app: Application) :
     AndroidViewModel(app) {
 
-    private val _mondayClasses2 = MutableLiveData<List<MondayClass>>()
-    val mondayClasses2: LiveData<List<MondayClass>>
+    private val _mondayClasses2 = MutableLiveData<List<TimetableClass>>()
+    val mondayClasses2: LiveData<List<TimetableClass>>
         get() = _mondayClasses2
 
     private val mondayFirestore = courseId.collection("monday")
@@ -37,8 +37,8 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
 
-    private val _openMondayClass = MutableLiveData<Event<MondayClass>>()
-    val openMondayClass: LiveData<Event<MondayClass>>
+    private val _openMondayClass = MutableLiveData<Event<TimetableClass>>()
+    val openMondayClass: LiveData<Event<TimetableClass>>
         get() = _openMondayClass
 
     private val _deleteMondayClasses = MutableLiveData<Event<Unit>>()
@@ -49,7 +49,7 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
 
-    fun displayMondayClassDetails(mondayClass: MondayClass) {
+    fun displayMondayClassDetails(mondayClass: TimetableClass) {
         _openMondayClass.value =
             Event(mondayClass)
 
@@ -62,7 +62,7 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
         TimePickerValues.timeSetByTimePicker.value = ""
     }
 
-    fun deleteList(list: List<MondayClass?>) = uiScope.launch {
+    fun deleteList(list: List<TimetableClass?>) = uiScope.launch {
         list.forEach { mondayClass ->
             if (mondayClass != null) {
                 mondayFirestore.document(mondayClass.id).delete()
@@ -79,7 +79,7 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
 
     private fun checkMondayDataStatus() {
         uiScope.launch {
-            val mondayClasses: List<MondayClass>? = _mondayClasses2.value
+            val mondayClasses: List<TimetableClass>? = _mondayClasses2.value
             try {
                 if (mondayClasses.isNullOrEmpty()) {
                     throw NullPointerException()
@@ -99,7 +99,7 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
         job.cancel()
     }
 
-    private fun updateData(mutableList: MutableList<MondayClass>) {
+    private fun updateData(mutableList: MutableList<TimetableClass>) {
         _mondayClasses2.value = mutableList
         checkMondayDataStatus()
     }
@@ -107,13 +107,15 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = MondayDataStatus.LOADING
         return mondayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
-            val mutableList: MutableList<MondayClass> = mutableListOf()
+            val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
                 val id = document.getString("id")
                 val subject = document.getString("subject")
                 val time = document.getString("time")
-                if (id != null && subject != null && time != null) {
-                    val mondayClass = MondayClass(id, subject, time)
+                val location = document.getString("location")
+                val alarmRequestCode = document.getLong("alarmRequestCode")?.toInt()
+                if (id != null && subject != null && time != null && location != null && alarmRequestCode != null) {
+                    val mondayClass = TimetableClass(id, subject, time, location,alarmRequestCode)
                     mutableList.add(mondayClass)
                 }
             }
@@ -121,7 +123,7 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
         }
     }
 
-    private fun cancelAlarm(mondayClass: MondayClass) {
+    private fun cancelAlarm(mondayClass: TimetableClass) {
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(app, MondayClassReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
