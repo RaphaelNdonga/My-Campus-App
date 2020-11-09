@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.android.mycampusapp.MainActivity
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentLoginBinding
+import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.util.setupSnackbar
 import com.example.android.mycampusapp.util.sharedPrefFile
@@ -132,10 +133,12 @@ class LoginFragment : Fragment() {
     }
     private fun checkCurrentUser(){
         val currentUser = auth.currentUser
-        if(currentUser!=null){
+        val courseId = sharedPreferences.getString(COURSE_ID,"")
+        if(currentUser!=null && !courseId.isNullOrBlank()){
             startLoading()
             val mainIntent = Intent(this.context,MainActivity::class.java)
             startActivity(mainIntent)
+            requireActivity().finish()
         }
     }
 }
