@@ -22,6 +22,7 @@ import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.util.IS_ADMIN
 import com.example.android.mycampusapp.util.sharedPrefFile
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
@@ -98,6 +99,16 @@ class TuesdayFragment : Fragment() {
                     TimetableFragmentDirections.actionTimetableFragmentToTuesdayInputFragment()
                 )
             })
+
+        viewModel.hasPendingWrites.observe(viewLifecycleOwner, EventObserver { hasPendingWrites ->
+            if (hasPendingWrites) {
+                Snackbar.make(
+                    this.requireView(),
+                    R.string.admin_internet_request,
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+        })
 
         viewModel.openTuesdayClass.observe(viewLifecycleOwner,
             EventObserver {

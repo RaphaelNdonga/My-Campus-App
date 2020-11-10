@@ -45,6 +45,10 @@ class FridayViewModel(courseDocument: DocumentReference,private val app: Applica
     val deleteFridayClasses: LiveData<Event<Unit>>
         get() = _deleteFridayClasses
 
+    private val _hasPendingWrites = MutableLiveData<Event<Boolean>>()
+    val hasPendingWrites:LiveData<Event<Boolean>>
+        get() = _hasPendingWrites
+
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
@@ -103,6 +107,7 @@ class FridayViewModel(courseDocument: DocumentReference,private val app: Applica
         return fridayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
+                _hasPendingWrites.value = Event(document.metadata.hasPendingWrites())
                 Timber.i("We are in the loop")
                 val id = document.getString("id")
                 val subject = document.getString("subject")

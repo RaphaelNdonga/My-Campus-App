@@ -39,6 +39,9 @@ class ThursdayViewModel(courseDocument: DocumentReference, private val app: Appl
     val openThursdayClass: LiveData<Event<TimetableClass>>
         get() = _openThursdayClass
 
+    private val _hasPendingWrites = MutableLiveData<Event<Boolean>>()
+    val hasPendingWrites: LiveData<Event<Boolean>>
+        get() = _hasPendingWrites
     private val _deleteThursdayClasses = MutableLiveData<Event<Unit>>()
     val deleteThursdayClasses: LiveData<Event<Unit>>
         get() = _deleteThursdayClasses
@@ -107,13 +110,15 @@ class ThursdayViewModel(courseDocument: DocumentReference, private val app: Appl
         return thursdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
+                _hasPendingWrites.value = Event(document.metadata.hasPendingWrites())
                 val id = document.getString("id")
                 val subject = document.getString("subject")
                 val time = document.getString("time")
                 val location = document.getString("location")
                 val alarmRequestCode = document.getLong("alarmRequestCode")?.toInt()
-                if (id != null && subject != null && time != null && location !=null && alarmRequestCode!=null) {
-                    val thursdayClass = TimetableClass(id, subject, time,location,alarmRequestCode)
+                if (id != null && subject != null && time != null && location != null && alarmRequestCode != null) {
+                    val thursdayClass =
+                        TimetableClass(id, subject, time, location, alarmRequestCode)
                     mutableList.add(thursdayClass)
                 }
             }

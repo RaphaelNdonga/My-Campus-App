@@ -42,4 +42,6 @@
     <string name="login_failure">Failed to log in.</string>
     <string name="manage_account">Manage Account</string>
     <string name="location">location</string>
+    <string name="admin_internet_request">Please ensure that you are online so that the updates can be visible to the class</string>
+    <string name="admin_online_response">The updates have been dispersed successfully</string>
 </resources>

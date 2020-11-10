@@ -45,6 +45,10 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
     val deleteMondayClasses: LiveData<Event<Unit>>
         get() = _deleteMondayClasses
 
+    private val _hasPendingWrites = MutableLiveData<Event<Boolean>>()
+    val hasPendingWrites:LiveData<Event<Boolean>>
+        get() = _hasPendingWrites
+
     private val job = Job()
     private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
@@ -109,6 +113,7 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
         return mondayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
+                _hasPendingWrites.value = Event(document.metadata.hasPendingWrites())
                 val id = document.getString("id")
                 val subject = document.getString("subject")
                 val time = document.getString("time")

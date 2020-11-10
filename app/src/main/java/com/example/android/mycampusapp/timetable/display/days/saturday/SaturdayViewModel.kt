@@ -22,7 +22,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class SaturdayViewModel(courseDocument: DocumentReference, private val app: Application) :
-    AndroidViewModel(app){
+    AndroidViewModel(app) {
 
     private val _saturdayClasses2 = MutableLiveData<List<TimetableClass>>()
     val saturdayClasses2: LiveData<List<TimetableClass>>
@@ -41,6 +41,10 @@ class SaturdayViewModel(courseDocument: DocumentReference, private val app: Appl
     private val _deleteSaturdayClasses = MutableLiveData<Event<Unit>>()
     val deleteSaturdayClasses: LiveData<Event<Unit>>
         get() = _deleteSaturdayClasses
+
+    private val _hasPendingWrites = MutableLiveData<Event<Boolean>>()
+    val hasPendingWrites: LiveData<Event<Boolean>>
+        get() = _hasPendingWrites
 
     private val saturdayFirestore = courseDocument.collection("saturday")
 
@@ -105,13 +109,15 @@ class SaturdayViewModel(courseDocument: DocumentReference, private val app: Appl
         return saturdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
+                _hasPendingWrites.value = Event(document.metadata.hasPendingWrites())
                 val id = document.getString("id")
                 val subject = document.getString("subject")
                 val time = document.getString("time")
                 val location = document.getString("location")
                 val alarmRequestCode = document.getLong("alarmRequestCode")?.toInt()
-                if (id != null && subject != null && time != null && location!=null && alarmRequestCode!=null) {
-                    val saturdayClass = TimetableClass(id, subject, time,location,alarmRequestCode)
+                if (id != null && subject != null && time != null && location != null && alarmRequestCode != null) {
+                    val saturdayClass =
+                        TimetableClass(id, subject, time, location, alarmRequestCode)
                     mutableList.add(saturdayClass)
                 }
             }
