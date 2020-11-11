@@ -1,5 +1,6 @@
 package com.example.android.mycampusapp.timetable.input.wednesday
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -25,12 +26,12 @@ import javax.inject.Inject
 class WednesdayInputFragment : Fragment() {
 
     @Inject
-    lateinit var courseCollection:CollectionReference
+    lateinit var courseCollection: CollectionReference
 
     private val wednesdayArgs by navArgs<WednesdayInputFragmentArgs>()
     private lateinit var viewModel: WednesdayInputViewModel
 
-    private lateinit var courseId:String
+    private lateinit var courseId: String
     private lateinit var sharedPreferences: SharedPreferences
 
 
@@ -39,8 +40,9 @@ class WednesdayInputFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        sharedPreferences = requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        courseId = sharedPreferences.getString(COURSE_ID,"")!!
+        sharedPreferences =
+            requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        courseId = sharedPreferences.getString(COURSE_ID, "")!!
         val binding = DataBindingUtil.inflate<FragmentWednesdayInputBinding>(
             inflater,
             R.layout.fragment_wednesday_input,
@@ -72,6 +74,10 @@ class WednesdayInputFragment : Fragment() {
             time.setText(hourMinute)
         })
 
+        binding.classLocationEditText.setOnClickListener {
+            showLocationsList()
+        }
+
         return binding.root
     }
 
@@ -87,5 +93,14 @@ class WednesdayInputFragment : Fragment() {
 
     private fun setupTimePickerDialog() {
         activity?.setupTimeDialog(this, viewModel.timePickerClockPosition)
+    }
+
+    private fun showLocationsList() {
+        val builder = AlertDialog.Builder(requireActivity())
+            .setTitle(R.string.location_list_title)
+            .setItems(R.array.locations) { _, which ->
+                viewModel.setLocation(LocationUtils.getJkuatLocations()[which])
+            }
+        builder.create().show()
     }
 }

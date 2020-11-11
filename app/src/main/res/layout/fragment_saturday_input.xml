@@ -81,8 +81,11 @@
                     android:id="@+id/class_location_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:text="@={viewModel.textBoxLocation}" />
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="true"
+                    android:inputType="none"
+                    android:text="@={viewModel.textBoxLocation}"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 

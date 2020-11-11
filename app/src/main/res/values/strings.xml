@@ -44,4 +44,5 @@
     <string name="location">location</string>
     <string name="admin_internet_request">Please ensure that you are online so that the updates can be visible to the class</string>
     <string name="admin_online_response">The updates have been dispersed successfully</string>
+    <string name="location_list_title">Select the class location</string>
 </resources>

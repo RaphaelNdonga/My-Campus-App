@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="locations">
+        <item>New Science Complex Lecture Theaters(NSC)</item>
+        <item>Technology House, JKUAT</item>
+        <item>Swimming Pool Annex(SPA)</item>
+        <item>ICSIT Computer Building(SCIT)</item>
+        <item>Assembly Hall</item>
+        <item>Common Lecture Building(CLB)</item>
+        <item>Engineering Lab Building(ELB)</item>
+        <item>B.E.E.D Building</item>
+        <item>IEET Block</item>
+        <item>Food Science Building</item>
+        <item>Pavillion Building</item>
+        <item>Photogrammetry Lab</item>
+        <item>Pan African University(PAU)</item>
+    </string-array>
+</resources>

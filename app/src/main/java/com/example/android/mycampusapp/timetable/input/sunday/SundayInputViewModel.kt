@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.R
+import com.example.android.mycampusapp.timetable.data.Location
 import com.example.android.mycampusapp.timetable.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.SundayClassReceiver
 import com.example.android.mycampusapp.util.CalendarUtils
@@ -41,9 +42,10 @@ class SundayInputViewModel(
 
     val textBoxSubject = MutableLiveData<String>(sundayClass?.subject)
     val textBoxTime = MutableLiveData<String>(sundayClass?.time)
-    val textBoxLocation = MutableLiveData<String>(sundayClass?.location)
+    val textBoxLocation = MutableLiveData<String>(sundayClass?.locationName)
     private val id = sundayClass?.id
     private val alarmRequestCode = sundayClass?.alarmRequestCode
+    private var location: Location? = null
 
     private val cal: Calendar = Calendar.getInstance()
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
@@ -59,8 +61,8 @@ class SundayInputViewModel(
     fun save() {
         val currentSubject: String? = textBoxSubject.value
         val currentTime: String? = textBoxTime.value
-        val currentLocation:String? = textBoxLocation.value
-        if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank() || currentLocation.isNullOrBlank()) {
+        val currentLocation: Location? = location
+        if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank() || currentLocation == null) {
             _snackbarText.value = Event(R.string.empty_message)
             return
         } else if (sundayClassIsNull()) {
@@ -68,7 +70,8 @@ class SundayInputViewModel(
                 TimetableClass(
                     subject = currentSubject,
                     time = currentTime,
-                    location = currentLocation
+                    locationName = currentLocation.name,
+                    locationCoordinates = currentLocation.coordinates
                 )
             addFirestoreData(sundayClass)
             sundayClassExtra.value = sundayClass
@@ -82,7 +85,8 @@ class SundayInputViewModel(
                     id!!,
                     currentSubject,
                     currentTime,
-                    currentLocation,
+                    currentLocation.name,
+                    currentLocation.coordinates,
                     alarmRequestCode!!
                 )
             addFirestoreData(sundayClass)
@@ -138,8 +142,8 @@ class SundayInputViewModel(
         calendar.time = time!!
         CalendarUtils.initializeTimetableCalendar(calendar)
 
-        if (calendar.timeInMillis >= System.currentTimeMillis()&&day == sunday) {
-            calendar.set(Calendar.WEEK_OF_MONTH,calendar.get(Calendar.WEEK_OF_MONTH + 1))
+        if (calendar.timeInMillis >= System.currentTimeMillis() && day == sunday) {
+            calendar.set(Calendar.WEEK_OF_MONTH, calendar.get(Calendar.WEEK_OF_MONTH + 1))
         }
 
         val triggerTime = calendar.timeInMillis
@@ -162,5 +166,9 @@ class SundayInputViewModel(
             notifyPendingIntent
         )
 
+    }
+    fun setLocation(loc:Location){
+        location = loc
+        textBoxLocation.value = loc.name
     }
 }

@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.R
+import com.example.android.mycampusapp.timetable.data.Location
 import com.example.android.mycampusapp.timetable.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.WednesdayClassReceiver
 import com.example.android.mycampusapp.util.CalendarUtils
@@ -42,9 +43,10 @@ class WednesdayInputViewModel(
 
     val textBoxSubject = MutableLiveData<String>(wednesdayClass?.subject)
     val textBoxTime = MutableLiveData<String>(wednesdayClass?.time)
-    val textBoxLocation = MutableLiveData<String>(wednesdayClass?.location)
+    val textBoxLocation = MutableLiveData<String>(wednesdayClass?.locationName)
     private val id = wednesdayClass?.id
     private val alarmRequestCode = wednesdayClass?.alarmRequestCode
+    private var location: Location? = null
 
     private val cal: Calendar = Calendar.getInstance()
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
@@ -60,8 +62,8 @@ class WednesdayInputViewModel(
     fun save() {
         val currentSubject: String? = textBoxSubject.value
         val currentTime: String? = textBoxTime.value
-        val currentLocation:String? = textBoxLocation.value
-        if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank()||currentLocation.isNullOrBlank()) {
+        val currentLocation: Location? = location
+        if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank() || currentLocation == null) {
             _snackbarText.value = Event(R.string.empty_message)
             return
         } else if (wednesdayClassIsNull()) {
@@ -69,7 +71,8 @@ class WednesdayInputViewModel(
                 TimetableClass(
                     subject = currentSubject,
                     time = currentTime,
-                    location = currentLocation
+                    locationName = currentLocation.name,
+                    locationCoordinates = currentLocation.coordinates
                 )
             addFirestoreData(wednesdayClass)
             wednesdayClassExtra.value = wednesdayClass
@@ -83,7 +86,8 @@ class WednesdayInputViewModel(
                     id!!,
                     currentSubject,
                     currentTime,
-                    currentLocation,
+                    currentLocation.name,
+                    currentLocation.coordinates,
                     alarmRequestCode!!
                 )
             addFirestoreData(wednesdayClass)
@@ -165,5 +169,9 @@ class WednesdayInputViewModel(
             RUN_DAILY,
             notifyPendingIntent
         )
+    }
+    fun setLocation(loc:Location){
+        location = loc
+        textBoxLocation.value = loc.name
     }
 }

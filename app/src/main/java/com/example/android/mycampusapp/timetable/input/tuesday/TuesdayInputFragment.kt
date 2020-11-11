@@ -1,5 +1,6 @@
 package com.example.android.mycampusapp.timetable.input.tuesday
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -32,7 +33,7 @@ class TuesdayInputFragment : Fragment() {
     lateinit var firestore: FirebaseFirestore
 
     @Inject
-    lateinit var courseCollection:CollectionReference
+    lateinit var courseCollection: CollectionReference
 
     private val tuesdayArgs by navArgs<TuesdayInputFragmentArgs>()
     private lateinit var viewModel: TuesdayInputViewModel
@@ -43,8 +44,9 @@ class TuesdayInputFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        sharedPreferences = requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        courseId = sharedPreferences.getString(COURSE_ID,"")!!
+        sharedPreferences =
+            requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        courseId = sharedPreferences.getString(COURSE_ID, "")!!
         val binding = DataBindingUtil.inflate<FragmentTuesdayInputBinding>(
             inflater,
             R.layout.fragment_tuesday_input,
@@ -76,6 +78,10 @@ class TuesdayInputFragment : Fragment() {
             time.setText(hourMinute)
         })
 
+        binding.classLocationEditText.setOnClickListener {
+            showLocationsList()
+        }
+
         return binding.root
     }
 
@@ -91,5 +97,14 @@ class TuesdayInputFragment : Fragment() {
 
     private fun setupTimePickerDialog() {
         activity?.setupTimeDialog(this, viewModel.timePickerClockPosition)
+    }
+
+    private fun showLocationsList() {
+        val builder = AlertDialog.Builder(requireActivity(), R.style.MyCampusApp_Dialog)
+            .setTitle(R.string.location_list_title)
+            .setItems(R.array.locations) { _, which ->
+                viewModel.setLocation(LocationUtils.getJkuatLocations()[which])
+            }
+        builder.create().show()
     }
 }

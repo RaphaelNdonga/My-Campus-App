@@ -1,5 +1,6 @@
 package com.example.android.mycampusapp.timetable.input.friday
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -70,6 +71,10 @@ class FridayInputFragment : Fragment() {
         viewModel.timeSetByTimePicker.observe(viewLifecycleOwner, Observer { hourMinute ->
             time.setText(hourMinute)
         })
+
+        binding.classLocationEditText.setOnClickListener {
+            showLocationList()
+        }
         return binding.root
     }
 
@@ -85,5 +90,14 @@ class FridayInputFragment : Fragment() {
 
     private fun setupTimePickerDialog() {
         activity?.setupTimeDialog(this, viewModel.timePickerClockPosition)
+    }
+
+    private fun showLocationList() {
+        val alertDialogBuilder = AlertDialog.Builder(requireActivity(),R.style.MyCampusApp_Dialog)
+            .setTitle(R.string.location_list_title)
+            .setItems(R.array.locations) { _, which ->
+                viewModel.setLocation(LocationUtils.getJkuatLocations()[which])
+            }
+        alertDialogBuilder.create().show()
     }
 }
