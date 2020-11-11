@@ -111,14 +111,10 @@ class SundayViewModel(courseDocument: DocumentReference, private val app: Applic
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
                 _hasPendingWrites.value = Event(document.metadata.hasPendingWrites())
-                val id = document.getString("id")
-                val subject = document.getString("subject")
-                val time = document.getString("time")
-                val location = document.getString("location")
-                val alarmRequestCode = document.getLong("alarmRequestCode")?.toInt()
-                if (id != null && subject != null && time != null && location!=null && alarmRequestCode!=null) {
-                    val sundayClass = TimetableClass(id, subject, time,location,alarmRequestCode)
-                    mutableList.add(sundayClass)
+
+                val sundayClass = document.toObject(TimetableClass::class.java)
+                sundayClass?.let {
+                    mutableList.add(it)
                 }
             }
             updateData(mutableList)

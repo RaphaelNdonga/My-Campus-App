@@ -109,14 +109,9 @@ class FridayViewModel(courseDocument: DocumentReference,private val app: Applica
             querySnapshot?.documents?.forEach { document ->
                 _hasPendingWrites.value = Event(document.metadata.hasPendingWrites())
                 Timber.i("We are in the loop")
-                val id = document.getString("id")
-                val subject = document.getString("subject")
-                val time = document.getString("time")
-                val location = document.getString("location")
-                val alarmRequestCode = document.getLong("alarmRequestCode")?.toInt()
-                if (id != null && subject != null && time != null && location!=null && alarmRequestCode!=null) {
-                    val fridayClass = TimetableClass(id, subject, time,location,alarmRequestCode)
-                    mutableList.add(fridayClass)
+                val fridayClass = document.toObject(TimetableClass::class.java)
+                fridayClass?.let {
+                    mutableList.add(it)
                 }
             }
             updateData(mutableList)

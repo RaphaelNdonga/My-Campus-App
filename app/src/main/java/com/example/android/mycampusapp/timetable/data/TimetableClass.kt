@@ -7,8 +7,8 @@ import java.util.*
 @Parcelize
 data class TimetableClass(
     val id: String = UUID.randomUUID().toString(),
-    val subject:String,
-    val time: String,
-    val location:String,
+    val subject:String = "",
+    val time: String = "",
+    val location:String = "",
     val alarmRequestCode:Int = Random().nextInt(Integer.MAX_VALUE)
 ) : Parcelable
