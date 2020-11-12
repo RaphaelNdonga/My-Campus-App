@@ -1,5 +1,8 @@
 package com.example.android.mycampusapp.timetable.display
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.selection.ItemDetailsLookup
@@ -17,13 +20,13 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
 
     var tracker: SelectionTracker<Long>? = null
 
-    class ViewHolder(val binding: ListItemTimetableBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(private val binding: ListItemTimetableBinding,private val context: Context) : RecyclerView.ViewHolder(binding.root){
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ListItemTimetableBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(
-                    binding
+                    binding,parent.context
                 )
             }
         }
@@ -47,6 +50,16 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
                 override fun getSelectionKey(): Long? = itemId
                 override fun getPosition(): Int = adapterPosition
             }
+
+        fun setMapListener(currentClass: TimetableClass?) {
+            val mapUri = Uri.parse(currentClass?.locationCoordinates)
+            val mapIntent = Intent(Intent.ACTION_VIEW,mapUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+
+            binding.listItemLocation.setOnClickListener {
+                context.startActivity(mapIntent)
+            }
+        }
     }
 
     init {
@@ -64,10 +77,11 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val currentFridayClass = getItem(position)
+        val currentClass = getItem(position)
         tracker?.let {
-            holder.bind(currentFridayClass, clickListener, it.isSelected(position.toLong()))
+            holder.bind(currentClass, clickListener, it.isSelected(position.toLong()))
         }
+        holder.setMapListener(currentClass)
     }
 }
 
