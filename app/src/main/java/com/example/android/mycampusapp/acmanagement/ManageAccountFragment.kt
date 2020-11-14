@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import com.example.android.mycampusapp.LoginActivity
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentAccountManagementBinding
+import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.USER_EMAIL
 import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.auth.FirebaseAuth
@@ -39,6 +40,7 @@ class ManageAccountFragment : Fragment() {
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
 
         binding.accountDetailsEmail.text = sharedPreferences.getString(USER_EMAIL, "email")
+        binding.accountDetailsCourse.text = sharedPreferences.getString(COURSE_ID,"courseId")
 
         binding.logOutBtn.setOnClickListener {
             auth.signOut()

@@ -28,6 +28,15 @@
             android:text="Email"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/account_details_txt"/>
+        <TextView
+            android:id="@+id/account_details_course"
+            style="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/text_view_margin"
+            android:text="Course"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/account_details_email"/>
 
         <Button
             android:id="@+id/log_out_btn"

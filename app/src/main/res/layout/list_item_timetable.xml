@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -21,7 +22,7 @@
         android:onClick="@{()->clickListener.onClick(timetableClass)}"
         android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -34,7 +35,9 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/subject"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"/>
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:id="@+id/list_item_time"
@@ -42,16 +45,34 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/time"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails" />
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_subject"
+                />
+            <ImageView
+                android:id="@+id/location_img"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:layout_constraintBottom_toBottomOf="@id/list_item_location"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_location"
+                app:srcCompat="@drawable/ic_location"
+
+                />
+
             <TextView
                 android:id="@+id/list_item_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/location"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails" />
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                android:textColor="@color/location"
+                app:layout_constraintStart_toEndOf="@id/location_img"
+                app:layout_constraintTop_toBottomOf="@id/list_item_time"
+                />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
 </layout>

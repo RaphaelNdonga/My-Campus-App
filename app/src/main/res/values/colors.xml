@@ -9,4 +9,5 @@
   <color name="textColorPrimary">#000000</color>
   <color name="textColorSecondary">#ffffff</color>
   <color name="classInputPageBackgroundColor">#FFFFFF</color>
+  <color name="location">#4A89F3</color>
 </resources>

@@ -9,7 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.timetable.data.Location
+import com.example.android.mycampusapp.location.Location
 import com.example.android.mycampusapp.timetable.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.SaturdayClassReceiver
 import com.example.android.mycampusapp.util.CalendarUtils
@@ -168,7 +168,7 @@ class SaturdayInputViewModel(
         )
 
     }
-    fun setLocation(loc:Location){
+    fun setLocation(loc: Location){
         location = loc
         textBoxLocation.value = loc.name
     }

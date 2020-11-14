@@ -1,6 +1,4 @@
-package com.example.android.mycampusapp.util
-
-import com.example.android.mycampusapp.timetable.data.Location
+package com.example.android.mycampusapp.location
 
 object LocationUtils {
     fun getJkuatLocations(): List<Location> {

@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentSundayInputBinding
+import com.example.android.mycampusapp.location.LocationUtils
 import com.example.android.mycampusapp.util.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference

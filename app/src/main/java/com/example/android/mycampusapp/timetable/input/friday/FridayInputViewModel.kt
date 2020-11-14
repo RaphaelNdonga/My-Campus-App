@@ -9,7 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.timetable.data.Location
+import com.example.android.mycampusapp.location.Location
 import com.example.android.mycampusapp.timetable.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.FridayClassReceiver
 import com.example.android.mycampusapp.util.CalendarUtils
@@ -45,7 +45,7 @@ class FridayInputViewModel(
     val textBoxLocation = MutableLiveData<String>(fridayClass?.locationName)
     private val id = fridayClass?.id
     private val alarmRequestCode = fridayClass?.alarmRequestCode
-    private var location:Location? = null
+    private var location: Location? = null
 
     private val cal: Calendar = Calendar.getInstance()
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
@@ -61,7 +61,7 @@ class FridayInputViewModel(
     fun save() {
         val currentSubject: String? = textBoxSubject.value
         val currentTime: String? = textBoxTime.value
-        val currentLocation:Location? = location
+        val currentLocation: Location? = location
         if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank() || currentLocation == null) {
             _snackbarText.value = Event(R.string.empty_message)
             return
@@ -168,7 +168,7 @@ class FridayInputViewModel(
         )
 
     }
-    fun setLocation(loc:Location){
+    fun setLocation(loc: Location){
         location = loc
         textBoxLocation.value = loc.name
     }
