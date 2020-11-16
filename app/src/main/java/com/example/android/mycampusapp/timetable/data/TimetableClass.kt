@@ -11,7 +11,8 @@ data class TimetableClass(
     val time: String = "",
     val locationName:String = "",
     val locationCoordinates:String = "",
-    val alarmRequestCode:Int = Random().nextInt(Integer.MAX_VALUE)
+    val alarmRequestCode:Int = Random().nextInt(Integer.MAX_VALUE),
+    val room:String = ""
 ) : Parcelable
 
 /**

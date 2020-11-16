@@ -71,6 +71,17 @@
                 app:layout_constraintStart_toEndOf="@id/location_img"
                 app:layout_constraintTop_toBottomOf="@id/list_item_time"
                 />
+            <TextView
+                android:id="@+id/list_item_room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_box_margin"
+                android:text="@string/room"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_location"
+
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -44,9 +44,10 @@ class WednesdayInputViewModel(
     val textBoxSubject = MutableLiveData<String>(wednesdayClass?.subject)
     val textBoxTime = MutableLiveData<String>(wednesdayClass?.time)
     val textBoxLocation = MutableLiveData<String>(wednesdayClass?.locationName)
+    val textBoxRoom = MutableLiveData<String>(wednesdayClass?.room)
     private val id = wednesdayClass?.id
     private val alarmRequestCode = wednesdayClass?.alarmRequestCode
-    private var location: Location? = null
+    private var location = wednesdayClass?.let { Location(it.locationName,it.locationCoordinates) }
 
     private val cal: Calendar = Calendar.getInstance()
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
@@ -63,7 +64,8 @@ class WednesdayInputViewModel(
         val currentSubject: String? = textBoxSubject.value
         val currentTime: String? = textBoxTime.value
         val currentLocation: Location? = location
-        if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank() || currentLocation == null) {
+        val currentRoom:String? = textBoxRoom.value
+        if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank() || currentLocation == null || currentRoom.isNullOrBlank()) {
             _snackbarText.value = Event(R.string.empty_message)
             return
         } else if (wednesdayClassIsNull()) {
@@ -72,7 +74,8 @@ class WednesdayInputViewModel(
                     subject = currentSubject,
                     time = currentTime,
                     locationName = currentLocation.name,
-                    locationCoordinates = currentLocation.coordinates
+                    locationCoordinates = currentLocation.coordinates,
+                    room = currentRoom
                 )
             addFirestoreData(wednesdayClass)
             wednesdayClassExtra.value = wednesdayClass
@@ -88,7 +91,8 @@ class WednesdayInputViewModel(
                     currentTime,
                     currentLocation.name,
                     currentLocation.coordinates,
-                    alarmRequestCode!!
+                    alarmRequestCode!!,
+                    currentRoom
                 )
             addFirestoreData(wednesdayClass)
             wednesdayClassExtra.value = wednesdayClass

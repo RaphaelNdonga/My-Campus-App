@@ -41,6 +41,7 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
             binding.listItemSubject.text = timetableClass.subject
             binding.listItemTime.text = timetableClass.time
             binding.listItemLocation.text = timetableClass.locationName
+            binding.listItemRoom.text = timetableClass.room
             binding.clickListener = clickListener
             itemView.isActivated = isActivated
         }

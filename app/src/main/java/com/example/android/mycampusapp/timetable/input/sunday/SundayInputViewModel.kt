@@ -43,9 +43,10 @@ class SundayInputViewModel(
     val textBoxSubject = MutableLiveData<String>(sundayClass?.subject)
     val textBoxTime = MutableLiveData<String>(sundayClass?.time)
     val textBoxLocation = MutableLiveData<String>(sundayClass?.locationName)
+    val textBoxRoom = MutableLiveData<String>(sundayClass?.room)
     private val id = sundayClass?.id
     private val alarmRequestCode = sundayClass?.alarmRequestCode
-    private var location: Location? = null
+    private var location = sundayClass?.let { Location(it.locationName, it.locationCoordinates) }
 
     private val cal: Calendar = Calendar.getInstance()
     private val hour = cal.get(Calendar.HOUR_OF_DAY)
@@ -62,7 +63,8 @@ class SundayInputViewModel(
         val currentSubject: String? = textBoxSubject.value
         val currentTime: String? = textBoxTime.value
         val currentLocation: Location? = location
-        if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank() || currentLocation == null) {
+        val currentRoom: String? = textBoxRoom.value
+        if (currentSubject.isNullOrBlank() || currentTime.isNullOrBlank() || currentLocation == null || currentRoom.isNullOrBlank()) {
             _snackbarText.value = Event(R.string.empty_message)
             return
         } else if (sundayClassIsNull()) {
@@ -71,7 +73,8 @@ class SundayInputViewModel(
                     subject = currentSubject,
                     time = currentTime,
                     locationName = currentLocation.name,
-                    locationCoordinates = currentLocation.coordinates
+                    locationCoordinates = currentLocation.coordinates,
+                    room = currentRoom
                 )
             addFirestoreData(sundayClass)
             sundayClassExtra.value = sundayClass
@@ -87,7 +90,8 @@ class SundayInputViewModel(
                     currentTime,
                     currentLocation.name,
                     currentLocation.coordinates,
-                    alarmRequestCode!!
+                    alarmRequestCode!!,
+                    currentRoom
                 )
             addFirestoreData(sundayClass)
             sundayClassExtra.value = sundayClass
@@ -167,7 +171,8 @@ class SundayInputViewModel(
         )
 
     }
-    fun setLocation(loc: Location){
+
+    fun setLocation(loc: Location) {
         location = loc
         textBoxLocation.value = loc.name
     }
