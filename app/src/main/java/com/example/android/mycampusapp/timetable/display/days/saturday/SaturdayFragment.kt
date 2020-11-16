@@ -89,6 +89,11 @@ class SaturdayFragment : Fragment() {
                 })
         recyclerView.adapter = adapter
 
+        binding.saturdayRefreshLayout.setOnRefreshListener {
+            snapshotListener.remove()
+            viewModel.addSnapshotListener()
+            binding.saturdayRefreshLayout.isRefreshing = false
+        }
 
         viewModel.addNewClass.observe(viewLifecycleOwner,
             EventObserver {

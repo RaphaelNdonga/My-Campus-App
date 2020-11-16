@@ -89,6 +89,12 @@ class ThursdayFragment : Fragment() {
         recyclerView.adapter = adapter
 
 
+        binding.thursdayRefreshLayout.setOnRefreshListener {
+            snapshotListener.remove()
+            viewModel.addSnapshotListener()
+            binding.thursdayRefreshLayout.isRefreshing = false
+        }
+
         viewModel.addNewClass.observe(viewLifecycleOwner,
             EventObserver {
                 findNavController().navigate(

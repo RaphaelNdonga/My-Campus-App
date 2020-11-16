@@ -20,6 +20,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/monday_refresh_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/monday_recycler_view"
                 android:layout_width="match_parent"
@@ -28,6 +33,8 @@
                 app:mondayListData="@{viewModel.mondayClasses2}"
                 tools:itemCount="5"
                 tools:listitem="@layout/list_item_timetable" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
             <ImageView
                 android:id="@+id/imageView2"
@@ -65,5 +72,7 @@
             android:onClick="@{()->viewModel.addNewClass()}"
             app:borderWidth="0dp"
             app:srcCompat="@drawable/ic_add" />
+
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

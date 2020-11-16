@@ -93,6 +93,12 @@ class MondayFragment : Fragment() {
                 })
         recyclerView.adapter = adapter
 
+        binding.mondayRefreshLayout.setOnRefreshListener {
+            snapshotListener.remove()
+            viewModel.addSnapshotListener()
+            binding.mondayRefreshLayout.isRefreshing = false
+        }
+
 
         viewModel.addNewClass.observe(viewLifecycleOwner,
             EventObserver {

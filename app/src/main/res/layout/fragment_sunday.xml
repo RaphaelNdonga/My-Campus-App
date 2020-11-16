@@ -20,14 +20,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/sunday_recycler_view"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/sunday_refresh_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager=".timetable.display.CustomLinearLayoutManager"
-                app:sundayListData="@{viewModel.sundayClasses2}"
-                tools:itemCount="5"
-                tools:listitem="@layout/list_item_timetable" />
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/sunday_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layoutManager=".timetable.display.CustomLinearLayoutManager"
+                    app:sundayListData="@{viewModel.sundayClasses2}"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/list_item_timetable" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <ImageView
                 android:id="@+id/imageView5"
@@ -48,7 +54,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imageView5"
-                app:sundayTextStatus="@{viewModel.status}"/>
+                app:sundayTextStatus="@{viewModel.status}" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -60,8 +66,8 @@
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/colorPrimary"
-            android:visibility="gone"
             android:onClick="@{()->viewModel.addNewClass()}"
+            android:visibility="gone"
             app:borderWidth="0dp"
             app:srcCompat="@drawable/ic_add" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

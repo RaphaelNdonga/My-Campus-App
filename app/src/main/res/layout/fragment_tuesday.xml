@@ -20,6 +20,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/tuesday_refresh_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/tuesday_recycler_view"
                 android:layout_width="match_parent"
@@ -28,6 +32,7 @@
                 app:tuesdayListData="@{viewModel.tuesdayClasses2}"
                 tools:itemCount="5"
                 tools:listitem="@layout/list_item_timetable" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <ImageView
                 android:id="@+id/imageView7"

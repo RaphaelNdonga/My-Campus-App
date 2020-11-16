@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.example.android.mycampusapp.timetable.display.days.friday.FridayViewModel" />
@@ -18,14 +19,21 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/friday_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:itemCount="5"
-            tools:listitem="@layout/list_item_timetable"
-            app:fridayListData="@{viewModel.fridayClasses2}"
-            app:layoutManager=".timetable.display.CustomLinearLayoutManager"/>
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/friday_refresh_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/friday_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:fridayListData="@{viewModel.fridayClasses2}"
+                    app:layoutManager=".timetable.display.CustomLinearLayoutManager"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/list_item_timetable" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <ImageView
                 android:id="@+id/imageView3"
@@ -43,10 +51,10 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/toolbar_padding"
                 android:text="@string/empty_fragment_message"
+                app:fridayTextStatus="@{viewModel.status}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView3"
-                app:fridayTextStatus="@{viewModel.status}"/>
+                app:layout_constraintTop_toBottomOf="@+id/imageView3" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -54,14 +62,14 @@
             android:id="@+id/friday_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_add"
             android:layout_gravity="bottom|end"
-            android:layout_marginBottom="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
             android:backgroundTint="@color/colorPrimary"
+            android:onClick="@{()->viewModel.addNewClass()}"
             android:visibility="gone"
             app:borderWidth="0dp"
-            android:onClick="@{()->viewModel.addNewClass()}"/>
+            app:srcCompat="@drawable/ic_add" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
