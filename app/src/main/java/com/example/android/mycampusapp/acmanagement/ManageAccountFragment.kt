@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.example.android.mycampusapp.LoginActivity
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentAccountManagementBinding
@@ -38,6 +39,8 @@ class ManageAccountFragment : Fragment() {
         )
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val settingsPreferences =  PreferenceManager.getDefaultSharedPreferences(this.context)
+
 
         binding.accountDetailsEmail.text = sharedPreferences.getString(USER_EMAIL, "email")
         binding.accountDetailsCourse.text = sharedPreferences.getString(COURSE_ID,"courseId")
@@ -45,6 +48,7 @@ class ManageAccountFragment : Fragment() {
         binding.logOutBtn.setOnClickListener {
             auth.signOut()
             sharedPreferences.edit().clear().apply()
+            settingsPreferences.edit().clear().apply()
             val loginIntent = Intent(this.context, LoginActivity::class.java)
             startActivity(loginIntent)
             requireActivity().finish()

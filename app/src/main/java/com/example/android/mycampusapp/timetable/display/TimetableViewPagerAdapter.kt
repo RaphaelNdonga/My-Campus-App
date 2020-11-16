@@ -14,8 +14,8 @@ import timber.log.Timber
 
 class TimetableViewPagerAdapter(private val fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int {
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(fragment.context)
-        val weekendSwitch = sharedPreferences.getBoolean("weekend",false)
+        val settingsPreferences = PreferenceManager.getDefaultSharedPreferences(fragment.context)
+        val weekendSwitch = settingsPreferences.getBoolean("weekend",false)
         Timber.i("Weekend switch is at $weekendSwitch")
         return when(weekendSwitch){
             true -> 7
