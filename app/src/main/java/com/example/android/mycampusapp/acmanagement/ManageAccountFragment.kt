@@ -26,6 +26,7 @@ class ManageAccountFragment : Fragment() {
     @Inject
     lateinit var auth: FirebaseAuth
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var settingsPreferences:SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +40,7 @@ class ManageAccountFragment : Fragment() {
         )
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val settingsPreferences =  PreferenceManager.getDefaultSharedPreferences(this.context)
+        settingsPreferences =  PreferenceManager.getDefaultSharedPreferences(this.context)
 
 
         binding.accountDetailsEmail.text = sharedPreferences.getString(USER_EMAIL, "email")
@@ -54,7 +55,6 @@ class ManageAccountFragment : Fragment() {
             requireActivity().finish()
         }
         binding.deleteAccountBtn.setOnClickListener {
-            settingsPreferences.edit().clear().apply()
             showConfirmationDialog()
         }
 
@@ -68,6 +68,7 @@ class ManageAccountFragment : Fragment() {
             run {
                 auth.currentUser?.delete()
                 sharedPreferences.edit().clear().apply()
+                settingsPreferences.edit().clear().apply()
                 val loginIntent = Intent(this.context, LoginActivity::class.java)
                 startActivity(loginIntent)
                 requireActivity().finish()
