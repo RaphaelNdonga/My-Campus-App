@@ -54,6 +54,7 @@ class ManageAccountFragment : Fragment() {
             requireActivity().finish()
         }
         binding.deleteAccountBtn.setOnClickListener {
+            settingsPreferences.edit().clear().apply()
             showConfirmationDialog()
         }
 
