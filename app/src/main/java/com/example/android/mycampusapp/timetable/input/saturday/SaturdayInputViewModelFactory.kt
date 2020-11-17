@@ -3,7 +3,7 @@ package com.example.android.mycampusapp.timetable.input.saturday
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.android.mycampusapp.timetable.data.TimetableClass
+import com.example.android.mycampusapp.data.TimetableClass
 import com.google.firebase.firestore.DocumentReference
 
 class SaturdayInputViewModelFactory(

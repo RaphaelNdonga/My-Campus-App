@@ -15,8 +15,8 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
+import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.databinding.FragmentThursdayBinding
-import com.example.android.mycampusapp.timetable.data.TimetableClass
 import com.example.android.mycampusapp.timetable.display.*
 import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver

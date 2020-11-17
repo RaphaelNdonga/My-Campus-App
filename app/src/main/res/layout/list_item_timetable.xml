@@ -6,7 +6,7 @@
 
         <variable
             name="timetableClass"
-            type="com.example.android.mycampusapp.timetable.data.TimetableClass" />
+            type="com.example.android.mycampusapp.data.TimetableClass" />
 
         <variable
             name="clickListener"
@@ -16,9 +16,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_margin="@dimen/card_margin"
         android:onClick="@{()->clickListener.onClick(timetableClass)}"
         android:orientation="vertical">
 
@@ -26,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:padding="@dimen/card_constraint_layout_padding"
             android:background="@drawable/item_background">
 
             <TextView

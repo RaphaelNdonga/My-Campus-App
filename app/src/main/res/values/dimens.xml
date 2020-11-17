@@ -9,4 +9,7 @@
     <dimen name="progress_bar_margin">8dp</dimen>
     <dimen name="text_view_margin">16dp</dimen>
     <dimen name="big_distance_margin">100dp</dimen>
+    <dimen name="card_constraint_layout_padding">16dp</dimen>
+    <dimen name="card_margin">8dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

@@ -6,7 +6,9 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.timetable.data.TimetableClass
+import com.example.android.mycampusapp.assessments.AssignmentsAdapter
+import com.example.android.mycampusapp.data.Assignment
+import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.display.TimetableAdapter
 import com.example.android.mycampusapp.timetable.display.days.friday.FridayDataStatus
 import com.example.android.mycampusapp.timetable.display.days.monday.MondayDataStatus
@@ -275,6 +277,11 @@ fun bindSundayTextStatus(statusTextView: TextView, status: SundayDataStatus?){
             statusTextView.visibility = View.GONE
         }
     }
+}
+@BindingAdapter("assignmentListData")
+fun bindAssignmentRecyclerView(recyclerView: RecyclerView,data:List<Assignment>?){
+    val adapter = recyclerView.adapter as AssignmentsAdapter
+    adapter.submitList(data)
 }
 
 

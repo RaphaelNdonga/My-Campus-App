@@ -1,5 +1,7 @@
 package com.example.android.mycampusapp.location
 
+import com.example.android.mycampusapp.data.Location
+
 object LocationUtils {
     fun getJkuatLocations(): List<Location> {
         return listOf(

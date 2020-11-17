@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.timetable.data
+package com.example.android.mycampusapp.data
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
