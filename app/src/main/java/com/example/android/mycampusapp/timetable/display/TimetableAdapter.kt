@@ -10,23 +10,24 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.databinding.ListItemTimetableBinding
-import com.example.android.mycampusapp.timetable.data.TimetableClass
 
 class TimetableAdapter(private val clickListener: TimetableListener) :
     ListAdapter<TimetableClass, TimetableAdapter.ViewHolder>(
-        DiffUtilCallBack()
+        DiffUtilCallBack
     ) {
 
     var tracker: SelectionTracker<Long>? = null
 
-    class ViewHolder(private val binding: ListItemTimetableBinding,private val context: Context) : RecyclerView.ViewHolder(binding.root){
+    class ViewHolder(private val binding: ListItemTimetableBinding, private val context: Context) :
+        RecyclerView.ViewHolder(binding.root) {
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ListItemTimetableBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(
-                    binding,parent.context
+                    binding, parent.context
                 )
             }
         }
@@ -54,7 +55,7 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
 
         fun setMapListener(currentClass: TimetableClass?) {
             val mapUri = Uri.parse(currentClass?.locationCoordinates)
-            val mapIntent = Intent(Intent.ACTION_VIEW,mapUri)
+            val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
             mapIntent.setPackage("com.google.android.apps.maps")
 
             binding.listItemLocation.setOnClickListener {
@@ -84,27 +85,20 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
         }
         holder.setMapListener(currentClass)
     }
+
+    companion object DiffUtilCallBack : DiffUtil.ItemCallback<TimetableClass>() {
+        override fun areItemsTheSame(oldItem: TimetableClass, newItem: TimetableClass): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: TimetableClass, newItem: TimetableClass): Boolean {
+            return oldItem == newItem
+        }
+    }
 }
 
 class TimetableListener(val clickListener: (timetableClass: TimetableClass) -> Unit) {
     fun onClick(timetableClass: TimetableClass) = clickListener(timetableClass)
 }
 
-class DiffUtilCallBack : DiffUtil.ItemCallback<TimetableClass>() {
-    override fun areItemsTheSame(oldItem: TimetableClass, newItem: TimetableClass): Boolean {
-        return oldItem.id == newItem.id
-    }
 
-    override fun areContentsTheSame(oldItem: TimetableClass, newItem: TimetableClass): Boolean {
-        /**
-        Previous was return oldItem == newItem.
-        An error runtime error was persisting whereby the contents were being regarded as the same
-        even when they weren't the same.
-        I chose to always return false because very rarely, if ever, will 2 classes be scheduled at
-        the same time. And even when so, they will not be many such cases, therefore the value for
-        oldItem == newItem is very low
-         */
-        return false
-    }
-
-}
