@@ -12,43 +12,6 @@ import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.display.TimetableAdapter
 
-
-@BindingAdapter("mondayListData")
-fun bindMondayRecyclerView(recyclerView: RecyclerView, data: List<TimetableClass>?) {
-    val adapter: TimetableAdapter = recyclerView.adapter as TimetableAdapter
-    adapter.submitList(data)
-}
-
-@BindingAdapter("tuesdayListData")
-fun bindTuesdayRecyclerView(recyclerView: RecyclerView, data: List<TimetableClass>?) {
-    val adapter = recyclerView.adapter as TimetableAdapter
-    adapter.submitList(data)
-}
-
-@BindingAdapter("wednesdayListData")
-fun bindWednesdayRecyclerView(recyclerView: RecyclerView, data: List<TimetableClass>?) {
-    val adapter = recyclerView.adapter as TimetableAdapter
-    adapter.submitList(data)
-}
-
-@BindingAdapter("thursdayListData")
-fun bindThursdayRecyclerView(recyclerView: RecyclerView, data: List<TimetableClass>?) {
-    val adapter = recyclerView.adapter as TimetableAdapter
-    adapter.submitList(data)
-}
-
-@BindingAdapter("fridayListData")
-fun bindFridayRecyclerview(recyclerView: RecyclerView, data: List<TimetableClass>?) {
-    val adapter = recyclerView.adapter as TimetableAdapter
-    adapter.submitList(data)
-}
-
-@BindingAdapter("saturdayListData")
-fun bindSaturdayRecyclerView(recyclerView: RecyclerView, data: List<TimetableClass>?) {
-    val adapter = recyclerView.adapter as TimetableAdapter
-    adapter.submitList(data)
-}
-
 @BindingAdapter("dataStatusImage")
 fun bindDataImageStatus(statusImgView: ImageView, status: DataStatus?) {
     when (status) {
