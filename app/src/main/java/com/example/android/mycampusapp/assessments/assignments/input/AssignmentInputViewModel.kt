@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.assessments
+package com.example.android.mycampusapp.assessments.assignments.input
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,9 +8,9 @@ import com.example.android.mycampusapp.data.Assignment
 import com.example.android.mycampusapp.util.Event
 import com.google.firebase.firestore.CollectionReference
 
-class AssignmentInputViewModel(private val assignmentsCollection: CollectionReference) : ViewModel() {
-    val textBoxSubject = MutableLiveData<String>()
-    val textBoxDate = MutableLiveData<String>()
+class AssignmentInputViewModel(private val assignmentsCollection: CollectionReference,private val assignment:Assignment?) : ViewModel() {
+    val textBoxSubject = MutableLiveData<String>(assignment?.subject)
+    val textBoxDate = MutableLiveData<String>(assignment?.date)
 
     private val _snackBarEvent = MutableLiveData<Event<Int>>()
     val snackBarEvent:LiveData<Event<Int>>

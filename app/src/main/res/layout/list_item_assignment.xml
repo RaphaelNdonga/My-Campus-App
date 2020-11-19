@@ -6,21 +6,27 @@
         <variable
             name="assignment"
             type="com.example.android.mycampusapp.data.Assignment" />
+        <variable
+            name="clickListener"
+            type="com.example.android.mycampusapp.assessments.assignments.display.AssignmentsListener" />
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/card_margin">
+        android:layout_margin="@dimen/card_margin"
+        android:onClick="@{()->clickListener.onClick(assignment)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/card_constraint_layout_padding">
+            android:background="@drawable/item_background"
+            android:padding="@dimen/card_constraint_layout_padding"
+            >
 
             <TextView
                 android:id="@+id/assignment_subject"
-                style="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
@@ -30,7 +36,7 @@
 
             <TextView
                 android:id="@+id/assignment_due_date"
-                style="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"

@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.assessments
+package com.example.android.mycampusapp.assessments.assignments.display
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

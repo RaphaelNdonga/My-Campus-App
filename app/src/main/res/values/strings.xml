@@ -28,7 +28,7 @@
     <string name="friday_updated">Friday class has been updated</string>
     <string name="saturday_saved">Saturday class has been saved</string>
     <string name="saturday_updated">Saturday class has been updated</string>
-    <string name="empty_fragment_message">No classes today!</string>
+    <string name="no_assignments_message">No assignments in the near future!</string>
     <string name="timetable_menu">Timetable</string>
     <string name="assignments_menu">Assignments</string>
     <string name="successful_upload">Data added successfully</string>
@@ -47,4 +47,5 @@
     <string name="location_list_title">Select the class location</string>
     <string name="room">room</string>
     <string name="date">date</string>
+    <string name="no_classes_message">No classes today!</string>
 </resources>

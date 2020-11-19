@@ -17,13 +17,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.databinding.FragmentTuesdayBinding
-import com.example.android.mycampusapp.timetable.display.*
-import com.example.android.mycampusapp.util.COURSE_ID
-import com.example.android.mycampusapp.util.EventObserver
-import com.example.android.mycampusapp.util.IS_ADMIN
-import com.example.android.mycampusapp.util.sharedPrefFile
+import com.example.android.mycampusapp.timetable.display.TimetableAdapter
+import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
+import com.example.android.mycampusapp.timetable.display.TimetableItemDetailsLookup
+import com.example.android.mycampusapp.timetable.display.TimetableListener
+import com.example.android.mycampusapp.util.*
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,9 +32,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class TuesdayFragment : Fragment() {
     private lateinit var snapshotListener: ListenerRegistration
-
-    @Inject
-    lateinit var auth: FirebaseAuth
 
     @Inject
     lateinit var courseCollection: CollectionReference
@@ -158,7 +154,7 @@ class TuesdayFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.timetable_toolbar_menu, menu)
+        inflater.inflate(R.menu.main_toolbar_menu, menu)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {

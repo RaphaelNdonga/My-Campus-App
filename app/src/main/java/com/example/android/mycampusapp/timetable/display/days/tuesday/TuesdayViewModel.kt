@@ -8,6 +8,7 @@ import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.TuesdayClassReceiver
 import com.example.android.mycampusapp.util.Event
@@ -16,20 +17,16 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 class TuesdayViewModel(courseDocument: DocumentReference, private val app: Application) :
     AndroidViewModel(app) {
 
-    private val _tuesdayClasses2 = MutableLiveData<List<TimetableClass>>()
-    val tuesdayClasses2: LiveData<List<TimetableClass>>
-        get() = _tuesdayClasses2
+    private val _tuesdayClasses = MutableLiveData<List<TimetableClass>>()
+    val tuesdayClasses: LiveData<List<TimetableClass>>
+        get() = _tuesdayClasses
 
-    private val _status = MutableLiveData<TuesdayDataStatus>()
-    val status: LiveData<TuesdayDataStatus> = _status
+    private val _status = MutableLiveData<DataStatus>()
+    val status: LiveData<DataStatus> = _status
 
     private val tuesdayFirestore = courseDocument.collection("tuesday")
 
@@ -49,21 +46,18 @@ class TuesdayViewModel(courseDocument: DocumentReference, private val app: Appli
     val hasPendingWrites: LiveData<Event<Boolean>>
         get() = _hasPendingWrites
 
-    private val job = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
-
-    private fun checkTuesdayDataStatus() = uiScope.launch {
-        val tuesdayClasses = _tuesdayClasses2.value
+    private fun checkDataStatus() {
+        val tuesdayClasses = _tuesdayClasses.value
         try {
             if (tuesdayClasses.isNullOrEmpty()) {
                 throw NullPointerException()
             }
             _status.value =
-                TuesdayDataStatus.NOT_EMPTY
+                DataStatus.NOT_EMPTY
         } catch (e: Exception) {
             _status.value =
-                TuesdayDataStatus.EMPTY
+                DataStatus.EMPTY
         }
 
     }
@@ -81,33 +75,27 @@ class TuesdayViewModel(courseDocument: DocumentReference, private val app: Appli
         TimePickerValues.timeSetByTimePicker.value = ""
     }
 
-    fun deleteList(list: List<TimetableClass?>) = uiScope.launch {
+    fun deleteList(list: List<TimetableClass?>) {
         list.forEach { tuesdayClass ->
             if (tuesdayClass != null) {
                 tuesdayFirestore.document(tuesdayClass.id).delete()
                 cancelAlarm(tuesdayClass)
             }
         }
-        checkTuesdayDataStatus()
+        checkDataStatus()
     }
 
     fun deleteIconPressed() {
-        _deleteTuesdayClasses.value =
-            Event(Unit)
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        job.cancel()
+        _deleteTuesdayClasses.value = Event(Unit)
     }
 
     private fun updateData(mutableList: MutableList<TimetableClass>) {
-        _tuesdayClasses2.value = mutableList
-        checkTuesdayDataStatus()
+        _tuesdayClasses.value = mutableList
+        checkDataStatus()
     }
 
     fun addSnapshotListener(): ListenerRegistration {
-        _status.value = TuesdayDataStatus.LOADING
+        _status.value = DataStatus.LOADING
         return tuesdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
@@ -134,5 +122,3 @@ class TuesdayViewModel(courseDocument: DocumentReference, private val app: Appli
         alarmManager.cancel(pendingIntent)
     }
 }
-
-enum class TuesdayDataStatus { EMPTY, NOT_EMPTY, LOADING }

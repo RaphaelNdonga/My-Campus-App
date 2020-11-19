@@ -92,7 +92,7 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
         }
 
         override fun areContentsTheSame(oldItem: TimetableClass, newItem: TimetableClass): Boolean {
-            return oldItem == newItem
+            return false
         }
     }
 }

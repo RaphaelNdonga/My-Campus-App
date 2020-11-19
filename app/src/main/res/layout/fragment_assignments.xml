@@ -4,23 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.assessments.AssignmentsViewModel" />
+            type="com.example.android.mycampusapp.assessments.assignments.display.AssignmentsViewModel" />
 
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/assignments_recycler_view"
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:assignmentListData="@{viewModel.assignments}"
-            app:layoutManager=".timetable.display.CustomLinearLayoutManager"
-            tools:listitem="@layout/list_item_assignment"
-            />
+            android:layout_height="match_parent">
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/assignments_refresh_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/assignments_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:assignmentListData="@{viewModel.assignments}"
+                    app:layoutManager=".util.CustomLinearLayoutManager"
+                    tools:listitem="@layout/list_item_assignment" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <ImageView
+                android:id="@+id/assignment_empty_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:dataStatusImage="@{viewModel.status}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/assignment_empty_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/toolbar_padding"
+                android:text="@string/no_assignments_message"
+                android:visibility="gone"
+                app:dataStatusText="@{viewModel.status}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/assignment_empty_image"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/assignments_fab"
             android:layout_width="wrap_content"
@@ -29,7 +62,6 @@
             android:layout_margin="@dimen/fab_margin"
             android:onClick="@{()->viewModel.navigateToInput()}"
             app:backgroundTint="@color/colorPrimary"
-            app:srcCompat="@drawable/ic_add"
-            />
+            app:srcCompat="@drawable/ic_add" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

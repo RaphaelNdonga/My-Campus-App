@@ -28,33 +28,34 @@
                 android:id="@+id/monday_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layoutManager=".timetable.display.CustomLinearLayoutManager"
-                app:mondayListData="@{viewModel.mondayClasses2}"
+                app:layoutManager=".util.CustomLinearLayoutManager"
+                app:timetableListData="@{viewModel.mondayClasses}"
                 tools:itemCount="5"
                 tools:listitem="@layout/list_item_timetable" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/assignment_empty_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:mondayDataStatus="@{viewModel.status}" />
+                app:dataStatusImage="@{viewModel.status}" />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/assignment_empty_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/toolbar_padding"
-                android:text="@string/empty_fragment_message"
+                android:text="@string/no_classes_message"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2"
-                app:mondayTextStatus="@{viewModel.status}"/>
+                app:dataStatusText="@{viewModel.status}"
+                app:layout_constraintTop_toBottomOf="@+id/assignment_empty_image"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

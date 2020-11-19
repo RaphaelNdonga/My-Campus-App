@@ -137,16 +137,11 @@
     </fragment>
     <fragment
         android:id="@+id/assignmentsFragment"
-        android:name="com.example.android.mycampusapp.assessments.AssignmentsFragment"
+        android:name="com.example.android.mycampusapp.assessments.assignments.display.AssignmentsFragment"
         android:label="@string/assignments_menu" >
         <action
             android:id="@+id/action_assignmentsFragment_to_assignmentInput"
             app:destination="@id/assignmentInput" />
-        <argument
-            android:name="assignment"
-            android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.data.Assignment"
-            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -165,12 +160,17 @@
         android:label="Manage Account" />
     <fragment
         android:id="@+id/assignmentInput"
-        android:name="com.example.android.mycampusapp.assessments.AssignmentInputFragment"
+        android:name="com.example.android.mycampusapp.assessments.assignments.input.AssignmentInputFragment"
         android:label="Set Assignment">
         <action
             android:id="@+id/action_assignmentInput_to_assignmentsFragment"
             app:destination="@id/assignmentsFragment"
             app:popUpTo="@id/assignmentsFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="assignment"
+            android:defaultValue="@null"
+            app:argType="com.example.android.mycampusapp.data.Assignment"
+            app:nullable="true" />
     </fragment>
 </navigation>

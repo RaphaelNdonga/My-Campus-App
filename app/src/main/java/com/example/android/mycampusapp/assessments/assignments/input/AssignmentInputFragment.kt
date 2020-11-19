@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.assessments
+package com.example.android.mycampusapp.assessments.assignments.input
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.databinding.FragmentAssignmentInputBinding
 import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver
@@ -26,6 +27,7 @@ class AssignmentInputFragment : Fragment() {
     lateinit var courseCollection: CollectionReference
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var courseId: String
+    private val assignmentArgs by navArgs<AssignmentInputFragmentArgs>()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,9 +37,10 @@ class AssignmentInputFragment : Fragment() {
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         courseId = sharedPreferences.getString(COURSE_ID, "")!!
+
         viewModel = ViewModelProvider(
             this,
-            AssignmentInputViewModelFactory(courseCollection.document(courseId).collection("assignments"))
+            AssignmentInputViewModelFactory(courseCollection.document(courseId).collection("assignments"),assignmentArgs.assignment)
         ).get(AssignmentInputViewModel::class.java)
 
         binding.viewModel = viewModel

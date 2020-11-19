@@ -29,32 +29,33 @@
                     android:id="@+id/friday_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:fridayListData="@{viewModel.fridayClasses2}"
-                    app:layoutManager=".timetable.display.CustomLinearLayoutManager"
+                    app:layoutManager=".util.CustomLinearLayoutManager"
+                    app:timetableListData="@{viewModel.fridayClasses}"
                     tools:itemCount="5"
                     tools:listitem="@layout/list_item_timetable" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <ImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/friday_empty_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:fridayDataStatus="@{viewModel.status}"
+                app:dataStatusImage="@{viewModel.status}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/friday_empty_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/toolbar_padding"
-                android:text="@string/empty_fragment_message"
-                app:fridayTextStatus="@{viewModel.status}"
+                android:text="@string/no_classes_message"
+                android:visibility="gone"
+                app:dataStatusText="@{viewModel.status}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+                app:layout_constraintTop_toBottomOf="@+id/friday_empty_image" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

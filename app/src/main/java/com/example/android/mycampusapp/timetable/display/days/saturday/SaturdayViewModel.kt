@@ -8,6 +8,7 @@ import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.SaturdayClassReceiver
 import com.example.android.mycampusapp.util.Event
@@ -16,20 +17,16 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 class SaturdayViewModel(courseDocument: DocumentReference, private val app: Application) :
     AndroidViewModel(app) {
 
-    private val _saturdayClasses2 = MutableLiveData<List<TimetableClass>>()
-    val saturdayClasses2: LiveData<List<TimetableClass>>
-        get() = _saturdayClasses2
+    private val _saturdayClasses = MutableLiveData<List<TimetableClass>>()
+    val saturdayClasses: LiveData<List<TimetableClass>>
+        get() = _saturdayClasses
 
-    private val _status = MutableLiveData<SaturdayDataStatus>()
-    val status: LiveData<SaturdayDataStatus> = _status
+    private val _status = MutableLiveData<DataStatus>()
+    val status: LiveData<DataStatus> = _status
 
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
@@ -48,21 +45,17 @@ class SaturdayViewModel(courseDocument: DocumentReference, private val app: Appl
 
     private val saturdayFirestore = courseDocument.collection("saturday")
 
-    private val job = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + job)
-
-
-    private fun checkSaturdayDataStatus() = uiScope.launch {
-        val saturdayClasses = _saturdayClasses2.value
+    private fun checkDataStatus(){
+        val saturdayClasses = _saturdayClasses.value
         try {
             if (saturdayClasses.isNullOrEmpty()) {
                 throw NullPointerException()
             }
             _status.value =
-                SaturdayDataStatus.NOT_EMPTY
+                DataStatus.NOT_EMPTY
         } catch (e: Exception) {
             _status.value =
-                SaturdayDataStatus.EMPTY
+                DataStatus.EMPTY
         }
     }
 
@@ -79,14 +72,14 @@ class SaturdayViewModel(courseDocument: DocumentReference, private val app: Appl
         TimePickerValues.timeSetByTimePicker.value = ""
     }
 
-    fun deleteList(list: List<TimetableClass?>) = uiScope.launch {
+    fun deleteList(list: List<TimetableClass?>){
         list.forEach { saturdayClass ->
             if (saturdayClass != null) {
                 saturdayFirestore.document(saturdayClass.id).delete()
                 cancelAlarm(saturdayClass)
             }
         }
-        checkSaturdayDataStatus()
+        checkDataStatus()
     }
 
     fun deleteIconPressed() {
@@ -94,18 +87,13 @@ class SaturdayViewModel(courseDocument: DocumentReference, private val app: Appl
             Event(Unit)
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        job.cancel()
-    }
-
     private fun updateData(mutableList: MutableList<TimetableClass>) {
-        _saturdayClasses2.value = mutableList
-        checkSaturdayDataStatus()
+        _saturdayClasses.value = mutableList
+        checkDataStatus()
     }
 
     fun addSnapshotListener(): ListenerRegistration {
-        _status.value = SaturdayDataStatus.LOADING
+        _status.value = DataStatus.LOADING
         return saturdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
@@ -131,8 +119,4 @@ class SaturdayViewModel(courseDocument: DocumentReference, private val app: Appl
         )
         alarmManager.cancel(pendingIntent)
     }
-}
-
-enum class SaturdayDataStatus {
-    EMPTY, NOT_EMPTY, LOADING
 }

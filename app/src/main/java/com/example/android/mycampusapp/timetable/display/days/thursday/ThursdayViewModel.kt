@@ -8,6 +8,7 @@ import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.ThursdayClassReceiver
 import com.example.android.mycampusapp.util.Event
@@ -16,21 +17,17 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class ThursdayViewModel(courseDocument: DocumentReference, private val app: Application) :
     AndroidViewModel(app) {
 
-    private val _thursdayClasses2 = MutableLiveData<List<TimetableClass>>()
-    val thursdayClasses2: LiveData<List<TimetableClass>>
-        get() = _thursdayClasses2
+    private val _thursdayClasses = MutableLiveData<List<TimetableClass>>()
+    val thursdayClasses: LiveData<List<TimetableClass>>
+        get() = _thursdayClasses
 
-    private val _status = MutableLiveData<ThursdayDataStatus>()
-    val status: LiveData<ThursdayDataStatus> = _status
+    private val _status = MutableLiveData<DataStatus>()
+    val status: LiveData<DataStatus> = _status
 
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
@@ -48,21 +45,16 @@ class ThursdayViewModel(courseDocument: DocumentReference, private val app: Appl
 
     private val thursdayFirestore = courseDocument.collection("thursday")
 
-    private val job = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
-
-    private fun checkThursdayDataStatus() = uiScope.launch {
-        val thursdayClasses = _thursdayClasses2.value
+    private fun checkThursdayDataStatus(){
+        val thursdayClasses = _thursdayClasses.value
         try {
             if (thursdayClasses.isNullOrEmpty()) {
                 throw NullPointerException()
             }
-            _status.value =
-                ThursdayDataStatus.NOT_EMPTY
+            _status.value = DataStatus.NOT_EMPTY
         } catch (e: Exception) {
-            _status.value =
-                ThursdayDataStatus.EMPTY
+            _status.value = DataStatus.EMPTY
         }
     }
 
@@ -80,7 +72,7 @@ class ThursdayViewModel(courseDocument: DocumentReference, private val app: Appl
         TimePickerValues.timeSetByTimePicker.value = ""
     }
 
-    fun deleteList(list: List<TimetableClass?>) = uiScope.launch {
+    fun deleteList(list: List<TimetableClass?>){
         list.forEach { thursdayClass ->
             if (thursdayClass != null) {
                 thursdayFirestore.document(thursdayClass.id).delete()
@@ -95,18 +87,13 @@ class ThursdayViewModel(courseDocument: DocumentReference, private val app: Appl
             Event(Unit)
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        job.cancel()
-    }
-
     private fun update(mutableList: MutableList<TimetableClass>) {
-        _thursdayClasses2.value = mutableList
+        _thursdayClasses.value = mutableList
         checkThursdayDataStatus()
     }
 
     fun addSnapshotListener(): ListenerRegistration {
-        _status.value = ThursdayDataStatus.LOADING
+        _status.value = DataStatus.LOADING
         return thursdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
@@ -132,8 +119,4 @@ class ThursdayViewModel(courseDocument: DocumentReference, private val app: Appl
         )
         alarmManager.cancel(pendingIntent)
     }
-}
-
-enum class ThursdayDataStatus {
-    EMPTY, NOT_EMPTY, LOADING
 }

@@ -8,6 +8,7 @@ import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.MondayClassReceiver
 import com.example.android.mycampusapp.util.Event
@@ -16,22 +17,18 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 class MondayViewModel(courseId: DocumentReference, private val app: Application) :
     AndroidViewModel(app) {
 
-    private val _mondayClasses2 = MutableLiveData<List<TimetableClass>>()
-    val mondayClasses2: LiveData<List<TimetableClass>>
-        get() = _mondayClasses2
+    private val _mondayClasses = MutableLiveData<List<TimetableClass>>()
+    val mondayClasses: LiveData<List<TimetableClass>>
+        get() = _mondayClasses
 
     private val mondayFirestore = courseId.collection("monday")
 
-    private val _status = MutableLiveData<MondayDataStatus>()
-    val status: LiveData<MondayDataStatus>
+    private val _status = MutableLiveData<DataStatus>()
+    val status: LiveData<DataStatus>
         get() = _status
 
     private val _addNewClass = MutableLiveData<Event<Unit>>()
@@ -49,9 +46,6 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
     val hasPendingWrites:LiveData<Event<Boolean>>
         get() = _hasPendingWrites
 
-    private val job = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + job)
-
 
     fun displayMondayClassDetails(mondayClass: TimetableClass) {
         _openMondayClass.value =
@@ -66,14 +60,14 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
         TimePickerValues.timeSetByTimePicker.value = ""
     }
 
-    fun deleteList(list: List<TimetableClass?>) = uiScope.launch {
+    fun deleteList(list: List<TimetableClass?>){
         list.forEach { mondayClass ->
             if (mondayClass != null) {
                 mondayFirestore.document(mondayClass.id).delete()
                 cancelAlarm(mondayClass)
             }
         }
-        checkMondayDataStatus()
+        checkDataStatus()
     }
 
     fun deleteIconPressed() {
@@ -81,35 +75,27 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
             Event(Unit)
     }
 
-    private fun checkMondayDataStatus() {
-        uiScope.launch {
-            val mondayClasses: List<TimetableClass>? = _mondayClasses2.value
+    private fun checkDataStatus() {
+            val mondayClasses: List<TimetableClass>? = _mondayClasses.value
             try {
                 if (mondayClasses.isNullOrEmpty()) {
                     throw NullPointerException()
                 }
                 _status.value =
-                    MondayDataStatus.NOT_EMPTY
-            } catch (e: Exception) {
+                    DataStatus.NOT_EMPTY
+            } catch (npe: NullPointerException) {
                 _status.value =
-                    MondayDataStatus.EMPTY
+                    DataStatus.EMPTY
             }
         }
-    }
-
-
-    override fun onCleared() {
-        super.onCleared()
-        job.cancel()
-    }
 
     private fun updateData(mutableList: MutableList<TimetableClass>) {
-        _mondayClasses2.value = mutableList
-        checkMondayDataStatus()
+        _mondayClasses.value = mutableList
+        checkDataStatus()
     }
 
     fun addSnapshotListener(): ListenerRegistration {
-        _status.value = MondayDataStatus.LOADING
+        _status.value = DataStatus.LOADING
         return mondayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
@@ -135,9 +121,5 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
         )
         alarmManager.cancel(pendingIntent)
     }
-}
-
-enum class MondayDataStatus {
-    EMPTY, NOT_EMPTY, LOADING
 }
 
