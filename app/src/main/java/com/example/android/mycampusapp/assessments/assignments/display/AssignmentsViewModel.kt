@@ -33,9 +33,9 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
     val status: LiveData<DataStatus>
         get() = _status
 
-    private val _isFromCache = MutableLiveData<Event<Unit>>()
-    val isFromCache:LiveData<Event<Unit>>
-        get() = _isFromCache
+    private val _hasPendingWrites = MutableLiveData<Event<Unit>>()
+    val hasPendingWrites:LiveData<Event<Unit>>
+        get() = _hasPendingWrites
 
 
     fun addSnapshotListener(): ListenerRegistration {
@@ -46,8 +46,8 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
             val mutableList = mutableListOf<Assignment>()
 
             querySnapshot?.documents?.forEach { document ->
-                if(document.metadata.isFromCache){
-                    _isFromCache.value = Event(Unit)
+                if(document.metadata.hasPendingWrites()){
+                    _hasPendingWrites.value = Event(Unit)
                 }
                 val assignment = document.toObject(Assignment::class.java)
                 assignment?.let { mutableList.add(it) }

@@ -98,7 +98,7 @@ class SaturdayFragment : Fragment() {
                 )
             })
 
-        viewModel.isFromCache.observe(viewLifecycleOwner, EventObserver {
+        viewModel.hasPendingWrites.observe(viewLifecycleOwner, EventObserver {
             Snackbar.make(
                 this.requireView(),
                 R.string.internet_request,

@@ -87,7 +87,7 @@ class AssignmentsFragment : Fragment() {
                 )
             )
         })
-        viewModel.isFromCache.observe(viewLifecycleOwner,EventObserver{
+        viewModel.hasPendingWrites.observe(viewLifecycleOwner,EventObserver{
             Snackbar.make(requireView(),R.string.internet_request,Snackbar.LENGTH_LONG).show()
         })
 

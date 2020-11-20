@@ -13,10 +13,7 @@ import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.ThursdayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import timber.log.Timber
 
 class ThursdayViewModel(courseDocument: DocumentReference, private val app: Application) :
@@ -36,9 +33,9 @@ class ThursdayViewModel(courseDocument: DocumentReference, private val app: Appl
     val openThursdayClass: LiveData<Event<TimetableClass>>
         get() = _openThursdayClass
 
-    private val _isFromCache = MutableLiveData<Event<Unit>>()
-    val isFromCache: LiveData<Event<Unit>>
-        get() = _isFromCache
+    private val _hasPendingWrites = MutableLiveData<Event<Unit>>()
+    val hasPendingWrites: LiveData<Event<Unit>>
+        get() = _hasPendingWrites
     private val _deleteThursdayClasses = MutableLiveData<Event<Unit>>()
     val deleteThursdayClasses: LiveData<Event<Unit>>
         get() = _deleteThursdayClasses
@@ -94,11 +91,11 @@ class ThursdayViewModel(courseDocument: DocumentReference, private val app: Appl
 
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = DataStatus.LOADING
-        return thursdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+        return thursdayFirestore.addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
-                if (document.metadata.isFromCache) {
-                    _isFromCache.value = Event(Unit)
+                if (document.metadata.hasPendingWrites()) {
+                    _hasPendingWrites.value = Event(Unit)
                 }
 
                 val thursdayClass = document.toObject(TimetableClass::class.java)

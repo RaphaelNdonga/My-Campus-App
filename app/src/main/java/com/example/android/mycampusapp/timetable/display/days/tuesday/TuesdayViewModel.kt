@@ -13,10 +13,7 @@ import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.TuesdayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 
 class TuesdayViewModel(courseDocument: DocumentReference, private val app: Application) :
     AndroidViewModel(app) {
@@ -42,9 +39,9 @@ class TuesdayViewModel(courseDocument: DocumentReference, private val app: Appli
     val deleteTuesdayClasses: LiveData<Event<Unit>>
         get() = _deleteTuesdayClasses
 
-    private val _isFromCache = MutableLiveData<Event<Unit>>()
-    val isFromCache: LiveData<Event<Unit>>
-        get() = _isFromCache
+    private val _hasPendingWrites = MutableLiveData<Event<Unit>>()
+    val hasPendingWrites: LiveData<Event<Unit>>
+        get() = _hasPendingWrites
 
 
     private fun checkDataStatus() {
@@ -96,11 +93,11 @@ class TuesdayViewModel(courseDocument: DocumentReference, private val app: Appli
 
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = DataStatus.LOADING
-        return tuesdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+        return tuesdayFirestore.addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
-                if (document.metadata.isFromCache) {
-                    _isFromCache.value = Event(Unit)
+                if (document.metadata.hasPendingWrites()) {
+                    _hasPendingWrites.value = Event(Unit)
                 }
 
                 val tuesdayClass = document.toObject(TimetableClass::class.java)

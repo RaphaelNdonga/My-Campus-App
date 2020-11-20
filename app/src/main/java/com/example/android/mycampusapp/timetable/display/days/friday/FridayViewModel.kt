@@ -40,9 +40,9 @@ class FridayViewModel(courseDocument: DocumentReference, private val app: Applic
     val deleteFridayClasses: LiveData<Event<Unit>>
         get() = _deleteFridayClasses
 
-    private val _isFromCache = MutableLiveData<Event<Unit>>()
-    val isFromCache: LiveData<Event<Unit>>
-        get() = _isFromCache
+    private val _hasPendingWrites = MutableLiveData<Event<Unit>>()
+    val hasPendingWrites: LiveData<Event<Unit>>
+        get() = _hasPendingWrites
 
     private fun checkDataStatus() {
         val fridayClasses = _fridayClasses.value
@@ -94,8 +94,8 @@ class FridayViewModel(courseDocument: DocumentReference, private val app: Applic
         return fridayFirestore.addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
-                if (document.metadata.isFromCache) {
-                    _isFromCache.value = Event(Unit)
+                if (document.metadata.hasPendingWrites()) {
+                    _hasPendingWrites.value = Event(Unit)
                 }
                 Timber.i("We are in the loop")
                 val fridayClass = document.toObject(TimetableClass::class.java)

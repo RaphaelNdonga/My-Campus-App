@@ -39,9 +39,9 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
     val deleteMondayClasses: LiveData<Event<Unit>>
         get() = _deleteMondayClasses
 
-    private val _isFromCache = MutableLiveData<Event<Unit>>()
-    val isFromCache: LiveData<Event<Unit>>
-        get() = _isFromCache
+    private val _hasPendingWrites = MutableLiveData<Event<Unit>>()
+    val hasPendingWrites: LiveData<Event<Unit>>
+        get() = _hasPendingWrites
 
 
     fun displayMondayClassDetails(mondayClass: TimetableClass) {
@@ -96,8 +96,8 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
         return mondayFirestore.addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
-                if (document.metadata.isFromCache) {
-                    _isFromCache.value = Event(Unit)
+                if (document.metadata.hasPendingWrites()) {
+                    _hasPendingWrites.value = Event(Unit)
                 }
 
                 val mondayClass = document.toObject(TimetableClass::class.java)
