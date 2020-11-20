@@ -99,14 +99,12 @@ class ThursdayFragment : Fragment() {
                 Timber.i("We are supposed to be navigating")
             })
 
-        viewModel.hasPendingWrites.observe(viewLifecycleOwner, EventObserver { hasPendingWrites ->
-            if (hasPendingWrites) {
+        viewModel.isFromCache.observe(viewLifecycleOwner, EventObserver {
                 Snackbar.make(
                     this.requireView(),
-                    R.string.admin_internet_request,
+                    R.string.internet_request,
                     Snackbar.LENGTH_LONG
                 ).show()
-            }
         })
 
         viewModel.openThursdayClass.observe(viewLifecycleOwner,

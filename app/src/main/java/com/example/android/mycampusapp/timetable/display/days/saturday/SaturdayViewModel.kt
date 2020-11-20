@@ -13,10 +13,7 @@ import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.SaturdayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 
 class SaturdayViewModel(courseDocument: DocumentReference, private val app: Application) :
     AndroidViewModel(app) {
@@ -39,13 +36,13 @@ class SaturdayViewModel(courseDocument: DocumentReference, private val app: Appl
     val deleteSaturdayClasses: LiveData<Event<Unit>>
         get() = _deleteSaturdayClasses
 
-    private val _hasPendingWrites = MutableLiveData<Event<Boolean>>()
-    val hasPendingWrites: LiveData<Event<Boolean>>
-        get() = _hasPendingWrites
+    private val _isFromCache = MutableLiveData<Event<Unit>>()
+    val isFromCache: LiveData<Event<Unit>>
+        get() = _isFromCache
 
     private val saturdayFirestore = courseDocument.collection("saturday")
 
-    private fun checkDataStatus(){
+    private fun checkDataStatus() {
         val saturdayClasses = _saturdayClasses.value
         try {
             if (saturdayClasses.isNullOrEmpty()) {
@@ -72,7 +69,7 @@ class SaturdayViewModel(courseDocument: DocumentReference, private val app: Appl
         TimePickerValues.timeSetByTimePicker.value = ""
     }
 
-    fun deleteList(list: List<TimetableClass?>){
+    fun deleteList(list: List<TimetableClass?>) {
         list.forEach { saturdayClass ->
             if (saturdayClass != null) {
                 saturdayFirestore.document(saturdayClass.id).delete()
@@ -94,10 +91,12 @@ class SaturdayViewModel(courseDocument: DocumentReference, private val app: Appl
 
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = DataStatus.LOADING
-        return saturdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+        return saturdayFirestore.addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
-                _hasPendingWrites.value = Event(document.metadata.hasPendingWrites())
+                if (document.metadata.isFromCache) {
+                    _isFromCache.value = Event(Unit)
+                }
 
                 val saturdayClass = document.toObject(TimetableClass::class.java)
                 saturdayClass?.let {

@@ -13,13 +13,11 @@ import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.FridayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import timber.log.Timber
 
-class FridayViewModel(courseDocument: DocumentReference,private val app: Application) : AndroidViewModel(app) {
+class FridayViewModel(courseDocument: DocumentReference, private val app: Application) :
+    AndroidViewModel(app) {
 
     private val _fridayClasses = MutableLiveData<List<TimetableClass>>()
     val fridayClasses: LiveData<List<TimetableClass>>
@@ -42,11 +40,11 @@ class FridayViewModel(courseDocument: DocumentReference,private val app: Applica
     val deleteFridayClasses: LiveData<Event<Unit>>
         get() = _deleteFridayClasses
 
-    private val _hasPendingWrites = MutableLiveData<Event<Boolean>>()
-    val hasPendingWrites:LiveData<Event<Boolean>>
-        get() = _hasPendingWrites
+    private val _isFromCache = MutableLiveData<Event<Unit>>()
+    val isFromCache: LiveData<Event<Unit>>
+        get() = _isFromCache
 
-    private fun checkDataStatus(){
+    private fun checkDataStatus() {
         val fridayClasses = _fridayClasses.value
         try {
             if (fridayClasses.isNullOrEmpty()) {
@@ -71,7 +69,7 @@ class FridayViewModel(courseDocument: DocumentReference,private val app: Applica
         TimePickerValues.timeSetByTimePicker.value = ""
     }
 
-    fun deleteList(list: List<TimetableClass?>){
+    fun deleteList(list: List<TimetableClass?>) {
         list.forEach { fridayClass ->
             if (fridayClass != null) {
                 fridayFirestore.document(fridayClass.id).delete()
@@ -93,10 +91,12 @@ class FridayViewModel(courseDocument: DocumentReference,private val app: Applica
 
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = DataStatus.LOADING
-        return fridayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+        return fridayFirestore.addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
-                _hasPendingWrites.value = Event(document.metadata.hasPendingWrites())
+                if (document.metadata.isFromCache) {
+                    _isFromCache.value = Event(Unit)
+                }
                 Timber.i("We are in the loop")
                 val fridayClass = document.toObject(TimetableClass::class.java)
                 fridayClass?.let {
@@ -106,6 +106,7 @@ class FridayViewModel(courseDocument: DocumentReference,private val app: Applica
             updateData(mutableList)
         }
     }
+
     private fun cancelAlarm(fridayClass: TimetableClass) {
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(app, FridayClassReceiver::class.java)

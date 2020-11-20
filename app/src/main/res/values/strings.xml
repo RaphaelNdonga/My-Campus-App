@@ -42,10 +42,10 @@
     <string name="login_failure">Failed to log in.</string>
     <string name="manage_account">Manage Account</string>
     <string name="location">location</string>
-    <string name="admin_internet_request">Please ensure that you are online so that the updates can be visible to the class</string>
     <string name="admin_online_response">The updates have been dispersed successfully</string>
     <string name="location_list_title">Select the class location</string>
     <string name="room">room</string>
     <string name="date">date</string>
     <string name="no_classes_message">No classes today!</string>
+    <string name="internet_request">Please check your internet connection and swipe to refresh</string>
 </resources>

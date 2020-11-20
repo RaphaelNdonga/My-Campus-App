@@ -8,6 +8,7 @@ import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.util.Event
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.MetadataChanges
 import com.google.firebase.firestore.Query
 import timber.log.Timber
 
@@ -32,15 +33,22 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
     val status: LiveData<DataStatus>
         get() = _status
 
+    private val _isFromCache = MutableLiveData<Event<Unit>>()
+    val isFromCache:LiveData<Event<Unit>>
+        get() = _isFromCache
+
 
     fun addSnapshotListener(): ListenerRegistration {
         return assignmentsFirestore.orderBy(
             "date",
             Query.Direction.ASCENDING
-        ).addSnapshotListener { querySnapshot, _ ->
+        ).addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot, _ ->
             val mutableList = mutableListOf<Assignment>()
 
             querySnapshot?.documents?.forEach { document ->
+                if(document.metadata.isFromCache){
+                    _isFromCache.value = Event(Unit)
+                }
                 val assignment = document.toObject(Assignment::class.java)
                 assignment?.let { mutableList.add(it) }
             }

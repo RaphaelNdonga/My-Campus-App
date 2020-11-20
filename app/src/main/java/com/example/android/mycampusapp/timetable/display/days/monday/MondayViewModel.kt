@@ -13,10 +13,7 @@ import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.MondayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.TimePickerValues
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 
 class MondayViewModel(courseId: DocumentReference, private val app: Application) :
     AndroidViewModel(app) {
@@ -42,9 +39,9 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
     val deleteMondayClasses: LiveData<Event<Unit>>
         get() = _deleteMondayClasses
 
-    private val _hasPendingWrites = MutableLiveData<Event<Boolean>>()
-    val hasPendingWrites:LiveData<Event<Boolean>>
-        get() = _hasPendingWrites
+    private val _isFromCache = MutableLiveData<Event<Unit>>()
+    val isFromCache: LiveData<Event<Unit>>
+        get() = _isFromCache
 
 
     fun displayMondayClassDetails(mondayClass: TimetableClass) {
@@ -60,7 +57,7 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
         TimePickerValues.timeSetByTimePicker.value = ""
     }
 
-    fun deleteList(list: List<TimetableClass?>){
+    fun deleteList(list: List<TimetableClass?>) {
         list.forEach { mondayClass ->
             if (mondayClass != null) {
                 mondayFirestore.document(mondayClass.id).delete()
@@ -76,18 +73,18 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
     }
 
     private fun checkDataStatus() {
-            val mondayClasses: List<TimetableClass>? = _mondayClasses.value
-            try {
-                if (mondayClasses.isNullOrEmpty()) {
-                    throw NullPointerException()
-                }
-                _status.value =
-                    DataStatus.NOT_EMPTY
-            } catch (npe: NullPointerException) {
-                _status.value =
-                    DataStatus.EMPTY
+        val mondayClasses: List<TimetableClass>? = _mondayClasses.value
+        try {
+            if (mondayClasses.isNullOrEmpty()) {
+                throw NullPointerException()
             }
+            _status.value =
+                DataStatus.NOT_EMPTY
+        } catch (npe: NullPointerException) {
+            _status.value =
+                DataStatus.EMPTY
         }
+    }
 
     private fun updateData(mutableList: MutableList<TimetableClass>) {
         _mondayClasses.value = mutableList
@@ -96,10 +93,12 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
 
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = DataStatus.LOADING
-        return mondayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+        return mondayFirestore.addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
-                _hasPendingWrites.value = Event(document.metadata.hasPendingWrites())
+                if (document.metadata.isFromCache) {
+                    _isFromCache.value = Event(Unit)
+                }
 
                 val mondayClass = document.toObject(TimetableClass::class.java)
                 mondayClass?.let {

@@ -97,15 +97,12 @@ class FridayFragment : Fragment() {
                 )
             })
 
-        viewModel.hasPendingWrites.observe(viewLifecycleOwner, EventObserver { hasPendingWrites ->
-            if (hasPendingWrites) {
+        viewModel.isFromCache.observe(viewLifecycleOwner, EventObserver {
                 Snackbar.make(
                     this.requireView(),
-                    R.string.admin_internet_request,
+                    R.string.internet_request,
                     Snackbar.LENGTH_LONG
                 ).show()
-            }
-
         })
 
         viewModel.openFridayClass.observe(viewLifecycleOwner,

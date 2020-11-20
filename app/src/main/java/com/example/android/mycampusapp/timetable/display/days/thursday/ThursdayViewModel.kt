@@ -36,9 +36,9 @@ class ThursdayViewModel(courseDocument: DocumentReference, private val app: Appl
     val openThursdayClass: LiveData<Event<TimetableClass>>
         get() = _openThursdayClass
 
-    private val _hasPendingWrites = MutableLiveData<Event<Boolean>>()
-    val hasPendingWrites: LiveData<Event<Boolean>>
-        get() = _hasPendingWrites
+    private val _isFromCache = MutableLiveData<Event<Unit>>()
+    val isFromCache: LiveData<Event<Unit>>
+        get() = _isFromCache
     private val _deleteThursdayClasses = MutableLiveData<Event<Unit>>()
     val deleteThursdayClasses: LiveData<Event<Unit>>
         get() = _deleteThursdayClasses
@@ -46,7 +46,7 @@ class ThursdayViewModel(courseDocument: DocumentReference, private val app: Appl
     private val thursdayFirestore = courseDocument.collection("thursday")
 
 
-    private fun checkThursdayDataStatus(){
+    private fun checkThursdayDataStatus() {
         val thursdayClasses = _thursdayClasses.value
         try {
             if (thursdayClasses.isNullOrEmpty()) {
@@ -72,7 +72,7 @@ class ThursdayViewModel(courseDocument: DocumentReference, private val app: Appl
         TimePickerValues.timeSetByTimePicker.value = ""
     }
 
-    fun deleteList(list: List<TimetableClass?>){
+    fun deleteList(list: List<TimetableClass?>) {
         list.forEach { thursdayClass ->
             if (thursdayClass != null) {
                 thursdayFirestore.document(thursdayClass.id).delete()
@@ -97,7 +97,9 @@ class ThursdayViewModel(courseDocument: DocumentReference, private val app: Appl
         return thursdayFirestore.addSnapshotListener { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
-                _hasPendingWrites.value = Event(document.metadata.hasPendingWrites())
+                if (document.metadata.isFromCache) {
+                    _isFromCache.value = Event(Unit)
+                }
 
                 val thursdayClass = document.toObject(TimetableClass::class.java)
                 thursdayClass?.let {
