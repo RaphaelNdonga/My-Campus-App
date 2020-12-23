@@ -40,6 +40,8 @@ class AssignmentInputFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentAssignmentInputBinding.inflate(inflater, container, false)
+        val assignmentParcel = assignmentArgs.assignment
+
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         courseId = sharedPreferences.getString(COURSE_ID, "")!!
@@ -48,18 +50,19 @@ class AssignmentInputFragment : Fragment() {
             this,
             AssignmentInputViewModelFactory(
                 courseCollection.document(courseId).collection("assignments"),
-                assignmentArgs.assignment
+                assignmentParcel
             )
         ).get(AssignmentInputViewModel::class.java)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+
         binding.assignmentDateEditText.setOnClickListener {
             val cal = Calendar.getInstance()
-            val year = cal.get(Calendar.YEAR)
-            val month = cal.get(Calendar.MONTH)
-            val day = cal.get(Calendar.DAY_OF_MONTH)
+            val year = assignmentParcel?.year ?: cal.get(Calendar.YEAR)
+            val month = assignmentParcel?.month ?: cal.get(Calendar.MONTH)
+            val day = assignmentParcel?.day ?: cal.get(Calendar.DAY_OF_MONTH)
             val datePickerDialog = DatePickerDialog(
                 requireActivity(), R.style.MyCampusApp_Dialog, dateSetListener, year, month, day
             )
@@ -70,6 +73,9 @@ class AssignmentInputFragment : Fragment() {
             DatePickerDialog.OnDateSetListener { datePicker: DatePicker, year: Int, month: Int, day: Int ->
                 val date = "$day/$month/$year"
                 binding.assignmentDateEditText.setText(date)
+                viewModel.setDay.value = day
+                viewModel.setMonth.value = month
+                viewModel.setYear.value = year
             }
 
         viewModel.snackBarEvent.observe(viewLifecycleOwner, EventObserver {
