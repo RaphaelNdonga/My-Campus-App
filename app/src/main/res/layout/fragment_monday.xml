@@ -19,21 +19,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/monday_refresh_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                >
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/monday_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager=".util.CustomLinearLayoutManager"
-                app:timetableListData="@{viewModel.mondayClasses}"
-                tools:itemCount="5"
-                tools:listitem="@layout/list_item_timetable" />
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                tools:layout_editor_absoluteX="41dp"
+                tools:layout_editor_absoluteY="137dp">
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/monday_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layoutManager=".util.CustomLinearLayoutManager"
+                    app:timetableListData="@{viewModel.mondayClasses}"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/list_item_timetable" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <ImageView
                 android:id="@+id/assignment_empty_image"

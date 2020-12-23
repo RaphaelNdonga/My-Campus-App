@@ -22,7 +22,6 @@ import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirect
 import com.example.android.mycampusapp.timetable.display.TimetableItemDetailsLookup
 import com.example.android.mycampusapp.timetable.display.TimetableListener
 import com.example.android.mycampusapp.util.*
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.AndroidEntryPoint
@@ -103,14 +102,6 @@ class MondayFragment : Fragment() {
                     TimetableFragmentDirections.actionTimetableFragmentToMondayInputFragment()
                 )
             })
-
-        viewModel.hasPendingWrites.observe(viewLifecycleOwner, EventObserver {
-            Snackbar.make(
-                this.requireView(),
-                R.string.internet_request,
-                Snackbar.LENGTH_LONG
-            ).show()
-        })
 
         viewModel.openMondayClass.observe(viewLifecycleOwner,
             EventObserver {

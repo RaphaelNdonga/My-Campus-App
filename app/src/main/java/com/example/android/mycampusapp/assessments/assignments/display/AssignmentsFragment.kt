@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentAssignmentsBinding
 import com.example.android.mycampusapp.util.*
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
 import dagger.hilt.android.AndroidEntryPoint
@@ -86,9 +85,6 @@ class AssignmentsFragment : Fragment() {
                     it
                 )
             )
-        })
-        viewModel.hasPendingWrites.observe(viewLifecycleOwner,EventObserver{
-            Snackbar.make(requireView(),R.string.internet_request,Snackbar.LENGTH_LONG).show()
         })
 
         return binding.root
