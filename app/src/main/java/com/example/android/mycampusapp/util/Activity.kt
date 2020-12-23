@@ -18,8 +18,6 @@ fun Activity.showTimeDialog(hour: Int, minute: Int) {
         this,
         R.style.MyCampusApp_Dialog,
         TimePickerDialog.OnTimeSetListener { _, hourOfDay, minuteOfDay ->
-            TimePickerValues.timePickerHourSet.value = hourOfDay
-            TimePickerValues.timePickerMinuteSet.value = minuteOfDay
             val inputTime = SimpleDateFormat("HH:mm", Locale.US).parse("$hourOfDay:$minuteOfDay")
             Timber.i("The hour of day is $hourOfDay")
             if (is24HourFormat) {
