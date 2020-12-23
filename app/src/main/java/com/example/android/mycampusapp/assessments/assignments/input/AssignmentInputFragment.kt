@@ -1,15 +1,18 @@
 package com.example.android.mycampusapp.assessments.assignments.input
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentAssignmentInputBinding
 import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver
@@ -17,6 +20,8 @@ import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -27,6 +32,7 @@ class AssignmentInputFragment : Fragment() {
     lateinit var courseCollection: CollectionReference
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var courseId: String
+    private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
     private val assignmentArgs by navArgs<AssignmentInputFragmentArgs>()
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,16 +46,36 @@ class AssignmentInputFragment : Fragment() {
 
         viewModel = ViewModelProvider(
             this,
-            AssignmentInputViewModelFactory(courseCollection.document(courseId).collection("assignments"),assignmentArgs.assignment)
+            AssignmentInputViewModelFactory(
+                courseCollection.document(courseId).collection("assignments"),
+                assignmentArgs.assignment
+            )
         ).get(AssignmentInputViewModel::class.java)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        binding.assignmentDateEditText.setOnClickListener {
+            val cal = Calendar.getInstance()
+            val year = cal.get(Calendar.YEAR)
+            val month = cal.get(Calendar.MONTH)
+            val day = cal.get(Calendar.DAY_OF_MONTH)
+            val datePickerDialog = DatePickerDialog(
+                requireActivity(), R.style.MyCampusApp_Dialog, dateSetListener, year, month, day
+            )
+            Timber.i("The date edit text box has been clicked")
+            datePickerDialog.show()
+        }
+        dateSetListener =
+            DatePickerDialog.OnDateSetListener { datePicker: DatePicker, year: Int, month: Int, day: Int ->
+                val date = "$day/$month/$year"
+                binding.assignmentDateEditText.setText(date)
+            }
+
         viewModel.snackBarEvent.observe(viewLifecycleOwner, EventObserver {
             Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT)
         })
-        viewModel.displayNavigator.observe(viewLifecycleOwner,EventObserver{
+        viewModel.displayNavigator.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(AssignmentInputFragmentDirections.actionAssignmentInputToAssignmentsFragment())
         })
         return binding.root
