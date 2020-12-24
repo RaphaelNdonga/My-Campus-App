@@ -12,9 +12,17 @@ class AssignmentInputViewModel(
     private val assignmentsCollection: CollectionReference,
     private val assignment: Assignment?
 ) : ViewModel() {
+    // The vals below are connected to the xml file through a two-way databinding.
     val textBoxSubject = MutableLiveData<String>(assignment?.subject)
-    private val date = "${assignment?.day}/${assignment?.month}/${assignment?.year}"
+
+    //fills the textbox with values if editing is being done instead of adding a new class
+    private val date =
+        assignment?.let {
+            "${assignment.day}/${assignment.month}/${assignment.year}"
+        }
     val textBoxDate = MutableLiveData<String>(date)
+
+    // acquire the date values and save them as integers
     val setDay = MutableLiveData(assignment?.day)
     val setMonth = MutableLiveData(assignment?.month)
     val setYear = MutableLiveData(assignment?.year)
@@ -37,9 +45,27 @@ class AssignmentInputViewModel(
             _snackBarEvent.value = Event(R.string.empty_message)
             return
         }
-        val currentAssignment = Assignment(subject = currentSubject, day =currentDay,month = currentMonth,year = currentYear)
-        addFirestoreData(currentAssignment)
-        navigateToDisplay()
+        if (assignment == null) {
+            val currentAssignment = Assignment(
+                subject = currentSubject,
+                day = currentDay,
+                month = currentMonth,
+                year = currentYear
+            )
+            addFirestoreData(currentAssignment)
+            navigateToDisplay()
+        } else {
+            val currentAssignment = Assignment(
+                id = assignment.id,
+                subject = currentSubject,
+                day = currentDay,
+                month = currentMonth,
+                year = currentYear,
+                alarmRequestCode = assignment.alarmRequestCode
+            )
+            addFirestoreData(currentAssignment)
+            navigateToDisplay()
+        }
     }
 
     private fun addFirestoreData(currentAssignment: Assignment) {
