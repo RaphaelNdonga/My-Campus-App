@@ -74,4 +74,9 @@ class AssignmentInputViewModel(
     private fun navigateToDisplay() {
         _displayNavigator.value = Event(Unit)
     }
+    fun setDateFromDatePicker(date:CustomDate){
+        val dateText = "${date.day}/${date.month.plus(1)}/${date.year}"
+        textBoxDate.value = dateText
+        setDate.value = date
+    }
 }

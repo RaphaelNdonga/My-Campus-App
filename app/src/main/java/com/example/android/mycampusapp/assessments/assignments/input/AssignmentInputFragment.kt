@@ -42,13 +42,6 @@ class AssignmentInputFragment : Fragment() {
     ): View? {
         val binding = FragmentAssignmentInputBinding.inflate(inflater, container, false)
         val assignmentParcel = assignmentArgs.assignment
-        var displayDate = assignmentParcel?.let {
-            CustomDate(
-                assignmentParcel.year,
-                assignmentParcel.month,
-                assignmentParcel.day
-            )
-        }
 
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
@@ -61,6 +54,8 @@ class AssignmentInputFragment : Fragment() {
                 assignmentParcel
             )
         ).get(AssignmentInputViewModel::class.java)
+        var displayDate = viewModel.setDate.value
+
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -80,11 +75,9 @@ class AssignmentInputFragment : Fragment() {
         dateSetListener =
             DatePickerDialog.OnDateSetListener { _: DatePicker, year: Int, month: Int, day: Int ->
                 displayDate = CustomDate(year,month,day)
-                val dateText = "${displayDate?.day}/${displayDate?.month?.plus(1)}/${displayDate?.year}"
                 displayDate?.let {
-                    binding.assignmentDateEditText.setText(dateText)
+                    viewModel.setDateFromDatePicker(it)
                 }
-                viewModel.setDate.value = displayDate
             }
 
         viewModel.snackBarEvent.observe(viewLifecycleOwner, EventObserver {
