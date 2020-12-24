@@ -39,15 +39,25 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
 
     fun addSnapshotListener(): ListenerRegistration {
         return assignmentsFirestore
-            .orderBy("day",Query.Direction.ASCENDING)
-            .addSnapshotListener{ querySnapshot, _ ->
-                val mutableList = mutableListOf<Assignment>()
+            .orderBy("year", Query.Direction.ASCENDING)
+            .orderBy("month", Query.Direction.ASCENDING)
+            .orderBy(
+                "day", Query.Direction
+                    .ASCENDING
+            )
+            .addSnapshotListener { querySnapshot, firebaseException ->
+                querySnapshot?.let {
+                    val mutableList = mutableListOf<Assignment>()
 
-                querySnapshot?.documents?.forEach { document ->
-                    val assignment = document.toObject(Assignment::class.java)
-                    assignment?.let { mutableList.add(it) }
+                    querySnapshot.documents.forEach { document ->
+                        val assignment = document.toObject(Assignment::class.java)
+                        assignment?.let { mutableList.add(it) }
+                    }
+                    updateData(mutableList)
                 }
-                updateData(mutableList)
+                if (firebaseException != null) {
+                    Timber.i("Got an exception $firebaseException ")
+                }
             }
     }
 

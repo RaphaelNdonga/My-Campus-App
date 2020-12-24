@@ -80,7 +80,7 @@ class AssignmentInputFragment : Fragment() {
         dateSetListener =
             DatePickerDialog.OnDateSetListener { _: DatePicker, year: Int, month: Int, day: Int ->
                 displayDate = CustomDate(year,month,day)
-                val dateText = "${displayDate?.day}/${displayDate?.month}/${displayDate?.year}"
+                val dateText = "${displayDate?.day}/${displayDate?.month?.plus(1)}/${displayDate?.year}"
                 displayDate?.let {
                     binding.assignmentDateEditText.setText(dateText)
                 }

@@ -19,7 +19,7 @@ class AssignmentInputViewModel(
     //fills the textbox with values if editing is being done instead of adding a new class
     private val date =
         assignment?.let {
-            "${assignment.day}/${assignment.month}/${assignment.year}"
+            "${assignment.day}/${assignment.month.plus(1)}/${assignment.year}"
         }
     val textBoxDate = MutableLiveData<String>(date)
 

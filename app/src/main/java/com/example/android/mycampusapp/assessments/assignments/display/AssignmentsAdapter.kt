@@ -34,7 +34,7 @@ class AssignmentsAdapter(private val clickListener: AssignmentsListener) :
             binding.executePendingBindings()
             binding.assignment = currentAssignment
             binding.assignmentSubject.text = currentAssignment.subject
-            val date = "${currentAssignment.day}/${currentAssignment.month}/${currentAssignment.year}"
+            val date = "${currentAssignment.day}/${currentAssignment.month+1}/${currentAssignment.year}"
             binding.assignmentDueDate.text = date
             binding.clickListener = clickListener
             itemView.isActivated = isActivated
