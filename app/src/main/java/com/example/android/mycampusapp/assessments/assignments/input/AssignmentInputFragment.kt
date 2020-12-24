@@ -84,9 +84,7 @@ class AssignmentInputFragment : Fragment() {
                 displayDate?.let {
                     binding.assignmentDateEditText.setText(dateText)
                 }
-                viewModel.setDay.value = day
-                viewModel.setMonth.value = month
-                viewModel.setYear.value = year
+                viewModel.setDate.value = displayDate
             }
 
         viewModel.snackBarEvent.observe(viewLifecycleOwner, EventObserver {

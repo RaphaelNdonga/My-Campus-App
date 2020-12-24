@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.Assignment
+import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.util.Event
 import com.google.firebase.firestore.CollectionReference
 
@@ -23,9 +24,9 @@ class AssignmentInputViewModel(
     val textBoxDate = MutableLiveData<String>(date)
 
     // acquire the date values and save them as integers
-    val setDay = MutableLiveData(assignment?.day)
-    val setMonth = MutableLiveData(assignment?.month)
-    val setYear = MutableLiveData(assignment?.year)
+    val setDate = MutableLiveData<CustomDate>(assignment?.let {
+        CustomDate(assignment.year, assignment.month, assignment.day)
+    })
 
     private val _snackBarEvent = MutableLiveData<Event<Int>>()
     val snackBarEvent: LiveData<Event<Int>>
@@ -37,20 +38,18 @@ class AssignmentInputViewModel(
 
     fun save() {
         val currentSubject = textBoxSubject.value
-        val currentDay = setDay.value
-        val currentMonth = setMonth.value
-        val currentYear = setYear.value
+        val currentDate = setDate.value
 
-        if (currentDay == null || currentMonth == null || currentYear == null || currentSubject.isNullOrBlank()) {
+        if (currentDate == null || currentSubject.isNullOrBlank()) {
             _snackBarEvent.value = Event(R.string.empty_message)
             return
         }
         if (assignment == null) {
             val currentAssignment = Assignment(
                 subject = currentSubject,
-                day = currentDay,
-                month = currentMonth,
-                year = currentYear
+                day = currentDate.day,
+                month = currentDate.month,
+                year = currentDate.year
             )
             addFirestoreData(currentAssignment)
             navigateToDisplay()
@@ -58,9 +57,9 @@ class AssignmentInputViewModel(
             val currentAssignment = Assignment(
                 id = assignment.id,
                 subject = currentSubject,
-                day = currentDay,
-                month = currentMonth,
-                year = currentYear,
+                day = currentDate.day,
+                month = currentDate.month,
+                year = currentDate.year,
                 alarmRequestCode = assignment.alarmRequestCode
             )
             addFirestoreData(currentAssignment)
