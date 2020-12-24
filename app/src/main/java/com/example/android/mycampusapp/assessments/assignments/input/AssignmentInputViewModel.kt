@@ -24,9 +24,11 @@ class AssignmentInputViewModel(
     val textBoxDate = MutableLiveData<String>(date)
 
     // acquire the date values and save them as integers
-    val setDate = MutableLiveData<CustomDate>(assignment?.let {
+    private val _setDate = MutableLiveData<CustomDate>(assignment?.let {
         CustomDate(assignment.year, assignment.month, assignment.day)
     })
+    val setDate:LiveData<CustomDate>
+            get() = _setDate
 
     private val _snackBarEvent = MutableLiveData<Event<Int>>()
     val snackBarEvent: LiveData<Event<Int>>
@@ -38,7 +40,7 @@ class AssignmentInputViewModel(
 
     fun save() {
         val currentSubject = textBoxSubject.value
-        val currentDate = setDate.value
+        val currentDate = _setDate.value
 
         if (currentDate == null || currentSubject.isNullOrBlank()) {
             _snackBarEvent.value = Event(R.string.empty_message)
@@ -77,6 +79,6 @@ class AssignmentInputViewModel(
     fun setDateFromDatePicker(date:CustomDate){
         val dateText = "${date.day}/${date.month.plus(1)}/${date.year}"
         textBoxDate.value = dateText
-        setDate.value = date
+        _setDate.value = date
     }
 }
