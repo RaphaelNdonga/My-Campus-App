@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.example.android.mycampusapp.assessments.tests.input.TestsInputViewModel" />
@@ -16,7 +17,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/layout_padding">
 
             <ImageView
                 android:id="@+id/open_book_image"
@@ -29,18 +31,102 @@
                 app:srcCompat="@drawable/ic_open_book" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/test_subject_input"
                 style="@style/Widget.MyCampusApp.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_box_margin"
                 android:hint="@string/subject">
+
                 <com.google.android.material.textfield.TextInputEditText
-                    style="@style/TextAppearance.MyCampusApp.TextInputLayout.HintText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@={viewModel.textBoxSubject}"/>
+                    android:fontFamily="@font/open_sans"
+                    android:inputType="text"
+                    android:text="@={viewModel.textBoxSubject}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/test_date_input"
+                style="@style/Widget.MyCampusApp.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_box_margin"
+                android:hint="@string/date">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/test_date_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="true"
+                    android:inputType="none"
+                    android:text="@={viewModel.textBoxDate}" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/test_time_input"
+                style="@style/Widget.MyCampusApp.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_box_margin"
+                android:hint="@string/time">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/test_time_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="true"
+                    android:inputType="none"
+                    android:text="@={viewModel.textBoxTime}" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/test_location_input"
+                style="@style/Widget.MyCampusApp.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_box_margin"
+                android:hint="@string/location">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/test_location_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="true"
+                    android:inputType="none"
+                    android:text="@={viewModel.textBoxLocation}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/test_room_input"
+                style="@style/Widget.MyCampusApp.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_box_margin"
+                android:hint="@string/room">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans"
+                    android:inputType="text"
+                    android:text="@={viewModel.textBoxRoom}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/save_button"
+                style="@style/Widget.MyCampusApp.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/save" />
         </LinearLayout>
     </ScrollView>
 </layout>

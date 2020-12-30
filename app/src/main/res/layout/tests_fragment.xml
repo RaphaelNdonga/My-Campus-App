@@ -27,6 +27,7 @@
                 android:layout_margin="@dimen/fab_margin"
                 app:backgroundTint="@color/colorPrimary"
                 app:borderWidth="0dp"
+                android:onClick="@{()->viewModel.navigateToInput()}"
                 app:srcCompat="@drawable/ic_add"/>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

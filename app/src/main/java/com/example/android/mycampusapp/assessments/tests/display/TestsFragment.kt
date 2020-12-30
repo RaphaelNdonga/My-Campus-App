@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.TestsFragmentBinding
+import com.example.android.mycampusapp.util.EventObserver
+import timber.log.Timber
 
 class TestsFragment : Fragment() {
 
@@ -20,12 +23,14 @@ class TestsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.tests_fragment, container, false)
+
+        viewModel = ViewModelProvider(this).get(TestsViewModel::class.java)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        viewModel.inputNavigator.observe(viewLifecycleOwner, EventObserver {
+            findNavController().navigate(TestsFragmentDirections.actionTestsFragmentToTestsInputFragment())
+            Timber.i("Navigating to input")
+        })
         return binding.root
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(TestsViewModel::class.java)
-    }
-
 }
