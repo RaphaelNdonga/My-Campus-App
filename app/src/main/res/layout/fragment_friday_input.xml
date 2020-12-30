@@ -22,8 +22,7 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:padding="24dp"
-            android:paddingTop="16dp">
+            android:padding="@dimen/layout_padding">
 
             <ImageView
                 android:id="@+id/open_book_image"

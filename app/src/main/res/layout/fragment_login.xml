@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/constraint_layout_padding">
+        android:padding="@dimen/layout_padding">
 
         <ImageView
             android:id="@+id/my_campus_app_logo"

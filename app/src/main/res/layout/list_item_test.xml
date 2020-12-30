@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/card_margin">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/layout_padding">
+
+            <TextView
+                android:id="@+id/test_subject"
+                style="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_box_margin"
+                android:text="@string/subject"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/test_time"
+                style="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_box_margin"
+                android:text="@string/time"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/test_subject" />
+
+            <TextView
+                android:id="@+id/test_date"
+                style="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_box_margin"
+                android:text="@string/date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/test_time" />
+
+            <ImageView
+                android:id="@+id/test_location_img"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:layout_constraintBottom_toBottomOf="@id/test_location"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/test_location"
+                app:srcCompat="@drawable/ic_location"
+
+                />
+
+            <TextView
+                android:id="@+id/test_location"
+                style="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_box_margin"
+                android:text="@string/location"
+                android:textColor="@color/location"
+                app:layout_constraintStart_toEndOf="@id/test_location_img"
+                app:layout_constraintTop_toBottomOf="@+id/test_date" />
+
+            <TextView
+                android:id="@+id/test_room"
+                style="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_box_margin"
+                android:text="@string/room"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/test_location" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>
