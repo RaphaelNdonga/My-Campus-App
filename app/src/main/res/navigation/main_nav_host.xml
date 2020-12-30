@@ -173,4 +173,26 @@
             app:argType="com.example.android.mycampusapp.data.Assignment"
             app:nullable="true" />
     </fragment>
+    <fragment
+        android:id="@+id/testsFragment"
+        android:name="com.example.android.mycampusapp.assessments.tests.display.TestsFragment"
+        android:label="Tests">
+        <action
+            android:id="@+id/action_testsFragment_to_testsInputFragment"
+            app:destination="@id/testsInputFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="test"
+            android:defaultValue="@null"
+            app:argType="com.example.android.mycampusapp.data.Test"
+            app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/testsInputFragment"
+        android:name="com.example.android.mycampusapp.assessments.tests.input.TestsInputFragment"
+        android:label="Add Tests">
+        <action
+            android:id="@+id/action_testsInputFragment_to_testsFragment"
+            app:destination="@id/testsFragment" />
+    </fragment>
 </navigation>
