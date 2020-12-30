@@ -15,7 +15,7 @@ class TestsAdapter : ListAdapter<Test, TestsAdapter.ViewHolder>(DiffUtilCallBack
             binding.testSubject.text = test?.subject
             binding.testLocation.text = test?.locationName
             binding.testRoom.text = test?.room
-            val testDate = "${test?.day}/${test?.month}/${test?.year}"
+            val testDate = "${test?.day}/${test?.month?.plus(1)}/${test?.year}"
             binding.testDate.text = testDate
             val testTime = "${test?.hour}:${test?.minute}"
             binding.testTime.text = testTime
