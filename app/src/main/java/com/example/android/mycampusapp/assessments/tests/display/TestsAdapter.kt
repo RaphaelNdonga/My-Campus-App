@@ -34,7 +34,7 @@ class TestsAdapter : ListAdapter<Test, TestsAdapter.ViewHolder>(DiffUtilCallBack
         holder.bind(test)
     }
 
-    object DiffUtilCallBack : DiffUtil.ItemCallback<Test>() {
+    companion object DiffUtilCallBack : DiffUtil.ItemCallback<Test>() {
         override fun areItemsTheSame(oldItem: Test, newItem: Test): Boolean {
             return oldItem.id == newItem.id
         }

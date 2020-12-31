@@ -18,7 +18,7 @@
 
             <TextView
                 android:id="@+id/test_subject"
-                style="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
@@ -28,7 +28,7 @@
 
             <TextView
                 android:id="@+id/test_time"
-                style="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
@@ -38,7 +38,7 @@
 
             <TextView
                 android:id="@+id/test_date"
-                style="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
@@ -59,7 +59,7 @@
 
             <TextView
                 android:id="@+id/test_location"
-                style="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
@@ -70,7 +70,7 @@
 
             <TextView
                 android:id="@+id/test_room"
-                style="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
