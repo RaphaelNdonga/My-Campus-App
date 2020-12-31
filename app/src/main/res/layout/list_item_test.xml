@@ -14,7 +14,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/layout_padding">
+            android:padding="@dimen/card_constraint_layout_padding">
 
             <TextView
                 android:id="@+id/test_subject"

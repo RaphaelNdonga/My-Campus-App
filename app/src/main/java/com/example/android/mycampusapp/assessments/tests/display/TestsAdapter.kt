@@ -11,20 +11,21 @@ import com.example.android.mycampusapp.databinding.ListItemTestBinding
 class TestsAdapter : ListAdapter<Test, TestsAdapter.ViewHolder>(DiffUtilCallBack) {
     class ViewHolder(private val binding: ListItemTestBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(test: Test?) {
-            binding.testSubject.text = test?.subject
-            binding.testLocation.text = test?.locationName
-            binding.testRoom.text = test?.room
-            val testDate = "${test?.day}/${test?.month?.plus(1)}/${test?.year}"
+        fun bind(test: Test) {
+            binding.executePendingBindings()
+            binding.testSubject.text = test.subject
+            binding.testLocation.text = test.locationName
+            binding.testRoom.text = test.room
+            val testDate = "${test.day}/${test.month.plus(1)}/${test.year}"
             binding.testDate.text = testDate
-            val testTime = "${test?.hour}:${test?.minute}"
+            val testTime = "${test.hour}:${test.minute}"
             binding.testTime.text = testTime
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ListItemTestBinding.inflate(layoutInflater)
+        val binding = ListItemTestBinding.inflate(layoutInflater,parent,false)
         return ViewHolder(binding)
     }
 

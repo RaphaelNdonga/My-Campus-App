@@ -11,23 +11,27 @@
 
     </data>
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:listitem="@layout/list_item_test" />
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/tests_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="@dimen/fab_margin"
-                app:backgroundTint="@color/colorPrimary"
-                app:borderWidth="0dp"
-                android:onClick="@{()->viewModel.navigateToInput()}"
-                app:srcCompat="@drawable/ic_add"/>
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tests_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager=".util.CustomLinearLayoutManager"
+            app:testsListData="@{viewModel.tests}"
+            tools:listitem="@layout/list_item_test" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/tests_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:onClick="@{()->viewModel.navigateToInput()}"
+            app:backgroundTint="@color/colorPrimary"
+            app:borderWidth="0dp"
+            app:srcCompat="@drawable/ic_add" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
