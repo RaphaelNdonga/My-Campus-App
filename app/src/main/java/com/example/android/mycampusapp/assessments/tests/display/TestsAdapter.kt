@@ -1,5 +1,8 @@
 package com.example.android.mycampusapp.assessments.tests.display
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.selection.ItemDetailsLookup
@@ -13,7 +16,7 @@ import com.example.android.mycampusapp.databinding.ListItemTestBinding
 class TestsAdapter(private val clickListener:TestClickListener) : ListAdapter<Test, TestsAdapter.ViewHolder>(DiffUtilCallBack) {
     var tracker: SelectionTracker<Long>? = null
 
-    class ViewHolder(private val binding: ListItemTestBinding) :
+    class ViewHolder(private val binding: ListItemTestBinding,private val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(test: Test, clickListener: TestClickListener, isActivated: Boolean) {
             binding.executePendingBindings()
@@ -41,6 +44,15 @@ class TestsAdapter(private val clickListener:TestClickListener) : ListAdapter<Te
 
             }
         }
+        fun setMapListener(test: Test?) {
+            val mapUri = Uri.parse(test?.locationCoordinates)
+            val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+
+            binding.testLocation.setOnClickListener {
+                context.startActivity(mapIntent)
+            }
+        }
     }
 
     init {
@@ -50,12 +62,13 @@ class TestsAdapter(private val clickListener:TestClickListener) : ListAdapter<Te
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ListItemTestBinding.inflate(layoutInflater, parent, false)
-        return ViewHolder(binding)
+        return ViewHolder(binding,parent.context)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val test = getItem(position)
         tracker?.let{ holder.bind(test,clickListener,it.isSelected(position.toLong())) }
+        holder.setMapListener(test)
     }
 
     override fun getItemId(position: Int): Long {
