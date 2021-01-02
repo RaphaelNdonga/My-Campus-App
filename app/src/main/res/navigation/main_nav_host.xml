@@ -136,14 +136,6 @@
             app:nullable="true" />
     </fragment>
     <fragment
-        android:id="@+id/assignmentsFragment"
-        android:name="com.example.android.mycampusapp.assessments.assignments.display.AssignmentsFragment"
-        android:label="@string/assignments_menu" >
-        <action
-            android:id="@+id/action_assignmentsFragment_to_assignmentInput"
-            app:destination="@id/assignmentInput" />
-    </fragment>
-    <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.android.mycampusapp.settings.SettingsFragment"
         android:label="Settings">
@@ -162,38 +154,41 @@
         android:id="@+id/assignmentInput"
         android:name="com.example.android.mycampusapp.assessments.assignments.input.AssignmentInputFragment"
         android:label="Set Assignment">
-        <action
-            android:id="@+id/action_assignmentInput_to_assignmentsFragment"
-            app:destination="@id/assignmentsFragment"
-            app:popUpTo="@id/assignmentsFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="assignment"
             android:defaultValue="@null"
             app:argType="com.example.android.mycampusapp.data.Assignment"
             app:nullable="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/testsFragment"
-        android:name="com.example.android.mycampusapp.assessments.tests.display.TestsFragment"
-        android:label="Tests">
         <action
-            android:id="@+id/action_testsFragment_to_testsInputFragment"
-            app:destination="@id/testsInputFragment" />
+            android:id="@+id/action_assignmentInput_to_assessmentsFragment"
+            app:destination="@id/assessmentsFragment"
+            app:popUpTo="@id/assessmentsFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/testsInputFragment"
         android:name="com.example.android.mycampusapp.assessments.tests.input.TestsInputFragment"
         android:label="Add Tests">
-        <action
-            android:id="@+id/action_testsInputFragment_to_testsFragment"
-            app:destination="@id/testsFragment"
-            app:popUpTo="@id/testsFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="test"
             android:defaultValue="@null"
             app:argType="com.example.android.mycampusapp.data.Test"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_testsInputFragment_to_assessmentsFragment"
+            app:destination="@id/assessmentsFragment"
+            app:popUpTo="@id/assessmentsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/assessmentsFragment"
+        android:name="com.example.android.mycampusapp.assessments.AssessmentsFragment"
+        android:label="Assignments and Tests">
+        <action
+            android:id="@+id/action_assessmentsFragment_to_testsInputFragment"
+            app:destination="@id/testsInputFragment" />
+        <action
+            android:id="@+id/action_assessmentsFragment_to_assignmentInput"
+            app:destination="@id/assignmentInput" />
     </fragment>
 </navigation>

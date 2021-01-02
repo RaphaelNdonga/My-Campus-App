@@ -15,6 +15,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/tests_refresher"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tests_recycler_view"
             android:layout_width="match_parent"
@@ -22,6 +26,7 @@
             app:layoutManager=".util.CustomLinearLayoutManager"
             app:testsListData="@{viewModel.tests}"
             tools:listitem="@layout/list_item_test" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/tests_fab"

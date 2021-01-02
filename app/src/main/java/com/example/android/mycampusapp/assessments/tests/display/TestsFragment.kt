@@ -14,6 +14,7 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import com.example.android.mycampusapp.R
+import com.example.android.mycampusapp.assessments.AssessmentsFragmentDirections
 import com.example.android.mycampusapp.databinding.TestsFragmentBinding
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
@@ -64,15 +65,19 @@ class TestsFragment : Fragment() {
         })
         binding.testsRecyclerView.adapter = adapter
 
+        binding.testsRefresher.setOnRefreshListener {
+            snapshotListener.remove()
+            snapshotListener = viewModel.addSnapshotListener()
+            binding.testsRefresher.isRefreshing = false
+        }
+
         viewModel.inputNavigator.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(TestsFragmentDirections.actionTestsFragmentToTestsInputFragment())
+            findNavController().navigate(AssessmentsFragmentDirections.actionAssessmentsFragmentToAssignmentInput())
             Timber.i("Navigating to input")
         })
         viewModel.openDetails.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(
-                TestsFragmentDirections.actionTestsFragmentToTestsInputFragment(
-                    it
-                )
+                AssessmentsFragmentDirections.actionAssessmentsFragmentToTestsInputFragment(it)
             )
         })
 

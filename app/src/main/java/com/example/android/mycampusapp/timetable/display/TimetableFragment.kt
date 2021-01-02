@@ -9,14 +9,8 @@ import androidx.fragment.app.Fragment
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentTimetableBinding
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.firebase.auth.FirebaseAuth
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
-@AndroidEntryPoint
 class TimetableFragment : Fragment() {
-    @Inject
-    lateinit var auth: FirebaseAuth
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

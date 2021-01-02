@@ -84,7 +84,7 @@ class AssignmentInputFragment : Fragment() {
             Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT)
         })
         viewModel.displayNavigator.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(AssignmentInputFragmentDirections.actionAssignmentInputToAssignmentsFragment())
+            findNavController().navigate(AssignmentInputFragmentDirections.actionAssignmentInputToAssessmentsFragment())
         })
         return binding.root
     }

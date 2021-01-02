@@ -15,6 +15,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
+import com.example.android.mycampusapp.assessments.AssessmentsFragmentDirections
 import com.example.android.mycampusapp.databinding.FragmentAssignmentsBinding
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
@@ -76,12 +77,12 @@ class AssignmentsFragment : Fragment() {
         }
 
         viewModel.inputNavigator.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(AssignmentsFragmentDirections.actionAssignmentsFragmentToAssignmentInput())
+            findNavController().navigate(AssessmentsFragmentDirections.actionAssessmentsFragmentToAssignmentInput())
             Timber.i("input navigator observer")
         })
         viewModel.openDetails.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(
-                AssignmentsFragmentDirections.actionAssignmentsFragmentToAssignmentInput(it)
+                AssessmentsFragmentDirections.actionAssessmentsFragmentToAssignmentInput(it)
             )
         })
 

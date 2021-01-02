@@ -33,7 +33,7 @@ class TimetableViewPagerAdapter(private val fragment: Fragment) : FragmentStateA
             5 -> SaturdayFragment()
             6 -> SundayFragment()
 
-            else -> throw Exception()
+            else -> throw Exception("Fragment not found")
         }
     }
 }

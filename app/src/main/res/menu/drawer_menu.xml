@@ -5,9 +5,9 @@
         android:icon="@drawable/ic_timetable"
         android:title="@string/timetable_menu" />
     <item
-        android:id="@+id/testsFragment"
+        android:id="@+id/assessmentsFragment"
         android:icon="@drawable/ic_assignments"
-        android:title="@string/assignments_menu" />
+        android:title="@string/assessments" />
     <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_settings"
