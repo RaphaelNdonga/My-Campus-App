@@ -19,7 +19,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.assessments.tests.display.TestsFragmentArgs
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.databinding.TestsInputFragmentBinding
@@ -38,7 +37,7 @@ class TestsInputFragment : Fragment() {
     private lateinit var binding: TestsInputFragmentBinding
     private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
     private lateinit var timeSetListener: TimePickerDialog.OnTimeSetListener
-    private val testArgs by navArgs<TestsFragmentArgs>()
+    private val testArgs by navArgs<TestsInputFragmentArgs>()
 
     @Inject
     lateinit var courseCollection: CollectionReference

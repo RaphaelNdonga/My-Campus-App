@@ -15,13 +15,6 @@ class TestsInputViewModel(
     private val test: Test?,
     private val testCollection: CollectionReference
 ) : ViewModel() {
-
-    val textBoxSubject = MutableLiveData<String>()
-    val textBoxTime = MutableLiveData<String>()
-    val textBoxDate = MutableLiveData<String>()
-    val textBoxLocation = MutableLiveData<String>()
-    val textBoxRoom = MutableLiveData<String>()
-
     private val _dateSet =
         MutableLiveData<CustomDate>(test?.let { CustomDate(test.year, test.month, test.day) })
     val dateSet: LiveData<CustomDate>
@@ -31,6 +24,15 @@ class TestsInputViewModel(
         MutableLiveData<CustomTime>(test?.let { CustomTime(test.hour, test.minute) })
     val timeSet: LiveData<CustomTime>
         get() = _timeSet
+
+    private var dateText = test?.let { "${test.day}/${test.month.plus(1)}/${test.year}" }?:""
+    private var timeText = test?.let { "${test.hour}:${test.minute}" }?:""
+
+    val textBoxSubject = MutableLiveData<String>(test?.subject)
+    val textBoxTime = MutableLiveData<String>(timeText)
+    val textBoxDate = MutableLiveData<String>(dateText)
+    val textBoxLocation = MutableLiveData<String>(test?.locationName)
+    val textBoxRoom = MutableLiveData<String>(test?.room)
 
     private val _location =
         MutableLiveData<Location>(test?.let {
@@ -46,7 +48,7 @@ class TestsInputViewModel(
 
 
     fun setDateFromDatePicker(dateSet: CustomDate) {
-        val dateText = "${dateSet.day}/${dateSet.month.plus(1)}/${dateSet.year}"
+        dateText = "${dateSet.day}/${dateSet.month.plus(1)}/${dateSet.year}"
         textBoxDate.value = dateText
         _dateSet.value = dateSet
     }

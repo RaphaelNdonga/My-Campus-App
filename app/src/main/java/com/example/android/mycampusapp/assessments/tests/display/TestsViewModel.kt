@@ -17,6 +17,14 @@ class TestsViewModel(private val testsCollection: CollectionReference) : ViewMod
     val inputNavigator: LiveData<Event<Unit>>
         get() = _inputNavigator
 
+    private val _openDetails = MutableLiveData<Event<Test>>()
+    val openDetails:LiveData<Event<Test>>
+        get() = _openDetails
+
+    private val _deleteAssignments = MutableLiveData<Event<Unit>>()
+    val deleteAssignments:LiveData<Event<Unit>>
+        get() = _deleteAssignments
+
     fun navigateToInput() {
         initializeEvent(_inputNavigator)
     }
@@ -33,6 +41,20 @@ class TestsViewModel(private val testsCollection: CollectionReference) : ViewMod
                 test?.let { mutableList.add(it) }
             }
             _tests.value = mutableList
+        }
+    }
+
+    fun displayDetails(test: Test) {
+        _openDetails.value = Event(test)
+    }
+
+    fun deleteIconPressed(){
+        _deleteAssignments.value = Event(Unit)
+    }
+
+    fun deleteList(list:List<Test>){
+        list.forEach { test->
+            testsCollection.document(test.id).delete()
         }
     }
 }

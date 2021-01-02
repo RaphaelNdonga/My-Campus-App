@@ -81,9 +81,7 @@ class AssignmentsFragment : Fragment() {
         })
         viewModel.openDetails.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(
-                AssignmentsFragmentDirections.actionAssignmentsFragmentToAssignmentInput(
-                    it
-                )
+                AssignmentsFragmentDirections.actionAssignmentsFragmentToAssignmentInput(it)
             )
         })
 

@@ -3,17 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="clickListener"
+            type="com.example.android.mycampusapp.assessments.tests.display.TestClickListener" />
+        <variable
+            name="test"
+            type="com.example.android.mycampusapp.data.Test" />
 
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/card_margin">
+        android:layout_margin="@dimen/card_margin"
+        android:onClick="@{()->clickListener.onClick(test)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/item_background"
             android:padding="@dimen/card_constraint_layout_padding">
 
             <TextView
@@ -34,7 +42,7 @@
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/time"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/test_subject" />
+                app:layout_constraintTop_toBottomOf="@+id/test_date" />
 
             <TextView
                 android:id="@+id/test_date"
@@ -44,7 +52,7 @@
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/date"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/test_time" />
+                app:layout_constraintTop_toBottomOf="@+id/test_subject" />
 
             <ImageView
                 android:id="@+id/test_location_img"
@@ -66,7 +74,7 @@
                 android:text="@string/location"
                 android:textColor="@color/location"
                 app:layout_constraintStart_toEndOf="@id/test_location_img"
-                app:layout_constraintTop_toBottomOf="@+id/test_date" />
+                app:layout_constraintTop_toBottomOf="@+id/test_time" />
 
             <TextView
                 android:id="@+id/test_room"
