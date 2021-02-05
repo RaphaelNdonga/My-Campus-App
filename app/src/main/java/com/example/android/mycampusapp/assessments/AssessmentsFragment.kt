@@ -22,7 +22,7 @@ class AssessmentsFragment: Fragment() {
         val viewPager = binding.viewPager
         val assessments = listOf("Assignments","Tests")
         viewPager.adapter = adapter
-        val tabLayoutMediator = TabLayoutMediator(tabLayout,viewPager){ tab, position ->
+        TabLayoutMediator(tabLayout,viewPager){ tab, position ->
             tab.text = assessments[position]
         }.attach()
 
