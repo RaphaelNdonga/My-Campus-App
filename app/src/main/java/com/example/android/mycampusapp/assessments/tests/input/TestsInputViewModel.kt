@@ -3,10 +3,10 @@ package com.example.android.mycampusapp.assessments.tests.input
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.Location
-import com.example.android.mycampusapp.data.Test
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.formatDate
 import com.example.android.mycampusapp.util.formatTime
@@ -14,16 +14,16 @@ import com.google.firebase.firestore.CollectionReference
 import timber.log.Timber
 
 class TestsInputViewModel(
-    private val test: Test?,
+    private val assessment: Assessment?,
     private val testCollection: CollectionReference
 ) : ViewModel() {
     private val _dateSet =
-        MutableLiveData<CustomDate>(test?.let { CustomDate(test.year, test.month, test.day) })
+        MutableLiveData<CustomDate>(assessment?.let { CustomDate(assessment.year, assessment.month, assessment.day) })
     val dateSet: LiveData<CustomDate>
         get() = _dateSet
 
     private val _timeSet =
-        MutableLiveData<CustomTime>(test?.let { CustomTime(test.hour, test.minute) })
+        MutableLiveData<CustomTime>(assessment?.let { CustomTime(assessment.hour, assessment.minute) })
     val timeSet: LiveData<CustomTime>
         get() = _timeSet
 
@@ -34,17 +34,17 @@ class TestsInputViewModel(
         formatTime(time)
     }?:""
 
-    val textBoxSubject = MutableLiveData<String>(test?.subject)
+    val textBoxSubject = MutableLiveData<String>(assessment?.subject)
     val textBoxTime = MutableLiveData(timeText)
     val textBoxDate = MutableLiveData(dateText)
-    val textBoxLocation = MutableLiveData<String>(test?.locationName)
-    val textBoxRoom = MutableLiveData<String>(test?.room)
+    val textBoxLocation = MutableLiveData<String>(assessment?.locationName)
+    val textBoxRoom = MutableLiveData<String>(assessment?.room)
 
     private val _location =
-        MutableLiveData<Location>(test?.let {
+        MutableLiveData<Location>(assessment?.let {
             Location(
-                test.locationName,
-                test.locationCoordinates
+                assessment.locationName,
+                assessment.locationCoordinates
             )
         })
 
@@ -79,8 +79,8 @@ class TestsInputViewModel(
         ) {
             return
         }
-        if (test == null) {
-            val testToSave = Test(
+        if (assessment == null) {
+            val testToSave = Assessment(
                 hour = timeToSave.hour,
                 minute = timeToSave.minute,
                 year = dateToSave.year,
@@ -94,8 +94,8 @@ class TestsInputViewModel(
             saveFirestoreTest(testToSave)
             navigateToDisplay()
         }else{
-            val testToSave = Test(
-                id = test.id,
+            val testToSave = Assessment(
+                id = assessment.id,
                 hour = timeToSave.hour,
                 minute = timeToSave.minute,
                 year = dateToSave.year,
@@ -105,16 +105,16 @@ class TestsInputViewModel(
                 locationCoordinates = locationToSave.coordinates,
                 locationName = locationToSave.name,
                 room = roomToSave,
-                alarmRequestCode = test.alarmRequestCode
+                alarmRequestCode = assessment.alarmRequestCode
             )
             saveFirestoreTest(testToSave)
             navigateToDisplay()
         }
     }
 
-    private fun saveFirestoreTest(test: Test) {
-        testCollection.document(test.id).set(test)
-        Timber.i("The test has been saved!")
+    private fun saveFirestoreTest(assessment: Assessment) {
+        testCollection.document(assessment.id).set(assessment)
+        Timber.i("The assessment has been saved!")
     }
 
     fun setLocation(location: Location) {

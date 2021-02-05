@@ -55,7 +55,7 @@ class TestsInputFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.tests_input_fragment, container, false)
         viewModel =
-            ViewModelProvider(this, TestsInputViewModelFactory(testArgs.test, testsCollection)).get(
+            ViewModelProvider(this, TestsInputViewModelFactory(testArgs.assessment, testsCollection)).get(
                 TestsInputViewModel::class.java
             )
         binding.lifecycleOwner = this

@@ -10,28 +10,28 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
-import com.example.android.mycampusapp.data.Test
 import com.example.android.mycampusapp.databinding.ListItemTestBinding
 import com.example.android.mycampusapp.util.formatDate
 import com.example.android.mycampusapp.util.formatTime
 
-class TestsAdapter(private val clickListener:TestClickListener) : ListAdapter<Test, TestsAdapter.ViewHolder>(DiffUtilCallBack) {
+class TestsAdapter(private val clickListener:TestClickListener) : ListAdapter<Assessment, TestsAdapter.ViewHolder>(DiffUtilCallBack) {
     var tracker: SelectionTracker<Long>? = null
 
     class ViewHolder(private val binding: ListItemTestBinding,private val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(test: Test, clickListener: TestClickListener, isActivated: Boolean) {
+        fun bind(assessment: Assessment, clickListener: TestClickListener, isActivated: Boolean) {
             binding.executePendingBindings()
-            binding.test = test
+            binding.test = assessment
             binding.clickListener = clickListener
-            binding.testSubject.text = test.subject
-            binding.testLocation.text = test.locationName
-            binding.testRoom.text = test.room
-            val testDate = CustomDate(test.year,test.month,test.day)
+            binding.testSubject.text = assessment.subject
+            binding.testLocation.text = assessment.locationName
+            binding.testRoom.text = assessment.room
+            val testDate = CustomDate(assessment.year,assessment.month,assessment.day)
             binding.testDate.text = formatDate(testDate)
-            val testTime = CustomTime(test.hour,test.minute)
+            val testTime = CustomTime(assessment.hour,assessment.minute)
             binding.testTime.text = formatTime(testTime)
             itemView.isActivated = isActivated
         }
@@ -48,8 +48,8 @@ class TestsAdapter(private val clickListener:TestClickListener) : ListAdapter<Te
 
             }
         }
-        fun setMapListener(test: Test?) {
-            val mapUri = Uri.parse(test?.locationCoordinates)
+        fun setMapListener(assessment: Assessment?) {
+            val mapUri = Uri.parse(assessment?.locationCoordinates)
             val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
             mapIntent.setPackage("com.google.android.apps.maps")
 
@@ -79,18 +79,18 @@ class TestsAdapter(private val clickListener:TestClickListener) : ListAdapter<Te
         return position.toLong()
     }
 
-    companion object DiffUtilCallBack : DiffUtil.ItemCallback<Test>() {
-        override fun areItemsTheSame(oldItem: Test, newItem: Test): Boolean {
+    companion object DiffUtilCallBack : DiffUtil.ItemCallback<Assessment>() {
+        override fun areItemsTheSame(oldItem: Assessment, newItem: Assessment): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Test, newItem: Test): Boolean {
+        override fun areContentsTheSame(oldItem: Assessment, newItem: Assessment): Boolean {
             return false
         }
 
     }
 }
 
-class TestClickListener(val clickListener: (test:Test)->Unit) {
-    fun onClick(test:Test) = clickListener(test)
+class TestClickListener(val clickListener: (assessment:Assessment)->Unit) {
+    fun onClick(assessment:Assessment) = clickListener(assessment)
 }

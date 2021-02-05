@@ -170,9 +170,9 @@
         android:name="com.example.android.mycampusapp.assessments.tests.input.TestsInputFragment"
         android:label="Add Tests">
         <argument
-            android:name="test"
+            android:name="assessment"
             android:defaultValue="@null"
-            app:argType="com.example.android.mycampusapp.data.Test"
+            app:argType="com.example.android.mycampusapp.data.Assessment"
             app:nullable="true" />
         <action
             android:id="@+id/action_testsInputFragment_to_assessmentsFragment"

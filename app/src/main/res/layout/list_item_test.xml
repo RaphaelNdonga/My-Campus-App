@@ -8,7 +8,7 @@
             type="com.example.android.mycampusapp.assessments.tests.display.TestClickListener" />
         <variable
             name="test"
-            type="com.example.android.mycampusapp.data.Test" />
+            type="com.example.android.mycampusapp.data.Assessment" />
 
     </data>
 

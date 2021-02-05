@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 @Parcelize
-data class Test(
+data class Assessment(
     val id:String = UUID.randomUUID().toString(),
     val hour:Int = 0,
     val minute:Int = 0,
