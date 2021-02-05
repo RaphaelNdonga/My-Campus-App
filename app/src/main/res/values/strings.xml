@@ -49,4 +49,5 @@
     <string name="no_classes_message">No classes today!</string>
     <string name="internet_request">Please check your internet connection to update the data</string>
     <string name="assessments">Assessments</string>
+    <string name="unknown_course_error">This course has not been created by the class admin</string>
 </resources>
