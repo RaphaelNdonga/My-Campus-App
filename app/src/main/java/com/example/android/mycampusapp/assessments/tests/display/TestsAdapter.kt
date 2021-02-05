@@ -10,8 +10,12 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.mycampusapp.data.CustomDate
+import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.Test
 import com.example.android.mycampusapp.databinding.ListItemTestBinding
+import com.example.android.mycampusapp.util.formatDate
+import com.example.android.mycampusapp.util.formatTime
 
 class TestsAdapter(private val clickListener:TestClickListener) : ListAdapter<Test, TestsAdapter.ViewHolder>(DiffUtilCallBack) {
     var tracker: SelectionTracker<Long>? = null
@@ -25,10 +29,10 @@ class TestsAdapter(private val clickListener:TestClickListener) : ListAdapter<Te
             binding.testSubject.text = test.subject
             binding.testLocation.text = test.locationName
             binding.testRoom.text = test.room
-            val testDate = "${test.day}/${test.month.plus(1)}/${test.year}"
-            binding.testDate.text = testDate
-            val testTime = "${test.hour}:${test.minute}"
-            binding.testTime.text = testTime
+            val testDate = CustomDate(test.year,test.month,test.day)
+            binding.testDate.text = formatDate(testDate)
+            val testTime = CustomTime(test.hour,test.minute)
+            binding.testTime.text = formatTime(testTime)
             itemView.isActivated = isActivated
         }
 
