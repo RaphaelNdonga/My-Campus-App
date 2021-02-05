@@ -8,6 +8,8 @@ import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.Location
 import com.example.android.mycampusapp.data.Test
 import com.example.android.mycampusapp.util.Event
+import com.example.android.mycampusapp.util.formatDate
+import com.example.android.mycampusapp.util.formatTime
 import com.google.firebase.firestore.CollectionReference
 import timber.log.Timber
 
@@ -25,12 +27,16 @@ class TestsInputViewModel(
     val timeSet: LiveData<CustomTime>
         get() = _timeSet
 
-    private var dateText = test?.let { "${test.day}/${test.month.plus(1)}/${test.year}" }?:""
-    private var timeText = test?.let { "${test.hour}:${test.minute}" }?:""
+    private var dateText = _dateSet.value?.let { date->
+        formatDate(date)
+    }?:""
+    private var timeText = _timeSet.value?.let { time->
+        formatTime(time)
+    }?:""
 
     val textBoxSubject = MutableLiveData<String>(test?.subject)
-    val textBoxTime = MutableLiveData<String>(timeText)
-    val textBoxDate = MutableLiveData<String>(dateText)
+    val textBoxTime = MutableLiveData(timeText)
+    val textBoxDate = MutableLiveData(dateText)
     val textBoxLocation = MutableLiveData<String>(test?.locationName)
     val textBoxRoom = MutableLiveData<String>(test?.room)
 
@@ -48,15 +54,15 @@ class TestsInputViewModel(
 
 
     fun setDateFromDatePicker(dateSet: CustomDate) {
-        dateText = "${dateSet.day}/${dateSet.month.plus(1)}/${dateSet.year}"
+        dateText = formatDate(dateSet)
         textBoxDate.value = dateText
         _dateSet.value = dateSet
     }
 
-    fun setTimeFromTimePicker(timeset: CustomTime) {
-        val timeText = "${timeset.hour}:${timeset.minute}"
+    fun setTimeFromTimePicker(time: CustomTime) {
+        val timeText = formatTime(time)
         textBoxTime.value = timeText
-        _timeSet.value = timeset
+        _timeSet.value = time
     }
 
     fun save() {
