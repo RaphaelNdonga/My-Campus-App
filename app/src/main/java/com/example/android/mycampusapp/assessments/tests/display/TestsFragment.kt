@@ -72,7 +72,7 @@ class TestsFragment : Fragment() {
         }
 
         viewModel.inputNavigator.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(AssessmentsFragmentDirections.actionAssessmentsFragmentToAssignmentInput())
+            findNavController().navigate(AssessmentsFragmentDirections.actionAssessmentsFragmentToTestsInputFragment())
             Timber.i("Navigating to input")
         })
         viewModel.openDetails.observe(viewLifecycleOwner, EventObserver {
