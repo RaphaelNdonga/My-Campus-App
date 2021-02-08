@@ -1,6 +1,5 @@
 package com.example.android.mycampusapp.assessments.tests.display
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
@@ -20,18 +19,18 @@ import com.example.android.mycampusapp.util.formatTime
 class TestsAdapter(private val clickListener:TestClickListener) : ListAdapter<Assessment, TestsAdapter.ViewHolder>(DiffUtilCallBack) {
     var tracker: SelectionTracker<Long>? = null
 
-    class ViewHolder(private val binding: ListItemTestBinding,private val context: Context) :
+    class ViewHolder(private val binding: ListItemTestBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(assessment: Assessment, clickListener: TestClickListener, isActivated: Boolean) {
+        fun bind(test: Assessment, clickListener: TestClickListener, isActivated: Boolean) {
             binding.executePendingBindings()
-            binding.test = assessment
+            binding.test = test
             binding.clickListener = clickListener
-            binding.testSubject.text = assessment.subject
-            binding.testLocation.text = assessment.locationName
-            binding.testRoom.text = assessment.room
-            val testDate = CustomDate(assessment.year,assessment.month,assessment.day)
+            binding.testSubject.text = test.subject
+            binding.testLocation.text = test.locationName
+            binding.testRoom.text = test.room
+            val testDate = CustomDate(test.year,test.month,test.day)
             binding.testDate.text = formatDate(testDate)
-            val testTime = CustomTime(assessment.hour,assessment.minute)
+            val testTime = CustomTime(test.hour,test.minute)
             binding.testTime.text = formatTime(testTime)
             itemView.isActivated = isActivated
         }
@@ -54,7 +53,7 @@ class TestsAdapter(private val clickListener:TestClickListener) : ListAdapter<As
             mapIntent.setPackage("com.google.android.apps.maps")
 
             binding.testLocation.setOnClickListener {
-                context.startActivity(mapIntent)
+                this.itemView.context.startActivity(mapIntent)
             }
         }
     }
@@ -66,7 +65,7 @@ class TestsAdapter(private val clickListener:TestClickListener) : ListAdapter<As
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ListItemTestBinding.inflate(layoutInflater, parent, false)
-        return ViewHolder(binding,parent.context)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -91,6 +90,6 @@ class TestsAdapter(private val clickListener:TestClickListener) : ListAdapter<As
     }
 }
 
-class TestClickListener(val clickListener: (assessment:Assessment)->Unit) {
-    fun onClick(assessment:Assessment) = clickListener(assessment)
+class TestClickListener(val clickListener: (test:Assessment)->Unit) {
+    fun onClick(test:Assessment) = clickListener(test)
 }

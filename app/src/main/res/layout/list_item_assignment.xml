@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="assignment"
-            type="com.example.android.mycampusapp.data.Assignment" />
+            type="com.example.android.mycampusapp.data.Assessment" />
+
         <variable
             name="clickListener"
             type="com.example.android.mycampusapp.assessments.assignments.display.AssignmentsListener" />
@@ -21,28 +23,69 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/item_background"
-            android:padding="@dimen/card_constraint_layout_padding"
-            >
+            android:padding="@dimen/card_constraint_layout_padding">
 
             <TextView
                 android:id="@+id/assignment_subject"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/subject"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/assignment_due_date"
+                android:id="@+id/assignment_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_box_margin"
+                android:text="@string/time"
                 android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/assignment_date" />
+
+            <TextView
+                android:id="@+id/assignment_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/date"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/assignment_subject" />
+                app:layout_constraintTop_toBottomOf="@+id/assignment_subject" />
+
+            <ImageView
+                android:id="@+id/assignment_location_img"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:layout_constraintBottom_toBottomOf="@id/assignment_location"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/assignment_location"
+                app:srcCompat="@drawable/ic_location"
+
+                />
+
+            <TextView
+                android:id="@+id/assignment_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_box_margin"
+                android:text="@string/location"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                android:textColor="@color/location"
+                app:layout_constraintStart_toEndOf="@id/assignment_location_img"
+                app:layout_constraintTop_toBottomOf="@+id/assignment_time" />
+
+            <TextView
+                android:id="@+id/assignment_room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_box_margin"
+                android:text="@string/room"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/assignment_location" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

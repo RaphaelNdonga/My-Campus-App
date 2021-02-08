@@ -21,7 +21,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
-import com.example.android.mycampusapp.databinding.TestsInputFragmentBinding
+import com.example.android.mycampusapp.databinding.FragmentTestInputBinding
 import com.example.android.mycampusapp.location.LocationUtils
 import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver
@@ -34,7 +34,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class TestsInputFragment : Fragment() {
     private lateinit var viewModel: TestsInputViewModel
-    private lateinit var binding: TestsInputFragmentBinding
+    private lateinit var binding: FragmentTestInputBinding
     private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
     private lateinit var timeSetListener: TimePickerDialog.OnTimeSetListener
     private val testArgs by navArgs<TestsInputFragmentArgs>()
@@ -53,7 +53,7 @@ class TestsInputFragment : Fragment() {
         val courseId = sharedPreferences.getString(COURSE_ID, "")!!
         val testsCollection = courseCollection.document(courseId).collection("tests")
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.tests_input_fragment, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_test_input, container, false)
         viewModel =
             ViewModelProvider(this, TestsInputViewModelFactory(testArgs.assessment, testsCollection)).get(
                 TestsInputViewModel::class.java

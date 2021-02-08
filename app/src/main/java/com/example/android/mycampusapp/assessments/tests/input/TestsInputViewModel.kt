@@ -14,16 +14,16 @@ import com.google.firebase.firestore.CollectionReference
 import timber.log.Timber
 
 class TestsInputViewModel(
-    private val assessment: Assessment?,
+    private val test: Assessment?,
     private val testCollection: CollectionReference
 ) : ViewModel() {
     private val _dateSet =
-        MutableLiveData<CustomDate>(assessment?.let { CustomDate(assessment.year, assessment.month, assessment.day) })
+        MutableLiveData<CustomDate>(test?.let { CustomDate(test.year, test.month, test.day) })
     val dateSet: LiveData<CustomDate>
         get() = _dateSet
 
     private val _timeSet =
-        MutableLiveData<CustomTime>(assessment?.let { CustomTime(assessment.hour, assessment.minute) })
+        MutableLiveData<CustomTime>(test?.let { CustomTime(test.hour, test.minute) })
     val timeSet: LiveData<CustomTime>
         get() = _timeSet
 
@@ -34,19 +34,18 @@ class TestsInputViewModel(
         formatTime(time)
     }?:""
 
-    val textBoxSubject = MutableLiveData<String>(assessment?.subject)
+    val textBoxSubject = MutableLiveData<String>(test?.subject)
     val textBoxTime = MutableLiveData(timeText)
     val textBoxDate = MutableLiveData(dateText)
-    val textBoxLocation = MutableLiveData<String>(assessment?.locationName)
-    val textBoxRoom = MutableLiveData<String>(assessment?.room)
+    val textBoxLocation = MutableLiveData<String>(test?.locationName)
+    val textBoxRoom = MutableLiveData<String>(test?.room)
 
-    private val _location =
-        MutableLiveData<Location>(assessment?.let {
+    private var location = test?.let {
             Location(
-                assessment.locationName,
-                assessment.locationCoordinates
+                test.locationName,
+                test.locationCoordinates
             )
-        })
+        }
 
     private val _displayNavigator = MutableLiveData<Event<Unit>>()
     val displayNavigator:LiveData<Event<Unit>>
@@ -69,7 +68,7 @@ class TestsInputViewModel(
         val dateToSave = _dateSet.value
         val timeToSave = _timeSet.value
         val subjectToSave = textBoxSubject.value
-        val locationToSave = _location.value
+        val locationToSave = location
         val roomToSave = textBoxRoom.value
         if (dateToSave == null ||
             timeToSave == null ||
@@ -79,7 +78,7 @@ class TestsInputViewModel(
         ) {
             return
         }
-        if (assessment == null) {
+        if (test == null) {
             val testToSave = Assessment(
                 hour = timeToSave.hour,
                 minute = timeToSave.minute,
@@ -95,7 +94,7 @@ class TestsInputViewModel(
             navigateToDisplay()
         }else{
             val testToSave = Assessment(
-                id = assessment.id,
+                id = test.id,
                 hour = timeToSave.hour,
                 minute = timeToSave.minute,
                 year = dateToSave.year,
@@ -105,7 +104,7 @@ class TestsInputViewModel(
                 locationCoordinates = locationToSave.coordinates,
                 locationName = locationToSave.name,
                 room = roomToSave,
-                alarmRequestCode = assessment.alarmRequestCode
+                alarmRequestCode = test.alarmRequestCode
             )
             saveFirestoreTest(testToSave)
             navigateToDisplay()
@@ -118,7 +117,7 @@ class TestsInputViewModel(
     }
 
     fun setLocation(location: Location) {
-        _location.value = location
+        this.location = location
         textBoxLocation.value = location.name
     }
     private fun navigateToDisplay(){

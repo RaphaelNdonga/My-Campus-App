@@ -3,7 +3,7 @@ package com.example.android.mycampusapp.assessments.assignments.display
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.android.mycampusapp.data.Assignment
+import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.util.Event
 import com.google.firebase.firestore.CollectionReference
@@ -12,16 +12,16 @@ import com.google.firebase.firestore.Query
 import timber.log.Timber
 
 class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference) : ViewModel() {
-    private val _assignments = MutableLiveData<List<Assignment>>()
-    val assignments: LiveData<List<Assignment>>
+    private val _assignments = MutableLiveData<List<Assessment>>()
+    val assignments: LiveData<List<Assessment>>
         get() = _assignments
 
     private val _inputNavigator = MutableLiveData<Event<Unit>>()
     val inputNavigator: LiveData<Event<Unit>>
         get() = _inputNavigator
 
-    private val _openDetails = MutableLiveData<Event<Assignment>>()
-    val openDetails: LiveData<Event<Assignment>>
+    private val _openDetails = MutableLiveData<Event<Assessment>>()
+    val openDetails: LiveData<Event<Assessment>>
         get() = _openDetails
 
     private val _deleteAssignments = MutableLiveData<Event<Unit>>()
@@ -44,10 +44,10 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
             .orderBy("day", Query.Direction.DESCENDING)
             .addSnapshotListener { querySnapshot, firebaseException ->
                 querySnapshot?.let {
-                    val mutableList = mutableListOf<Assignment>()
+                    val mutableList = mutableListOf<Assessment>()
 
                     querySnapshot.documents.forEach { document ->
-                        val assignment = document.toObject(Assignment::class.java)
+                        val assignment = document.toObject(Assessment::class.java)
                         assignment?.let { mutableList.add(it) }
                     }
                     updateData(mutableList)
@@ -58,7 +58,7 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
             }
     }
 
-    private fun updateData(mutableList: List<Assignment>) {
+    private fun updateData(mutableList: List<Assessment>) {
         _assignments.value = mutableList
         checkDataStatus()
     }
@@ -80,7 +80,7 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
         Timber.i("navigate to input")
     }
 
-    fun displayDetails(assignment: Assignment) {
+    fun displayDetails(assignment: Assessment) {
         _openDetails.value = Event(assignment)
     }
 
@@ -88,7 +88,7 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
         _deleteAssignments.value = Event(Unit)
     }
 
-    fun deleteList(list: List<Assignment>) {
+    fun deleteList(list: List<Assessment>) {
         list.forEach { assignment ->
             assignmentsFirestore.document(assignment.id).delete()
         }

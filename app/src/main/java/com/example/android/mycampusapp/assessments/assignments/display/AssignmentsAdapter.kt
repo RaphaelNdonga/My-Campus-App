@@ -1,5 +1,7 @@
 package com.example.android.mycampusapp.assessments.assignments.display
 
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.selection.ItemDetailsLookup
@@ -7,11 +9,15 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.mycampusapp.data.Assignment
+import com.example.android.mycampusapp.data.Assessment
+import com.example.android.mycampusapp.data.CustomDate
+import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.databinding.ListItemAssignmentBinding
+import com.example.android.mycampusapp.util.formatDate
+import com.example.android.mycampusapp.util.formatTime
 
 class AssignmentsAdapter(private val clickListener: AssignmentsListener) :
-    ListAdapter<Assignment, AssignmentsAdapter.ViewHolder>(DiffUtilCallBack) {
+    ListAdapter<Assessment, AssignmentsAdapter.ViewHolder>(DiffUtilCallBack) {
 
     var tracker : SelectionTracker<Long>? = null
 
@@ -27,15 +33,23 @@ class AssignmentsAdapter(private val clickListener: AssignmentsListener) :
         }
 
         fun bind(
-            currentAssignment: Assignment,
+            currentAssignment: Assessment,
             clickListener: AssignmentsListener,
             isActivated: Boolean = false
         ) {
             binding.executePendingBindings()
             binding.assignment = currentAssignment
             binding.assignmentSubject.text = currentAssignment.subject
-            val date = "${currentAssignment.day}/${currentAssignment.month+1}/${currentAssignment.year}"
-            binding.assignmentDueDate.text = date
+            val date = formatDate(
+                CustomDate(currentAssignment.year,currentAssignment.month,currentAssignment.day)
+            )
+            val time = formatTime(
+                CustomTime(currentAssignment.hour,currentAssignment.minute)
+            )
+            binding.assignmentDate.text = date
+            binding.assignmentTime.text = time
+            binding.assignmentLocation.text = currentAssignment.locationName
+            binding.assignmentRoom.text = currentAssignment.room
             binding.clickListener = clickListener
             itemView.isActivated = isActivated
         }
@@ -46,7 +60,15 @@ class AssignmentsAdapter(private val clickListener: AssignmentsListener) :
 
                 override fun getSelectionKey(): Long? = itemId
             }
+        }
+        fun setMapListener(assessment: Assessment?) {
+            val mapUri = Uri.parse(assessment?.locationCoordinates)
+            val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
 
+            binding.assignmentLocation.setOnClickListener {
+                this.itemView.context.startActivity(mapIntent)
+            }
         }
     }
 
@@ -63,20 +85,21 @@ class AssignmentsAdapter(private val clickListener: AssignmentsListener) :
         tracker?.let{
             holder.bind(currentAssignment, clickListener,it.isSelected(position.toLong()))
         }
+        holder.setMapListener(currentAssignment)
     }
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
 
-    companion object DiffUtilCallBack : DiffUtil.ItemCallback<Assignment>() {
-        override fun areItemsTheSame(oldItem: Assignment, newItem: Assignment): Boolean {
+    companion object DiffUtilCallBack : DiffUtil.ItemCallback<Assessment>() {
+        override fun areItemsTheSame(oldItem: Assessment, newItem: Assessment): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
-            oldItem: Assignment,
-            newItem: Assignment
+            oldItem: Assessment,
+            newItem: Assessment
         ): Boolean {
             return false
         }
@@ -84,6 +107,6 @@ class AssignmentsAdapter(private val clickListener: AssignmentsListener) :
     }
 }
 
-class AssignmentsListener(val clickListener: (assignment: Assignment) -> Unit) {
-    fun onClick(assignment: Assignment) = clickListener(assignment)
+class AssignmentsListener(val clickListener: (assignment: Assessment) -> Unit) {
+    fun onClick(assignment: Assessment) = clickListener(assignment)
 }

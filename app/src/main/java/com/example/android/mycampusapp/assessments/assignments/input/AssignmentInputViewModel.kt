@@ -4,31 +4,38 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.data.Assignment
+import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.CustomDate
+import com.example.android.mycampusapp.data.CustomTime
+import com.example.android.mycampusapp.data.Location
 import com.example.android.mycampusapp.util.Event
+import com.example.android.mycampusapp.util.formatDate
+import com.example.android.mycampusapp.util.formatTime
 import com.google.firebase.firestore.CollectionReference
 
 class AssignmentInputViewModel(
     private val assignmentsCollection: CollectionReference,
-    private val assignment: Assignment?
+    private val assignment: Assessment?
 ) : ViewModel() {
-    // The vals below are connected to the xml file through a two-way databinding.
-    val textBoxSubject = MutableLiveData<String>(assignment?.subject)
-
-    //fills the textbox with values if editing is being done instead of adding a new class
-    private val date =
-        assignment?.let {
-            "${assignment.day}/${assignment.month.plus(1)}/${assignment.year}"
-        }
-    val textBoxDate = MutableLiveData<String>(date)
 
     // acquire the date values and save them as integers
-    private val _setDate = MutableLiveData<CustomDate>(assignment?.let {
+    private val _dateSet = MutableLiveData<CustomDate>(assignment?.let {
         CustomDate(assignment.year, assignment.month, assignment.day)
     })
-    val setDate:LiveData<CustomDate>
-            get() = _setDate
+    val dateSet:LiveData<CustomDate>
+            get() = _dateSet
+    private val _timeSet = MutableLiveData<CustomTime>(assignment?.let {
+        CustomTime(assignment.hour,assignment.minute)
+    })
+    val timeSet:LiveData<CustomTime>
+        get() = _timeSet
+
+    private val dateText = _dateSet.value?.let { date->
+        formatDate(date)
+    }
+    private val timeText = _timeSet.value?.let { time->
+        formatTime(time)
+    }
 
     private val _snackBarEvent = MutableLiveData<Event<Int>>()
     val snackBarEvent: LiveData<Event<Int>>
@@ -38,30 +45,55 @@ class AssignmentInputViewModel(
     val displayNavigator: LiveData<Event<Unit>>
         get() = _displayNavigator
 
+    // The vals below are connected to the xml file through a two-way databinding.
+    val textBoxSubject = MutableLiveData<String>(assignment?.subject)
+    val textBoxDate = MutableLiveData<String>(dateText)
+    val textBoxTime = MutableLiveData<String>(timeText)
+    val textBoxLocation = MutableLiveData<String>()
+    val textBoxRoom = MutableLiveData<String>()
+
+    private var location = assignment?.let{
+        Location(
+            it.locationName,
+            it.locationCoordinates
+        )
+    }
+
+
     fun save() {
         val currentSubject = textBoxSubject.value
-        val currentDate = _setDate.value
+        val currentDate = _dateSet.value
+        val currentTime = _timeSet.value
+        val currentLocation = location
 
-        if (currentDate == null || currentSubject.isNullOrBlank()) {
+        if (currentDate == null || currentSubject.isNullOrBlank() || currentTime == null || currentLocation == null) {
             _snackBarEvent.value = Event(R.string.empty_message)
             return
         }
         if (assignment == null) {
-            val currentAssignment = Assignment(
+            val currentAssignment = Assessment(
                 subject = currentSubject,
                 day = currentDate.day,
                 month = currentDate.month,
-                year = currentDate.year
+                year = currentDate.year,
+                hour = currentTime.hour,
+                minute = currentTime.minute,
+                locationName = currentLocation.name,
+                locationCoordinates = currentLocation.coordinates
             )
             addFirestoreData(currentAssignment)
             navigateToDisplay()
         } else {
-            val currentAssignment = Assignment(
+            val currentAssignment = Assessment(
                 id = assignment.id,
                 subject = currentSubject,
                 day = currentDate.day,
                 month = currentDate.month,
                 year = currentDate.year,
+                hour = currentTime.hour,
+                minute = currentTime.minute,
+                locationName = currentLocation.name,
+                locationCoordinates = currentLocation.coordinates,
                 alarmRequestCode = assignment.alarmRequestCode
             )
             addFirestoreData(currentAssignment)
@@ -69,7 +101,7 @@ class AssignmentInputViewModel(
         }
     }
 
-    private fun addFirestoreData(currentAssignment: Assignment) {
+    private fun addFirestoreData(currentAssignment: Assessment) {
         assignmentsCollection.document(currentAssignment.id).set(currentAssignment)
     }
 
@@ -77,8 +109,19 @@ class AssignmentInputViewModel(
         _displayNavigator.value = Event(Unit)
     }
     fun setDateFromDatePicker(date:CustomDate){
-        val dateText = "${date.day}/${date.month.plus(1)}/${date.year}"
+        val dateText = formatDate(date)
         textBoxDate.value = dateText
-        _setDate.value = date
+        _dateSet.value = date
+    }
+
+    fun setTimeFromTimePicker(customTime: CustomTime) {
+        val timeText = formatTime(customTime)
+        textBoxTime.value = timeText
+        _timeSet.value = customTime
+    }
+
+    fun setLocation(location: Location) {
+        this.location = location
+        textBoxLocation.value = location.name
     }
 }

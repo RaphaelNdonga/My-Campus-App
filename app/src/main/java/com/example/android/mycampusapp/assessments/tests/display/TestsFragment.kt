@@ -15,7 +15,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.assessments.AssessmentsFragmentDirections
-import com.example.android.mycampusapp.databinding.TestsFragmentBinding
+import com.example.android.mycampusapp.databinding.FragmentTestBinding
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
@@ -27,7 +27,7 @@ import javax.inject.Inject
 class TestsFragment : Fragment() {
 
     private lateinit var viewModel: TestsViewModel
-    private lateinit var binding: TestsFragmentBinding
+    private lateinit var binding: FragmentTestBinding
     private lateinit var snapshotListener: ListenerRegistration
     private lateinit var tracker: SelectionTracker<Long>
     private lateinit var adapter: TestsAdapter
@@ -50,7 +50,7 @@ class TestsFragment : Fragment() {
         isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
         val testsCollection = courseCollection.document(courseId).collection("tests")
 
-        binding = DataBindingUtil.inflate(inflater, R.layout.tests_fragment, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_test, container, false)
 
         viewModel = ViewModelProvider(
             this,
