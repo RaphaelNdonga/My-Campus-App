@@ -22,18 +22,18 @@ class AssignmentInputViewModel(
     private val _dateSet = MutableLiveData<CustomDate>(assignment?.let {
         CustomDate(assignment.year, assignment.month, assignment.day)
     })
-    val dateSet:LiveData<CustomDate>
-            get() = _dateSet
+    val dateSet: LiveData<CustomDate>
+        get() = _dateSet
     private val _timeSet = MutableLiveData<CustomTime>(assignment?.let {
-        CustomTime(assignment.hour,assignment.minute)
+        CustomTime(assignment.hour, assignment.minute)
     })
-    val timeSet:LiveData<CustomTime>
+    val timeSet: LiveData<CustomTime>
         get() = _timeSet
 
-    private val dateText = _dateSet.value?.let { date->
+    private val dateText = _dateSet.value?.let { date ->
         formatDate(date)
     }
-    private val timeText = _timeSet.value?.let { time->
+    private val timeText = _timeSet.value?.let { time ->
         formatTime(time)
     }
 
@@ -49,10 +49,10 @@ class AssignmentInputViewModel(
     val textBoxSubject = MutableLiveData<String>(assignment?.subject)
     val textBoxDate = MutableLiveData<String>(dateText)
     val textBoxTime = MutableLiveData<String>(timeText)
-    val textBoxLocation = MutableLiveData<String>()
-    val textBoxRoom = MutableLiveData<String>()
+    val textBoxLocation = MutableLiveData<String>(assignment?.locationName)
+    val textBoxRoom = MutableLiveData<String>(assignment?.room)
 
-    private var location = assignment?.let{
+    private var location = assignment?.let {
         Location(
             it.locationName,
             it.locationCoordinates
@@ -65,8 +65,10 @@ class AssignmentInputViewModel(
         val currentDate = _dateSet.value
         val currentTime = _timeSet.value
         val currentLocation = location
+        val currentRoom = textBoxRoom.value
 
-        if (currentDate == null || currentSubject.isNullOrBlank() || currentTime == null || currentLocation == null) {
+        if (currentDate == null || currentSubject.isNullOrBlank() || currentRoom.isNullOrBlank() ||
+            currentTime == null || currentLocation == null) {
             _snackBarEvent.value = Event(R.string.empty_message)
             return
         }
@@ -79,7 +81,8 @@ class AssignmentInputViewModel(
                 hour = currentTime.hour,
                 minute = currentTime.minute,
                 locationName = currentLocation.name,
-                locationCoordinates = currentLocation.coordinates
+                locationCoordinates = currentLocation.coordinates,
+                room = currentRoom
             )
             addFirestoreData(currentAssignment)
             navigateToDisplay()
@@ -94,7 +97,8 @@ class AssignmentInputViewModel(
                 minute = currentTime.minute,
                 locationName = currentLocation.name,
                 locationCoordinates = currentLocation.coordinates,
-                alarmRequestCode = assignment.alarmRequestCode
+                alarmRequestCode = assignment.alarmRequestCode,
+                room = currentRoom
             )
             addFirestoreData(currentAssignment)
             navigateToDisplay()
@@ -108,7 +112,8 @@ class AssignmentInputViewModel(
     private fun navigateToDisplay() {
         _displayNavigator.value = Event(Unit)
     }
-    fun setDateFromDatePicker(date:CustomDate){
+
+    fun setDateFromDatePicker(date: CustomDate) {
         val dateText = formatDate(date)
         textBoxDate.value = dateText
         _dateSet.value = date
