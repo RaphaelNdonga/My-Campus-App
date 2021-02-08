@@ -38,6 +38,7 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
 
 
     fun addSnapshotListener(): ListenerRegistration {
+        _status.value = DataStatus.LOADING
         return assignmentsFirestore
             .orderBy("year", Query.Direction.DESCENDING)
             .orderBy("month", Query.Direction.DESCENDING)
@@ -64,9 +65,10 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
     }
 
     private fun checkDataStatus() {
-        val assignments = assignments.value
+        val assignments = _assignments.value
         try {
             if (assignments.isNullOrEmpty()) {
+                Timber.i("The data status should be empty")
                 throw NullPointerException()
             }
             _status.value = DataStatus.NOT_EMPTY
@@ -88,9 +90,10 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
         _deleteAssignments.value = Event(Unit)
     }
 
-    fun deleteList(list: List<Assessment>) {
+    fun deleteList(list: List<Assessment?>) {
         list.forEach { assignment ->
-            assignmentsFirestore.document(assignment.id).delete()
+            if (assignment != null)
+                assignmentsFirestore.document(assignment.id).delete()
         }
         checkDataStatus()
     }

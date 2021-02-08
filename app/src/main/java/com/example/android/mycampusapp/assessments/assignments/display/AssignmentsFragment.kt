@@ -72,7 +72,7 @@ class AssignmentsFragment : Fragment() {
 
         binding.assignmentsRefreshLayout.setOnRefreshListener {
             snapshotListener.remove()
-            viewModel.addSnapshotListener()
+            snapshotListener = viewModel.addSnapshotListener()
             binding.assignmentsRefreshLayout.isRefreshing = false
         }
 
@@ -154,10 +154,10 @@ class AssignmentsFragment : Fragment() {
                     highlightState = true
                     val nItems: Int? = tracker.selection.size()
                     if (nItems != null) {
-                        highlightState = true
-                        viewModel.deleteAssignments.observe(viewLifecycleOwner, EventObserver {
-                            deleteSelectedItems(tracker.selection)
-                        })
+                        viewModel.deleteAssignments.observe(viewLifecycleOwner,
+                            EventObserver {
+                                deleteSelectedItems(tracker.selection)
+                            })
                     }
                     if (nItems == 0) {
                         highlightState = false
