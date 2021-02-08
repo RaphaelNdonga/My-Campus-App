@@ -50,4 +50,5 @@
     <string name="internet_request">Please check your internet connection to update the data</string>
     <string name="assessments">Assessments</string>
     <string name="unknown_course_error">This course has not been created by the class admin</string>
+    <string name="no_tests_string">No tests in the near future!</string>
 </resources>

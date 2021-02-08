@@ -61,7 +61,8 @@ class TestsFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         adapter = TestsAdapter(TestClickListener {
-            viewModel.displayDetails(it)
+            if (isAdmin && !highlightState)
+                viewModel.displayDetails(it)
         })
         binding.testsRecyclerView.adapter = adapter
 
@@ -96,17 +97,17 @@ class TestsFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
-                R.id.delete_all_classes->{
-                    showDeleteDialog()
-                    true
-                }
+        return when (item.itemId) {
+            R.id.delete_all_classes -> {
+                showDeleteDialog()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     private fun showDeleteDialog() {
-        val alertDialog = AlertDialog.Builder(this.context,R.style.MyCampusApp_Dialog)
+        val alertDialog = AlertDialog.Builder(this.context, R.style.MyCampusApp_Dialog)
             .setTitle(R.string.dialog_delete)
             .setMessage(R.string.dialog_delete_confirm)
             .setPositiveButton(R.string.dialog_positive) { _, _ -> viewModel.deleteIconPressed() }
@@ -138,7 +139,7 @@ class TestsFragment : Fragment() {
                     viewModel.deleteAssignments.observe(viewLifecycleOwner, EventObserver {
                         deleteSelectedItems(tracker.selection)
                     })
-                }else{
+                } else {
                     highlightState = false
                 }
                 requireActivity().invalidateOptionsMenu()
@@ -153,6 +154,8 @@ class TestsFragment : Fragment() {
         }.toList()
         viewModel.deleteList(list)
         tracker.selection.removeAll { true }
+        highlightState = false
+        requireActivity().invalidateOptionsMenu()
     }
 
     override fun onPause() {
