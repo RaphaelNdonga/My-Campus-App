@@ -28,6 +28,7 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
+        noStdlib = true
     }
     buildTypes {
         release {
@@ -126,3 +127,8 @@ dependencies {
     //firebase cloud functions dependency
     implementation 'com.google.firebase:firebase-functions:19.2.0'
     }
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all{
+    kotlinOptions {
+        freeCompilerArgs = ["-XXLanguage:+InlineClasses"]
+    }
+}
