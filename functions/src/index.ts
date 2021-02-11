@@ -27,16 +27,20 @@ exports.addCourseId = functions.https.onCall((data,context)=>{
 async function setAdminCourseId(email:string,courseId:string): Promise<void> {
   functions.logger.info(`The email is ${email}`)
   const user = await admin.auth().getUserByEmail(email);
-
-  if(user.customClaims && (user.customClaims as any).admin === true){
-    functions.logger.info("This is an already registered user",{structuredData: true})
-    return 
-  }
-  functions.logger.info(`setting ${email} as administrator with course id ${courseId}`,{structuredData:true})
-  return admin.auth().setCustomUserClaims(user.uid,{
-    admin:true,
-    courseId:courseId
+  const accountExists = await admin.firestore().collection('courses/'+courseId+'/admins').get().then(snapshot=>{
+    return snapshot.size>0
   })
+
+  if(accountExists){
+    functions.logger.info("This course already has a class rep",{structuredData: true})
+    return 
+  }else{
+    functions.logger.info(`setting ${email} as administrator with course id ${courseId}`,{structuredData:true})
+    return admin.auth().setCustomUserClaims(user.uid,{
+      admin:true,
+      courseId:courseId
+    })
+  }
 }
 
 async function setCourseId(email:string,courseId:string): Promise<void>{
@@ -51,3 +55,25 @@ async function setCourseId(email:string,courseId:string): Promise<void>{
     courseId:courseId
   })
 }
+// export const getComputerScienceAdmins = functions.https.onRequest((request,response)=>{
+//   admin.firestore().doc('courses/Bsc Computer Science/admins/lemayian@gmail.com').get()
+//     .then(snapshot=>{
+//     const data = snapshot.data()
+//     response.send(data)
+//     })
+//       .catch(error=>{
+//         console.log(error)
+//         response.status(500).send(error)
+//       })
+// })
+
+// export const confirmAdminExists = functions.https.onRequest((request,response)=>{
+//   admin.firestore().collection('courses/Bsc Water Science/admins').get()
+//   .then(snapshot=>{
+//     const exists = snapshot.size > 0
+//     response.send("The snapshot existing is "+ exists + "because snapshot size is "+ snapshot.size)
+//   }).catch(error=>{
+//     console.log(error)
+//     response.status(500).send(error)
+//   })
+// })
