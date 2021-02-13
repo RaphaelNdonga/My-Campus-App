@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.timetable.input.sunday.SundayInputViewModel" />
+            type="com.example.android.mycampusapp.timetable.input.TimetableInputViewModel" />
     </data>
 
     <ScrollView
@@ -55,15 +55,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_box_margin"
-                android:hint="@string/time"
-                android:onClick="@{()->viewModel.setTimePickerClockPosition()}">
+                android:hint="@string/time">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/class_time_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@={viewModel.textBoxTime}"
-                    android:onClick="@{()->viewModel.setTimePickerClockPosition()}"
                     android:inputType="none"
                     android:focusableInTouchMode="true"
                     android:cursorVisible="false"
