@@ -33,8 +33,6 @@ class TimetableInputViewModel(
     val displayNavigator: LiveData<Event<Unit>>
         get() = _displayNavigator
 
-    val timePickerClockPosition = MutableLiveData<Event<List<Int>>>()
-
     val textBoxSubject = MutableLiveData<String>(fridayClass?.subject)
     val textBoxTime = MutableLiveData<String>(fridayClass?.let {
         formatTime(CustomTime(it.hour, it.minute))
