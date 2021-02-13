@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class TimetableInputViewModel(
-    private val fridayClass: TimetableClass?,
+    private val timetableClass: TimetableClass?,
     private val app: Application,
     private val fridayFirestore: CollectionReference
 ) : AndroidViewModel(app) {
@@ -33,17 +33,17 @@ class TimetableInputViewModel(
     val displayNavigator: LiveData<Event<Unit>>
         get() = _displayNavigator
 
-    val textBoxSubject = MutableLiveData<String>(fridayClass?.subject)
-    val textBoxTime = MutableLiveData<String>(fridayClass?.let {
+    val textBoxSubject = MutableLiveData<String>(timetableClass?.subject)
+    val textBoxTime = MutableLiveData(timetableClass?.let {
         formatTime(CustomTime(it.hour, it.minute))
     })
-    val textBoxLocation = MutableLiveData<String>(fridayClass?.locationName)
-    val textBoxRoom = MutableLiveData<String>(fridayClass?.room)
-    private val id = fridayClass?.id
-    private val alarmRequestCode = fridayClass?.alarmRequestCode
-    private var location = fridayClass?.let { Location(it.locationName, it.locationCoordinates) }
-    private val _timeSet = MutableLiveData<CustomTime>(
-        fridayClass?.let {
+    val textBoxLocation = MutableLiveData<String>(timetableClass?.locationName)
+    val textBoxRoom = MutableLiveData<String>(timetableClass?.room)
+    private val id = timetableClass?.id
+    private val alarmRequestCode = timetableClass?.alarmRequestCode
+    private var location = timetableClass?.let { Location(it.locationName, it.locationCoordinates) }
+    private val _timeSet = MutableLiveData(
+        timetableClass?.let {
             CustomTime(it.hour, it.minute)
         }
     )
@@ -80,7 +80,7 @@ class TimetableInputViewModel(
                     room = currentRoom
                 )
             addFirestoreData(fridayClass)
-            _snackbarText.value = Event(R.string.friday_saved)
+            _snackbarText.value = Event(R.string.class_saved)
             startTimer(fridayClass)
             navigateToTimetable()
 
@@ -117,7 +117,7 @@ class TimetableInputViewModel(
 
 
     private fun fridayClassIsNull(): Boolean {
-        if (fridayClass == null) {
+        if (timetableClass == null) {
             return true
         }
         return false
