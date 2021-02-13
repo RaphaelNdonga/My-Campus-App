@@ -1,25 +1,34 @@
 package com.example.android.mycampusapp.timetable.input.wednesday
 
 import android.app.AlertDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TimePicker
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
+import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.databinding.FragmentWednesdayInputBinding
 import com.example.android.mycampusapp.location.LocationUtils
-import com.example.android.mycampusapp.util.*
+import com.example.android.mycampusapp.timetable.input.TimetableInputViewModel
+import com.example.android.mycampusapp.timetable.input.TimetableInputViewModelFactory
+import com.example.android.mycampusapp.util.COURSE_ID
+import com.example.android.mycampusapp.util.EventObserver
+import com.example.android.mycampusapp.util.setupSnackbar
+import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 import javax.inject.Inject
 
 
@@ -30,7 +39,7 @@ class WednesdayInputFragment : Fragment() {
     lateinit var courseCollection: CollectionReference
 
     private val wednesdayArgs by navArgs<WednesdayInputFragmentArgs>()
-    private lateinit var viewModel: WednesdayInputViewModel
+    private lateinit var viewModel: TimetableInputViewModel
 
     private lateinit var courseId: String
     private lateinit var sharedPreferences: SharedPreferences
@@ -53,27 +62,48 @@ class WednesdayInputFragment : Fragment() {
         val app = requireActivity().application
         viewModel = ViewModelProvider(
             this,
-            WednesdayInputViewModelFactory(
-                courseCollection.document(courseId),
+            TimetableInputViewModelFactory(
                 wednesdayArgs.wednesdayClass,
-                app
+                app,
+                courseCollection.document(courseId).collection("wednesday")
             )
-        ).get(WednesdayInputViewModel::class.java)
+        ).get(TimetableInputViewModel::class.java)
 
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        viewModel.navigator.observe(viewLifecycleOwner,
+        viewModel.displayNavigator.observe(viewLifecycleOwner,
             EventObserver {
                 findNavController().navigate(WednesdayInputFragmentDirections.actionWednesdayInputFragmentToTimetableFragment())
             })
 
-        val time = binding.classTimeEditText
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+        var displayTime = CustomTime(hour, minute)
 
-        viewModel.timeSetByTimePicker.observe(viewLifecycleOwner, Observer { hourMinute ->
-            time.setText(hourMinute)
+        viewModel.timeSet.observe(viewLifecycleOwner,{
+            it?.let {
+                displayTime = it
+            }
         })
+
+        val timePickerListener =
+            TimePickerDialog.OnTimeSetListener { _: TimePicker, hourSet: Int, minuteSet: Int ->
+                viewModel.setTime(CustomTime(hourSet, minuteSet))
+            }
+        val timePickerDialog = TimePickerDialog(
+            requireContext(),
+            timePickerListener,
+            displayTime.hour,
+            displayTime.minute,
+            DateFormat.is24HourFormat(requireContext())
+        )
+
+        binding.classTimeEditText.setOnClickListener {
+            timePickerDialog.show()
+        }
 
         binding.classLocationEditText.setOnClickListener {
             showLocationsList()
@@ -85,15 +115,10 @@ class WednesdayInputFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupSnackbar()
-        setupTimePickerDialog()
     }
 
     private fun setupSnackbar() {
         view?.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_SHORT)
-    }
-
-    private fun setupTimePickerDialog() {
-        activity?.setupTimeDialog(this, viewModel.timePickerClockPosition)
     }
 
     private fun showLocationsList() {

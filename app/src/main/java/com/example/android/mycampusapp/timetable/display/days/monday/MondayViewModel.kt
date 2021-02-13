@@ -12,7 +12,6 @@ import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.MondayClassReceiver
 import com.example.android.mycampusapp.util.Event
-import com.example.android.mycampusapp.util.TimePickerValues
 import com.google.firebase.firestore.*
 
 class MondayViewModel(courseId: DocumentReference, private val app: Application) :
@@ -47,14 +46,10 @@ class MondayViewModel(courseId: DocumentReference, private val app: Application)
     fun displayMondayClassDetails(mondayClass: TimetableClass) {
         _openMondayClass.value =
             Event(mondayClass)
-
-        //Ensures that the timepickervalues object is updated before passing the arguments to mondayInput fragment
-        TimePickerValues.timeSetByTimePicker.value = mondayClass.time
     }
 
     fun addNewClass() {
         _addNewClass.value = Event(Unit)
-        TimePickerValues.timeSetByTimePicker.value = ""
     }
 
     fun deleteList(list: List<TimetableClass?>) {
