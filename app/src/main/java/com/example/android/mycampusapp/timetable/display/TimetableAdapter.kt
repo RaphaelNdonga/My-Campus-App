@@ -10,8 +10,10 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.databinding.ListItemTimetableBinding
+import com.example.android.mycampusapp.util.formatTime
 
 class TimetableAdapter(private val clickListener: TimetableListener) :
     ListAdapter<TimetableClass, TimetableAdapter.ViewHolder>(
@@ -40,7 +42,10 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
             binding.executePendingBindings()
             binding.timetableClass = timetableClass
             binding.listItemSubject.text = timetableClass.subject
-            binding.listItemTime.text = timetableClass.time
+            binding.listItemTime.text = formatTime(CustomTime(
+                timetableClass.hour,
+                timetableClass.minute
+            ))
             binding.listItemLocation.text = timetableClass.locationName
             val room = "Room ${timetableClass.room}"
             binding.listItemRoom.text = room
