@@ -16,7 +16,7 @@ import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.TimetableClass
-import com.example.android.mycampusapp.databinding.FragmentMondayBinding
+import com.example.android.mycampusapp.databinding.FragmentTimetableDisplayBinding
 import com.example.android.mycampusapp.timetable.display.*
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
@@ -55,15 +55,15 @@ class MondayFragment : Fragment() {
         Timber.i("The value of isAdmin is $isAdmin")
         courseId = sharedPreferences.getString(COURSE_ID, "")!!
 
-        val binding = DataBindingUtil.inflate<FragmentMondayBinding>(
+        val binding = DataBindingUtil.inflate<FragmentTimetableDisplayBinding>(
             inflater,
-            R.layout.fragment_monday,
+            R.layout.fragment_timetable_display,
             container,
             false
         )
         Timber.i("monday fragment created")
 
-        val fab = binding.mondayFab
+        val fab = binding.timetableFab
         if (isAdmin) {
             fab.visibility = View.VISIBLE
         }
@@ -76,7 +76,7 @@ class MondayFragment : Fragment() {
         setHasOptionsMenu(true)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        recyclerView = binding.mondayRecyclerView
+        recyclerView = binding.timetableRecyclerView
         adapter =
             TimetableAdapter(
                 TimetableListener {
@@ -86,10 +86,10 @@ class MondayFragment : Fragment() {
                 })
         recyclerView.adapter = adapter
 
-        binding.mondayRefreshLayout.setOnRefreshListener {
+        binding.timetableRefreshLayout.setOnRefreshListener {
             snapshotListener.remove()
             viewModel.addSnapshotListener()
-            binding.mondayRefreshLayout.isRefreshing = false
+            binding.timetableRefreshLayout.isRefreshing = false
         }
 
 

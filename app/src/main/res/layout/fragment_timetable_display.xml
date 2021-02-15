@@ -12,23 +12,21 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/monday_refresh_layout"
+                android:id="@+id/timetable_refresh_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:layout_editor_absoluteX="41dp"
-                tools:layout_editor_absoluteY="137dp">
+                android:layout_height="match_parent">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/monday_recycler_view"
+                    android:id="@+id/timetable_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layoutManager=".util.CustomLinearLayoutManager"
@@ -38,31 +36,31 @@
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <ImageView
-                android:id="@+id/assignment_empty_image"
+                android:id="@+id/timetable_empty_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:dataStatusImage="@{viewModel.status}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:dataStatusImage="@{viewModel.status}" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/assignment_empty_text"
+                android:id="@+id/timetable_empty_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/toolbar_padding"
                 android:text="@string/no_classes_message"
                 android:visibility="gone"
+                app:dataStatusText="@{viewModel.status}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:dataStatusText="@{viewModel.status}"
-                app:layout_constraintTop_toBottomOf="@+id/assignment_empty_image"/>
-
+                app:layout_constraintTop_toBottomOf="@+id/timetable_empty_image" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/monday_fab"
+            android:id="@+id/timetable_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -72,7 +70,5 @@
             android:visibility="gone"
             app:borderWidth="0dp"
             app:srcCompat="@drawable/ic_add" />
-
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

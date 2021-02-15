@@ -16,7 +16,7 @@ import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.TimetableClass
-import com.example.android.mycampusapp.databinding.FragmentThursdayBinding
+import com.example.android.mycampusapp.databinding.FragmentTimetableDisplayBinding
 import com.example.android.mycampusapp.timetable.display.*
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
@@ -50,15 +50,15 @@ class ThursdayFragment : Fragment() {
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         courseId = sharedPreferences.getString(COURSE_ID, "")!!
         isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
-        val binding = DataBindingUtil.inflate<FragmentThursdayBinding>(
+        val binding = DataBindingUtil.inflate<FragmentTimetableDisplayBinding>(
             inflater,
-            R.layout.fragment_thursday,
+            R.layout.fragment_timetable_display,
             container,
             false
         )
         Timber.i("thursday fragment created")
 
-        val fab = binding.thursdayFab
+        val fab = binding.timetableFab
         if (isAdmin && !highlightState) {
             fab.visibility = View.VISIBLE
         }
@@ -70,7 +70,7 @@ class ThursdayFragment : Fragment() {
         ).get(TimetableViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        recyclerView = binding.thursdayRecyclerView
+        recyclerView = binding.timetableRecyclerView
         adapter =
             TimetableAdapter(
                 TimetableListener {
@@ -81,10 +81,10 @@ class ThursdayFragment : Fragment() {
         recyclerView.adapter = adapter
 
 
-        binding.thursdayRefreshLayout.setOnRefreshListener {
+        binding.timetableRefreshLayout.setOnRefreshListener {
             snapshotListener.remove()
             viewModel.addSnapshotListener()
-            binding.thursdayRefreshLayout.isRefreshing = false
+            binding.timetableRefreshLayout.isRefreshing = false
         }
 
         viewModel.addNewClass.observe(viewLifecycleOwner,
