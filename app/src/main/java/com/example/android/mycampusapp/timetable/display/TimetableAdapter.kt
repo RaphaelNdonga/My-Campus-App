@@ -1,6 +1,5 @@
 package com.example.android.mycampusapp.timetable.display
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
@@ -22,14 +21,14 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
 
     var tracker: SelectionTracker<Long>? = null
 
-    class ViewHolder(private val binding: ListItemTimetableBinding, private val context: Context) :
+    class ViewHolder(private val binding: ListItemTimetableBinding) :
         RecyclerView.ViewHolder(binding.root) {
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ListItemTimetableBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(
-                    binding, parent.context
+                    binding
                 )
             }
         }
@@ -65,7 +64,7 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
             mapIntent.setPackage("com.google.android.apps.maps")
 
             binding.listItemLocation.setOnClickListener {
-                context.startActivity(mapIntent)
+                it.context.startActivity(mapIntent)
             }
         }
     }
