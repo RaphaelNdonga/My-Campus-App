@@ -17,10 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.databinding.FragmentMondayBinding
-import com.example.android.mycampusapp.timetable.display.TimetableAdapter
-import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
-import com.example.android.mycampusapp.timetable.display.TimetableItemDetailsLookup
-import com.example.android.mycampusapp.timetable.display.TimetableListener
+import com.example.android.mycampusapp.timetable.display.*
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
@@ -36,7 +33,7 @@ class MondayFragment : Fragment() {
 
     private lateinit var snapshotListener: ListenerRegistration
 
-    private lateinit var viewModel: MondayViewModel
+    private lateinit var viewModel: TimetableViewModel
     private lateinit var tracker: SelectionTracker<Long>
     private lateinit var adapter: TimetableAdapter
     private lateinit var recyclerView: RecyclerView
@@ -73,8 +70,8 @@ class MondayFragment : Fragment() {
         val app = requireActivity().application
         viewModel = ViewModelProvider(
             this,
-            MondayViewModelFactory(courseCollection.document(courseId), app)
-        ).get(MondayViewModel::class.java)
+            TimetableViewModelFactory(courseCollection.document(courseId).collection("monday"), app)
+        ).get(TimetableViewModel::class.java)
 
         setHasOptionsMenu(true)
         binding.viewModel = viewModel
@@ -84,7 +81,7 @@ class MondayFragment : Fragment() {
             TimetableAdapter(
                 TimetableListener {
                     if (isAdmin && !highlightState) {
-                        viewModel.displayMondayClassDetails(it)
+                        viewModel.displayFridayClassDetails(it)
                     }
                 })
         recyclerView.adapter = adapter
@@ -103,7 +100,7 @@ class MondayFragment : Fragment() {
                 )
             })
 
-        viewModel.openMondayClass.observe(viewLifecycleOwner,
+        viewModel.openFridayClass.observe(viewLifecycleOwner,
             EventObserver {
                 findNavController().navigate(
                     TimetableFragmentDirections.actionTimetableFragmentToMondayInputFragment(it)
@@ -176,7 +173,7 @@ class MondayFragment : Fragment() {
                     highlightState = true
                     val nItems: Int? = tracker.selection.size()
                     if (nItems != null)
-                        viewModel.deleteMondayClasses.observe(viewLifecycleOwner,
+                        viewModel.deleteFridayClasses.observe(viewLifecycleOwner,
                             EventObserver {
                                 deleteSelectedItems(tracker.selection)
                             })

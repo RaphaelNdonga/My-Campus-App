@@ -17,10 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.databinding.FragmentThursdayBinding
-import com.example.android.mycampusapp.timetable.display.TimetableAdapter
-import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
-import com.example.android.mycampusapp.timetable.display.TimetableItemDetailsLookup
-import com.example.android.mycampusapp.timetable.display.TimetableListener
+import com.example.android.mycampusapp.timetable.display.*
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
@@ -35,7 +32,7 @@ class ThursdayFragment : Fragment() {
     @Inject
     lateinit var courseCollection: CollectionReference
 
-    private lateinit var viewModel: ThursdayViewModel
+    private lateinit var viewModel: TimetableViewModel
     private lateinit var tracker: SelectionTracker<Long>
     private lateinit var adapter: TimetableAdapter
     private lateinit var recyclerView: RecyclerView
@@ -69,8 +66,8 @@ class ThursdayFragment : Fragment() {
         val app = requireActivity().application
         viewModel = ViewModelProvider(
             this,
-            ThursdayViewModelFactory(courseCollection.document(courseId), app)
-        ).get(ThursdayViewModel::class.java)
+            TimetableViewModelFactory(courseCollection.document(courseId).collection("thursday"), app)
+        ).get(TimetableViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
         recyclerView = binding.thursdayRecyclerView
@@ -78,7 +75,7 @@ class ThursdayFragment : Fragment() {
             TimetableAdapter(
                 TimetableListener {
                     if (isAdmin) {
-                        viewModel.displayThursdayClassDetails(it)
+                        viewModel.displayFridayClassDetails(it)
                     }
                 })
         recyclerView.adapter = adapter
@@ -98,7 +95,7 @@ class ThursdayFragment : Fragment() {
                 Timber.i("We are supposed to be navigating")
             })
 
-        viewModel.openThursdayClass.observe(viewLifecycleOwner,
+        viewModel.openFridayClass.observe(viewLifecycleOwner,
             EventObserver {
                 findNavController().navigate(
                     TimetableFragmentDirections.actionTimetableFragmentToThursdayInputFragment(it)
@@ -170,7 +167,7 @@ class ThursdayFragment : Fragment() {
                     highlightState = true
                     val nItems: Int? = tracker.selection.size()
                     if (nItems != null)
-                        viewModel.deleteThursdayClasses.observe(viewLifecycleOwner,
+                        viewModel.deleteFridayClasses.observe(viewLifecycleOwner,
                             EventObserver {
                                 deleteSelectedItems(tracker.selection)
                             })

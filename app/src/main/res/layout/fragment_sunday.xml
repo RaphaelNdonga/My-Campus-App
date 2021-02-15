@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.timetable.display.days.sunday.SundayViewModel" />
+            type="com.example.android.mycampusapp.timetable.display.TimetableViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -30,7 +30,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:layoutManager=".util.CustomLinearLayoutManager"
-                    app:timetableListData="@{viewModel.sundayClasses}"
+                    app:timetableListData="@{viewModel.fridayClasses}"
                     tools:itemCount="5"
                     tools:listitem="@layout/list_item_timetable" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

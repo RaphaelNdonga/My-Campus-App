@@ -17,10 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.databinding.FragmentFridayBinding
-import com.example.android.mycampusapp.timetable.display.TimetableAdapter
-import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
-import com.example.android.mycampusapp.timetable.display.TimetableItemDetailsLookup
-import com.example.android.mycampusapp.timetable.display.TimetableListener
+import com.example.android.mycampusapp.timetable.display.*
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
@@ -39,7 +36,7 @@ class FridayFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var highlightState: Boolean = false
     private var isAdmin: Boolean = false
-    private lateinit var viewModel: FridayViewModel
+    private lateinit var viewModel: TimetableViewModel
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var courseId: String
 
@@ -61,9 +58,9 @@ class FridayFragment : Fragment() {
         val app = requireActivity().application
         viewModel = ViewModelProvider(
             this,
-            FridayViewModelFactory(courseCollection.document(courseId), app)
+            TimetableViewModelFactory(courseCollection.document(courseId).collection("friday"), app)
         ).get(
-            FridayViewModel::class.java
+            TimetableViewModel::class.java
         )
 
         val fab = binding.fridayFab
