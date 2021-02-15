@@ -17,7 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.CustomTime
-import com.example.android.mycampusapp.databinding.FragmentSundayInputBinding
+import com.example.android.mycampusapp.databinding.FragmentTimetableInputBinding
 import com.example.android.mycampusapp.location.LocationUtils
 import com.example.android.mycampusapp.timetable.input.TimetableInputViewModel
 import com.example.android.mycampusapp.timetable.input.TimetableInputViewModelFactory
@@ -52,9 +52,9 @@ class SundayInputFragment : Fragment() {
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         courseId = sharedPreferences.getString(COURSE_ID, "")!!
-        val binding = DataBindingUtil.inflate<FragmentSundayInputBinding>(
+        val binding = DataBindingUtil.inflate<FragmentTimetableInputBinding>(
             inflater,
-            R.layout.fragment_sunday_input,
+            R.layout.fragment_timetable_input,
             container,
             false
         )
