@@ -42,7 +42,7 @@ class TimetableInputViewModel(
     private val id = timetableClass?.id
     private val alarmRequestCode = timetableClass?.alarmRequestCode
     private var location = timetableClass?.let { Location(it.locationName, it.locationCoordinates) }
-    private val _timeSet = MutableLiveData(
+    private val _timeSet:MutableLiveData<CustomTime> = MutableLiveData(
         timetableClass?.let {
             CustomTime(it.hour, it.minute)
         }
