@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.android.mycampusapp.data.AdminEmail
 import com.example.android.mycampusapp.databinding.ActivityMainBinding
 import com.example.android.mycampusapp.timetable.service.TimetableService
@@ -45,12 +47,11 @@ class MainActivity : AppCompatActivity() {
         val binding =
             DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         val toolbar = binding.appBar
-        this.setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar)
         drawerLayout = binding.drawerLayout
-        val navView = binding.navView
-        navController = this.findNavController(R.id.nav_host_fragment)
-        NavigationUI.setupWithNavController(navView, navController)
-        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
+        navController = findNavController(R.id.nav_host_fragment)
+        setupActionBarWithNavController(navController,drawerLayout)
+        binding.navView.setupWithNavController(navController)
 
         sharedPreferences = this.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         val courseId = sharedPreferences.getString(COURSE_ID, "")!!
@@ -84,5 +85,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return NavigationUI.navigateUp(navController, drawerLayout)
+    }
+
+    override fun onBackPressed() {
+        if(navController.currentDestination?.id == R.id.timetableFragment){
+            return super.onBackPressed()
+        }
+        navController.navigateUp()
     }
 }
