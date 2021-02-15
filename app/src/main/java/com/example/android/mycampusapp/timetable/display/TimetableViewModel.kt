@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.timetable.display.days.wednesday
+package com.example.android.mycampusapp.timetable.display
 
 import android.app.AlarmManager
 import android.app.Application
@@ -10,19 +10,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.data.TimetableClass
-import com.example.android.mycampusapp.timetable.receiver.WednesdayClassReceiver
+import com.example.android.mycampusapp.timetable.receiver.FridayClassReceiver
 import com.example.android.mycampusapp.util.Event
 import com.google.firebase.firestore.*
+import timber.log.Timber
 
+class TimetableViewModel(private val fridayFirestore: CollectionReference, private val app: Application) :
+    AndroidViewModel(app) {
 
-class WednesdayViewModel(
-    courseDocument: DocumentReference,
-    private val app: Application
-) : AndroidViewModel(app) {
-
-    private val _wednesdayClasses = MutableLiveData<List<TimetableClass>>()
-    val wednesdayClasses: LiveData<List<TimetableClass>>
-        get() = _wednesdayClasses
+    private val _fridayClasses = MutableLiveData<List<TimetableClass>>()
+    val fridayClasses: LiveData<List<TimetableClass>>
+        get() = _fridayClasses
 
     private val _status = MutableLiveData<DataStatus>()
     val status: LiveData<DataStatus> = _status
@@ -30,37 +28,33 @@ class WednesdayViewModel(
     private val _addNewClass = MutableLiveData<Event<Unit>>()
     val addNewClass: LiveData<Event<Unit>> = _addNewClass
 
-    private val _openWednesdayClass = MutableLiveData<Event<TimetableClass>>()
-    val openWednesdayClass: LiveData<Event<TimetableClass>>
-        get() = _openWednesdayClass
+    private val _openFridayClass = MutableLiveData<Event<TimetableClass>>()
+    val openFridayClass: LiveData<Event<TimetableClass>>
+        get() = _openFridayClass
 
-    private val _deleteWednesdayClasses = MutableLiveData<Event<Unit>>()
-    val deleteWednesdayClasses: LiveData<Event<Unit>>
-        get() = _deleteWednesdayClasses
+    private val _deleteFridayClasses = MutableLiveData<Event<Unit>>()
+    val deleteFridayClasses: LiveData<Event<Unit>>
+        get() = _deleteFridayClasses
 
     private val _hasPendingWrites = MutableLiveData<Event<Unit>>()
     val hasPendingWrites: LiveData<Event<Unit>>
         get() = _hasPendingWrites
 
-    private val wednesdayFirestore = courseDocument.collection("wednesday")
-
     private fun checkDataStatus() {
-        val wednesdayClasses = _wednesdayClasses.value
+        val fridayClasses = _fridayClasses.value
         try {
-            if (wednesdayClasses.isNullOrEmpty()) {
+            if (fridayClasses.isNullOrEmpty()) {
                 throw NullPointerException()
             }
-            _status.value =
-                DataStatus.NOT_EMPTY
+            _status.value = DataStatus.NOT_EMPTY
         } catch (e: Exception) {
-            _status.value =
-                DataStatus.EMPTY
+            _status.value = DataStatus.EMPTY
         }
     }
 
-    fun displayWednesdayClassDetails(wednesdayClass: TimetableClass) {
-        _openWednesdayClass.value =
-            Event(wednesdayClass)
+    fun displayFridayClassDetails(fridayClass: TimetableClass) {
+        _openFridayClass.value =
+            Event(fridayClass)
     }
 
     fun addNewClass() {
@@ -68,36 +62,36 @@ class WednesdayViewModel(
     }
 
     fun deleteList(list: List<TimetableClass?>) {
-        list.forEach { wednesdayClass ->
-            if (wednesdayClass != null) {
-                wednesdayFirestore.document(wednesdayClass.id).delete()
-                cancelAlarm(wednesdayClass)
+        list.forEach { fridayClass ->
+            if (fridayClass != null) {
+                fridayFirestore.document(fridayClass.id).delete()
+                cancelAlarm(fridayClass)
             }
         }
         checkDataStatus()
     }
 
     fun deleteIconPressed() {
-        _deleteWednesdayClasses.value =
+        _deleteFridayClasses.value =
             Event(Unit)
     }
 
     private fun updateData(mutableList: MutableList<TimetableClass>) {
-        _wednesdayClasses.value = mutableList
+        _fridayClasses.value = mutableList
         checkDataStatus()
     }
 
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = DataStatus.LOADING
-        return wednesdayFirestore.addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
+        return fridayFirestore.addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
             val mutableList: MutableList<TimetableClass> = mutableListOf()
             querySnapshot?.documents?.forEach { document ->
                 if (document.metadata.hasPendingWrites()) {
                     _hasPendingWrites.value = Event(Unit)
                 }
-
-                val wednesdayClass = document.toObject(TimetableClass::class.java)
-                wednesdayClass?.let {
+                Timber.i("We are in the loop")
+                val fridayClass = document.toObject(TimetableClass::class.java)
+                fridayClass?.let {
                     mutableList.add(it)
                 }
             }
@@ -105,12 +99,12 @@ class WednesdayViewModel(
         }
     }
 
-    private fun cancelAlarm(wednesdayClass: TimetableClass) {
+    private fun cancelAlarm(fridayClass: TimetableClass) {
         val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(app, WednesdayClassReceiver::class.java)
+        val intent = Intent(app, FridayClassReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
             app,
-            wednesdayClass.alarmRequestCode,
+            fridayClass.alarmRequestCode,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
