@@ -16,6 +16,7 @@ import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.assessments.AssessmentsFragmentDirections
+import com.example.android.mycampusapp.assessments.AssessmentsViewModel
 import com.example.android.mycampusapp.databinding.FragmentAssignmentsBinding
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
@@ -30,7 +31,7 @@ class AssignmentsFragment : Fragment() {
     lateinit var courseCollection: CollectionReference
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var courseId: String
-    private lateinit var viewModel: AssignmentsViewModel
+    private lateinit var viewModel: AssessmentsViewModel
     private lateinit var snapshotListener: ListenerRegistration
     private lateinit var tracker: SelectionTracker<Long>
     private lateinit var recyclerView: RecyclerView
@@ -64,7 +65,7 @@ class AssignmentsFragment : Fragment() {
             AssignmentsViewModelFactory(
                 courseCollection.document(courseId).collection("assignments")
             )
-        ).get(AssignmentsViewModel::class.java)
+        ).get(AssessmentsViewModel::class.java)
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel

@@ -15,6 +15,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.assessments.AssessmentsFragmentDirections
+import com.example.android.mycampusapp.assessments.AssessmentsViewModel
 import com.example.android.mycampusapp.databinding.FragmentTestBinding
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
@@ -26,7 +27,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class TestsFragment : Fragment() {
 
-    private lateinit var viewModel: TestsViewModel
+    private lateinit var viewModel: AssessmentsViewModel
     private lateinit var binding: FragmentTestBinding
     private lateinit var snapshotListener: ListenerRegistration
     private lateinit var tracker: SelectionTracker<Long>
@@ -55,7 +56,7 @@ class TestsFragment : Fragment() {
         viewModel = ViewModelProvider(
             this,
             TestsViewModelFactory(testsCollection)
-        ).get(TestsViewModel::class.java)
+        ).get(AssessmentsViewModel::class.java)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner

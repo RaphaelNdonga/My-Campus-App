@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.assessments.assignments.display
+package com.example.android.mycampusapp.assessments
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,10 +11,10 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import timber.log.Timber
 
-class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference) : ViewModel() {
-    private val _assignments = MutableLiveData<List<Assessment>>()
-    val assignments: LiveData<List<Assessment>>
-        get() = _assignments
+class AssessmentsViewModel(private val assessmentsFirestore: CollectionReference) : ViewModel() {
+    private val _assessments = MutableLiveData<List<Assessment>>()
+    val assessments: LiveData<List<Assessment>>
+        get() = _assessments
 
     private val _inputNavigator = MutableLiveData<Event<Unit>>()
     val inputNavigator: LiveData<Event<Unit>>
@@ -24,9 +24,9 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
     val openDetails: LiveData<Event<Assessment>>
         get() = _openDetails
 
-    private val _deleteAssignments = MutableLiveData<Event<Unit>>()
+    private val _deleteAssessments = MutableLiveData<Event<Unit>>()
     val deleteAssignments: LiveData<Event<Unit>>
-        get() = _deleteAssignments
+        get() = _deleteAssessments
 
     private val _status = MutableLiveData<DataStatus>()
     val status: LiveData<DataStatus>
@@ -39,7 +39,7 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
 
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = DataStatus.LOADING
-        return assignmentsFirestore
+        return assessmentsFirestore
             .orderBy("year", Query.Direction.DESCENDING)
             .orderBy("month", Query.Direction.DESCENDING)
             .orderBy("day", Query.Direction.DESCENDING)
@@ -48,8 +48,8 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
                     val mutableList = mutableListOf<Assessment>()
 
                     querySnapshot.documents.forEach { document ->
-                        val assignment = document.toObject(Assessment::class.java)
-                        assignment?.let { mutableList.add(it) }
+                        val assessment = document.toObject(Assessment::class.java)
+                        assessment?.let { mutableList.add(it) }
                     }
                     updateData(mutableList)
                 }
@@ -60,14 +60,14 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
     }
 
     private fun updateData(mutableList: List<Assessment>) {
-        _assignments.value = mutableList
+        _assessments.value = mutableList
         checkDataStatus()
     }
 
     private fun checkDataStatus() {
-        val assignments = _assignments.value
+        val assessments = _assessments.value
         try {
-            if (assignments.isNullOrEmpty()) {
+            if (assessments.isNullOrEmpty()) {
                 Timber.i("The data status should be empty")
                 throw NullPointerException()
             }
@@ -82,18 +82,18 @@ class AssignmentsViewModel(private val assignmentsFirestore: CollectionReference
         Timber.i("navigate to input")
     }
 
-    fun displayDetails(assignment: Assessment) {
-        _openDetails.value = Event(assignment)
+    fun displayDetails(assessment: Assessment) {
+        _openDetails.value = Event(assessment)
     }
 
     fun deleteIconPressed() {
-        _deleteAssignments.value = Event(Unit)
+        _deleteAssessments.value = Event(Unit)
     }
 
     fun deleteList(list: List<Assessment?>) {
-        list.forEach { assignment ->
-            if (assignment != null)
-                assignmentsFirestore.document(assignment.id).delete()
+        list.forEach { assessment ->
+            if (assessment != null)
+                assessmentsFirestore.document(assessment.id).delete()
         }
         checkDataStatus()
     }
