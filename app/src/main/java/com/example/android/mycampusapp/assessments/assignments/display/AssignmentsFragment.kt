@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.assessments.AssessmentsFragmentDirections
 import com.example.android.mycampusapp.assessments.AssessmentsViewModel
+import com.example.android.mycampusapp.assessments.AssessmentsViewModelFactory
 import com.example.android.mycampusapp.databinding.FragmentAssignmentsBinding
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
@@ -62,7 +63,7 @@ class AssignmentsFragment : Fragment() {
         recyclerView.adapter = adapter
         viewModel = ViewModelProvider(
             this,
-            AssignmentsViewModelFactory(
+            AssessmentsViewModelFactory(
                 courseCollection.document(courseId).collection("assignments")
             )
         ).get(AssessmentsViewModel::class.java)

@@ -16,6 +16,7 @@ import androidx.recyclerview.selection.StorageStrategy
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.assessments.AssessmentsFragmentDirections
 import com.example.android.mycampusapp.assessments.AssessmentsViewModel
+import com.example.android.mycampusapp.assessments.AssessmentsViewModelFactory
 import com.example.android.mycampusapp.databinding.FragmentTestBinding
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
@@ -55,7 +56,7 @@ class TestsFragment : Fragment() {
 
         viewModel = ViewModelProvider(
             this,
-            TestsViewModelFactory(testsCollection)
+            AssessmentsViewModelFactory(testsCollection)
         ).get(AssessmentsViewModel::class.java)
 
         binding.viewModel = viewModel
