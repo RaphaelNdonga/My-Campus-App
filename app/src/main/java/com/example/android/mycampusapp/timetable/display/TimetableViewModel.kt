@@ -15,7 +15,10 @@ import com.example.android.mycampusapp.util.Event
 import com.google.firebase.firestore.*
 import timber.log.Timber
 
-class TimetableViewModel(private val fridayFirestore: CollectionReference, private val app: Application) :
+class TimetableViewModel(
+    private val timetableFirestore: CollectionReference,
+    private val app: Application
+) :
     AndroidViewModel(app) {
 
     private val _fridayClasses = MutableLiveData<List<TimetableClass>>()
@@ -64,7 +67,7 @@ class TimetableViewModel(private val fridayFirestore: CollectionReference, priva
     fun deleteList(list: List<TimetableClass?>) {
         list.forEach { fridayClass ->
             if (fridayClass != null) {
-                fridayFirestore.document(fridayClass.id).delete()
+                timetableFirestore.document(fridayClass.id).delete()
                 cancelAlarm(fridayClass)
             }
         }
@@ -83,20 +86,27 @@ class TimetableViewModel(private val fridayFirestore: CollectionReference, priva
 
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = DataStatus.LOADING
-        return fridayFirestore.addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot: QuerySnapshot?, _: FirebaseFirestoreException? ->
-            val mutableList: MutableList<TimetableClass> = mutableListOf()
-            querySnapshot?.documents?.forEach { document ->
-                if (document.metadata.hasPendingWrites()) {
-                    _hasPendingWrites.value = Event(Unit)
+        return timetableFirestore
+            .orderBy("hour", Query.Direction.ASCENDING)
+            .orderBy("minute", Query.Direction.ASCENDING)
+            .addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot: QuerySnapshot?, firestoreException: FirebaseFirestoreException? ->
+                val mutableList: MutableList<TimetableClass> = mutableListOf()
+                querySnapshot?.documents?.forEach { document ->
+                    if (document.metadata.hasPendingWrites()) {
+                        _hasPendingWrites.value = Event(Unit)
+                    }
+                    Timber.i("We are in the loop")
+                    val fridayClass = document.toObject(TimetableClass::class.java)
+                    fridayClass?.let {
+                        mutableList.add(it)
+                    }
                 }
-                Timber.i("We are in the loop")
-                val fridayClass = document.toObject(TimetableClass::class.java)
-                fridayClass?.let {
-                    mutableList.add(it)
+                updateData(mutableList)
+
+                if(firestoreException !=null){
+                    Timber.i("Got an error $firestoreException")
                 }
             }
-            updateData(mutableList)
-        }
     }
 
     private fun cancelAlarm(fridayClass: TimetableClass) {

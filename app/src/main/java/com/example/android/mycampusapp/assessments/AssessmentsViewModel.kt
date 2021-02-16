@@ -40,9 +40,11 @@ class AssessmentsViewModel(private val assessmentsFirestore: CollectionReference
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = DataStatus.LOADING
         return assessmentsFirestore
-            .orderBy("year", Query.Direction.DESCENDING)
-            .orderBy("month", Query.Direction.DESCENDING)
-            .orderBy("day", Query.Direction.DESCENDING)
+            .orderBy("year", Query.Direction.ASCENDING)
+            .orderBy("month", Query.Direction.ASCENDING)
+            .orderBy("day", Query.Direction.ASCENDING)
+            .orderBy("hour",Query.Direction.ASCENDING)
+            .orderBy("minute",Query.Direction.ASCENDING)
             .addSnapshotListener { querySnapshot, firebaseException ->
                 querySnapshot?.let {
                     val mutableList = mutableListOf<Assessment>()
