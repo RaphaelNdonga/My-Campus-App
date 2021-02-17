@@ -73,15 +73,10 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     implementation "com.jakewharton.timber:timber:$timberVersion"
     implementation "androidx.legacy:legacy-support-v4:$androidXLegacySupport"
-    implementation "androidx.room:room-runtime:$roomVersion"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
-    kapt "androidx.room:room-compiler:$roomVersion"
 
     // Architecture Components
-    implementation "androidx.room:room-runtime:$roomVersion"
-    kapt "androidx.room:room-compiler:$roomVersion"
-    implementation "androidx.room:room-ktx:$roomVersion"
     implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
     // alternately - if using Java8, use the following instead of lifecycle-compiler
     implementation "androidx.lifecycle:lifecycle-common-java8:$archLifecycleVersion"
@@ -109,6 +104,8 @@ dependencies {
     //hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    //hilt with workmanager
+    implementation 'androidx.hilt:hilt-work:1.0.0-alpha03'
 
     implementation 'androidx.multidex:multidex:2.0.1'
 
@@ -116,16 +113,19 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview-selection:1.0.0'
 
     //firestore dependency
-    implementation 'com.google.firebase:firebase-firestore-ktx:22.0.1'
+    implementation 'com.google.firebase:firebase-firestore-ktx:22.1.0'
 
     //firebase authentication dependency
-    implementation 'com.google.firebase:firebase-auth:20.0.1'
+    implementation 'com.google.firebase:firebase-auth:20.0.2'
 
     //settings dependency
     implementation 'androidx.preference:preference-ktx:1.1.1'
 
     //firebase cloud functions dependency
     implementation 'com.google.firebase:firebase-functions:19.2.0'
+
+    // Kotlin + coroutines work manager dependency
+    implementation "androidx.work:work-runtime-ktx:$work_version"
     }
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all{
     kotlinOptions {
