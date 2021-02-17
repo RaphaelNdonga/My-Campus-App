@@ -13,10 +13,10 @@ import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.Location
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.FridayClassReceiver
-import com.example.android.mycampusapp.util.CalendarUtils
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.RUN_DAILY
 import com.example.android.mycampusapp.util.formatTime
+import com.example.android.mycampusapp.util.initializeTimetableCalendar
 import com.google.firebase.firestore.CollectionReference
 import timber.log.Timber
 import java.text.ParseException
@@ -133,7 +133,7 @@ class TimetableInputViewModel(
         }
         val calendar = Calendar.getInstance()
         calendar.time = time!!
-        CalendarUtils.initializeTimetableCalendar(calendar)
+        initializeTimetableCalendar(calendar)
 
         if (calendar.timeInMillis <= System.currentTimeMillis() && day == friday
         ) {
