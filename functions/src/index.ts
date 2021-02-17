@@ -27,21 +27,12 @@ exports.addCourseId = functions.https.onCall((data,context)=>{
 async function setAdminCourseId(email:string,courseId:string): Promise<void> {
   functions.logger.info(`The email is ${email}`)
   const user = await admin.auth().getUserByEmail(email);
-  const accountExists = await admin.firestore().collection('courses/'+courseId+'/admins').get().then(snapshot=>{
-    return snapshot.size>0
-  })
-
-  if(accountExists){
-    functions.logger.info("This course already has a class rep",{structuredData: true})
-    return 
-  }else{
     functions.logger.info(`setting ${email} as administrator with course id ${courseId}`,{structuredData:true})
     return admin.auth().setCustomUserClaims(user.uid,{
       admin:true,
       courseId:courseId
     })
   }
-}
 
 async function setCourseId(email:string,courseId:string): Promise<void>{
   const user = await admin.auth().getUserByEmail(email)
