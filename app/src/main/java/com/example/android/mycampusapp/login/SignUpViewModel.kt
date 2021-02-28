@@ -23,7 +23,7 @@ class SignUpViewModel(
         get() = _snackBarText
 
     private val _navigator = MutableLiveData<Event<Unit>>()
-    val navigator:LiveData<Event<Unit>>
+    val navigator: LiveData<Event<Unit>>
         get() = _navigator
 
     val courseName = MutableLiveData<String>()
@@ -35,8 +35,23 @@ class SignUpViewModel(
             .continueWith { task: Task<HttpsCallableResult> ->
 
                 Timber.i("Setting course id")
-                val result = task.result?.data as String
-                result
+                val receivedHashMap = task.result?.data as HashMap<String?,String?>
+                if(receivedHashMap["result"] !=null){
+                    _navigator.value = Event(Unit)
+                    _snackBarText.value = Event(R.string.successful_signup)
+                }
+                if(receivedHashMap["error"]!=null){
+                    auth.currentUser?.delete()
+                    _snackBarText.value = Event(R.string.failed_signup)
+                }
+                val result = receivedHashMap["result"]?:receivedHashMap["error"]
+                result!!
+            }.addOnCompleteListener {
+                if(it.isSuccessful){
+                    Timber.i("The task was successful with message ${it.result}")
+                }else{
+                    Timber.i("The task was unsuccessful with exception ${it.exception}")
+                }
             }
     }
 
@@ -48,9 +63,24 @@ class SignUpViewModel(
                 // This continuation runs on either success or failure, but if the task
                 // has failed then result will throw an Exception which will be
                 // propagated down.
-                Timber.i("Made admin!")
-                val result = task.result?.data as String
-                result
+                val receivedHashMap:HashMap<String?,String?> = task.result?.data as HashMap<String?, String?>
+                if(receivedHashMap["result"] !=null){
+                    _navigator.value = Event(Unit)
+                    _snackBarText.value = Event(R.string.successful_signup)
+                }
+                if(receivedHashMap["error"]!=null){
+                    auth.currentUser?.delete()
+                    _snackBarText.value = Event(R.string.failed_signup)
+                }
+                val result = receivedHashMap["result"]?:receivedHashMap["error"]
+                result!!
+            }.addOnCompleteListener {
+                if(it.isSuccessful){
+                    Timber.i("The task was successful with message ${it.result}")
+                }
+                else{
+                    Timber.i("The task was unsuccessful with exception ${it.exception}")
+                }
             }
     }
 
@@ -71,12 +101,9 @@ class SignUpViewModel(
         }
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                _snackBarText.value = Event(R.string.successful_signup)
-                _navigator.value = Event(Unit)
                 checkStudentStatus(studentStatus, data)
                 return@addOnCompleteListener
             }
-            _snackBarText.value = Event(R.string.failed_signup)
         }
     }
 
