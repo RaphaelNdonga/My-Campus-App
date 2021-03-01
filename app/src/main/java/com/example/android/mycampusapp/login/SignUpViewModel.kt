@@ -30,6 +30,20 @@ class SignUpViewModel(
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
 
+    private fun checkIfAdminExists(data: HashMap<String?,String?>): Task<Boolean> {
+        return functions.getHttpsCallable("checkIfAdminExists").call(data).continueWith { task->
+            val receivedHashMap = task.result?.data as HashMap<String?,Boolean?>
+            val result = receivedHashMap["result"]
+            result!!
+        }.addOnCompleteListener {
+            if (it.isSuccessful){
+                Timber.i("The task was successful with message ${it.result}")
+            }else{
+                Timber.i("The task was unsuccessful with exception ${it.exception}")
+            }
+        }
+    }
+
     private fun setCourseId(data: HashMap<String?, String?>): Task<String> {
         return functions.getHttpsCallable("addCourseId").call(data)
             .continueWith { task: Task<HttpsCallableResult> ->

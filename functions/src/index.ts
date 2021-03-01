@@ -24,6 +24,21 @@ exports.addCourseId = functions.https.onCall((data,context)=>{
   })
 })
 
+exports.checkIfAdminExists = functions.https.onCall((data,context)=>{
+  const courseId = data.courseId
+  return checkIfAdminExists(courseId).then((Boolean)=>{
+    return{
+      result:Boolean
+    }
+  })
+})
+
+async function checkIfAdminExists(courseId:String):Promise<boolean>{
+  return admin.firestore().collection("courses/"+courseId+"/admins").get().then(snapshot=>{
+    return snapshot.size > 0 
+  })
+}
+
 async function setAdminCourseId(email:string,courseId:string): Promise<void> {
   functions.logger.info(`The email is ${email}`)
   const user = await admin.auth().getUserByEmail(email);
