@@ -48,7 +48,12 @@ class SignUpViewModel(
                 Timber.i("The task was successful with message ${it.result}")
                 _adminExists.value = it.result
             }else{
-                Timber.i("The task was unsuccessful with exception ${it.exception}")
+                Timber.i("The task was unsuccessful with exception ${it.exception} and message ${it.exception?.message}")
+                stopLoading()
+                val errorMessage = it.exception?.message
+                if(errorMessage == "INTERNAL"){
+                    _snackBarText.value = Event(R.string.network_error_msg)
+                }
             }
         }
     }
@@ -127,7 +132,13 @@ class SignUpViewModel(
                 checkStudentStatus(studentStatus, data)
                 return@addOnCompleteListener
             }
+            val exception = task.exception
+            Timber.i("The error is $exception and the message is ${exception?.message}")
         }
+    }
+
+    private fun stopLoading(){
+        _finishLoading.value = Event(Unit)
     }
 
 

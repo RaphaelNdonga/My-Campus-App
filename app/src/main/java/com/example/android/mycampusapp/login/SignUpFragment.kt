@@ -73,6 +73,10 @@ class SignUpFragment : Fragment() {
             startLoading()
         }
 
+        viewModel.finishLoading.observe(viewLifecycleOwner,EventObserver{
+            stopLoading()
+        })
+
         viewModel.adminExists.observe(viewLifecycleOwner, { adminExists ->
             if (adminExists) {
                 when (status.studentStatus) {

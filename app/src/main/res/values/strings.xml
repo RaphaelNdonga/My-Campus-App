@@ -54,4 +54,7 @@
     <string name="sign_up_text">Verifying sign up details</string>
     <string name="course_exists">This course already has an admin</string>
     <string name="course_non_existent">This course does not exist</string>
+    <string name="network_error_msg">Please check your internet connection and try again</string>
+    <string name="invalid_email">Please enter a valid email address</string>
+    <string name="invalid_password">Password should be at least 6 characters</string>
 </resources>
