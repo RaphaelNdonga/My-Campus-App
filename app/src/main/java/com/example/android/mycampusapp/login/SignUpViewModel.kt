@@ -130,6 +130,8 @@ class SignUpViewModel(
             }
             val exception = task.exception
             Timber.i("The error is $exception and the message is ${exception?.message}")
+            stopLoading()
+            _snackBarText.value = Event(R.string.general_error)
         }
     }
 

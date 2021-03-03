@@ -58,4 +58,5 @@
     <string name="invalid_password">The password should contain at least 8 characters</string>
     <string name="invalid_email">Please enter a valid email address.</string>
     <string name="fill_blanks">Please fill in all the values</string>
+    <string name="general_error">An error occured. Try checking your internet connection</string>
 </resources>
