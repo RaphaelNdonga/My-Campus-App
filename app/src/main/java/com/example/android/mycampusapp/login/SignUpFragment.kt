@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentSignUpBinding
 import com.example.android.mycampusapp.util.EventObserver
+import com.example.android.mycampusapp.util.isValidEmail
 import com.example.android.mycampusapp.util.setupSnackbar
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -56,15 +57,29 @@ class SignUpFragment : Fragment() {
             )
         binding.viewModel = viewModel
 
-        var data: HashMap<String?, String?> = hashMapOf()
-        var password: String? = null
+        var data: HashMap<String, String> = hashMapOf()
+        var password = ""
 
 
         val submitBtn = binding.classRepSignedUpBtn
         submitBtn.setOnClickListener {
             val email: String? = viewModel.email.value
-            password = viewModel.password.value
+            viewModel.password.value?.let {
+                password = it
+            }
             val courseId = viewModel.courseName.value
+            if (email.isNullOrEmpty() || courseId.isNullOrEmpty() || password.isEmpty()) {
+                Snackbar.make(requireView(), R.string.fill_blanks, Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            if (!email.isValidEmail()) {
+                Snackbar.make(requireView(), R.string.invalid_email, Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            if (password.length < 8) {
+                Snackbar.make(requireView(), R.string.invalid_password, Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
             data = hashMapOf(
                 "email" to email,
                 "courseId" to courseId
@@ -73,7 +88,7 @@ class SignUpFragment : Fragment() {
             startLoading()
         }
 
-        viewModel.finishLoading.observe(viewLifecycleOwner,EventObserver{
+        viewModel.finishLoading.observe(viewLifecycleOwner, EventObserver {
             stopLoading()
         })
 
@@ -148,6 +163,5 @@ class SignUpFragment : Fragment() {
         binding.progressBar.visibility = View.GONE
         binding.signUpTxt.visibility = View.GONE
     }
-
 
 }

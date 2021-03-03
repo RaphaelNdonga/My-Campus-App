@@ -38,7 +38,7 @@ class SignUpViewModel(
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
 
-    fun checkIfAdminExists(data: HashMap<String?,String?>): Task<Boolean> {
+    fun checkIfAdminExists(data: HashMap<String,String>): Task<Boolean> {
         return functions.getHttpsCallable("checkIfAdminExists").call(data).continueWith { task->
             val receivedHashMap = task.result?.data as HashMap<String?,Boolean?>
             val result = receivedHashMap["result"]
@@ -58,7 +58,7 @@ class SignUpViewModel(
         }
     }
 
-    private fun setCourseId(data: HashMap<String?, String?>): Task<String> {
+    private fun setCourseId(data: HashMap<String, String>): Task<String> {
         return functions.getHttpsCallable("addCourseId").call(data)
             .continueWith { task: Task<HttpsCallableResult> ->
 
@@ -83,7 +83,7 @@ class SignUpViewModel(
             }
     }
 
-    private fun setAdminCourseId(data: HashMap<String?, String?>): Task<String> {
+    private fun setAdminCourseId(data: HashMap<String, String>): Task<String> {
         Timber.i("Making admin...")
 
         return functions.getHttpsCallable("addAdminCourseId").call(data)
@@ -112,7 +112,7 @@ class SignUpViewModel(
             }
     }
 
-    private fun checkStudentStatus(status: StudentStatus, data: HashMap<String?, String?>) {
+    private fun checkStudentStatus(status: StudentStatus, data: HashMap<String, String>) {
         when (status) {
             StudentStatus.ADMIN -> setAdminCourseId(data)
             StudentStatus.REGULAR -> setCourseId(data)
@@ -120,13 +120,9 @@ class SignUpViewModel(
         }
     }
 
-    fun createUser(data: HashMap<String?, String?>, password: String?) {
-        val email = data["email"]
+    fun createUser(data: HashMap<String, String>, password: String) {
+        val email = data["email"]!!
 
-        if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
-            Timber.i("values are null")
-            return
-        }
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 checkStudentStatus(studentStatus, data)
