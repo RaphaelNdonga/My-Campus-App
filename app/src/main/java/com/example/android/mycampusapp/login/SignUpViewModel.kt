@@ -26,11 +26,15 @@ class SignUpViewModel(
     val navigator: LiveData<Event<Unit>>
         get() = _navigator
 
+    private val _adminExists = MutableLiveData<Boolean>()
+    val adminExists:LiveData<Boolean>
+        get() = _adminExists
+
     val courseName = MutableLiveData<String>()
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
 
-    private fun checkIfAdminExists(data: HashMap<String?,String?>): Task<Boolean> {
+    fun checkIfAdminExists(data: HashMap<String?,String?>): Task<Boolean> {
         return functions.getHttpsCallable("checkIfAdminExists").call(data).continueWith { task->
             val receivedHashMap = task.result?.data as HashMap<String?,Boolean?>
             val result = receivedHashMap["result"]
@@ -38,6 +42,7 @@ class SignUpViewModel(
         }.addOnCompleteListener {
             if (it.isSuccessful){
                 Timber.i("The task was successful with message ${it.result}")
+                _adminExists.value = it.result
             }else{
                 Timber.i("The task was unsuccessful with exception ${it.exception}")
             }

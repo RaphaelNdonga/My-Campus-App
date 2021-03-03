@@ -55,19 +55,57 @@ class SignUpFragment : Fragment() {
             )
         binding.viewModel = viewModel
 
+        var data: HashMap<String?, String?> = hashMapOf()
+        var password: String? = null
+
 
         val submitBtn = binding.classRepSignedUpBtn
         submitBtn.setOnClickListener {
             val email: String? = viewModel.email.value
-            val password = viewModel.password.value
+            password = viewModel.password.value
             val courseId = viewModel.courseName.value
-            val data = hashMapOf<String?, String?>(
+            data = hashMapOf(
                 "email" to email,
                 "courseId" to courseId
             )
-            viewModel.createUser(data, password)
+            viewModel.checkIfAdminExists(data)
         }
 
+        viewModel.adminExists.observe(viewLifecycleOwner, { adminExists ->
+            if (adminExists) {
+                when (status.studentStatus) {
+                    StudentStatus.ADMIN -> {
+                        Snackbar.make(
+                            requireView(),
+                            "This course already has an admin",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                    StudentStatus.REGULAR -> {
+                        viewModel.createUser(data, password)
+                    }
+                    StudentStatus.UNDEFINED -> {
+                        throw IllegalArgumentException("The student status should not be undefined")
+                    }
+                }
+            } else {
+                when (status.studentStatus) {
+                    StudentStatus.ADMIN -> {
+                        viewModel.createUser(data, password)
+                    }
+                    StudentStatus.REGULAR -> {
+                        Snackbar.make(
+                            requireView(),
+                            "This course does not exist",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                    StudentStatus.UNDEFINED -> {
+                        throw IllegalArgumentException("The student status should not be undefined")
+                    }
+                }
+            }
+        })
         viewModel.navigator.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(SignUpFragmentDirections.actionSignUpFragmentToLoginFragment())
         })
