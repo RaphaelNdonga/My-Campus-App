@@ -79,7 +79,7 @@ class SignUpFragment : Fragment() {
                     StudentStatus.ADMIN -> {
                         Snackbar.make(
                             requireView(),
-                            "This course already has an admin",
+                            R.string.course_exists,
                             Snackbar.LENGTH_LONG
                         ).show()
                         stopLoading()
@@ -99,7 +99,7 @@ class SignUpFragment : Fragment() {
                     StudentStatus.REGULAR -> {
                         Snackbar.make(
                             requireView(),
-                            "This course does not exist",
+                            R.string.course_non_existent,
                             Snackbar.LENGTH_LONG
                         ).show()
                         stopLoading()

@@ -52,4 +52,6 @@
     <string name="unknown_course_error">This course has not been created by the class admin</string>
     <string name="no_tests_string">No tests in the near future!</string>
     <string name="sign_up_text">Verifying sign up details</string>
+    <string name="course_exists">This course already has an admin</string>
+    <string name="course_non_existent">This course does not exist</string>
 </resources>
