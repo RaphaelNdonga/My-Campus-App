@@ -26,6 +26,10 @@ class SignUpViewModel(
     val navigator: LiveData<Event<Unit>>
         get() = _navigator
 
+    private val _finishLoading = MutableLiveData<Event<Unit>>()
+    val finishLoading:LiveData<Event<Unit>>
+        get() = _finishLoading
+
     private val _adminExists = MutableLiveData<Boolean>()
     val adminExists:LiveData<Boolean>
         get() = _adminExists
