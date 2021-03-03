@@ -51,4 +51,5 @@
     <string name="assessments">Assessments</string>
     <string name="unknown_course_error">This course has not been created by the class admin</string>
     <string name="no_tests_string">No tests in the near future!</string>
+    <string name="sign_up_text">Verifying sign up details</string>
 </resources>

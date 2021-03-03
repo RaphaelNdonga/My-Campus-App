@@ -27,7 +27,7 @@ class SignUpFragment : Fragment() {
     }
 
     private lateinit var viewModel: SignUpViewModel
-    private lateinit var binding:FragmentSignUpBinding
+    private lateinit var binding: FragmentSignUpBinding
 
     @Inject
     lateinit var auth: FirebaseAuth
@@ -127,20 +127,22 @@ class SignUpFragment : Fragment() {
         view?.setupSnackbar(this, viewModel.snackBarText, Snackbar.LENGTH_SHORT)
     }
 
-    private fun startLoading(){
+    private fun startLoading() {
         binding.classRepCourseName.visibility = View.GONE
         binding.classRepEmail.visibility = View.GONE
         binding.classRepPassword.visibility = View.GONE
         binding.classRepSignedUpBtn.visibility = View.GONE
         binding.progressBar.visibility = View.VISIBLE
+        binding.signUpTxt.visibility = View.VISIBLE
     }
 
-    private fun stopLoading(){
+    private fun stopLoading() {
         binding.classRepCourseName.visibility = View.VISIBLE
         binding.classRepEmail.visibility = View.VISIBLE
         binding.classRepPassword.visibility = View.VISIBLE
         binding.classRepSignedUpBtn.visibility = View.VISIBLE
         binding.progressBar.visibility = View.GONE
+        binding.signUpTxt.visibility = View.GONE
     }
 
 
