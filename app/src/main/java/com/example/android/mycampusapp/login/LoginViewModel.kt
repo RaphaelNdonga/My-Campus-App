@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.IS_ADMIN
@@ -34,11 +33,9 @@ class LoginViewModel(private val auth:FirebaseAuth,private val sharedPreferences
     val loadFinish:LiveData<Event<Unit>>
         get() = _loadFinish
 
-    private val _snackBarText = MutableLiveData<Event<Int>>()
-    val snackBarText:LiveData<Event<Int>>
-        get() = _snackBarText
+    private val _snackBarText = MutableLiveData<Event<String?>>()
+    val snackBarText:LiveData<Event<String?>> = _snackBarText
 
-    val username = MutableLiveData<String>()
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
 
@@ -74,14 +71,16 @@ class LoginViewModel(private val auth:FirebaseAuth,private val sharedPreferences
                         sharedPrefEdit.apply()
                         Timber.i("The course id is $courseId")
                         initiateEvent(_mainNavigator)
-//                        initiateEvent(_loadFinish)
                     }
                 return@addOnCompleteListener
             }
-            Timber.i("Sign in with email and password failed")
-            Timber.i("$email and $password are the email and password put in")
-            initiateEvent(_loadFinish)
-            _snackBarText.value = Event(R.string.login_failure)
+            else{
+                Timber.i("Sign in with email and password failed")
+                Timber.i("The exception is ${task.exception} and the message is ${task.exception?.message}")
+                initiateEvent(_loadFinish)
+                _snackBarText.value = Event(task.exception?.message)
+            }
+
 
         }
     }

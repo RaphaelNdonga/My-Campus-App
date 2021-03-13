@@ -14,10 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.android.mycampusapp.MainActivity
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentLoginBinding
-import com.example.android.mycampusapp.util.COURSE_ID
-import com.example.android.mycampusapp.util.EventObserver
-import com.example.android.mycampusapp.util.setupSnackbar
-import com.example.android.mycampusapp.util.sharedPrefFile
+import com.example.android.mycampusapp.util.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -86,9 +83,23 @@ class LoginFragment : Fragment() {
             startLoading()
         })
 
+        viewModel.snackBarText.observe(viewLifecycleOwner, EventObserver {
+            if (it != null) {
+                Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
+            }
+        })
+
         nextBtn.setOnClickListener {
             val email = viewModel.email.value
             val password = viewModel.password.value
+            if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
+                Snackbar.make(requireView(), R.string.fill_blanks, Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            if (!email.isValidEmail()) {
+                Snackbar.make(requireView(), R.string.invalid_email, Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
             viewModel.signInUser(email, password)
         }
 
@@ -120,15 +131,6 @@ class LoginFragment : Fragment() {
         binding.regularStudentSignUpBtn.visibility = View.VISIBLE
         binding.loggingInTxt.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupSnackBar()
-    }
-
-    private fun setupSnackBar() {
-        view?.setupSnackbar(viewLifecycleOwner, viewModel.snackBarText, Snackbar.LENGTH_SHORT)
     }
 
     private fun checkCurrentUser() {
