@@ -101,7 +101,6 @@ class LoginFragment : Fragment() {
         binding.myCampusAppName.visibility = View.GONE
         binding.loginEmail.visibility = View.GONE
         binding.loginPassword.visibility = View.GONE
-        binding.loginCancelButton.visibility = View.GONE
         binding.loginNextButton.visibility = View.GONE
         binding.newUserTxt.visibility = View.GONE
         binding.classRepSignUpBtn.visibility = View.GONE
@@ -115,7 +114,6 @@ class LoginFragment : Fragment() {
         binding.myCampusAppName.visibility = View.VISIBLE
         binding.loginEmail.visibility = View.VISIBLE
         binding.loginPassword.visibility = View.VISIBLE
-        binding.loginCancelButton.visibility = View.VISIBLE
         binding.loginNextButton.visibility = View.VISIBLE
         binding.newUserTxt.visibility = View.VISIBLE
         binding.classRepSignUpBtn.visibility = View.VISIBLE
@@ -128,15 +126,17 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupSnackBar()
     }
-    private fun setupSnackBar(){
-        view?.setupSnackbar(viewLifecycleOwner,viewModel.snackBarText,Snackbar.LENGTH_SHORT)
+
+    private fun setupSnackBar() {
+        view?.setupSnackbar(viewLifecycleOwner, viewModel.snackBarText, Snackbar.LENGTH_SHORT)
     }
-    private fun checkCurrentUser(){
+
+    private fun checkCurrentUser() {
         val currentUser = auth.currentUser
-        val courseId = sharedPreferences.getString(COURSE_ID,"")
-        if(currentUser!=null && !courseId.isNullOrBlank()){
+        val courseId = sharedPreferences.getString(COURSE_ID, "")
+        if (currentUser != null && !courseId.isNullOrBlank()) {
             startLoading()
-            val mainIntent = Intent(this.context,MainActivity::class.java)
+            val mainIntent = Intent(this.context, MainActivity::class.java)
             startActivity(mainIntent)
             requireActivity().finish()
         }
