@@ -16,13 +16,12 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.android.mycampusapp.data.AdminEmail
 import com.example.android.mycampusapp.databinding.ActivityMainBinding
 import com.example.android.mycampusapp.timetable.service.TimetableService
-import com.example.android.mycampusapp.util.COURSE_ID
-import com.example.android.mycampusapp.util.IS_ADMIN
-import com.example.android.mycampusapp.util.USER_EMAIL
-import com.example.android.mycampusapp.util.sharedPrefFile
+import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,9 +32,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var snapshotListener: ListenerRegistration
     private lateinit var viewModel: AdminAccountsViewModel
+    private lateinit var courseId:String
 
     @Inject
     lateinit var courseCollection: CollectionReference
+
+    @Inject
+    lateinit var firebaseMessaging: FirebaseMessaging
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val serviceIntent = Intent(this, TimetableService::class.java)
@@ -54,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         binding.navView.setupWithNavController(navController)
 
         sharedPreferences = this.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val courseId = sharedPreferences.getString(COURSE_ID, "")!!
+        courseId = sharedPreferences.getString(COURSE_ID, "")!!
         val userEmail = sharedPreferences.getString(USER_EMAIL, "")!!
         val isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
 
@@ -75,6 +78,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        subscribeToTopic(courseId.removeWhiteSpace())
         snapshotListener = viewModel.addSnapshotListener()
     }
 
@@ -92,5 +96,14 @@ class MainActivity : AppCompatActivity() {
             return super.onBackPressed()
         }
         navController.navigateUp()
+    }
+    private fun subscribeToTopic(courseId: String) {
+        firebaseMessaging.subscribeToTopic(courseId).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Timber.i("Subscribed successfully to topic $courseId")
+            } else {
+                Timber.i("Unsuccessful subscription due to ${task.exception?.message}")
+            }
+        }
     }
 }
