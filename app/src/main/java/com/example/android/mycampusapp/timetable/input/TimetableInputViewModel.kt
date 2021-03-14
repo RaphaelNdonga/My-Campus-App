@@ -13,11 +13,10 @@ import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.Location
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.FridayClassReceiver
-import com.example.android.mycampusapp.util.Event
-import com.example.android.mycampusapp.util.RUN_DAILY
-import com.example.android.mycampusapp.util.formatTime
-import com.example.android.mycampusapp.util.initializeTimetableCalendar
+import com.example.android.mycampusapp.util.*
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.functions.FirebaseFunctions
 import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -26,7 +25,8 @@ import java.util.*
 class TimetableInputViewModel(
     private val timetableClass: TimetableClass?,
     private val app: Application,
-    private val fridayFirestore: CollectionReference
+    private val fridayFirestore: CollectionReference,
+    private val functions:FirebaseFunctions
 ) : AndroidViewModel(app) {
 
     private val _displayNavigator = MutableLiveData<Event<Unit>>()
@@ -109,6 +109,9 @@ class TimetableInputViewModel(
         }.addOnFailureListener { exception ->
             Timber.i("Data failed to add because of $exception")
         }
+        val sharedPreferences = app.getSharedPreferences(sharedPrefFile,Context.MODE_PRIVATE)
+        val courseId = sharedPreferences.getString(COURSE_ID,"")!!
+        sendNotification(fridayClass.subject,textBoxTime.value!!,courseId.removeWhiteSpace())
     }
 
     private fun navigateToTimetable() {
@@ -169,5 +172,11 @@ class TimetableInputViewModel(
     fun setTime(time: CustomTime) {
         textBoxTime.value = formatTime(time)
         _timeSet.value = time
+    }
+    private fun sendNotification(subject:String,time:String,courseId:String): Task<Unit> {
+        val data = hashMapOf("subject" to subject, "time" to time, "courseId" to courseId)
+        return functions.getHttpsCallable("sendMessage").call(data).continueWith {
+
+        }
     }
 }
