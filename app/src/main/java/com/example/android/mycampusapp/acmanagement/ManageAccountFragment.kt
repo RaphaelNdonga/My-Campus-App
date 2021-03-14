@@ -18,6 +18,7 @@ import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.USER_EMAIL
 import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -25,8 +26,11 @@ import javax.inject.Inject
 class ManageAccountFragment : Fragment() {
     @Inject
     lateinit var auth: FirebaseAuth
+    @Inject
+    lateinit var firebaseMessaging: FirebaseMessaging
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var settingsPreferences:SharedPreferences
+    private lateinit var courseId:String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,10 +48,12 @@ class ManageAccountFragment : Fragment() {
 
 
         binding.accountDetailsEmail.text = sharedPreferences.getString(USER_EMAIL, "email")
-        binding.accountDetailsCourse.text = sharedPreferences.getString(COURSE_ID,"courseId")
+        courseId = sharedPreferences.getString(COURSE_ID,"courseId")!!
+        binding.accountDetailsCourse.text = courseId
 
         binding.logOutBtn.setOnClickListener {
             auth.signOut()
+            firebaseMessaging.unsubscribeFromTopic(courseId)
             sharedPreferences.edit().clear().apply()
             settingsPreferences.edit().clear().apply()
             val loginIntent = Intent(this.context, LoginActivity::class.java)
@@ -67,6 +73,7 @@ class ManageAccountFragment : Fragment() {
         builder.setPositiveButton(R.string.dialog_delete) { _, _ ->
             run {
                 auth.currentUser?.delete()
+                firebaseMessaging.unsubscribeFromTopic(courseId)
                 sharedPreferences.edit().clear().apply()
                 settingsPreferences.edit().clear().apply()
                 val loginIntent = Intent(this.context, LoginActivity::class.java)
@@ -77,4 +84,5 @@ class ManageAccountFragment : Fragment() {
         builder.setMessage(R.string.dialog_delete_confirm)
         builder.create().show()
     }
+    //TODO:2. This fragment needs a viewmodel
 }

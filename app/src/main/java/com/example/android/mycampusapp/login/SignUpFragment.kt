@@ -68,6 +68,8 @@ class SignUpFragment : Fragment() {
                 password = it
             }
             val courseId = viewModel.courseName.value
+            //TODO:1. The courseId should be unique and should not contain whitespace characters.
+
             if (email.isNullOrEmpty() || courseId.isNullOrEmpty() || password.isEmpty()) {
                 Snackbar.make(requireView(), R.string.fill_blanks, Snackbar.LENGTH_LONG).show()
                 return@setOnClickListener
