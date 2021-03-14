@@ -33,6 +33,29 @@ exports.checkIfAdminExists = functions.https.onCall((data,context)=>{
   })
 })
 
+exports.sendMessage = functions.https.onCall((data,context)=>{
+  const subject = data.subject
+  const time = data.time
+  const topic = data.courseId
+  
+  return sendMessage(subject,time,topic)
+})
+
+async function sendMessage(subject:string,time:string,topic:string):Promise<void>{
+  const message = "The subject "+subject+" is set to be at "+time
+  const data = {
+    data:{
+      message:message
+    },
+    topic: topic
+  };
+  return admin.messaging().send(data).then((response)=>{
+    functions.logger.info(`The data ${data.data} ${data.topic} was sent successfully`)
+  }).catch((error)=>{
+    functions.logger.error(`An error occurred when sending data: ${error}`)
+  })
+}
+
 async function checkIfAdminExists(courseId:String):Promise<boolean>{
   return admin.firestore().collection("courses/"+courseId+"/admins").get().then(snapshot=>{
     return snapshot.size > 0 
@@ -61,25 +84,3 @@ async function setCourseId(email:string,courseId:string): Promise<void>{
     courseId:courseId
   })
 }
-// export const getComputerScienceAdmins = functions.https.onRequest((request,response)=>{
-//   admin.firestore().doc('courses/Bsc Computer Science/admins/lemayian@gmail.com').get()
-//     .then(snapshot=>{
-//     const data = snapshot.data()
-//     response.send(data)
-//     })
-//       .catch(error=>{
-//         console.log(error)
-//         response.status(500).send(error)
-//       })
-// })
-
-// export const confirmAdminExists = functions.https.onRequest((request,response)=>{
-//   admin.firestore().collection('courses/Bsc Water Science/admins').get()
-//   .then(snapshot=>{
-//     const exists = snapshot.size > 0
-//     response.send("The snapshot existing is "+ exists + "because snapshot size is "+ snapshot.size)
-//   }).catch(error=>{
-//     console.log(error)
-//     response.status(500).send(error)
-//   })
-// })

@@ -28,6 +28,7 @@ import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.functions.FirebaseFunctions
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
@@ -41,6 +42,9 @@ class TuesdayInputFragment : Fragment() {
 
     @Inject
     lateinit var firestore: FirebaseFirestore
+
+    @Inject
+    lateinit var firebaseFunctions:FirebaseFunctions
 
     @Inject
     lateinit var courseCollection: CollectionReference
@@ -70,6 +74,7 @@ class TuesdayInputFragment : Fragment() {
                 tuesdayArgs.tuesdayClass,
                 app,
                 courseCollection.document(courseId).collection("tuesday"),
+                firebaseFunctions
             )
         ).get(TimetableInputViewModel::class.java)
 
