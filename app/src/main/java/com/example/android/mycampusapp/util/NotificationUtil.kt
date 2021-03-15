@@ -22,6 +22,7 @@ fun NotificationManager.sendNotification(message: String, context: Context) {
         .setContentText(message)
         .setContentTitle(context.getString(R.string.app_name))
         .setSmallIcon(R.drawable.ic_open_book)
+        .setStyle(NotificationCompat.BigTextStyle().bigText(message))
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setAutoCancel(true)
 
