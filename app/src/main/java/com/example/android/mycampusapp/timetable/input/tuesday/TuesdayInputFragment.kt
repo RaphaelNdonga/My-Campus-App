@@ -91,11 +91,9 @@ class TuesdayInputFragment : Fragment() {
         val minute = calendar.get(Calendar.MINUTE)
         var displayTime = CustomTime(hour, minute)
 
-        viewModel.timeSet.observe(viewLifecycleOwner, {
-            it?.let{
-                displayTime = it
-            }
-        })
+        viewModel.timeSet.value?.let {
+            displayTime = it
+        }
         viewModel.snackbarText.observe(viewLifecycleOwner,EventObserver{
             Snackbar.make(requireView(),it,Snackbar.LENGTH_LONG).show()
         })

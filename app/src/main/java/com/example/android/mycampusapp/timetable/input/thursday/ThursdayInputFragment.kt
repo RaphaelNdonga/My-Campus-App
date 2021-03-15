@@ -89,11 +89,9 @@ class ThursdayInputFragment : Fragment() {
         val minute = calendar.get(Calendar.MINUTE)
         var displayTime = CustomTime(hour, minute)
 
-        viewModel.timeSet.observe(viewLifecycleOwner,{
-            it?.let {
-                displayTime = it
-            }
-        })
+        viewModel.timeSet.value?.let {
+            displayTime = it
+        }
 
         val timePickerListener =
             TimePickerDialog.OnTimeSetListener { _: TimePicker, hourSet: Int, minuteSet: Int ->

@@ -91,12 +91,9 @@ class FridayInputFragment : Fragment() {
             hour,
             minute
         )
-
-        viewModel.timeSet.observe(viewLifecycleOwner,{
-            it?.let {
-                displayTime = it
-            }
-        })
+        viewModel.timeSet.value?.let {
+            displayTime = it
+        }
 
         val timePickerListener =
             TimePickerDialog.OnTimeSetListener { _: TimePicker, hourSet: Int, minuteSet: Int ->
