@@ -26,7 +26,7 @@ class TimetableInputViewModel(
     private val timetableClass: TimetableClass?,
     private val app: Application,
     private val fridayFirestore: CollectionReference,
-    private val functions:FirebaseFunctions
+    private val functions: FirebaseFunctions
 ) : AndroidViewModel(app) {
 
     private val _displayNavigator = MutableLiveData<Event<Unit>>()
@@ -42,7 +42,7 @@ class TimetableInputViewModel(
     private val id = timetableClass?.id
     private val alarmRequestCode = timetableClass?.alarmRequestCode
     private var location = timetableClass?.let { Location(it.locationName, it.locationCoordinates) }
-    private val _timeSet:MutableLiveData<CustomTime> = MutableLiveData(
+    private val _timeSet: MutableLiveData<CustomTime> = MutableLiveData(
         timetableClass?.let {
             CustomTime(it.hour, it.minute)
         }
@@ -60,6 +60,9 @@ class TimetableInputViewModel(
     val snackbarText: LiveData<Event<Int>>
         get() = _snackbarText
 
+    private val sharedPreferences = app.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+    private val courseId = sharedPreferences.getString(COURSE_ID, "")!!
+
     // Can only be tested through espresso
     fun save() {
         val currentSubject: String? = textBoxSubject.value
@@ -69,7 +72,8 @@ class TimetableInputViewModel(
         if (currentSubject.isNullOrBlank() || currentTime == null || currentLocation == null || currentRoom.isNullOrBlank()) {
             _snackbarText.value = Event(R.string.empty_message)
             return
-        } else if (fridayClassIsNull()) {
+        } else if (timetableClass == null) {
+            //Create new class
             val fridayClass =
                 TimetableClass(
                     subject = currentSubject,
@@ -83,8 +87,12 @@ class TimetableInputViewModel(
             _snackbarText.value = Event(R.string.class_saved)
             startTimer(fridayClass)
             navigateToTimetable()
+            val notificationMessage =
+                "$currentSubject class is set to start at ${formatTime(currentTime)} in ${currentLocation.name} Room $currentRoom"
+            sendCloudMessage(notificationMessage, courseId)
 
-        } else if (!fridayClassIsNull()) {
+        } else {
+            //update present class
             val fridayClass =
                 TimetableClass(
                     id!!,
@@ -100,6 +108,9 @@ class TimetableInputViewModel(
             _snackbarText.value = Event(R.string.friday_updated)
             startTimer(fridayClass)
             navigateToTimetable()
+            val notificationMessage =
+                "$currentSubject details have changed. It is set to start at ${formatTime(currentTime)} in ${currentLocation.name} Room $currentRoom"
+            sendCloudMessage(notificationMessage, courseId)
         }
     }
 
@@ -109,21 +120,10 @@ class TimetableInputViewModel(
         }.addOnFailureListener { exception ->
             Timber.i("Data failed to add because of $exception")
         }
-        val sharedPreferences = app.getSharedPreferences(sharedPrefFile,Context.MODE_PRIVATE)
-        val courseId = sharedPreferences.getString(COURSE_ID,"")!!
-        sendNotification(fridayClass.subject,textBoxTime.value!!,courseId.removeWhiteSpace())
     }
 
     private fun navigateToTimetable() {
         _displayNavigator.value = Event(Unit)
-    }
-
-
-    private fun fridayClassIsNull(): Boolean {
-        if (timetableClass == null) {
-            return true
-        }
-        return false
     }
 
 
@@ -173,8 +173,9 @@ class TimetableInputViewModel(
         textBoxTime.value = formatTime(time)
         _timeSet.value = time
     }
-    private fun sendNotification(subject:String,time:String,courseId:String): Task<Unit> {
-        val data = hashMapOf("subject" to subject, "time" to time, "courseId" to courseId)
+
+    private fun sendCloudMessage(message: String, courseId: String): Task<Unit> {
+        val data = hashMapOf("message" to message, "courseId" to courseId.removeWhiteSpace())
         return functions.getHttpsCallable("sendMessage").call(data).continueWith {
 
         }
