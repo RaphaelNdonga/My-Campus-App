@@ -2,6 +2,7 @@ package com.example.android.mycampusapp.util
 
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
+import java.util.*
 
 
 fun formatTime(timeSet: CustomTime): String {
@@ -18,51 +19,74 @@ fun formatDate(dateSet: CustomDate): String {
     return "$dayText/$monthText/$yearText"
 }
 
-fun addZeroText(int: Int):String{
-    return if(int<10){
+fun addZeroText(int: Int): String {
+    return if (int < 10) {
         "0$int"
-    }else{
+    } else {
         "$int"
     }
 }
-fun addMonthText(int:Int):String{
-    return when(int){
-        0->{
+
+fun addMonthText(int: Int): String {
+    return when (int) {
+        0 -> {
             "January"
         }
-        1->{
+        1 -> {
             "February"
         }
-        2->{
+        2 -> {
             "March"
         }
-        3->{
+        3 -> {
             "April"
         }
-        4->{
+        4 -> {
             "May"
         }
-        5->{
+        5 -> {
             "June"
         }
-        6->{
+        6 -> {
             "July"
         }
-        7->{
+        7 -> {
             "August"
         }
-        8->{
+        8 -> {
             "September"
         }
-        9->{
+        9 -> {
             "October"
         }
-        10->{
+        10 -> {
             "November"
         }
-        11->{
+        11 -> {
             "December"
         }
         else -> throw IllegalArgumentException("No such month input should be obtained")
     }
+}
+
+fun getCalendarDayOfWeek(dayOfWeek: DayOfWeek): Int {
+    return when (dayOfWeek) {
+        DayOfWeek.MONDAY -> Calendar.MONDAY
+        DayOfWeek.TUESDAY -> Calendar.TUESDAY
+        DayOfWeek.WEDNESDAY -> Calendar.WEDNESDAY
+        DayOfWeek.THURSDAY -> Calendar.THURSDAY
+        DayOfWeek.FRIDAY -> Calendar.FRIDAY
+        DayOfWeek.SATURDAY -> Calendar.SATURDAY
+        DayOfWeek.SUNDAY -> Calendar.SUNDAY
+    }
+}
+
+enum class DayOfWeek(day: String) {
+    MONDAY("monday"),
+    TUESDAY("tuesday"),
+    WEDNESDAY("wednesday"),
+    THURSDAY("thursday"),
+    FRIDAY("friday"),
+    SATURDAY("saturday"),
+    SUNDAY("sunday")
 }

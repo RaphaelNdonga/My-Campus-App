@@ -21,6 +21,7 @@ import com.example.android.mycampusapp.location.LocationUtils
 import com.example.android.mycampusapp.timetable.input.TimetableInputViewModel
 import com.example.android.mycampusapp.timetable.input.TimetableInputViewModelFactory
 import com.example.android.mycampusapp.util.COURSE_ID
+import com.example.android.mycampusapp.util.DayOfWeek
 import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.android.material.snackbar.Snackbar
@@ -49,6 +50,8 @@ class MondayInputFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var courseId: String
 
+    private val monday = DayOfWeek.MONDAY
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,7 +74,8 @@ class MondayInputFragment : Fragment() {
                 mondayArgs.mondayClass,
                 app,
                 coursesCollection.document(courseId).collection("monday"),
-                firebaseFunctions
+                firebaseFunctions,
+                monday
             )
         ).get(TimetableInputViewModel::class.java)
 

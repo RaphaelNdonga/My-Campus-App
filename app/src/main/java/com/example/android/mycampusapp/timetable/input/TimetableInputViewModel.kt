@@ -20,7 +20,8 @@ class TimetableInputViewModel(
     private val timetableClass: TimetableClass?,
     private val app: Application,
     private val fridayFirestore: CollectionReference,
-    private val functions: FirebaseFunctions
+    private val functions: FirebaseFunctions,
+    private val dayOfWeek: DayOfWeek
 ) : AndroidViewModel(app) {
 
     private val _displayNavigator = MutableLiveData<Event<Unit>>()
@@ -107,7 +108,11 @@ class TimetableInputViewModel(
                     _timeSet.value!!
                 )
             } in ${timetableClass.locationName} Room ${timetableClass.room}"
-        sendCloudMessage(notificationMessage, courseId)
+
+        val today = cal.get(Calendar.DAY_OF_WEEK)
+        if(today == getCalendarDayOfWeek(dayOfWeek)) {
+            sendCloudMessage(notificationMessage, courseId)
+        }
     }
 
     private fun createNewClass(timetableClass: TimetableClass) {
@@ -118,7 +123,11 @@ class TimetableInputViewModel(
             "${timetableClass.subject} class is set to start at ${
                 formatTime(_timeSet.value!!)
             } in ${timetableClass.locationName} Room ${timetableClass.room}"
-        sendCloudMessage(notificationMessage, courseId)
+
+        val today = cal.get(Calendar.DAY_OF_WEEK)
+        if(today == getCalendarDayOfWeek(dayOfWeek)) {
+            sendCloudMessage(notificationMessage, courseId)
+        }
     }
 
     private fun addFirestoreData(fridayClass: TimetableClass) {
