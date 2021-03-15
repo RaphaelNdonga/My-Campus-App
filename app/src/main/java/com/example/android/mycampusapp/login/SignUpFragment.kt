@@ -13,7 +13,6 @@ import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentSignUpBinding
 import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.util.isValidEmail
-import com.example.android.mycampusapp.util.setupSnackbar
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.functions.FirebaseFunctions
@@ -51,8 +50,12 @@ class SignUpFragment : Fragment() {
         )
         binding.lifecycleOwner = this
         val studentStatus = status.studentStatus
+        val application = requireActivity().application
         viewModel =
-            ViewModelProvider(this, SignUpViewModelFactory(functions, auth, studentStatus)).get(
+            ViewModelProvider(
+                this,
+                SignUpViewModelFactory(functions, auth, studentStatus, application)
+            ).get(
                 SignUpViewModel::class.java
             )
         binding.viewModel = viewModel
@@ -134,18 +137,12 @@ class SignUpFragment : Fragment() {
         viewModel.navigator.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(SignUpFragmentDirections.actionSignUpFragmentToLoginFragment())
         })
+        viewModel.snackBarText.observe(viewLifecycleOwner, EventObserver {
+            Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
+        })
 
 
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupSnackBar()
-    }
-
-    private fun setupSnackBar() {
-        view?.setupSnackbar(this, viewModel.snackBarText, Snackbar.LENGTH_SHORT)
     }
 
     private fun startLoading() {

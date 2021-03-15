@@ -46,10 +46,6 @@ class TimetableInputViewModel(
 
     private val cal: Calendar = Calendar.getInstance()
 
-    private val _snackbarText = MutableLiveData<Event<Int>>()
-    val snackbarText: LiveData<Event<Int>>
-        get() = _snackbarText
-
     private val _snackBarText2 = MutableLiveData<Event<String>>()
     val snackBarText2: LiveData<Event<String>> = _snackBarText2
 
@@ -63,7 +59,7 @@ class TimetableInputViewModel(
         val currentLocation: Location? = location
         val currentRoom: String? = textBoxRoom.value
         if (currentSubject.isNullOrBlank() || currentTime == null || currentLocation == null || currentRoom.isNullOrBlank()) {
-            _snackbarText.value = Event(R.string.empty_message)
+            _snackBarText2.value = Event(app.getString(R.string.empty_message))
             return
         }
         if (timetableClass == null) {
@@ -103,7 +99,7 @@ class TimetableInputViewModel(
 
     private fun updatePresentClass(timetableClass: TimetableClass) {
         addFirestoreData(timetableClass)
-        _snackbarText.value = Event(R.string.friday_updated)
+        _snackBarText2.value = Event("${timetableClass.subject} has been updated.")
         navigateToTimetable()
         val notificationMessage =
             "${timetableClass.subject} details have changed. It is set to start at ${
@@ -116,7 +112,7 @@ class TimetableInputViewModel(
 
     private fun createNewClass(timetableClass: TimetableClass) {
         addFirestoreData(timetableClass)
-        _snackbarText.value = Event(R.string.class_saved)
+        _snackBarText2.value = Event("${timetableClass.subject} has been saved")
         navigateToTimetable()
         val notificationMessage =
             "${timetableClass.subject} class is set to start at ${

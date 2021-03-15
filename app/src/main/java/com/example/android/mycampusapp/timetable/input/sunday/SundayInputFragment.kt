@@ -23,7 +23,6 @@ import com.example.android.mycampusapp.timetable.input.TimetableInputViewModel
 import com.example.android.mycampusapp.timetable.input.TimetableInputViewModelFactory
 import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver
-import com.example.android.mycampusapp.util.setupSnackbar
 import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
@@ -40,7 +39,7 @@ class SundayInputFragment : Fragment() {
     lateinit var courseCollection: CollectionReference
 
     @Inject
-    lateinit var firebaseFunctions:FirebaseFunctions
+    lateinit var firebaseFunctions: FirebaseFunctions
 
     private val sundayArgs by navArgs<SundayInputFragmentArgs>()
     private lateinit var viewModel: TimetableInputViewModel
@@ -93,6 +92,10 @@ class SundayInputFragment : Fragment() {
             }
         })
 
+        viewModel.snackBarText2.observe(viewLifecycleOwner, EventObserver {
+            Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
+        })
+
         val timePickerListener =
             TimePickerDialog.OnTimeSetListener { _: TimePicker, hourSet: Int, minuteSet: Int ->
                 viewModel.setTime(CustomTime(hourSet, minuteSet))
@@ -113,15 +116,6 @@ class SundayInputFragment : Fragment() {
             showLocationsList()
         }
         return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupSnackbar()
-    }
-
-    private fun setupSnackbar() {
-        view?.setupSnackbar(this, viewModel.snackbarText, Snackbar.LENGTH_SHORT)
     }
 
     private fun showLocationsList() {

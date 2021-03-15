@@ -1,8 +1,9 @@
 package com.example.android.mycampusapp.login
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.util.Event
 import com.google.android.gms.tasks.Task
@@ -14,12 +15,12 @@ import timber.log.Timber
 class SignUpViewModel(
     private val functions: FirebaseFunctions,
     private val auth: FirebaseAuth,
-    private val studentStatus: StudentStatus
-) :
-    ViewModel() {
+    private val studentStatus: StudentStatus,
+    private val app:Application
+) : AndroidViewModel(app){
 
-    private val _snackBarText = MutableLiveData<Event<Int>>()
-    val snackBarText: LiveData<Event<Int>>
+    private val _snackBarText = MutableLiveData<Event<String>>()
+    val snackBarText: LiveData<Event<String>>
         get() = _snackBarText
 
     private val _navigator = MutableLiveData<Event<Unit>>()
@@ -52,7 +53,7 @@ class SignUpViewModel(
                 stopLoading()
                 val errorMessage = it.exception?.message
                 if(errorMessage == "INTERNAL"){
-                    _snackBarText.value = Event(R.string.network_error_msg)
+                    _snackBarText.value = Event(app.getString(R.string.network_error_msg))
                 }
             }
         }
@@ -66,11 +67,11 @@ class SignUpViewModel(
                 val receivedHashMap = task.result?.data as HashMap<String?,String?>
                 if(receivedHashMap["result"] !=null){
                     _navigator.value = Event(Unit)
-                    _snackBarText.value = Event(R.string.successful_signup)
+                    _snackBarText.value = Event(app.getString(R.string.successful_signup))
                 }
                 if(receivedHashMap["error"]!=null){
                     auth.currentUser?.delete()
-                    _snackBarText.value = Event(R.string.failed_signup)
+                    _snackBarText.value = Event(app.getString(R.string.failed_signup))
                 }
                 val result = receivedHashMap["result"]?:receivedHashMap["error"]
                 result!!
@@ -94,11 +95,11 @@ class SignUpViewModel(
                 val receivedHashMap:HashMap<String?,String?> = task.result?.data as HashMap<String?, String?>
                 if(receivedHashMap["result"] !=null){
                     _navigator.value = Event(Unit)
-                    _snackBarText.value = Event(R.string.successful_signup)
+                    _snackBarText.value = Event(app.getString(R.string.successful_signup))
                 }
                 if(receivedHashMap["error"]!=null){
                     auth.currentUser?.delete()
-                    _snackBarText.value = Event(R.string.failed_signup)
+                    _snackBarText.value = Event(app.getString(R.string.failed_signup))
                 }
                 val result = receivedHashMap["result"]?:receivedHashMap["error"]
                 result!!
@@ -131,7 +132,7 @@ class SignUpViewModel(
             val exception = task.exception
             Timber.i("The error is $exception and the message is ${exception?.message}")
             stopLoading()
-            _snackBarText.value = Event(R.string.general_error)
+            _snackBarText.value = Event(app.getString(R.string.general_error))
         }
     }
 
