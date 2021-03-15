@@ -83,7 +83,7 @@ class MondayInputFragment : Fragment() {
             EventObserver {
                 findNavController().navigate(MondayInputFragmentDirections.actionMondayInputFragmentToTimetableFragment())
             })
-        viewModel.snackBarText2.observe(viewLifecycleOwner,EventObserver{
+        viewModel.snackbarText.observe(viewLifecycleOwner,EventObserver{
             Snackbar.make(requireView(),it,Snackbar.LENGTH_LONG).show()
         })
 

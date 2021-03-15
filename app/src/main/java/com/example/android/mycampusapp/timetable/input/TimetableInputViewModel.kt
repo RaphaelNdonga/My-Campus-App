@@ -46,8 +46,8 @@ class TimetableInputViewModel(
 
     private val cal: Calendar = Calendar.getInstance()
 
-    private val _snackBarText2 = MutableLiveData<Event<String>>()
-    val snackBarText2: LiveData<Event<String>> = _snackBarText2
+    private val _snackbarText = MutableLiveData<Event<String>>()
+    val snackbarText: LiveData<Event<String>> = _snackbarText
 
     private val sharedPreferences = app.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
     private val courseId = sharedPreferences.getString(COURSE_ID, "")!!
@@ -59,7 +59,7 @@ class TimetableInputViewModel(
         val currentLocation: Location? = location
         val currentRoom: String? = textBoxRoom.value
         if (currentSubject.isNullOrBlank() || currentTime == null || currentLocation == null || currentRoom.isNullOrBlank()) {
-            _snackBarText2.value = Event(app.getString(R.string.empty_message))
+            _snackbarText.value = Event(app.getString(R.string.empty_message))
             return
         }
         if (timetableClass == null) {
@@ -89,7 +89,7 @@ class TimetableInputViewModel(
                 currentRoom
             )
         if (updatedClass == timetableClass) {
-            _snackBarText2.value =
+            _snackbarText.value =
                 Event("${updatedClass.subject} details have not been changed")
             navigateToTimetable()
         } else {
@@ -99,7 +99,7 @@ class TimetableInputViewModel(
 
     private fun updatePresentClass(timetableClass: TimetableClass) {
         addFirestoreData(timetableClass)
-        _snackBarText2.value = Event("${timetableClass.subject} has been updated.")
+        _snackbarText.value = Event("${timetableClass.subject} has been updated.")
         navigateToTimetable()
         val notificationMessage =
             "${timetableClass.subject} details have changed. It is set to start at ${
@@ -112,7 +112,7 @@ class TimetableInputViewModel(
 
     private fun createNewClass(timetableClass: TimetableClass) {
         addFirestoreData(timetableClass)
-        _snackBarText2.value = Event("${timetableClass.subject} has been saved")
+        _snackbarText.value = Event("${timetableClass.subject} has been saved")
         navigateToTimetable()
         val notificationMessage =
             "${timetableClass.subject} class is set to start at ${
