@@ -50,6 +50,9 @@ class TimetableInputViewModel(
     val snackbarText: LiveData<Event<Int>>
         get() = _snackbarText
 
+    private val _snackBarText2 = MutableLiveData<Event<String>>()
+    val snackBarText2: LiveData<Event<String>> = _snackBarText2
+
     private val sharedPreferences = app.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
     private val courseId = sharedPreferences.getString(COURSE_ID, "")!!
 
@@ -62,9 +65,10 @@ class TimetableInputViewModel(
         if (currentSubject.isNullOrBlank() || currentTime == null || currentLocation == null || currentRoom.isNullOrBlank()) {
             _snackbarText.value = Event(R.string.empty_message)
             return
-        } else if (timetableClass == null) {
+        }
+        if (timetableClass == null) {
             //Create new class
-            val timetableClass =
+            val newClass =
                 TimetableClass(
                     subject = currentSubject,
                     hour = currentTime.hour,
@@ -73,21 +77,27 @@ class TimetableInputViewModel(
                     locationCoordinates = currentLocation.coordinates,
                     room = currentRoom
                 )
-            createNewClass(timetableClass)
+            createNewClass(newClass)
+            return
+        }
+        //update present class
+        val updatedClass =
+            TimetableClass(
+                id!!,
+                currentSubject,
+                currentTime.hour,
+                currentTime.minute,
+                currentLocation.name,
+                currentLocation.coordinates,
+                alarmRequestCode!!,
+                currentRoom
+            )
+        if (updatedClass == timetableClass) {
+            _snackBarText2.value =
+                Event("${updatedClass.subject} details have not been changed")
+            navigateToTimetable()
         } else {
-            //update present class
-            val timetableClass =
-                TimetableClass(
-                    id!!,
-                    currentSubject,
-                    currentTime.hour,
-                    currentTime.minute,
-                    currentLocation.name,
-                    currentLocation.coordinates,
-                    alarmRequestCode!!,
-                    currentRoom
-                )
-            updatePresentClass(timetableClass)
+            updatePresentClass(updatedClass)
         }
     }
 
