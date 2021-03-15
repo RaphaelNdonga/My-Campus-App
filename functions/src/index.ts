@@ -34,15 +34,13 @@ exports.checkIfAdminExists = functions.https.onCall((data,context)=>{
 })
 
 exports.sendMessage = functions.https.onCall((data,context)=>{
-  const subject = data.subject
-  const time = data.time
+  const message = data.message
   const topic = data.courseId
   
-  return sendMessage(subject,time,topic)
+  return sendMessage(message,topic)
 })
 
-async function sendMessage(subject:string,time:string,topic:string):Promise<void>{
-  const message = "The subject "+subject+" is set to be at "+time
+async function sendMessage(message:string,topic:string):Promise<void>{
   const data = {
     data:{
       message:message
