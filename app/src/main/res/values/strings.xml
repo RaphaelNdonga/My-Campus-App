@@ -59,4 +59,5 @@
     <string name="invalid_email">Please enter a valid email address.</string>
     <string name="fill_blanks">Please fill in all the values</string>
     <string name="general_error">An error occured. Try checking your internet connection</string>
+    <string name="white_space_error">The course id cannot contain spaces</string>
 </resources>
