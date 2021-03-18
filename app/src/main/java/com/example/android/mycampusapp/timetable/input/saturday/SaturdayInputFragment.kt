@@ -69,10 +69,10 @@ class SaturdayInputFragment : Fragment() {
             TimetableInputViewModelFactory(
                 saturdayArgs.saturdayClass,
                 app,
-                courseCollection.document(courseId).collection("saturday"),
+                courseCollection,
                 firebaseFunctions,
                 saturday
-                )
+            )
         ).get(TimetableInputViewModel::class.java)
 
 

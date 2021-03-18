@@ -2,8 +2,6 @@ package com.example.android.mycampusapp.timetable.input.thursday
 
 import android.app.AlertDialog
 import android.app.TimePickerDialog
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.LayoutInflater
@@ -21,10 +19,8 @@ import com.example.android.mycampusapp.databinding.FragmentTimetableInputBinding
 import com.example.android.mycampusapp.location.LocationUtils
 import com.example.android.mycampusapp.timetable.input.TimetableInputViewModel
 import com.example.android.mycampusapp.timetable.input.TimetableInputViewModelFactory
-import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.DayOfWeek
 import com.example.android.mycampusapp.util.EventObserver
-import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.functions.FirebaseFunctions
@@ -44,8 +40,6 @@ class ThursdayInputFragment : Fragment() {
 
     private val thursdayArgs by navArgs<ThursdayInputFragmentArgs>()
     private lateinit var viewModel: TimetableInputViewModel
-    private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var courseId:String
 
     private val thursday = DayOfWeek.THURSDAY
 
@@ -55,8 +49,6 @@ class ThursdayInputFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        sharedPreferences = requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        courseId = sharedPreferences.getString(COURSE_ID,"")!!
         val binding = DataBindingUtil.inflate<FragmentTimetableInputBinding>(
             inflater,
             R.layout.fragment_timetable_input,
@@ -69,7 +61,7 @@ class ThursdayInputFragment : Fragment() {
             TimetableInputViewModelFactory(
                 thursdayArgs.thursdayClass,
                 app,
-                courseCollection.document(courseId).collection("thursday"),
+                courseCollection,
                 firebaseFunctions,
                 thursday
             )

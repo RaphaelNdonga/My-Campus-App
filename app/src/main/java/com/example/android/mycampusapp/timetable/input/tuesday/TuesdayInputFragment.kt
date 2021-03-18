@@ -2,8 +2,6 @@ package com.example.android.mycampusapp.timetable.input.tuesday
 
 import android.app.AlertDialog
 import android.app.TimePickerDialog
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.LayoutInflater
@@ -21,10 +19,8 @@ import com.example.android.mycampusapp.databinding.FragmentTimetableInputBinding
 import com.example.android.mycampusapp.location.LocationUtils
 import com.example.android.mycampusapp.timetable.input.TimetableInputViewModel
 import com.example.android.mycampusapp.timetable.input.TimetableInputViewModelFactory
-import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.DayOfWeek
 import com.example.android.mycampusapp.util.EventObserver
-import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -36,10 +32,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class TuesdayInputFragment : Fragment() {
-
-    private lateinit var courseId: String
-    private lateinit var sharedPreferences: SharedPreferences
-
     @Inject
     lateinit var firestore: FirebaseFirestore
 
@@ -60,9 +52,6 @@ class TuesdayInputFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        sharedPreferences =
-            requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        courseId = sharedPreferences.getString(COURSE_ID, "")!!
         val binding = DataBindingUtil.inflate<FragmentTimetableInputBinding>(
             inflater,
             R.layout.fragment_timetable_input,
@@ -75,7 +64,7 @@ class TuesdayInputFragment : Fragment() {
             TimetableInputViewModelFactory(
                 tuesdayArgs.tuesdayClass,
                 app,
-                courseCollection.document(courseId).collection("tuesday"),
+                courseCollection,
                 firebaseFunctions,
                 tuesday
             )

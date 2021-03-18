@@ -19,7 +19,7 @@ import java.util.*
 class TimetableInputViewModel(
     private val timetableClass: TimetableClass?,
     private val app: Application,
-    private val fridayFirestore: CollectionReference,
+    courseCollection: CollectionReference,
     private val functions: FirebaseFunctions,
     private val dayOfWeek: DayOfWeek
 ) : AndroidViewModel(app) {
@@ -52,6 +52,8 @@ class TimetableInputViewModel(
 
     private val sharedPreferences = app.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
     private val courseId = sharedPreferences.getString(COURSE_ID, "")!!
+
+    private val dayFirestore = courseCollection.document(courseId).collection(dayOfWeek.name)
 
     // Can only be tested through espresso
     fun save() {
@@ -131,7 +133,7 @@ class TimetableInputViewModel(
     }
 
     private fun addFirestoreData(fridayClass: TimetableClass) {
-        fridayFirestore.document(fridayClass.id).set(fridayClass).addOnSuccessListener {
+        dayFirestore.document(fridayClass.id).set(fridayClass).addOnSuccessListener {
             Timber.i("Data was added successfully")
         }.addOnFailureListener { exception ->
             Timber.i("Data failed to add because of $exception")
