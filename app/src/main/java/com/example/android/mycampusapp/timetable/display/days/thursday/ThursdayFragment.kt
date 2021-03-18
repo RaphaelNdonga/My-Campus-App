@@ -40,6 +40,7 @@ class ThursdayFragment : Fragment() {
     private var isAdmin: Boolean = false
     private lateinit var courseId: String
     private lateinit var sharedPreferences: SharedPreferences
+    private val thursday = DayOfWeek.THURSDAY
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,7 +67,10 @@ class ThursdayFragment : Fragment() {
         val app = requireActivity().application
         viewModel = ViewModelProvider(
             this,
-            TimetableViewModelFactory(courseCollection.document(courseId).collection("thursday"), app)
+            TimetableViewModelFactory(
+                courseCollection.document(courseId).collection(thursday.name),
+                app
+            )
         ).get(TimetableViewModel::class.java)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this

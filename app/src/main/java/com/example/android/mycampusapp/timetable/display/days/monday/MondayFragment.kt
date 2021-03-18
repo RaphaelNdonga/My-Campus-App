@@ -41,6 +41,7 @@ class MondayFragment : Fragment() {
     private var isAdmin: Boolean = false
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var courseId: String
+    private val monday = DayOfWeek.MONDAY
 
 
     override fun onCreateView(
@@ -70,7 +71,10 @@ class MondayFragment : Fragment() {
         val app = requireActivity().application
         viewModel = ViewModelProvider(
             this,
-            TimetableViewModelFactory(courseCollection.document(courseId).collection("monday"), app)
+            TimetableViewModelFactory(
+                courseCollection.document(courseId).collection(monday.name),
+                app
+            )
         ).get(TimetableViewModel::class.java)
 
         setHasOptionsMenu(true)
