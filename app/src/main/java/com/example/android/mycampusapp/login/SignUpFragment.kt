@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentSignUpBinding
 import com.example.android.mycampusapp.util.EventObserver
+import com.example.android.mycampusapp.util.containsWhiteSpace
 import com.example.android.mycampusapp.util.isValidEmail
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -75,6 +76,11 @@ class SignUpFragment : Fragment() {
 
             if (email.isNullOrEmpty() || courseId.isNullOrEmpty() || password.isEmpty()) {
                 Snackbar.make(requireView(), R.string.fill_blanks, Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            if (courseId.containsWhiteSpace()) {
+                Snackbar.make(requireView(), R.string.white_space_error, Snackbar.LENGTH_LONG)
+                    .show()
                 return@setOnClickListener
             }
             if (!email.isValidEmail()) {
