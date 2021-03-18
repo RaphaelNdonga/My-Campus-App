@@ -155,7 +155,7 @@ class TimetableInputViewModel(
     }
 
     private fun sendCloudMessage(message: String, courseId: String): Task<Unit> {
-        val data = hashMapOf("message" to message, "courseId" to courseId.removeWhiteSpace())
+        val data = hashMapOf("message" to message, "courseId" to courseId)
         return functions.getHttpsCallable("sendMessage").call(data).continueWith {
 
         }
