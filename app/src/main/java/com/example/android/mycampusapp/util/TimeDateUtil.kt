@@ -81,12 +81,12 @@ fun getCalendarDayOfWeek(dayOfWeek: DayOfWeek): Int {
     }
 }
 
-enum class DayOfWeek(day: String) {
-    MONDAY("monday"),
-    TUESDAY("tuesday"),
-    WEDNESDAY("wednesday"),
-    THURSDAY("thursday"),
-    FRIDAY("friday"),
-    SATURDAY("saturday"),
-    SUNDAY("sunday")
+enum class DayOfWeek {
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY
 }
