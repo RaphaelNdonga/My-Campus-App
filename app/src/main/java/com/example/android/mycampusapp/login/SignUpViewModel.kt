@@ -16,8 +16,8 @@ class SignUpViewModel(
     private val functions: FirebaseFunctions,
     private val auth: FirebaseAuth,
     private val studentStatus: StudentStatus,
-    private val app:Application
-) : AndroidViewModel(app){
+    private val app: Application
+) : AndroidViewModel(app) {
 
     private val _snackBarText = MutableLiveData<Event<String>>()
     val snackBarText: LiveData<Event<String>>
@@ -28,31 +28,31 @@ class SignUpViewModel(
         get() = _navigator
 
     private val _finishLoading = MutableLiveData<Event<Unit>>()
-    val finishLoading:LiveData<Event<Unit>>
+    val finishLoading: LiveData<Event<Unit>>
         get() = _finishLoading
 
     private val _adminExists = MutableLiveData<Boolean>()
-    val adminExists:LiveData<Boolean>
+    val adminExists: LiveData<Boolean>
         get() = _adminExists
 
     val courseName = MutableLiveData<String>()
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
 
-    fun checkIfAdminExists(data: HashMap<String,String>): Task<Boolean> {
-        return functions.getHttpsCallable("checkIfAdminExists").call(data).continueWith { task->
-            val receivedHashMap = task.result?.data as HashMap<String?,Boolean?>
+    fun checkIfAdminExists(data: HashMap<String, String>): Task<Boolean> {
+        return functions.getHttpsCallable("checkIfAdminExists").call(data).continueWith { task ->
+            val receivedHashMap = task.result?.data as HashMap<String?, Boolean?>
             val result = receivedHashMap["result"]
             result!!
         }.addOnCompleteListener {
-            if (it.isSuccessful){
+            if (it.isSuccessful) {
                 Timber.i("The task was successful with message ${it.result}")
                 _adminExists.value = it.result
-            }else{
+            } else {
                 Timber.i("The task was unsuccessful with exception ${it.exception} and message ${it.exception?.message}")
                 stopLoading()
                 val errorMessage = it.exception?.message
-                if(errorMessage == "INTERNAL"){
+                if (errorMessage == "INTERNAL") {
                     _snackBarText.value = Event(app.getString(R.string.network_error_msg))
                 }
             }
@@ -64,21 +64,21 @@ class SignUpViewModel(
             .continueWith { task: Task<HttpsCallableResult> ->
 
                 Timber.i("Setting course id")
-                val receivedHashMap = task.result?.data as HashMap<String?,String?>
-                if(receivedHashMap["result"] !=null){
+                val receivedHashMap = task.result?.data as HashMap<String?, String?>
+                if (receivedHashMap["result"] != null) {
                     _navigator.value = Event(Unit)
                     _snackBarText.value = Event(app.getString(R.string.successful_signup))
                 }
-                if(receivedHashMap["error"]!=null){
+                if (receivedHashMap["error"] != null) {
                     auth.currentUser?.delete()
                     _snackBarText.value = Event(app.getString(R.string.failed_signup))
                 }
-                val result = receivedHashMap["result"]?:receivedHashMap["error"]
+                val result = receivedHashMap["result"] ?: receivedHashMap["error"]
                 result!!
             }.addOnCompleteListener {
-                if(it.isSuccessful){
+                if (it.isSuccessful) {
                     Timber.i("The task was successful with message ${it.result}")
-                }else{
+                } else {
                     Timber.i("The task was unsuccessful with exception ${it.exception}")
                 }
             }
@@ -92,22 +92,22 @@ class SignUpViewModel(
                 // This continuation runs on either success or failure, but if the task
                 // has failed then result will throw an Exception which will be
                 // propagated down.
-                val receivedHashMap:HashMap<String?,String?> = task.result?.data as HashMap<String?, String?>
-                if(receivedHashMap["result"] !=null){
+                val receivedHashMap: HashMap<String?, String?> =
+                    task.result?.data as HashMap<String?, String?>
+                if (receivedHashMap["result"] != null) {
                     _navigator.value = Event(Unit)
                     _snackBarText.value = Event(app.getString(R.string.successful_signup))
                 }
-                if(receivedHashMap["error"]!=null){
+                if (receivedHashMap["error"] != null) {
                     auth.currentUser?.delete()
                     _snackBarText.value = Event(app.getString(R.string.failed_signup))
                 }
-                val result = receivedHashMap["result"]?:receivedHashMap["error"]
+                val result = receivedHashMap["result"] ?: receivedHashMap["error"]
                 result!!
             }.addOnCompleteListener {
-                if(it.isSuccessful){
+                if (it.isSuccessful) {
                     Timber.i("The task was successful with message ${it.result}")
-                }
-                else{
+                } else {
                     Timber.i("The task was unsuccessful with exception ${it.exception}")
                 }
             }
@@ -132,11 +132,11 @@ class SignUpViewModel(
             val exception = task.exception
             Timber.i("The error is $exception and the message is ${exception?.message}")
             stopLoading()
-            _snackBarText.value = Event(app.getString(R.string.general_error))
+            exception?.message?.let { _snackBarText.value = Event(it) }
         }
     }
 
-    private fun stopLoading(){
+    private fun stopLoading() {
         _finishLoading.value = Event(Unit)
     }
 
