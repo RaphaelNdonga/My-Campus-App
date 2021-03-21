@@ -40,6 +40,27 @@ exports.sendMessage = functions.https.onCall((data,context)=>{
   return sendMessage(message,topic)
 })
 
+exports.sendNotificationId = functions.https.onCall((data,context)=>{
+  const notificationId = data.notificationId
+  const topic = data.courseId
+
+  return sendNotificationId(notificationId,topic)
+})
+
+async function sendNotificationId(notificationId:string,topic:string):Promise<void>{
+  const data = {
+    data:{
+      notificationId:notificationId
+    },
+    topic:topic
+  }
+  return admin.messaging().send(data).then((response)=>{
+    functions.logger.info(`The notificationId ${data.data} to topic ${data.topic} was sent successfully`)
+  }).catch((error)=>{
+    functions.logger.error(`An error occurred when sending data:${error}`)
+  })
+}
+
 async function sendMessage(message:string,topic:string):Promise<void>{
   const data = {
     data:{
@@ -48,7 +69,7 @@ async function sendMessage(message:string,topic:string):Promise<void>{
     topic: topic
   };
   return admin.messaging().send(data).then((response)=>{
-    functions.logger.info(`The data ${data.data} ${data.topic} was sent successfully`)
+    functions.logger.info(`The message ${data.data} to topic ${data.topic} was sent successfully`)
   }).catch((error)=>{
     functions.logger.error(`An error occurred when sending data: ${error}`)
   })
