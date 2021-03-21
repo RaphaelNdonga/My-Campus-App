@@ -5,11 +5,16 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.graphics.Color
 import android.os.Build
+import androidx.work.Configuration
+import androidx.work.WorkerFactory
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
+import javax.inject.Inject
 
 @HiltAndroidApp
-class MyCampusApplication : Application() {
+class MyCampusApplication : Application(), Configuration.Provider {
+    @Inject
+    lateinit var workerFactory: WorkerFactory
     override fun onCreate() {
         Timber.plant(Timber.DebugTree())
         super.onCreate()
@@ -35,5 +40,9 @@ class MyCampusApplication : Application() {
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager?.createNotificationChannel(notificationChannel)
         }
+    }
+
+    override fun getWorkManagerConfiguration(): Configuration {
+        return Configuration.Builder().setWorkerFactory(workerFactory).build()
     }
 }
