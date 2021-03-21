@@ -5,8 +5,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.graphics.Color
 import android.os.Build
+import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import androidx.work.WorkerFactory
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import javax.inject.Inject
@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltAndroidApp
 class MyCampusApplication : Application(), Configuration.Provider {
     @Inject
-    lateinit var workerFactory: WorkerFactory
+    lateinit var workerFactory: HiltWorkerFactory
     override fun onCreate() {
         Timber.plant(Timber.DebugTree())
         super.onCreate()

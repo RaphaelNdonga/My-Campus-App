@@ -10,11 +10,12 @@ import com.example.android.mycampusapp.util.getEnumDay
 import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.firestore.CollectionReference
 import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import java.util.*
 import javax.inject.Inject
 
 @HiltWorker
-class DailyAlarmWorker @Inject constructor(
+class DailyAlarmWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters
 ) : Worker(context, workerParams) {

@@ -5,10 +5,10 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
-import javax.inject.Inject
+import dagger.assisted.AssistedInject
 
 @HiltWorker
-class OneTimeAlarmWorker @Inject constructor(
+class OneTimeAlarmWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
