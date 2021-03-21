@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.android.mycampusapp">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
@@ -52,15 +53,21 @@
         </receiver>
         <receiver android:name=".timetable.receiver.SaturdayClassReceiver"
             android:enabled="true"
-            android:exported="false">
-        </receiver>
-        <service android:name=".timetable.service.TimetableService"/>
-        <service android:name=".timetable.service.MyFirebaseMessagingService"
+            android:exported="false"></receiver>
+
+        <service android:name=".timetable.service.TimetableService" />
+        <service
+            android:name=".timetable.service.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            tools:node="remove" />
     </application>
 
 </manifest>
