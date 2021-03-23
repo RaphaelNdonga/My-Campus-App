@@ -115,6 +115,7 @@ class TimetableInputViewModel(
         if(today == getCalendarDayOfWeek(dayOfWeek)) {
             sendCloudMessage(notificationMessage, courseId)
         }
+        sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
     }
 
     private fun createNewClass(timetableClass: TimetableClass) {
@@ -130,6 +131,7 @@ class TimetableInputViewModel(
         if(today == getCalendarDayOfWeek(dayOfWeek)) {
             sendCloudMessage(notificationMessage, courseId)
         }
+        sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
     }
 
     private fun addFirestoreData(fridayClass: TimetableClass) {
@@ -157,6 +159,13 @@ class TimetableInputViewModel(
     private fun sendCloudMessage(message: String, courseId: String): Task<Unit> {
         val data = hashMapOf("message" to message, "courseId" to courseId)
         return functions.getHttpsCallable("sendMessage").call(data).continueWith {
+
+        }
+    }
+
+    private fun sendNotificationId(notificationId: String, courseId: String): Task<Unit> {
+        val data = hashMapOf("notificationId" to notificationId, "courseId" to courseId)
+        return functions.getHttpsCallable("sendNotificationId").call(data).continueWith {
 
         }
     }
