@@ -12,9 +12,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         super.onMessageReceived(remoteMessage)
         Timber.i("A new message has been received from ${remoteMessage.from}")
         Timber.i("The message is ${remoteMessage.data}")
-        Timber.i("The notification is ${remoteMessage.data["message"]}")
         val notificationMessage = remoteMessage.data["message"]
+        val notificationId = remoteMessage.data["notificationId"]
         notificationMessage?.let { sendNotification(it) }
+        notificationId?.let {
+            Timber.i("The notification id is $it")
+        }
     }
 
     override fun onNewToken(token: String) {

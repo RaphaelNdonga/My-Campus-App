@@ -1,22 +1,23 @@
 package com.example.android.mycampusapp.timetable.display
 
-import android.app.AlarmManager
 import android.app.Application
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.data.TimetableClass
-import com.example.android.mycampusapp.timetable.receiver.FridayClassReceiver
+import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.Event
+import com.example.android.mycampusapp.util.sharedPrefFile
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
+import com.google.firebase.functions.FirebaseFunctions
 import timber.log.Timber
 
 class TimetableViewModel(
     private val timetableFirestore: CollectionReference,
+    private val functions: FirebaseFunctions,
     private val app: Application
 ) :
     AndroidViewModel(app) {
@@ -65,10 +66,12 @@ class TimetableViewModel(
     }
 
     fun deleteList(list: List<TimetableClass?>) {
+        val sharedPreferences = app.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+        val courseId = sharedPreferences.getString(COURSE_ID, "")!!
         list.forEach { fridayClass ->
             if (fridayClass != null) {
                 timetableFirestore.document(fridayClass.id).delete()
-                cancelAlarm(fridayClass)
+                sendNotificationId(fridayClass.alarmRequestCode.toString(), courseId)
             }
         }
         checkDataStatus()
@@ -103,21 +106,16 @@ class TimetableViewModel(
                 }
                 updateData(mutableList)
 
-                if(firestoreException !=null){
+                if (firestoreException != null) {
                     Timber.i("Got an error $firestoreException")
                 }
             }
     }
 
-    private fun cancelAlarm(fridayClass: TimetableClass) {
-        val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(app, FridayClassReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            app,
-            fridayClass.alarmRequestCode,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-        alarmManager.cancel(pendingIntent)
+    private fun sendNotificationId(notificationId: String, courseId: String): Task<Unit> {
+        val data = hashMapOf("notificationId" to notificationId, "courseId" to courseId)
+        return functions.getHttpsCallable("sendNotificationId").call(data).continueWith {
+
+        }
     }
 }

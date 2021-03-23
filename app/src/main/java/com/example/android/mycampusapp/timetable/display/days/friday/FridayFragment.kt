@@ -21,6 +21,7 @@ import com.example.android.mycampusapp.timetable.display.*
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.functions.FirebaseFunctions
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -28,6 +29,9 @@ import javax.inject.Inject
 class FridayFragment : Fragment() {
     @Inject
     lateinit var courseCollection: CollectionReference
+
+    @Inject
+    lateinit var functions: FirebaseFunctions
 
     private lateinit var snapshotListener: ListenerRegistration
 
@@ -61,6 +65,7 @@ class FridayFragment : Fragment() {
             this,
             TimetableViewModelFactory(
                 courseCollection.document(courseId).collection(friday.name),
+                functions,
                 app
             )
         ).get(

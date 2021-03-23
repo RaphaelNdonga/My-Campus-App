@@ -26,6 +26,8 @@ fun bindDataImageStatus(statusImgView: ImageView, status: DataStatus?) {
         DataStatus.LOADING -> {
             statusImgView.visibility = View.VISIBLE
             statusImgView.setImageResource(R.drawable.loading_animation)
+            statusImgView.maxHeight = 100
+            statusImgView.maxWidth = 100
         }
     }
 }
