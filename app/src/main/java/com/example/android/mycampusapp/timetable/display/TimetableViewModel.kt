@@ -75,13 +75,13 @@ class TimetableViewModel(
                     CustomTime(timetableClass.hour, timetableClass.minute),
                     getCustomTimeNow()
                 )
-                if (getEnumDay(getToday()) == dayOfWeek && isLater) {
+                if (getTodayEnumDay() == dayOfWeek && isLater) {
                     sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
                     val notificationMessage =
                         "**TODAY** ${timetableClass.subject} will not be happening"
                     sendCloudMessage(notificationMessage, courseId)
                 }
-                if (getEnumDay(getToday()).ordinal.plus(1) == dayOfWeek.ordinal) {
+                if (getTomorrowEnumDay() == dayOfWeek) {
                     sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
                     val notificationMessage =
                         "**TOMORROW** ${timetableClass.subject} will not be happening"

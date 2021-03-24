@@ -103,16 +103,14 @@ class TimetableInputViewModel(
         _snackbarText.value = Event("${timetableClass.subject} has been updated.")
         navigateToTimetable()
 
-        val today = getToday()
-        val now = getCustomTimeNow()
         val currentClassIsLater =
-            compareCustomTime(CustomTime(timetableClass.hour, timetableClass.minute), now)
+            compareCustomTime(getTimetableCustomTime(timetableClass), getCustomTimeNow())
 
         val previousClassWasLater =
-            compareCustomTime(CustomTime(previousClass!!.hour, previousClass.minute), now)
+            compareCustomTime(getTimetableCustomTime(previousClass!!), getCustomTimeNow())
 
         //Do this if the class is set for later today
-        if (getEnumDay(today) == dayOfWeek && currentClassIsLater) {
+        if (getTodayEnumDay() == dayOfWeek && currentClassIsLater) {
             val notificationMessage =
                 "**TODAY** ${timetableClass.subject} will start at ${
                     formatTime(_timeSet.value!!)
@@ -126,7 +124,7 @@ class TimetableInputViewModel(
             sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
         }
         //Do this if the class is set for tomorrow.
-        else if (getEnumDay(today).ordinal.plus(1) == dayOfWeek.ordinal) {
+        else if (getTomorrowEnumDay() == dayOfWeek) {
 
             val notificationMessage = "**TOMORROW** ${timetableClass.subject} will start at ${
                 formatTime(_timeSet.value!!)
@@ -141,13 +139,10 @@ class TimetableInputViewModel(
         _snackbarText.value = Event("${timetableClass.subject} has been saved")
         navigateToTimetable()
 
-
-        val today = getToday()
-        val now = getCustomTimeNow()
-        val isLater = compareCustomTime(CustomTime(timetableClass.hour, timetableClass.minute), now)
+        val isLater = compareCustomTime(getTimetableCustomTime(timetableClass), getCustomTimeNow())
 
         //Do this if the class is set for later today
-        if (getEnumDay(today) == dayOfWeek && isLater) {
+        if (getTodayEnumDay() == dayOfWeek && isLater) {
             val notificationMessage =
                 "**TODAY** ${timetableClass.subject} will start at ${
                     formatTime(_timeSet.value!!)
@@ -157,7 +152,7 @@ class TimetableInputViewModel(
 
         }
         //Do this if the class is set for tomorrow.
-        else if (getEnumDay(today).ordinal.plus(1) == dayOfWeek.ordinal) {
+        else if (getTomorrowEnumDay() == dayOfWeek) {
 
             val notificationMessage = "**TOMORROW** ${timetableClass.subject} will start at ${
                 formatTime(_timeSet.value!!)

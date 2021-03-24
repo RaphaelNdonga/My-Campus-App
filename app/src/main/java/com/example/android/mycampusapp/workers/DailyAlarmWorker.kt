@@ -6,7 +6,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.util.COURSE_ID
-import com.example.android.mycampusapp.util.getEnumDay
+import com.example.android.mycampusapp.util.getTomorrowEnumDay
 import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.firestore.CollectionReference
 import dagger.assisted.Assisted
@@ -33,7 +33,7 @@ class DailyAlarmWorker @AssistedInject constructor(
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
         val timetableQuerySnapshot =
-            coursesCollection.document(courseId).collection(getEnumDay(today.plus(1)).name).get()
+            coursesCollection.document(courseId).collection(getTomorrowEnumDay().name).get()
 
         timetableQuerySnapshot.addOnSuccessListener { timetableClasses ->
             timetableClasses.forEach { timetableClass ->
