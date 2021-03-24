@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.util.*
@@ -70,10 +71,20 @@ class TimetableViewModel(
         list.forEach { timetableClass ->
             if (timetableClass != null) {
                 timetableFirestore.document(timetableClass.id).delete()
-                if (getEnumDay(getToday()) == dayOfWeek) {
+                val isLater = compareCustomTime(
+                    CustomTime(timetableClass.hour, timetableClass.minute),
+                    getCustomTimeNow()
+                )
+                if (getEnumDay(getToday()) == dayOfWeek && isLater) {
                     sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
                     val notificationMessage =
                         "**TODAY** ${timetableClass.subject} will not be happening"
+                    sendCloudMessage(notificationMessage, courseId)
+                }
+                if (getEnumDay(getToday()).ordinal.plus(1) == dayOfWeek.ordinal) {
+                    sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
+                    val notificationMessage =
+                        "**TOMORROW** ${timetableClass.subject} will not be happening"
                     sendCloudMessage(notificationMessage, courseId)
                 }
             }
