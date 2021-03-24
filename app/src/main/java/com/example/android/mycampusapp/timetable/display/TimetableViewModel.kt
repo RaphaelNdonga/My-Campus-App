@@ -7,9 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.data.TimetableClass
-import com.example.android.mycampusapp.util.COURSE_ID
-import com.example.android.mycampusapp.util.Event
-import com.example.android.mycampusapp.util.sharedPrefFile
+import com.example.android.mycampusapp.util.*
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.*
 import com.google.firebase.functions.FirebaseFunctions
@@ -18,13 +16,14 @@ import timber.log.Timber
 class TimetableViewModel(
     private val timetableFirestore: CollectionReference,
     private val functions: FirebaseFunctions,
+    private val dayOfWeek: DayOfWeek,
     private val app: Application
 ) :
     AndroidViewModel(app) {
 
-    private val _fridayClasses = MutableLiveData<List<TimetableClass>>()
-    val fridayClasses: LiveData<List<TimetableClass>>
-        get() = _fridayClasses
+    private val _timetableClasses = MutableLiveData<List<TimetableClass>>()
+    val timetableClasses: LiveData<List<TimetableClass>>
+        get() = _timetableClasses
 
     private val _status = MutableLiveData<DataStatus>()
     val status: LiveData<DataStatus> = _status
@@ -45,9 +44,9 @@ class TimetableViewModel(
         get() = _hasPendingWrites
 
     private fun checkDataStatus() {
-        val fridayClasses = _fridayClasses.value
+        val timetableClasses = _timetableClasses.value
         try {
-            if (fridayClasses.isNullOrEmpty()) {
+            if (timetableClasses.isNullOrEmpty()) {
                 throw NullPointerException()
             }
             _status.value = DataStatus.NOT_EMPTY
@@ -56,9 +55,9 @@ class TimetableViewModel(
         }
     }
 
-    fun displayFridayClassDetails(fridayClass: TimetableClass) {
+    fun displayFridayClassDetails(timetableClass: TimetableClass) {
         _openFridayClass.value =
-            Event(fridayClass)
+            Event(timetableClass)
     }
 
     fun addNewClass() {
@@ -68,10 +67,15 @@ class TimetableViewModel(
     fun deleteList(list: List<TimetableClass?>) {
         val sharedPreferences = app.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         val courseId = sharedPreferences.getString(COURSE_ID, "")!!
-        list.forEach { fridayClass ->
-            if (fridayClass != null) {
-                timetableFirestore.document(fridayClass.id).delete()
-                sendNotificationId(fridayClass.alarmRequestCode.toString(), courseId)
+        list.forEach { timetableClass ->
+            if (timetableClass != null) {
+                timetableFirestore.document(timetableClass.id).delete()
+                if (getEnumDay(getToday()) == dayOfWeek) {
+                    sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
+                    val notificationMessage =
+                        "**TODAY** ${timetableClass.subject} will not be happening"
+                    sendCloudMessage(notificationMessage, courseId)
+                }
             }
         }
         checkDataStatus()
@@ -83,7 +87,7 @@ class TimetableViewModel(
     }
 
     private fun updateData(mutableList: MutableList<TimetableClass>) {
-        _fridayClasses.value = mutableList
+        _timetableClasses.value = mutableList
         checkDataStatus()
     }
 
@@ -99,8 +103,8 @@ class TimetableViewModel(
                         _hasPendingWrites.value = Event(Unit)
                     }
                     Timber.i("We are in the loop")
-                    val fridayClass = document.toObject(TimetableClass::class.java)
-                    fridayClass?.let {
+                    val timetableClass = document.toObject(TimetableClass::class.java)
+                    timetableClass?.let {
                         mutableList.add(it)
                     }
                 }
@@ -117,5 +121,10 @@ class TimetableViewModel(
         return functions.getHttpsCallable("sendNotificationId").call(data).continueWith {
 
         }
+    }
+
+    private fun sendCloudMessage(message: String, courseId: String): Task<Unit> {
+        val data = hashMapOf("message" to message, "courseId" to courseId)
+        return functions.getHttpsCallable("sendMessage").call(data).continueWith { }
     }
 }
