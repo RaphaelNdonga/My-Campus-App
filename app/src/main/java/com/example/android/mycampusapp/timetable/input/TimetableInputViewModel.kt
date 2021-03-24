@@ -14,10 +14,9 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.functions.FirebaseFunctions
 import timber.log.Timber
-import java.util.*
 
 class TimetableInputViewModel(
-    private val timetableClass: TimetableClass?,
+    private val previousClass: TimetableClass?,
     private val app: Application,
     courseCollection: CollectionReference,
     private val functions: FirebaseFunctions,
@@ -28,24 +27,22 @@ class TimetableInputViewModel(
     val displayNavigator: LiveData<Event<Unit>>
         get() = _displayNavigator
 
-    val textBoxSubject = MutableLiveData<String>(timetableClass?.subject)
-    val textBoxTime = MutableLiveData(timetableClass?.let {
+    val textBoxSubject = MutableLiveData<String>(previousClass?.subject)
+    val textBoxTime = MutableLiveData(previousClass?.let {
         formatTime(CustomTime(it.hour, it.minute))
     })
-    val textBoxLocation = MutableLiveData<String>(timetableClass?.locationName)
-    val textBoxRoom = MutableLiveData<String>(timetableClass?.room)
-    private val id = timetableClass?.id
-    private val alarmRequestCode = timetableClass?.alarmRequestCode
-    private var location = timetableClass?.let { Location(it.locationName, it.locationCoordinates) }
+    val textBoxLocation = MutableLiveData<String>(previousClass?.locationName)
+    val textBoxRoom = MutableLiveData<String>(previousClass?.room)
+    private val id = previousClass?.id
+    private val alarmRequestCode = previousClass?.alarmRequestCode
+    private var location = previousClass?.let { Location(it.locationName, it.locationCoordinates) }
     private val _timeSet: MutableLiveData<CustomTime> = MutableLiveData(
-        timetableClass?.let {
+        previousClass?.let {
             CustomTime(it.hour, it.minute)
         }
     )
     val timeSet: LiveData<CustomTime>
         get() = _timeSet
-
-    private val cal: Calendar = Calendar.getInstance()
 
     private val _snackbarText = MutableLiveData<Event<String>>()
     val snackbarText: LiveData<Event<String>> = _snackbarText
@@ -54,6 +51,7 @@ class TimetableInputViewModel(
     private val courseId = sharedPreferences.getString(COURSE_ID, "")!!
 
     private val dayFirestore = courseCollection.document(courseId).collection(dayOfWeek.name)
+
 
     // Can only be tested through espresso
     fun save() {
@@ -65,7 +63,7 @@ class TimetableInputViewModel(
             _snackbarText.value = Event(app.getString(R.string.empty_message))
             return
         }
-        if (timetableClass == null) {
+        if (previousClass == null) {
             //Create new class
             val newClass =
                 TimetableClass(
@@ -91,7 +89,7 @@ class TimetableInputViewModel(
                 alarmRequestCode!!,
                 currentRoom
             )
-        if (updatedClass == timetableClass) {
+        if (updatedClass == previousClass) {
             _snackbarText.value =
                 Event("${updatedClass.subject} details have not been changed")
             navigateToTimetable()
@@ -104,34 +102,69 @@ class TimetableInputViewModel(
         addFirestoreData(timetableClass)
         _snackbarText.value = Event("${timetableClass.subject} has been updated.")
         navigateToTimetable()
-        val notificationMessage =
-            "${timetableClass.subject} details have changed. It is set to start at ${
-                formatTime(
-                    _timeSet.value!!
-                )
-            } in ${timetableClass.locationName} Room ${timetableClass.room}"
 
-        val today = cal.get(Calendar.DAY_OF_WEEK)
-        if(today == getCalendarDayOfWeek(dayOfWeek)) {
+        val today = getToday()
+        val now = getCustomTimeNow()
+        val currentClassIsLater =
+            compareCustomTime(CustomTime(timetableClass.hour, timetableClass.minute), now)
+
+        val previousClassWasLater =
+            compareCustomTime(CustomTime(previousClass!!.hour, previousClass.minute), now)
+
+        //Do this if the class is set for later today
+        if (getEnumDay(today) == dayOfWeek && currentClassIsLater) {
+            val notificationMessage =
+                "**TODAY** ${timetableClass.subject} will start at ${
+                    formatTime(_timeSet.value!!)
+                } in ${timetableClass.locationName} Room ${timetableClass.room}"
             sendCloudMessage(notificationMessage, courseId)
+            sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
+
+        } else if (!currentClassIsLater && previousClassWasLater) {
+            val notificationMessage = "**TODAY** ${timetableClass.subject} will not be happening"
+            sendCloudMessage(notificationMessage, courseId)
+            sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
         }
-        sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
+        //Do this if the class is set for tomorrow.
+        else if (getEnumDay(today).ordinal.plus(1) == dayOfWeek.ordinal) {
+
+            val notificationMessage = "**TOMORROW** ${timetableClass.subject} will start at ${
+                formatTime(_timeSet.value!!)
+            } in ${timetableClass.locationName} Room ${timetableClass.room}"
+            sendCloudMessage(notificationMessage, courseId)
+            sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
+        }
     }
 
     private fun createNewClass(timetableClass: TimetableClass) {
         addFirestoreData(timetableClass)
         _snackbarText.value = Event("${timetableClass.subject} has been saved")
         navigateToTimetable()
-        val notificationMessage =
-            "${timetableClass.subject} class is set to start at ${
+
+
+        val today = getToday()
+        val now = getCustomTimeNow()
+        val isLater = compareCustomTime(CustomTime(timetableClass.hour, timetableClass.minute), now)
+
+        //Do this if the class is set for later today
+        if (getEnumDay(today) == dayOfWeek && isLater) {
+            val notificationMessage =
+                "**TODAY** ${timetableClass.subject} will start at ${
+                    formatTime(_timeSet.value!!)
+                } in ${timetableClass.locationName} Room ${timetableClass.room}"
+            sendCloudMessage(notificationMessage, courseId)
+            sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
+
+        }
+        //Do this if the class is set for tomorrow.
+        else if (getEnumDay(today).ordinal.plus(1) == dayOfWeek.ordinal) {
+
+            val notificationMessage = "**TOMORROW** ${timetableClass.subject} will start at ${
                 formatTime(_timeSet.value!!)
             } in ${timetableClass.locationName} Room ${timetableClass.room}"
-
-        val today = cal.get(Calendar.DAY_OF_WEEK)
-        if(today == getCalendarDayOfWeek(dayOfWeek)) {
             sendCloudMessage(notificationMessage, courseId)
+            sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
         }
-        sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
     }
 
     private fun addFirestoreData(fridayClass: TimetableClass) {
