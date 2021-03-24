@@ -74,6 +74,7 @@ class ThursdayFragment : Fragment() {
             TimetableViewModelFactory(
                 courseCollection.document(courseId).collection(thursday.name),
                 functions,
+                thursday,
                 app
             )
         ).get(TimetableViewModel::class.java)
