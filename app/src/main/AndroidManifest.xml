@@ -26,36 +26,9 @@
 
         </activity>
         <receiver
-            android:name=".timetable.receiver.MondayClassReceiver"
-            android:enabled="true"
-            android:exported="false">
-        </receiver>
-        <receiver
-            android:name=".timetable.receiver.TuesdayClassReceiver"
-            android:enabled="true"
-            android:exported="false">
-        </receiver>
-        <receiver android:name=".timetable.receiver.SundayClassReceiver"
-            android:enabled="true"
-            android:exported="false">
-        </receiver>
-        <receiver android:name=".timetable.receiver.WednesdayClassReceiver"
-            android:enabled="true"
-            android:exported="false">
-        </receiver>
-        <receiver android:name=".timetable.receiver.ThursdayClassReceiver"
-            android:enabled="true"
-            android:exported="false">
-        </receiver>
-        <receiver android:name=".timetable.receiver.FridayClassReceiver"
-            android:enabled="true"
-            android:exported="false">
-        </receiver>
-        <receiver android:name=".timetable.receiver.SaturdayClassReceiver"
+            android:name=".timetable.receiver.TimetableAlarmReceiver"
             android:enabled="true"
             android:exported="false"></receiver>
-
-        <service android:name=".timetable.service.TimetableService" />
         <service
             android:name=".timetable.service.MyFirebaseMessagingService"
             android:exported="false">
