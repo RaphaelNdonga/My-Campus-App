@@ -5,6 +5,14 @@ import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.TimetableClass
 import java.util.*
 
+fun getTimetableTimeInMillis(timetableClass: TimetableClass): Long {
+    val calendar = Calendar.getInstance()
+    calendar.set(Calendar.HOUR_OF_DAY, timetableClass.hour)
+    calendar.set(Calendar.MINUTE, timetableClass.minute)
+    calendar.add(Calendar.DAY_OF_WEEK, 1)
+    return calendar.timeInMillis
+}
+
 fun compareCustomTime(greater: CustomTime, smaller: CustomTime): Boolean {
     if (greater.hour > smaller.hour) {
         return true
