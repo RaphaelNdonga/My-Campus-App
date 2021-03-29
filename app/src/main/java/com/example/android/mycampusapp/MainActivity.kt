@@ -1,7 +1,6 @@
 package com.example.android.mycampusapp
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +14,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.android.mycampusapp.data.AdminEmail
 import com.example.android.mycampusapp.databinding.ActivityMainBinding
-import com.example.android.mycampusapp.timetable.service.TimetableService
 import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.IS_ADMIN
 import com.example.android.mycampusapp.util.USER_EMAIL
@@ -34,8 +32,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var snapshotListener: ListenerRegistration
-    private lateinit var viewModel: AdminAccountsViewModel
-    private lateinit var courseId:String
+    private lateinit var viewModel: MainActivityViewModel
+    private lateinit var courseId: String
 
     @Inject
     lateinit var courseCollection: CollectionReference
@@ -44,10 +42,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var firebaseMessaging: FirebaseMessaging
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val serviceIntent = Intent(this, TimetableService::class.java)
-        stopService(serviceIntent)
-        //TODO: We need to check if the service is running first before we stop it.
-
         super.onCreate(savedInstanceState)
         @Suppress("UNUSED_VARIABLE")
         val binding =
@@ -56,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         drawerLayout = binding.drawerLayout
         navController = findNavController(R.id.nav_host_fragment)
-        setupActionBarWithNavController(navController,drawerLayout)
+        setupActionBarWithNavController(navController, drawerLayout)
         binding.navView.setupWithNavController(navController)
 
         sharedPreferences = this.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
@@ -67,16 +61,18 @@ class MainActivity : AppCompatActivity() {
         val adminEmail = AdminEmail(userEmail)
         viewModel = ViewModelProvider(
             this,
-            AdminAccountsViewModelFactory(
-                courseCollection.document(courseId).collection("admins")
+            MainActivityViewModelFactory(
+                courseCollection.document(courseId).collection("admins"),
+                this.application
             )
-        ).get(AdminAccountsViewModel::class.java)
+        ).get(MainActivityViewModel::class.java)
 
         viewModel.adminList.observe(this, {
             if (isAdmin)
-                viewModel.checkAndAddEmail(it,adminEmail)
+                viewModel.checkAndAddEmail(it, adminEmail)
         })
 
+        viewModel.setupRecurringWork()
     }
 
     override fun onStart() {
@@ -95,11 +91,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if(navController.currentDestination?.id == R.id.timetableFragment){
+        if (navController.currentDestination?.id == R.id.timetableFragment) {
             return super.onBackPressed()
         }
         navController.navigateUp()
     }
+
     private fun subscribeToTopic(courseId: String) {
         firebaseMessaging.subscribeToTopic(courseId).addOnCompleteListener { task ->
             if (task.isSuccessful) {
