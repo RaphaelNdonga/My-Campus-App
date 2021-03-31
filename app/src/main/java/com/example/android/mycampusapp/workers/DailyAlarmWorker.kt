@@ -1,17 +1,19 @@
 package com.example.android.mycampusapp.workers
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import androidx.hilt.work.HiltWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.android.mycampusapp.data.TimetableClass
-import com.example.android.mycampusapp.location.LocationUtils
-import com.example.android.mycampusapp.util.COURSE_ID
+import com.example.android.mycampusapp.timetable.receiver.TimetableAlarmReceiver
 import com.example.android.mycampusapp.util.getTomorrowEnumDay
-import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.firestore.CollectionReference
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -24,27 +26,22 @@ class DailyAlarmWorker @AssistedInject constructor(
     lateinit var coursesCollection: CollectionReference
 
     override fun doWork(): Result {
-        val sharedPreferences =
-            applicationContext.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-        val courseId = sharedPreferences.getString(COURSE_ID, "")!!
-
-        val location = LocationUtils.getJkuatLocations()[0]
-
         val calendar = Calendar.getInstance()
-        val today = calendar.get(Calendar.DAY_OF_WEEK)
-        val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        val minute = calendar.get(Calendar.MINUTE)
+        calendar.add(Calendar.MINUTE, 5)
 
-        val workerClass = TimetableClass(
-            subject = "WorkManager",
-            hour = hour,
-            minute = minute,
-            locationName = location.name,
-            locationCoordinates = location.coordinates,
-            room = "101"
+        Timber.i("The minute is ${calendar.get(Calendar.MINUTE)}")
+
+        val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(
+            applicationContext,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        addFirestoreData(workerClass, courseId)
+        val alarmManager =
+            applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
 
         return Result.success()
     }

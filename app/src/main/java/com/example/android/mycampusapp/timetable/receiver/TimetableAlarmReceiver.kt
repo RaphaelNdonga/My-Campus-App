@@ -15,7 +15,7 @@ class TimetableAlarmReceiver : BroadcastReceiver() {
             NotificationManager::class.java
         ) as NotificationManager
 
-        val message: String = intent?.extras?.get("message").toString()
+        val message = "Work manager notification"
         notificationManager.sendNotification(message, context)
     }
 }
