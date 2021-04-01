@@ -27,9 +27,9 @@ class DailyAlarmWorker @AssistedInject constructor(
 
     override fun doWork(): Result {
         val calendar = Calendar.getInstance()
-        calendar.add(Calendar.MINUTE, 5)
+        calendar.add(Calendar.DAY_OF_WEEK, 1)
 
-        Timber.i("The minute is ${calendar.get(Calendar.MINUTE)}")
+        Timber.i("The daily worker is set to alert at${calendar.get(Calendar.DAY_OF_WEEK)}")
 
         val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(
