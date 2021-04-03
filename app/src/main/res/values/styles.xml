@@ -6,8 +6,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
-        <item name="fontFamily">@font/open_sans</item>
-        <item name="android:fontFamily">@font/open_sans</item>
     </style>
 
     <style name="Widget.MyCampusApp.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -31,11 +29,9 @@
     </style>
 
     <style name="TextAppearance.MyCampusApp.RecyclerViewItemTitle" parent="TextAppearance.MaterialComponents.Headline6">
-        <item name="font">@font/open_sans</item>
     </style>
 
     <style name="TextAppearance.MyCampusApp.RecyclerViewItemDetails" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="font">@font/open_sans</item>
     </style>
 
     <style name="Widget.MyCampusApp.Toolbar" parent="Widget.AppCompat.Toolbar">
