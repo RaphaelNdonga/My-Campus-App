@@ -5,12 +5,13 @@ import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.TimetableClass
 import java.util.*
 
-fun getTimetableTimeInMillis(timetableClass: TimetableClass): Long {
+fun getTomorrowTimetableCalendar(timetableClass: TimetableClass): Calendar {
     val calendar = Calendar.getInstance()
     calendar.set(Calendar.HOUR_OF_DAY, timetableClass.hour)
     calendar.set(Calendar.MINUTE, timetableClass.minute)
+    calendar.set(Calendar.SECOND, 0)
     calendar.add(Calendar.DAY_OF_WEEK, 1)
-    return calendar.timeInMillis
+    return calendar
 }
 
 fun compareCustomTime(greater: CustomTime, smaller: CustomTime): Boolean {
