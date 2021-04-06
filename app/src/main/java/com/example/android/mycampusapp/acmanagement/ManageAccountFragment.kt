@@ -13,7 +13,6 @@ import com.example.android.mycampusapp.LoginActivity
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentAccountManagementBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -21,9 +20,6 @@ import javax.inject.Inject
 class ManageAccountFragment : Fragment() {
     @Inject
     lateinit var auth: FirebaseAuth
-
-    @Inject
-    lateinit var firebaseMessaging: FirebaseMessaging
 
     private lateinit var viewModel: ManageAccountViewModel
 
@@ -40,7 +36,7 @@ class ManageAccountFragment : Fragment() {
         val app = requireActivity().application
         viewModel = ViewModelProvider(
             this,
-            ManageAccountViewModelFactory(app, firebaseMessaging)
+            ManageAccountViewModelFactory(app)
         ).get(ManageAccountViewModel::class.java)
 
         binding.accountDetailsEmail.text = viewModel.getEmail()

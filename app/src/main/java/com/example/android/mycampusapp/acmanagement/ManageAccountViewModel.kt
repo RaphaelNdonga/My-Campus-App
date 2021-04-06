@@ -8,14 +8,12 @@ import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.USER_EMAIL
 import com.example.android.mycampusapp.util.sharedPrefFile
 import com.example.android.mycampusapp.workers.ClearanceWorker
-import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ManageAccountViewModel(
-    private val app: Application,
-    private val firebaseMessaging: FirebaseMessaging
+    private val app: Application
 ) :
     AndroidViewModel(app) {
     private val applicationScope = CoroutineScope(Dispatchers.Default)
