@@ -31,9 +31,10 @@ class DailyAlarmWorker @AssistedInject constructor(
         val sharedPreferences =
             applicationContext.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         val courseId = sharedPreferences.getString(COURSE_ID, "")!!
-
+        val dayCollection = getTomorrowEnumDay().name
+        sharedPreferences.edit().putString(ALARM_SET_COLLECTION, dayCollection).apply()
         val tomorrowTimetableClasses =
-            coursesCollection.document(courseId).collection(getTomorrowEnumDay().name).get()
+            coursesCollection.document(courseId).collection(dayCollection).get()
 
         tomorrowTimetableClasses.addOnSuccessListener {
             it.forEach { documentSnapshot ->
