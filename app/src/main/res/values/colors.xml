@@ -8,6 +8,6 @@
   <color name="colorSecondaryDark">#00203f</color>
   <color name="textColorPrimary">#000000</color>
   <color name="textColorSecondary">#ffffff</color>
-  <color name="classInputPageBackgroundColor">#FFFFFF</color>
+  <color name="backgroundColor">#F9F9F9</color>
   <color name="location">#4A89F3</color>
 </resources>
