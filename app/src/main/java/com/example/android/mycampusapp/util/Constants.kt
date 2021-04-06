@@ -1,5 +1,6 @@
 package com.example.android.mycampusapp.util
 
+const val ALARM_SET_COLLECTION = "dayCollection"
 const val USER_EMAIL = "email"
 const val IS_ADMIN = "admin"
 const val COURSE_ID: String = "courseId"
