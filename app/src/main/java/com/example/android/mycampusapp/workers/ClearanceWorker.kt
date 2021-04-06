@@ -37,6 +37,7 @@ class ClearanceWorker @AssistedInject constructor(
 
     @Inject
     lateinit var firebaseMessaging: FirebaseMessaging
+
     override fun doWork(): Result {
         val settingsPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
         val sharedPreferences =
