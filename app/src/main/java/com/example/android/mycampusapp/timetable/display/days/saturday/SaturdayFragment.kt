@@ -110,6 +110,10 @@ class SaturdayFragment : Fragment() {
                     TimetableFragmentDirections.actionTimetableFragmentToSaturdayInputFragment(it)
                 )
             })
+        viewModel.deleteFridayClasses.observe(viewLifecycleOwner,
+            EventObserver {
+                deleteSelectedItems(tracker.selection)
+            })
         return binding.root
     }
 
@@ -173,16 +177,8 @@ class SaturdayFragment : Fragment() {
             object : SelectionTracker.SelectionObserver<Long>() {
                 override fun onSelectionChanged() {
                     super.onSelectionChanged()
-                    highlightState = true
                     val nItems: Int? = tracker.selection.size()
-                    if (nItems != null)
-                        viewModel.deleteFridayClasses.observe(viewLifecycleOwner,
-                            EventObserver {
-                                deleteSelectedItems(tracker.selection)
-                            })
-                    if (nItems == 0) {
-                        highlightState = false
-                    }
+                    highlightState = nItems != null && nItems > 0
                     requireActivity().invalidateOptionsMenu()
                 }
 
