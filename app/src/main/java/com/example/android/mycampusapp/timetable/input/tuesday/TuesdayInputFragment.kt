@@ -76,7 +76,7 @@ class TuesdayInputFragment : Fragment() {
 
         viewModel.displayNavigator.observe(viewLifecycleOwner,
             EventObserver {
-                findNavController().navigate(TuesdayInputFragmentDirections.actionTuesdayInputFragmentToTimetableFragment())
+                findNavController().navigateUp()
             })
 
         val calendar = Calendar.getInstance()
