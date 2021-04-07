@@ -10,35 +10,44 @@
         android:label="Timetable">
         <action
             android:id="@+id/action_timetableFragment_to_mondayInputFragment"
-            app:destination="@id/mondayInputFragment" />
+            app:destination="@id/mondayInputFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_in" />
         <action
             android:id="@+id/action_timetableFragment_to_tuesdayInputFragment"
-            app:destination="@id/tuesdayInputFragment" />
+            app:destination="@id/tuesdayInputFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_in" />
         <action
             android:id="@+id/action_timetableFragment_to_sundayInputFragment"
-            app:destination="@id/sundayInputFragment" />
+            app:destination="@id/sundayInputFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_in" />
         <action
             android:id="@+id/action_timetableFragment_to_wednesdayInputFragment"
-            app:destination="@id/wednesdayInputFragment" />
+            app:destination="@id/wednesdayInputFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_in" />
         <action
             android:id="@+id/action_timetableFragment_to_thursdayInputFragment"
-            app:destination="@id/thursdayInputFragment" />
+            app:destination="@id/thursdayInputFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_in" />
         <action
             android:id="@+id/action_timetableFragment_to_fridayInputFragment"
-            app:destination="@id/fridayInputFragment" />
+            app:destination="@id/fridayInputFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_in" />
         <action
             android:id="@+id/action_timetableFragment_to_saturdayInputFragment"
-            app:destination="@id/saturdayInputFragment" />
+            app:destination="@id/saturdayInputFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:popEnterAnim="@android:anim/fade_in" />
     </fragment>
     <fragment
         android:id="@+id/mondayInputFragment"
         android:name="com.example.android.mycampusapp.timetable.input.monday.MondayInputFragment"
         android:label="Set Monday Class">
-        <action
-            android:id="@+id/action_mondayInputFragment_to_timetableFragment"
-            app:destination="@id/timetableFragment"
-            app:popUpTo="@id/timetableFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="mondayClass"
             android:defaultValue="@null"
@@ -49,11 +58,6 @@
         android:id="@+id/tuesdayInputFragment"
         android:name="com.example.android.mycampusapp.timetable.input.tuesday.TuesdayInputFragment"
         android:label="Set Tuesday Class">
-        <action
-            android:id="@+id/action_tuesdayInputFragment_to_timetableFragment"
-            app:destination="@id/timetableFragment"
-            app:popUpTo="@id/timetableFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="tuesdayClass"
             android:defaultValue="@null"
@@ -64,11 +68,6 @@
         android:id="@+id/sundayInputFragment"
         android:name="com.example.android.mycampusapp.timetable.input.sunday.SundayInputFragment"
         android:label="Set Sunday Class">
-        <action
-            android:id="@+id/action_sundayInputFragment_to_timetableFragment"
-            app:destination="@id/timetableFragment"
-            app:popUpTo="@id/timetableFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="sundayClass"
             android:defaultValue="@null"
@@ -79,11 +78,6 @@
         android:id="@+id/wednesdayInputFragment"
         android:name="com.example.android.mycampusapp.timetable.input.wednesday.WednesdayInputFragment"
         android:label="set wednesday class">
-        <action
-            android:id="@+id/action_wednesdayInputFragment_to_timetableFragment"
-            app:destination="@id/timetableFragment"
-            app:popUpTo="@id/timetableFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="wednesdayClass"
             android:defaultValue="@null"
@@ -94,11 +88,6 @@
         android:id="@+id/thursdayInputFragment"
         android:name="com.example.android.mycampusapp.timetable.input.thursday.ThursdayInputFragment"
         android:label="set thursday class">
-        <action
-            android:id="@+id/action_thursdayInputFragment_to_timetableFragment"
-            app:destination="@id/timetableFragment"
-            app:popUpTo="@id/timetableFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="thursdayClass"
             android:defaultValue="@null"
@@ -109,11 +98,6 @@
         android:id="@+id/fridayInputFragment"
         android:name="com.example.android.mycampusapp.timetable.input.friday.FridayInputFragment"
         android:label="set friday class">
-        <action
-            android:id="@+id/action_fridayInputFragment_to_timetableFragment"
-            app:destination="@id/timetableFragment"
-            app:popUpTo="@id/timetableFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="fridayClass"
             android:defaultValue="@null"
@@ -124,11 +108,6 @@
         android:id="@+id/saturdayInputFragment"
         android:name="com.example.android.mycampusapp.timetable.input.saturday.SaturdayInputFragment"
         android:label="set saturday class">
-        <action
-            android:id="@+id/action_saturdayInputFragment_to_timetableFragment"
-            app:destination="@id/timetableFragment"
-            app:popUpTo="@id/timetableFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="saturdayClass"
             android:defaultValue="@null"
@@ -142,6 +121,8 @@
         <action
             android:id="@+id/action_settingsFragment_to_timetableFragment"
             app:destination="@id/timetableFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
             app:popUpTo="@id/timetableFragment"
             app:popUpToInclusive="true" />
     </fragment>
