@@ -83,6 +83,9 @@ class TestsFragment : Fragment() {
                 AssessmentsFragmentDirections.actionAssessmentsFragmentToTestsInputFragment(it)
             )
         })
+        viewModel.deleteAssignments.observe(viewLifecycleOwner, EventObserver {
+            deleteSelectedItems(tracker.selection)
+        })
 
         return binding.root
     }
@@ -136,14 +139,7 @@ class TestsFragment : Fragment() {
         tracker.addObserver(object : SelectionTracker.SelectionObserver<Long>() {
             override fun onSelectionChanged() {
                 super.onSelectionChanged()
-                if (tracker.selection.size() > 0) {
-                    highlightState = true
-                    viewModel.deleteAssignments.observe(viewLifecycleOwner, EventObserver {
-                        deleteSelectedItems(tracker.selection)
-                    })
-                } else {
-                    highlightState = false
-                }
+                highlightState = tracker.selection.size() > 0
                 requireActivity().invalidateOptionsMenu()
             }
         })
