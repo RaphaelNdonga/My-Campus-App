@@ -32,11 +32,6 @@ class AssessmentsViewModel(private val assessmentsFirestore: CollectionReference
     val status: LiveData<DataStatus>
         get() = _status
 
-    private val _hasPendingWrites = MutableLiveData<Event<Unit>>()
-    val hasPendingWrites: LiveData<Event<Unit>>
-        get() = _hasPendingWrites
-
-
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = DataStatus.LOADING
         return assessmentsFirestore
@@ -46,15 +41,9 @@ class AssessmentsViewModel(private val assessmentsFirestore: CollectionReference
             .orderBy("hour",Query.Direction.ASCENDING)
             .orderBy("minute",Query.Direction.ASCENDING)
             .addSnapshotListener { querySnapshot, firebaseException ->
-                querySnapshot?.let {
-                    val mutableList = mutableListOf<Assessment>()
+                _assessments.value = querySnapshot?.toObjects(Assessment::class.java)
+                checkDataStatus()
 
-                    querySnapshot.documents.forEach { document ->
-                        val assessment = document.toObject(Assessment::class.java)
-                        assessment?.let { mutableList.add(it) }
-                    }
-                    updateData(mutableList)
-                }
                 if (firebaseException != null) {
                     Timber.i("Got an exception $firebaseException ")
                 }

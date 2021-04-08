@@ -97,29 +97,14 @@ class TimetableViewModel(
             Event(Unit)
     }
 
-    private fun updateData(mutableList: MutableList<TimetableClass>) {
-        _timetableClasses.value = mutableList
-        checkDataStatus()
-    }
-
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = DataStatus.LOADING
         return timetableFirestore
             .orderBy("hour", Query.Direction.ASCENDING)
             .orderBy("minute", Query.Direction.ASCENDING)
-            .addSnapshotListener(MetadataChanges.INCLUDE) { querySnapshot: QuerySnapshot?, firestoreException: FirebaseFirestoreException? ->
-                val mutableList: MutableList<TimetableClass> = mutableListOf()
-                querySnapshot?.documents?.forEach { document ->
-                    if (document.metadata.hasPendingWrites()) {
-                        _hasPendingWrites.value = Event(Unit)
-                    }
-                    Timber.i("We are in the loop")
-                    val timetableClass = document.toObject(TimetableClass::class.java)
-                    timetableClass?.let {
-                        mutableList.add(it)
-                    }
-                }
-                updateData(mutableList)
+            .addSnapshotListener { querySnapshot: QuerySnapshot?, firestoreException: FirebaseFirestoreException? ->
+                _timetableClasses.value = querySnapshot?.toObjects(TimetableClass::class.java)
+                checkDataStatus()
 
                 if (firestoreException != null) {
                     Timber.i("Got an error $firestoreException")
