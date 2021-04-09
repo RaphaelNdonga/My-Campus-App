@@ -47,6 +47,26 @@ exports.sendNotificationId = functions.https.onCall((data,context)=>{
   return sendNotificationId(notificationId,topic)
 })
 
+exports.cancelAlarm = functions.https.onCall((data,context)=>{
+  const cancelAlarmId = data.cancelAlarmId
+  const topic = data.courseId
+
+  return cancelAlarm(cancelAlarmId,topic)
+})
+
+async function cancelAlarm(cancelAlarmId:string,topic:string) {
+  const data = {
+    data:{
+      cancelAlarmId:cancelAlarmId
+    },
+  topic:topic
+  }
+  return admin.messaging().send(data).then((response)=>{
+    functions.logger.info(`The cancelAlarm id ${data.data} to topic ${data.topic} was sent`)
+  }).catch((error)=>{
+    functions.logger.error(`An error occurred:${error}`)
+  })
+}
 async function sendNotificationId(notificationId:string,topic:string):Promise<void>{
   const data = {
     data:{
