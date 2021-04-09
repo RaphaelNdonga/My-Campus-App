@@ -92,7 +92,7 @@ class FridayInputFragment : Fragment() {
 
         val timePickerListener =
             TimePickerDialog.OnTimeSetListener { _: TimePicker, hourSet: Int, minuteSet: Int ->
-                viewModel.setTime(CustomTime(hour,minute))
+                viewModel.setTime(CustomTime(hourSet, minuteSet))
             }
         val timePickerDialog = TimePickerDialog(
             requireContext(), timePickerListener, displayTime.hour, displayTime.minute,
