@@ -10,14 +10,16 @@ import com.example.android.mycampusapp.R
 
 private const val REQUEST_CODE = 0
 private const val NOTIFICATION_ID = 0
-fun NotificationManager.sendNotification(message: String, context: Context) {
+fun NotificationManager.sendNotification(message: String, dayOfWeek: DayOfWeek, context: Context) {
     val intent = Intent(context, MainActivity::class.java)
+    intent.putExtra("dayOfWeek", dayOfWeek)
     val pendingIntent =
         PendingIntent.getActivity(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
     val notificationBuilder = NotificationCompat.Builder(
         context,
-        context.getString(R.string.timetable_notification_channel_id))
+        context.getString(R.string.timetable_notification_channel_id)
+    )
         .setContentIntent(pendingIntent)
         .setContentText(message)
         .setContentTitle(context.getString(R.string.app_name))
