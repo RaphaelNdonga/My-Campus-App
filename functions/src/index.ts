@@ -40,11 +40,11 @@ exports.sendMessage = functions.https.onCall((data,context)=>{
   return sendMessage(message,topic)
 })
 
-exports.sendNotificationId = functions.https.onCall((data,context)=>{
+exports.setAlarm = functions.https.onCall((data,context)=>{
   const notificationId = data.notificationId
   const topic = data.courseId
 
-  return sendNotificationId(notificationId,topic)
+  return setAlarm(notificationId,topic)
 })
 
 exports.cancelAlarm = functions.https.onCall((data,context)=>{
@@ -67,10 +67,10 @@ async function cancelAlarm(cancelAlarmId:string,topic:string) {
     functions.logger.error(`An error occurred:${error}`)
   })
 }
-async function sendNotificationId(notificationId:string,topic:string):Promise<void>{
+async function setAlarm(setAlarmId:string,topic:string):Promise<void>{
   const data = {
     data:{
-      notificationId:notificationId
+      setAlarmId:setAlarmId
     },
     topic:topic
   }
