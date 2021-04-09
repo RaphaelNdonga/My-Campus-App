@@ -76,13 +76,13 @@ class TimetableViewModel(
                     getCustomTimeNow()
                 )
                 if (getTodayEnumDay() == dayOfWeek && isLater) {
-                    sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
+                    cancelAlarm(timetableClass.alarmRequestCode.toString(), courseId)
                     val notificationMessage =
                         "**TODAY** ${timetableClass.subject} will not be happening"
                     sendCloudMessage(notificationMessage, courseId)
                 }
                 if (getTomorrowEnumDay() == dayOfWeek) {
-                    sendNotificationId(timetableClass.alarmRequestCode.toString(), courseId)
+                    cancelAlarm(timetableClass.alarmRequestCode.toString(), courseId)
                     val notificationMessage =
                         "**TOMORROW** ${timetableClass.subject} will not be happening"
                     sendCloudMessage(notificationMessage, courseId)
@@ -112,15 +112,13 @@ class TimetableViewModel(
             }
     }
 
-    private fun sendNotificationId(notificationId: String, courseId: String): Task<Unit> {
-        val data = hashMapOf("notificationId" to notificationId, "courseId" to courseId)
-        return functions.getHttpsCallable("sendNotificationId").call(data).continueWith {
-
-        }
-    }
-
     private fun sendCloudMessage(message: String, courseId: String): Task<Unit> {
         val data = hashMapOf("message" to message, "courseId" to courseId)
         return functions.getHttpsCallable("sendMessage").call(data).continueWith { }
+    }
+
+    private fun cancelAlarm(cancelAlarmId: String, courseId: String): Task<Unit> {
+        val data = hashMapOf("cancelAlarmId" to cancelAlarmId, "courseId" to courseId)
+        return functions.getHttpsCallable("cancelAlarm").call(data).continueWith { }
     }
 }
