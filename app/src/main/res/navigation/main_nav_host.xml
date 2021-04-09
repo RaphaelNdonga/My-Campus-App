@@ -43,6 +43,27 @@
             app:destination="@id/saturdayInputFragment"
             app:enterAnim="@android:anim/fade_in"
             app:popEnterAnim="@android:anim/fade_in" />
+        <action
+            android:id="@+id/action_timetableFragment_to_fridayFragment2"
+            app:destination="@id/fridayFragment" />
+        <action
+            android:id="@+id/action_timetableFragment_to_saturdayFragment"
+            app:destination="@id/saturdayFragment" />
+        <action
+            android:id="@+id/action_timetableFragment_to_sundayFragment"
+            app:destination="@id/sundayFragment" />
+        <action
+            android:id="@+id/action_timetableFragment_to_mondayFragment"
+            app:destination="@id/mondayFragment" />
+        <action
+            android:id="@+id/action_timetableFragment_to_tuesdayFragment"
+            app:destination="@id/tuesdayFragment" />
+        <action
+            android:id="@+id/action_timetableFragment_to_wednesdayFragment"
+            app:destination="@id/wednesdayFragment" />
+        <action
+            android:id="@+id/action_timetableFragment_to_thursdayFragment"
+            app:destination="@id/thursdayFragment" />
     </fragment>
     <fragment
         android:id="@+id/mondayInputFragment"
@@ -172,4 +193,32 @@
             android:id="@+id/action_assessmentsFragment_to_assignmentInput"
             app:destination="@id/assignmentInput" />
     </fragment>
+    <fragment
+        android:id="@+id/fridayFragment"
+        android:name="com.example.android.mycampusapp.timetable.display.days.friday.FridayFragment"
+        android:label="Friday" />
+    <fragment
+        android:id="@+id/saturdayFragment"
+        android:name="com.example.android.mycampusapp.timetable.display.days.saturday.SaturdayFragment"
+        android:label="Saturday" />
+    <fragment
+        android:id="@+id/sundayFragment"
+        android:name="com.example.android.mycampusapp.timetable.display.days.sunday.SundayFragment"
+        android:label="Sunday" />
+    <fragment
+        android:id="@+id/mondayFragment"
+        android:name="com.example.android.mycampusapp.timetable.display.days.monday.MondayFragment"
+        android:label="Monday" />
+    <fragment
+        android:id="@+id/tuesdayFragment"
+        android:name="com.example.android.mycampusapp.timetable.display.days.tuesday.TuesdayFragment"
+        android:label="Tuesday" />
+    <fragment
+        android:id="@+id/wednesdayFragment"
+        android:name="com.example.android.mycampusapp.timetable.display.days.wednesday.WednesdayFragment"
+        android:label="Wednesday" />
+    <fragment
+        android:id="@+id/thursdayFragment"
+        android:name="com.example.android.mycampusapp.timetable.display.days.thursday.ThursdayFragment"
+        android:label="Thursday" />
 </navigation>
