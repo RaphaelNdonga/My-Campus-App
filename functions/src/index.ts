@@ -41,10 +41,10 @@ exports.sendMessage = functions.https.onCall((data,context)=>{
 })
 
 exports.setAlarm = functions.https.onCall((data,context)=>{
-  const notificationId = data.notificationId
+  const setAlarmId = data.setAlarmId
   const topic = data.courseId
 
-  return setAlarm(notificationId,topic)
+  return setAlarm(setAlarmId,topic)
 })
 
 exports.cancelAlarm = functions.https.onCall((data,context)=>{
