@@ -14,10 +14,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.android.mycampusapp.data.AdminEmail
 import com.example.android.mycampusapp.databinding.ActivityMainBinding
-import com.example.android.mycampusapp.util.COURSE_ID
-import com.example.android.mycampusapp.util.IS_ADMIN
-import com.example.android.mycampusapp.util.USER_EMAIL
-import com.example.android.mycampusapp.util.sharedPrefFile
+import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.messaging.FirebaseMessaging
@@ -73,6 +70,33 @@ class MainActivity : AppCompatActivity() {
         })
 
         viewModel.setupRecurringWork()
+
+        val dayOfWeek = intent.getSerializableExtra("dayOfWeek") as DayOfWeek?
+        dayOfWeek?.let {
+            when (it) {
+                DayOfWeek.MONDAY -> {
+                    navController.navigate(R.id.mondayFragment)
+                }
+                DayOfWeek.TUESDAY -> {
+                    navController.navigate(R.id.tuesdayFragment)
+                }
+                DayOfWeek.WEDNESDAY -> {
+                    navController.navigate(R.id.wednesdayFragment)
+                }
+                DayOfWeek.THURSDAY -> {
+                    navController.navigate(R.id.thursdayFragment)
+                }
+                DayOfWeek.FRIDAY -> {
+                    navController.navigate(R.id.fridayFragment)
+                }
+                DayOfWeek.SATURDAY -> {
+                    navController.navigate(R.id.saturdayFragment)
+                }
+                DayOfWeek.SUNDAY -> {
+                    navController.navigate(R.id.sundayFragment)
+                }
+            }
+        }
     }
 
     override fun onStart() {
