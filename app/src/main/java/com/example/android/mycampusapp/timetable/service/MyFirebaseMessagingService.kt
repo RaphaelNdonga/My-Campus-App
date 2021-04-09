@@ -14,9 +14,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Timber.i("The message is ${remoteMessage.data}")
         val notificationMessage = remoteMessage.data["message"]
         val notificationId = remoteMessage.data["notificationId"]
+        val cancelAlarmId = remoteMessage.data["cancelAlarmId"]
         notificationMessage?.let { sendNotification(it) }
         notificationId?.let {
             Timber.i("The notification id is $it")
+        }
+        cancelAlarmId?.let {
+            Timber.i("The cancel alarm id is $it")
         }
     }
 
