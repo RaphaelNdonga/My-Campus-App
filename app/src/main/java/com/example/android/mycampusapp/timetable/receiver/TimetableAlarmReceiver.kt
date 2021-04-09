@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
+import com.example.android.mycampusapp.util.DayOfWeek
 import com.example.android.mycampusapp.util.sendNotification
 
 class TimetableAlarmReceiver : BroadcastReceiver() {
@@ -17,6 +18,7 @@ class TimetableAlarmReceiver : BroadcastReceiver() {
 
         val bundle = intent?.extras
         val message = bundle?.getString("message")
-        message?.let { notificationManager.sendNotification(it, context) }
+        val dayOfWeek = bundle?.getSerializable("dayOfWeek") as DayOfWeek
+        message?.let { notificationManager.sendNotification(it, dayOfWeek, context) }
     }
 }
