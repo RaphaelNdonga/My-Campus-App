@@ -18,12 +18,18 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Timber.i("A new message has been received from ${remoteMessage.from}")
         Timber.i("The message is ${remoteMessage.data}")
         val notificationMessage = remoteMessage.data["message"]
-        val setAlarmId = remoteMessage.data["setAlarmId"]
+        val todayTimetableId = remoteMessage.data["todayTimetableId"]
+        val tomorrowTimetableId = remoteMessage.data["tomorrowTimetableId"]
         val cancelAlarmId = remoteMessage.data["cancelAlarmId"]
         notificationMessage?.let { sendNotification(it) }
         val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
-        setAlarmId?.let { requestCode ->
-            Timber.i("The notification id is ${requestCode.toInt()}")
+        todayTimetableId?.let { timetableClassId ->
+
+            Timber.i("The today's timetable class id is $timetableClassId")
+        }
+        tomorrowTimetableId?.let { timetableId ->
+            Timber.i("Tomorrow's timetable class id is $timetableId")
+
         }
         cancelAlarmId?.let { requestCode ->
             val pendingIntent = PendingIntent.getBroadcast(
