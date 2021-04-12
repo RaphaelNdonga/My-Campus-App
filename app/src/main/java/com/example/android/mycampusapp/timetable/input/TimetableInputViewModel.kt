@@ -116,7 +116,7 @@ class TimetableInputViewModel(
                     formatTime(_timeSet.value!!)
                 } in ${timetableClass.locationName} Room ${timetableClass.room}"
             sendCloudMessage(notificationMessage, courseId)
-            setAlarm(timetableClass.alarmRequestCode.toString(), courseId)
+            sendTodayTimetableId(timetableClass.id, courseId)
 
         } else if (!currentClassIsLater && previousClassWasLater) {
             val notificationMessage = "**TODAY** ${timetableClass.subject} will not be happening"
@@ -130,7 +130,7 @@ class TimetableInputViewModel(
                 formatTime(_timeSet.value!!)
             } in ${timetableClass.locationName} Room ${timetableClass.room}"
             sendCloudMessage(notificationMessage, courseId)
-            setAlarm(timetableClass.alarmRequestCode.toString(), courseId)
+            sendTomorrowTimetableId(timetableClass.id, courseId)
         }
     }
 
@@ -148,7 +148,7 @@ class TimetableInputViewModel(
                     formatTime(_timeSet.value!!)
                 } in ${timetableClass.locationName} Room ${timetableClass.room}"
             sendCloudMessage(notificationMessage, courseId)
-            setAlarm(timetableClass.alarmRequestCode.toString(), courseId)
+            sendTodayTimetableId(timetableClass.id, courseId)
 
         }
         //Do this if the class is set for tomorrow.
@@ -158,7 +158,7 @@ class TimetableInputViewModel(
                 formatTime(_timeSet.value!!)
             } in ${timetableClass.locationName} Room ${timetableClass.room}"
             sendCloudMessage(notificationMessage, courseId)
-            setAlarm(timetableClass.alarmRequestCode.toString(), courseId)
+            sendTomorrowTimetableId(timetableClass.id, courseId)
         }
     }
 
@@ -191,11 +191,16 @@ class TimetableInputViewModel(
         }
     }
 
-    private fun setAlarm(setAlarmId: String, courseId: String): Task<Unit> {
-        val data = hashMapOf("setAlarmId" to setAlarmId, "courseId" to courseId)
-        return functions.getHttpsCallable("setAlarm").call(data).continueWith {
+    private fun sendTodayTimetableId(timetableId: String, courseId: String): Task<Unit> {
+        val data = hashMapOf("timetableId" to timetableId, "courseId" to courseId)
+        return functions.getHttpsCallable("sendTodayTimetableId").call(data).continueWith {
 
         }
+    }
+
+    private fun sendTomorrowTimetableId(timetableId: String, courseId: String): Task<Unit> {
+        val data = hashMapOf("timetableId" to timetableId, "courseId" to courseId)
+        return functions.getHttpsCallable("sendTomorrowTimetableId").call(data).continueWith { }
     }
 
     private fun cancelAlarm(cancelAlarmId: String, courseId: String): Task<Unit> {
