@@ -40,13 +40,19 @@ exports.sendMessage = functions.https.onCall((data,context)=>{
   return sendMessage(message,topic)
 })
 
-exports.setAlarm = functions.https.onCall((data,context)=>{
-  const setAlarmId = data.setAlarmId
+exports.sendTodayTimetableId = functions.https.onCall((data,context)=>{
+  const timetableId = data.timetableId
   const topic = data.courseId
 
-  return setAlarm(setAlarmId,topic)
+  return sendTodayTimetableId(timetableId,topic)
 })
 
+exports.sendTomorrowTimetableId = functions.https.onCall((data,context)=>{
+  const timetableId = data.timetableId
+  const topic = data.courseId
+
+  return sendTomorrowTimetableId(timetableId,topic)
+})
 exports.cancelAlarm = functions.https.onCall((data,context)=>{
   const cancelAlarmId = data.cancelAlarmId
   const topic = data.courseId
@@ -67,15 +73,28 @@ async function cancelAlarm(cancelAlarmId:string,topic:string) {
     functions.logger.error(`An error occurred:${error}`)
   })
 }
-async function setAlarm(setAlarmId:string,topic:string):Promise<void>{
+
+async function sendTomorrowTimetableId(timetableId:string,courseId:string):Promise<void>{
   const data = {
     data:{
-      setAlarmId:setAlarmId
+      tomorrowTimetableId:timetableId
+    },
+    topic:courseId
+  }
+  return admin.messaging().send(data).then((response)=>{
+    functions.logger.info(`The todayId ${data.data} to topic ${data.topic} was sent successfully`)
+  })
+}
+
+async function sendTodayTimetableId(timetableId:string,topic:string):Promise<void>{
+  const data = {
+    data:{
+      todayTimetableId:timetableId
     },
     topic:topic
   }
   return admin.messaging().send(data).then((response)=>{
-    functions.logger.info(`The notificationId ${data.data} to topic ${data.topic} was sent successfully`)
+    functions.logger.info(`The todayId ${data.data} to topic ${data.topic} was sent successfully`)
   }).catch((error)=>{
     functions.logger.error(`An error occurred when sending data:${error}`)
   })
