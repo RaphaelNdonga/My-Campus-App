@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import androidx.core.content.ContextCompat
 import com.example.android.mycampusapp.timetable.receiver.TimetableAlarmReceiver
+import com.example.android.mycampusapp.util.getTodayEnumDay
 import com.example.android.mycampusapp.util.sendNotification
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -47,6 +48,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             applicationContext,
             NotificationManager::class.java
         ) as NotificationManager
-        notificationManager.sendNotification(message, applicationContext)
+        notificationManager.sendNotification(message, getTodayEnumDay(), applicationContext)
     }
 }
