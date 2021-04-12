@@ -34,10 +34,18 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         Timber.i("A new message has been received from ${remoteMessage.from}")
         Timber.i("The message is ${remoteMessage.data}")
-        val cancelAlarmMessage = remoteMessage.data["message"]
         val todayTimetableId = remoteMessage.data["todayTimetableId"]
         val tomorrowTimetableId = remoteMessage.data["tomorrowTimetableId"]
-        val cancelAlarmId = remoteMessage.data["cancelAlarmId"]
+        val cancelTodayId = remoteMessage.data["cancelTodayId"]
+        val cancelTomorrowId = remoteMessage.data["cancelTomorrowId"]
+
+        cancelTodayId?.let {
+            Timber.i("Today was cancelled with id $it")
+        }
+
+        cancelTomorrowId?.let {
+            Timber.i("Tomorrow was cancelled with id $it")
+        }
 
 
         todayTimetableId?.let { timetableClassId ->
@@ -97,17 +105,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
             Timber.i("Tomorrow's timetable class id is $timetableId")
         }
-        cancelAlarmId?.let { requestCode ->
-            val pendingIntent = PendingIntent.getBroadcast(
-                applicationContext,
-                requestCode.toInt(),
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-            alarmManager.cancel(pendingIntent)
-            sendNotification("cancelAlarmMessage", getTodayEnumDay())
-            Timber.i("The cancel alarm id is ${requestCode.toInt()}")
-        }
+//        cancelAlarmId?.let { requestCode ->
+//            val pendingIntent = PendingIntent.getBroadcast(
+//                applicationContext,
+//                requestCode.toInt(),
+//                intent,
+//                PendingIntent.FLAG_UPDATE_CURRENT
+//            )
+//            alarmManager.cancel(pendingIntent)
+//            sendNotification("cancelAlarmMessage", getTodayEnumDay())
+//            Timber.i("The cancel alarm id is ${requestCode.toInt()}")
+//        }
     }
 
     override fun onNewToken(token: String) {

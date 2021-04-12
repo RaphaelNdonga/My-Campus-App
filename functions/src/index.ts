@@ -53,17 +53,37 @@ exports.sendTomorrowTimetableId = functions.https.onCall((data,context)=>{
 
   return sendTomorrowTimetableId(timetableId,topic)
 })
-exports.cancelAlarm = functions.https.onCall((data,context)=>{
-  const cancelAlarmId = data.cancelAlarmId
+exports.cancelTomorrowAlarm = functions.https.onCall((data,context)=>{
+  const timetableId = data.timetableId
   const topic = data.courseId
 
-  return cancelAlarm(cancelAlarmId,topic)
+  return cancelTomorrowAlarm(timetableId,topic)
 })
 
-async function cancelAlarm(cancelAlarmId:string,topic:string) {
+async function cancelTomorrowAlarm(timetableId:string,topic:string) {
   const data = {
     data:{
-      cancelAlarmId:cancelAlarmId
+      cancelTomorrowId:timetableId
+    },
+  topic:topic
+  }
+  return admin.messaging().send(data).then((response)=>{
+    functions.logger.info(`The tomorrow cancelAlarm id ${data.data} to topic ${data.topic} was sent`)
+  }).catch((error)=>{
+    functions.logger.error(`An error occurred:${error}`)
+  })
+}
+exports.cancelTodayAlarm = functions.https.onCall((data,context)=>{
+  const timetableId = data.timetableId
+  const topic = data.courseId
+
+  return cancelTodayAlarm(timetableId,topic)
+})
+
+async function cancelTodayAlarm(timetableId:string,topic:string) {
+  const data = {
+    data:{
+      cancelTodayId:timetableId
     },
   topic:topic
   }
