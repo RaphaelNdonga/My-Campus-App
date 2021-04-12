@@ -10,8 +10,18 @@ fun getTomorrowTimetableCalendar(timetableClass: TimetableClass): Calendar {
     calendar.set(Calendar.HOUR_OF_DAY, timetableClass.hour)
     calendar.set(Calendar.MINUTE, timetableClass.minute)
     calendar.set(Calendar.SECOND, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
     calendar.add(Calendar.DAY_OF_WEEK, 1)
     return calendar
+}
+
+fun getTodayTimetableCalendar(timetableClass: TimetableClass): Calendar {
+    return Calendar.getInstance().also {
+        it.set(Calendar.HOUR_OF_DAY, timetableClass.hour)
+        it.set(Calendar.MINUTE, timetableClass.minute)
+        it.set(Calendar.SECOND, 0)
+        it.set(Calendar.MILLISECOND, 0)
+    }
 }
 
 fun compareCustomTime(greater: CustomTime, smaller: CustomTime): Boolean {
