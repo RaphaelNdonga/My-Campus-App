@@ -76,16 +76,10 @@ class TimetableViewModel(
                     getCustomTimeNow()
                 )
                 if (getTodayEnumDay() == dayOfWeek && isLater) {
-                    cancelAlarm(timetableClass.alarmRequestCode.toString(), courseId)
-                    val notificationMessage =
-                        "**TODAY** ${timetableClass.subject} will not be happening"
-                    sendCloudMessage(notificationMessage, courseId)
+                    cancelTodayAlarm(timetableClass.id, courseId)
                 }
                 if (getTomorrowEnumDay() == dayOfWeek) {
-                    cancelAlarm(timetableClass.alarmRequestCode.toString(), courseId)
-                    val notificationMessage =
-                        "**TOMORROW** ${timetableClass.subject} will not be happening"
-                    sendCloudMessage(notificationMessage, courseId)
+                    cancelTomorrowAlarm(timetableClass.id, courseId)
                 }
             }
         }
@@ -112,13 +106,13 @@ class TimetableViewModel(
             }
     }
 
-    private fun sendCloudMessage(message: String, courseId: String): Task<Unit> {
-        val data = hashMapOf("message" to message, "courseId" to courseId)
-        return functions.getHttpsCallable("sendMessage").call(data).continueWith { }
+    private fun cancelTodayAlarm(timetableId: String, courseId: String): Task<Unit> {
+        val data = hashMapOf("timetableId" to timetableId, "courseId" to courseId)
+        return functions.getHttpsCallable("cancelTodayAlarm").call(data).continueWith { }
     }
 
-    private fun cancelAlarm(cancelAlarmId: String, courseId: String): Task<Unit> {
-        val data = hashMapOf("cancelAlarmId" to cancelAlarmId, "courseId" to courseId)
-        return functions.getHttpsCallable("cancelAlarm").call(data).continueWith { }
+    private fun cancelTomorrowAlarm(timetableId: String, courseId: String): Task<Unit> {
+        val data = hashMapOf("timetableId" to timetableId, "courseId" to courseId)
+        return functions.getHttpsCallable("cancelTomorrowAlarm").call(data).continueWith { }
     }
 }
