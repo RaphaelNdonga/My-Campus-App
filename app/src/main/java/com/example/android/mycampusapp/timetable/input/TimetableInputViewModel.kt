@@ -111,11 +111,6 @@ class TimetableInputViewModel(
 
         //Do this if the class is set for later today
         if (getTodayEnumDay() == dayOfWeek && currentClassIsLater) {
-            val notificationMessage =
-                "**TODAY** ${timetableClass.subject} will start at ${
-                    formatTime(_timeSet.value!!)
-                } in ${timetableClass.locationName} Room ${timetableClass.room}"
-            sendCloudMessage(notificationMessage, courseId)
             sendTodayTimetableId(timetableClass.id, courseId)
 
         } else if (!currentClassIsLater && previousClassWasLater) {
@@ -125,11 +120,6 @@ class TimetableInputViewModel(
         }
         //Do this if the class is set for tomorrow.
         else if (getTomorrowEnumDay() == dayOfWeek) {
-
-            val notificationMessage = "**TOMORROW** ${timetableClass.subject} will start at ${
-                formatTime(_timeSet.value!!)
-            } in ${timetableClass.locationName} Room ${timetableClass.room}"
-            sendCloudMessage(notificationMessage, courseId)
             sendTomorrowTimetableId(timetableClass.id, courseId)
         }
     }
@@ -143,21 +133,10 @@ class TimetableInputViewModel(
 
         //Do this if the class is set for later today
         if (getTodayEnumDay() == dayOfWeek && isLater) {
-            val notificationMessage =
-                "**TODAY** ${timetableClass.subject} will start at ${
-                    formatTime(_timeSet.value!!)
-                } in ${timetableClass.locationName} Room ${timetableClass.room}"
-            sendCloudMessage(notificationMessage, courseId)
             sendTodayTimetableId(timetableClass.id, courseId)
-
         }
         //Do this if the class is set for tomorrow.
         else if (getTomorrowEnumDay() == dayOfWeek) {
-
-            val notificationMessage = "**TOMORROW** ${timetableClass.subject} will start at ${
-                formatTime(_timeSet.value!!)
-            } in ${timetableClass.locationName} Room ${timetableClass.room}"
-            sendCloudMessage(notificationMessage, courseId)
             sendTomorrowTimetableId(timetableClass.id, courseId)
         }
     }
