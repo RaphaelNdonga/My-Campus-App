@@ -36,16 +36,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Timber.i("The message is ${remoteMessage.data}")
         val todayTimetableId = remoteMessage.data["todayTimetableId"]
         val tomorrowTimetableId = remoteMessage.data["tomorrowTimetableId"]
-        val cancelTodayId = remoteMessage.data["cancelTodayId"]
-        val cancelTomorrowId = remoteMessage.data["cancelTomorrowId"]
-
-        cancelTodayId?.let {
-            Timber.i("Today was cancelled with id $it")
-        }
-
-        cancelTomorrowId?.let {
-            Timber.i("Tomorrow was cancelled with id $it")
-        }
+        val todayRequestCode = remoteMessage.data["todayRequestCode"]
+        val tomorrowRequestCode = remoteMessage.data["tomorrowRequestCode"]
+        val todayCancelledSubject = remoteMessage.data["todayCancelledSubject"]
+        val tomorrowCancelledSubject = remoteMessage.data["tomorrowCancelledSubject"]
 
 
         todayTimetableId?.let { timetableClassId ->
@@ -105,17 +99,34 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
             Timber.i("Tomorrow's timetable class id is $timetableId")
         }
-//        cancelAlarmId?.let { requestCode ->
-//            val pendingIntent = PendingIntent.getBroadcast(
-//                applicationContext,
-//                requestCode.toInt(),
-//                intent,
-//                PendingIntent.FLAG_UPDATE_CURRENT
-//            )
-//            alarmManager.cancel(pendingIntent)
-//            sendNotification("cancelAlarmMessage", getTodayEnumDay())
-//            Timber.i("The cancel alarm id is ${requestCode.toInt()}")
-//        }
+        todayRequestCode?.let { requestCodeString ->
+            Timber.i("Cancel today success")
+            val pendingIntent = PendingIntent.getBroadcast(
+                applicationContext,
+                requestCodeString.toInt(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            alarmManager.cancel(pendingIntent)
+            val notificationMessage =
+                "**TODAY** $todayCancelledSubject will not be happening"
+            sendNotification(notificationMessage, getTodayEnumDay())
+            Timber.i("The cancel alarm id is $requestCodeString")
+        }
+        tomorrowRequestCode?.let { requestCodeString ->
+            Timber.i("Cancel tomorrow success")
+            val pendingIntent = PendingIntent.getBroadcast(
+                applicationContext,
+                requestCodeString.toInt(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            alarmManager.cancel(pendingIntent)
+            val notificationMessage =
+                "**TOMORROW** $tomorrowCancelledSubject will not be happening"
+            sendNotification(notificationMessage, getTomorrowEnumDay())
+            Timber.i("The cancel alarm id is $requestCodeString")
+        }
     }
 
     override fun onNewToken(token: String) {
