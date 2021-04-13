@@ -54,16 +54,18 @@ exports.sendTomorrowTimetableId = functions.https.onCall((data,context)=>{
   return sendTomorrowTimetableId(timetableId,topic)
 })
 exports.cancelTomorrowAlarm = functions.https.onCall((data,context)=>{
-  const timetableId = data.timetableId
+  const requestCode = data.requestCode
+  const subject = data.subject
   const topic = data.courseId
 
-  return cancelTomorrowAlarm(timetableId,topic)
+  return cancelTomorrowAlarm(requestCode,subject,topic)
 })
 
-async function cancelTomorrowAlarm(timetableId:string,topic:string) {
+async function cancelTomorrowAlarm(requestCode:string,subject:string,topic:string) {
   const data = {
     data:{
-      cancelTomorrowId:timetableId
+      tomorrowRequestCode:requestCode,
+      tomorrowCancelledSubject:subject
     },
   topic:topic
   }
@@ -74,16 +76,18 @@ async function cancelTomorrowAlarm(timetableId:string,topic:string) {
   })
 }
 exports.cancelTodayAlarm = functions.https.onCall((data,context)=>{
-  const timetableId = data.timetableId
+  const requestCode = data.requestCode
+  const subject = data.subject
   const topic = data.courseId
 
-  return cancelTodayAlarm(timetableId,topic)
+  return cancelTodayAlarm(requestCode,subject,topic)
 })
 
-async function cancelTodayAlarm(timetableId:string,topic:string) {
+async function cancelTodayAlarm(requestCode:string,subject:string,topic:string) {
   const data = {
     data:{
-      cancelTodayId:timetableId
+      todayRequestCode:requestCode,
+      todayCancelledSubject:subject
     },
   topic:topic
   }
