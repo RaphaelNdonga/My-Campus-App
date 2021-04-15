@@ -40,87 +40,52 @@ exports.sendMessage = functions.https.onCall((data,context)=>{
   return sendMessage(message,topic)
 })
 
-exports.sendTodayTimetableId = functions.https.onCall((data,context)=>{
+exports.updateData = functions.https.onCall((data,context)=>{
   const timetableId = data.timetableId
+  const dayOfWeek = data.dayOfWeek
   const topic = data.courseId
 
-  return sendTodayTimetableId(timetableId,topic)
+  return updateData(timetableId,dayOfWeek,topic)
 })
 
-exports.sendTomorrowTimetableId = functions.https.onCall((data,context)=>{
-  const timetableId = data.timetableId
-  const topic = data.courseId
-
-  return sendTomorrowTimetableId(timetableId,topic)
-})
-exports.cancelTomorrowAlarm = functions.https.onCall((data,context)=>{
+exports.cancelData = functions.https.onCall((data,context)=>{
   const requestCode = data.requestCode
   const subject = data.subject
+  const dayOfWeek = data.dayOfWeek
   const topic = data.courseId
 
-  return cancelTomorrowAlarm(requestCode,subject,topic)
+  return cancelData(requestCode,subject,dayOfWeek,topic)
 })
 
-async function cancelTomorrowAlarm(requestCode:string,subject:string,topic:string) {
+async function cancelData(requestCode:string,subject:string,dayOfWeek:string,topic:string) {
   const data = {
     data:{
-      tomorrowRequestCode:requestCode,
-      tomorrowCancelledSubject:subject
+      requestCode:requestCode,
+      cancelSubject:subject,
+      cancelDay:dayOfWeek
     },
-  topic:topic
+    topic:topic
   }
+
   return admin.messaging().send(data).then((response)=>{
-    functions.logger.info(`The tomorrow cancelAlarm id ${data.data} to topic ${data.topic} was sent`)
+    functions.logger.info(`cancel data was sent successfully ${data.data} to topic ${data.topic}`)
   }).catch((error)=>{
-    functions.logger.error(`An error occurred:${error}`)
-  })
-}
-exports.cancelTodayAlarm = functions.https.onCall((data,context)=>{
-  const requestCode = data.requestCode
-  const subject = data.subject
-  const topic = data.courseId
-
-  return cancelTodayAlarm(requestCode,subject,topic)
-})
-
-async function cancelTodayAlarm(requestCode:string,subject:string,topic:string) {
-  const data = {
-    data:{
-      todayRequestCode:requestCode,
-      todayCancelledSubject:subject
-    },
-  topic:topic
-  }
-  return admin.messaging().send(data).then((response)=>{
-    functions.logger.info(`The cancelAlarm id ${data.data} to topic ${data.topic} was sent`)
-  }).catch((error)=>{
-    functions.logger.error(`An error occurred:${error}`)
+    functions.logger.error(`error occurred ${error}`)
   })
 }
 
-async function sendTomorrowTimetableId(timetableId:string,courseId:string):Promise<void>{
+async function updateData(timetableId:string,dayOfWeek:string,topic:string){
   const data = {
     data:{
-      tomorrowTimetableId:timetableId
-    },
-    topic:courseId
-  }
-  return admin.messaging().send(data).then((response)=>{
-    functions.logger.info(`The todayId ${data.data} to topic ${data.topic} was sent successfully`)
-  })
-}
-
-async function sendTodayTimetableId(timetableId:string,topic:string):Promise<void>{
-  const data = {
-    data:{
-      todayTimetableId:timetableId
+      updateId:timetableId,
+      updateDay:dayOfWeek,
     },
     topic:topic
   }
   return admin.messaging().send(data).then((response)=>{
-    functions.logger.info(`The todayId ${data.data} to topic ${data.topic} was sent successfully`)
+    functions.logger.info(`The update alarm id ${data.data} to topic ${data.topic} was sent successfully`)
   }).catch((error)=>{
-    functions.logger.error(`An error occurred when sending data:${error}`)
+    functions.logger.error(`An error occurred ${error}`)
   })
 }
 
