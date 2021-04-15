@@ -10,9 +10,14 @@ import com.example.android.mycampusapp.R
 
 private const val REQUEST_CODE = 0
 private const val NOTIFICATION_ID = 0
-fun NotificationManager.sendNotification(message: String, dayOfWeek: DayOfWeek, context: Context) {
+fun NotificationManager.sendNotification(
+    message: String,
+    dayOfWeekString: String,
+    context: Context
+) {
     val intent = Intent(context, MainActivity::class.java)
-    intent.putExtra("dayOfWeek", dayOfWeek)
+    val dayOfWeekEnum = enumValueOf<DayOfWeek>(dayOfWeekString)
+    intent.putExtra("dayOfWeek", dayOfWeekEnum)
     val pendingIntent =
         PendingIntent.getActivity(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
