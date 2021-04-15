@@ -30,64 +30,30 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         Timber.i("A new message has been received from ${remoteMessage.from}")
         Timber.i("The message is ${remoteMessage.data}")
-        val todayTimetableId = remoteMessage.data["todayTimetableId"]
-        val tomorrowTimetableId = remoteMessage.data["tomorrowTimetableId"]
         val todayRequestCode = remoteMessage.data["todayRequestCode"]
         val tomorrowRequestCode = remoteMessage.data["tomorrowRequestCode"]
         val todayCancelledSubject = remoteMessage.data["todayCancelledSubject"]
         val tomorrowCancelledSubject = remoteMessage.data["tomorrowCancelledSubject"]
 
+        val updateId = remoteMessage.data["updateId"]
+        val updateDay = remoteMessage.data["updateDay"]
 
-        todayTimetableId?.let { timetableClassId ->
-            courses.document(courseId).collection(getTodayEnumDay().name)
-                .document(timetableClassId).get().addOnSuccessListener { todayDocument ->
-                    Timber.i("today success")
+        if (!updateDay.isNullOrEmpty() && !updateId.isNullOrEmpty()) {
+            val dayOfWeek = enumValueOf<DayOfWeek>(updateDay)
+            courses.document(courseId).collection(dayOfWeek.name).document(updateId).get()
+                .addOnSuccessListener { updateDocument ->
+                    Timber.i("update success")
 
-                    val timetableClass = todayDocument.toObject(TimetableClass::class.java)!!
+                    val timetableClass = updateDocument.toObject(TimetableClass::class.java)!!
                     val intent =
-                        Intent(applicationContext, TimetableAlarmReceiver::class.java).also {
-                            val alarmMessage =
+                        Intent(applicationContext, TimetableAlarmReceiver::class.java).apply {
+                            val message =
                                 "${timetableClass.subject} is starting at ${
                                     formatTime(getTimetableCustomTime(timetableClass))
                                 } in ${timetableClass.locationName} Room ${timetableClass.room}"
-
-                            it.putExtra("message", alarmMessage)
-                            Timber.i("The extra message is $alarmMessage")
-
-                            it.putExtra("dayOfWeek", getTodayEnumDay().name)
-                            Timber.i("The extra dayOfWeek is ${getTodayEnumDay().name}")
+                            putExtra("message", message)
+                            putExtra("dayOfWeek", dayOfWeek.name)
                         }
-                    Timber.i("The intent is $intent")
-
-                    val pendingIntent = PendingIntent.getBroadcast(
-                        applicationContext,
-                        timetableClass.alarmRequestCode,
-                        intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                    )
-                    val alarmManager =
-                        applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-                    alarmManager.setExact(
-                        AlarmManager.RTC_WAKEUP,
-                        getTodayTimetableCalendar(timetableClass).timeInMillis,
-                        pendingIntent
-                    )
-                    val immediateMessage =
-                        "**TODAY** ${timetableClass.subject} will start at ${
-                            formatTime(getTimetableCustomTime(timetableClass))
-                        } in ${timetableClass.locationName} Room ${timetableClass.room}"
-                    sendNotification(immediateMessage, getTodayEnumDay())
-                }
-            Timber.i("The today's timetable class id is $timetableClassId")
-        }
-
-        tomorrowTimetableId?.let { timetableId ->
-            courses.document(courseId).collection(getTomorrowEnumDay().name)
-                .document(timetableId).get().addOnSuccessListener { tomorrowDocument ->
-                    Timber.i("Tomorrow success")
-                    val timetableClass = tomorrowDocument.toObject(TimetableClass::class.java)!!
-                    val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
                     val pendingIntent = PendingIntent.getBroadcast(
                         applicationContext,
                         timetableClass.alarmRequestCode,
@@ -98,24 +64,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                     alarmManager.setExact(
                         AlarmManager.RTC_WAKEUP,
-                        getTomorrowTimetableCalendar(timetableClass).timeInMillis,
+                        getTimetableCalendar(timetableClass, dayOfWeek).timeInMillis,
                         pendingIntent
                     )
-                    val alarmMessage =
-                        "${timetableClass.subject} is starting at ${
-                            formatTime(getTimetableCustomTime(timetableClass))
-                        } in ${timetableClass.locationName} Room ${timetableClass.room}"
-                    intent.putExtra("message", alarmMessage)
-                    intent.putExtra("dayOfWeek", getTomorrowEnumDay().name)
-
                     val immediateMessage =
                         "**TODAY** ${timetableClass.subject} will start at ${
                             formatTime(getTimetableCustomTime(timetableClass))
                         } in ${timetableClass.locationName} Room ${timetableClass.room}"
                     sendNotification(immediateMessage, getTodayEnumDay())
                 }
-
-            Timber.i("Tomorrow's timetable class id is $timetableId")
         }
         todayRequestCode?.let { requestCodeString ->
             Timber.i("Cancel today success")
