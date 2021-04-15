@@ -111,7 +111,7 @@ class TimetableInputViewModel(
 
         //Do this if the class is set for later today
         if (getTodayEnumDay() == dayOfWeek && currentClassIsLater) {
-            sendTodayTimetableId(timetableClass.id, courseId)
+            updateData(timetableClass.id, getTodayEnumDay().name, courseId)
 
         } else if (!currentClassIsLater && previousClassWasLater) {
             cancelTodayAlarm(
@@ -122,7 +122,7 @@ class TimetableInputViewModel(
         }
         //Do this if the class is set for tomorrow.
         else if (getTomorrowEnumDay() == dayOfWeek) {
-            sendTomorrowTimetableId(timetableClass.id, courseId)
+            updateData(timetableClass.id, getTomorrowEnumDay().name, courseId)
         }
     }
 
@@ -135,11 +135,11 @@ class TimetableInputViewModel(
 
         //Do this if the class is set for later today
         if (getTodayEnumDay() == dayOfWeek && isLater) {
-            sendTodayTimetableId(timetableClass.id, courseId)
+            updateData(timetableClass.id, getTodayEnumDay().name, courseId)
         }
         //Do this if the class is set for tomorrow.
         else if (getTomorrowEnumDay() == dayOfWeek) {
-            sendTomorrowTimetableId(timetableClass.id, courseId)
+            updateData(timetableClass.id, getTomorrowEnumDay().name, courseId)
         }
     }
 
@@ -165,16 +165,19 @@ class TimetableInputViewModel(
         _timeSet.value = time
     }
 
-    private fun sendTodayTimetableId(timetableId: String, courseId: String): Task<Unit> {
-        val data = hashMapOf("timetableId" to timetableId, "courseId" to courseId)
-        return functions.getHttpsCallable("sendTodayTimetableId").call(data).continueWith {
+    private fun updateData(
+        timetableId: String,
+        dayOfWeekString: String,
+        courseId: String
+    ): Task<Unit> {
+        val data = hashMapOf(
+            "timetableId" to timetableId,
+            "dayOfWeek" to dayOfWeekString,
+            "courseId" to courseId
+        )
+        return functions.getHttpsCallable("updateData").call(data).continueWith {
 
         }
-    }
-
-    private fun sendTomorrowTimetableId(timetableId: String, courseId: String): Task<Unit> {
-        val data = hashMapOf("timetableId" to timetableId, "courseId" to courseId)
-        return functions.getHttpsCallable("sendTomorrowTimetableId").call(data).continueWith { }
     }
 
     private fun cancelTodayAlarm(
