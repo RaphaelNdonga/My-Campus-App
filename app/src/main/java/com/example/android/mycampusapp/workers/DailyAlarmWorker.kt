@@ -49,7 +49,7 @@ class DailyAlarmWorker @AssistedInject constructor(
                     )
                 } in ${tomorrowClass.locationName} room ${tomorrowClass.room}"
                 intent.putExtra("message", message)
-                intent.putExtra("dayOfWeek", getTomorrowEnumDay())
+                intent.putExtra("dayOfWeek", getTomorrowEnumDay().name)
                 val pendingIntent = PendingIntent.getBroadcast(
                     applicationContext,
                     tomorrowClass.alarmRequestCode,
