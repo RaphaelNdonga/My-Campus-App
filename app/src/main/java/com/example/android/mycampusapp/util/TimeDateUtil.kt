@@ -24,6 +24,16 @@ fun getTodayTimetableCalendar(timetableClass: TimetableClass): Calendar {
     }
 }
 
+fun getTimetableCalendar(timetableClass: TimetableClass, dayOfWeek: DayOfWeek): Calendar {
+    return Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, timetableClass.hour)
+        set(Calendar.MINUTE, timetableClass.minute)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+        set(Calendar.DAY_OF_WEEK, getDayOfWeekFromEnum(dayOfWeek))
+    }
+}
+
 fun compareCustomTime(greater: CustomTime, smaller: CustomTime): Boolean {
     if (greater.hour > smaller.hour) {
         return true
@@ -112,13 +122,13 @@ fun addMonthText(int: Int): String {
 fun getTodayEnumDay(): DayOfWeek {
     val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
     return when (today) {
-        1 -> DayOfWeek.SUNDAY
-        2 -> DayOfWeek.MONDAY
-        3 -> DayOfWeek.TUESDAY
-        4 -> DayOfWeek.WEDNESDAY
-        5 -> DayOfWeek.THURSDAY
-        6 -> DayOfWeek.FRIDAY
-        7 -> DayOfWeek.SATURDAY
+        Calendar.SUNDAY -> DayOfWeek.SUNDAY
+        Calendar.MONDAY -> DayOfWeek.MONDAY
+        Calendar.TUESDAY -> DayOfWeek.TUESDAY
+        Calendar.WEDNESDAY -> DayOfWeek.WEDNESDAY
+        Calendar.THURSDAY -> DayOfWeek.THURSDAY
+        Calendar.FRIDAY -> DayOfWeek.FRIDAY
+        Calendar.SATURDAY -> DayOfWeek.SATURDAY
         else -> DayOfWeek.SUNDAY
     }
 }
@@ -126,14 +136,26 @@ fun getTodayEnumDay(): DayOfWeek {
 fun getTomorrowEnumDay(): DayOfWeek {
     val tomorrow = Calendar.getInstance().get(Calendar.DAY_OF_WEEK).plus(1)
     return when (tomorrow) {
-        1 -> DayOfWeek.SUNDAY
-        2 -> DayOfWeek.MONDAY
-        3 -> DayOfWeek.TUESDAY
-        4 -> DayOfWeek.WEDNESDAY
-        5 -> DayOfWeek.THURSDAY
-        6 -> DayOfWeek.FRIDAY
-        7 -> DayOfWeek.SATURDAY
+        Calendar.SUNDAY -> DayOfWeek.SUNDAY
+        Calendar.MONDAY -> DayOfWeek.MONDAY
+        Calendar.TUESDAY -> DayOfWeek.TUESDAY
+        Calendar.WEDNESDAY -> DayOfWeek.WEDNESDAY
+        Calendar.THURSDAY -> DayOfWeek.THURSDAY
+        Calendar.FRIDAY -> DayOfWeek.FRIDAY
+        Calendar.SATURDAY -> DayOfWeek.SATURDAY
         else -> DayOfWeek.SUNDAY
+    }
+}
+
+fun getDayOfWeekFromEnum(dayOfWeek: DayOfWeek): Int {
+    return when (dayOfWeek) {
+        DayOfWeek.MONDAY -> Calendar.MONDAY
+        DayOfWeek.TUESDAY -> Calendar.TUESDAY
+        DayOfWeek.WEDNESDAY -> Calendar.WEDNESDAY
+        DayOfWeek.THURSDAY -> Calendar.THURSDAY
+        DayOfWeek.FRIDAY -> Calendar.FRIDAY
+        DayOfWeek.SATURDAY -> Calendar.SATURDAY
+        DayOfWeek.SUNDAY -> Calendar.SUNDAY
     }
 }
 
