@@ -30,10 +30,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         Timber.i("A new message has been received from ${remoteMessage.from}")
         Timber.i("The message is ${remoteMessage.data}")
-        val todayRequestCode = remoteMessage.data["todayRequestCode"]
-        val tomorrowRequestCode = remoteMessage.data["tomorrowRequestCode"]
-        val todayCancelledSubject = remoteMessage.data["todayCancelledSubject"]
-        val tomorrowCancelledSubject = remoteMessage.data["tomorrowCancelledSubject"]
+        val requestCode = remoteMessage.data["requestCode"]
+        val cancelledSubject = remoteMessage.data["cancelSubject"]
+        val cancelDay = remoteMessage.data["cancelDay"]
 
         val updateId = remoteMessage.data["updateId"]
         val updateDay = remoteMessage.data["updateDay"]
@@ -67,46 +66,50 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         getTimetableCalendar(timetableClass, dayOfWeek).timeInMillis,
                         pendingIntent
                     )
-                    val immediateMessage =
-                        "**TODAY** ${timetableClass.subject} will start at ${
-                            formatTime(getTimetableCustomTime(timetableClass))
-                        } in ${timetableClass.locationName} Room ${timetableClass.room}"
-                    sendNotification(immediateMessage, getTodayEnumDay())
+                    if (dayOfWeek == getTodayEnumDay()) {
+                        val immediateMessage =
+                            "**TODAY** ${timetableClass.subject} will start at ${
+                                formatTime(getTimetableCustomTime(timetableClass))
+                            } in ${timetableClass.locationName} Room ${timetableClass.room}"
+                        sendNotification(immediateMessage, getTodayEnumDay())
+                    }
+                    if (dayOfWeek == getTomorrowEnumDay()) {
+                        val immediateMessage =
+                            "**TOMORROW** ${timetableClass.subject} will start at ${
+                                formatTime(getTimetableCustomTime(timetableClass))
+                            } in ${timetableClass.locationName} Room ${timetableClass.room}"
+                        sendNotification(immediateMessage, getTodayEnumDay())
+                    }
                 }
         }
-        todayRequestCode?.let { requestCodeString ->
+
+        if (!requestCode.isNullOrEmpty() && !cancelDay.isNullOrEmpty() && !cancelledSubject.isNullOrEmpty()) {
             Timber.i("Cancel today success")
             val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
             val pendingIntent = PendingIntent.getBroadcast(
                 applicationContext,
-                requestCodeString.toInt(),
+                requestCode.toInt(),
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
             val alarmManager =
                 applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(pendingIntent)
-            val notificationMessage =
-                "**TODAY** $todayCancelledSubject will not be happening"
-            sendNotification(notificationMessage, getTodayEnumDay())
-            Timber.i("The cancel alarm id is $requestCodeString")
-        }
-        tomorrowRequestCode?.let { requestCodeString ->
-            val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
-            Timber.i("Cancel tomorrow success")
-            val pendingIntent = PendingIntent.getBroadcast(
-                applicationContext,
-                requestCodeString.toInt(),
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-            val alarmManager =
-                applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.cancel(pendingIntent)
-            val notificationMessage =
-                "**TOMORROW** $tomorrowCancelledSubject will not be happening"
-            sendNotification(notificationMessage, getTomorrowEnumDay())
-            Timber.i("The cancel alarm id is $requestCodeString")
+            val dayOfWeek = enumValueOf<DayOfWeek>(cancelDay)
+
+            if (dayOfWeek == getTodayEnumDay()) {
+                val notificationMessage =
+                    "**TODAY** $cancelledSubject will not be happening"
+                sendNotification(notificationMessage, dayOfWeek)
+            }
+
+            if (dayOfWeek == getTomorrowEnumDay()) {
+                val notificationMessage =
+                    "**TOMORROW** $cancelledSubject will not be happening"
+                sendNotification(notificationMessage, dayOfWeek)
+            }
+
+            Timber.i("The cancel alarm id is $requestCode")
         }
     }
 
