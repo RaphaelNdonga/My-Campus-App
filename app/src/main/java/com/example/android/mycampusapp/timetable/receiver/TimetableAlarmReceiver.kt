@@ -5,20 +5,26 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
-import com.example.android.mycampusapp.util.DayOfWeek
 import com.example.android.mycampusapp.util.sendNotification
+import timber.log.Timber
 
 class TimetableAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
+        Timber.i("The receiver has been called")
         val notificationManager = ContextCompat.getSystemService(
             context,
             NotificationManager::class.java
         ) as NotificationManager
 
-        val bundle = intent?.extras
-        val message = bundle?.getString("message")
-        val dayOfWeek = bundle?.getSerializable("dayOfWeek") as DayOfWeek
-        message?.let { notificationManager.sendNotification(it, dayOfWeek, context) }
+        Timber.i("The extras are:${intent?.extras}")
+        val message = intent?.getStringExtra("message")
+        Timber.i("The extra message is $message")
+        val dayOfWeek = intent?.getStringExtra("dayOfWeek")
+        Timber.i("The extra dayOfWeek is $dayOfWeek")
+
+        if (!message.isNullOrEmpty() && !dayOfWeek.isNullOrEmpty()) {
+            notificationManager.sendNotification(message, dayOfWeek, context)
+        }
     }
 }
