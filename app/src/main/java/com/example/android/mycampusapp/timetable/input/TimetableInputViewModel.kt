@@ -111,18 +111,19 @@ class TimetableInputViewModel(
 
         //Do this if the class is set for later today
         if (getTodayEnumDay() == dayOfWeek && currentClassIsLater) {
-            updateData(timetableClass.id, getTodayEnumDay().name, courseId)
+            updateData(timetableClass.id, getTodayEnumDay(), courseId)
 
         } else if (!currentClassIsLater && previousClassWasLater) {
-            cancelTodayAlarm(
+            cancelData(
                 timetableClass.alarmRequestCode.toString(),
                 timetableClass.subject,
+                getTodayEnumDay(),
                 courseId
             )
         }
         //Do this if the class is set for tomorrow.
         else if (getTomorrowEnumDay() == dayOfWeek) {
-            updateData(timetableClass.id, getTomorrowEnumDay().name, courseId)
+            updateData(timetableClass.id, getTomorrowEnumDay(), courseId)
         }
     }
 
@@ -135,11 +136,11 @@ class TimetableInputViewModel(
 
         //Do this if the class is set for later today
         if (getTodayEnumDay() == dayOfWeek && isLater) {
-            updateData(timetableClass.id, getTodayEnumDay().name, courseId)
+            updateData(timetableClass.id, getTodayEnumDay(), courseId)
         }
         //Do this if the class is set for tomorrow.
         else if (getTomorrowEnumDay() == dayOfWeek) {
-            updateData(timetableClass.id, getTomorrowEnumDay().name, courseId)
+            updateData(timetableClass.id, getTomorrowEnumDay(), courseId)
         }
     }
 
@@ -167,12 +168,12 @@ class TimetableInputViewModel(
 
     private fun updateData(
         timetableId: String,
-        dayOfWeekString: String,
+        dayOfWeek: DayOfWeek,
         courseId: String
     ): Task<Unit> {
         val data = hashMapOf(
             "timetableId" to timetableId,
-            "dayOfWeek" to dayOfWeekString,
+            "dayOfWeek" to dayOfWeek.name,
             "courseId" to courseId
         )
         return functions.getHttpsCallable("updateData").call(data).continueWith {
@@ -180,13 +181,19 @@ class TimetableInputViewModel(
         }
     }
 
-    private fun cancelTodayAlarm(
+    private fun cancelData(
         requestCode: String,
         subject: String,
+        dayOfWeek: DayOfWeek,
         courseId: String
     ): Task<Unit> {
         val data =
-            hashMapOf("requestCode" to requestCode, "subject" to subject, "courseId" to courseId)
-        return functions.getHttpsCallable("cancelTodayAlarm").call(data).continueWith { }
+            hashMapOf(
+                "requestCode" to requestCode,
+                "subject" to subject,
+                "dayOfWeek" to dayOfWeek.name,
+                "courseId" to courseId
+            )
+        return functions.getHttpsCallable("cancelData").call(data).continueWith { }
     }
 }
