@@ -76,16 +76,18 @@ class TimetableViewModel(
                     getCustomTimeNow()
                 )
                 if (getTodayEnumDay() == dayOfWeek && isLater) {
-                    cancelTodayAlarm(
+                    cancelData(
                         timetableClass.alarmRequestCode.toString(),
                         timetableClass.subject,
+                        getTodayEnumDay(),
                         courseId
                     )
                 }
                 if (getTomorrowEnumDay() == dayOfWeek) {
-                    cancelTomorrowAlarm(
+                    cancelData(
                         timetableClass.alarmRequestCode.toString(),
                         timetableClass.subject,
+                        getTomorrowEnumDay(),
                         courseId
                     )
                 }
@@ -114,23 +116,19 @@ class TimetableViewModel(
             }
     }
 
-    private fun cancelTodayAlarm(
+    private fun cancelData(
         requestCode: String,
         subject: String,
+        dayOfWeek: DayOfWeek,
         courseId: String
     ): Task<Unit> {
         val data =
-            hashMapOf("requestCode" to requestCode, "subject" to subject, "courseId" to courseId)
-        return functions.getHttpsCallable("cancelTodayAlarm").call(data).continueWith { }
-    }
-
-    private fun cancelTomorrowAlarm(
-        requestCode: String,
-        subject: String,
-        courseId: String
-    ): Task<Unit> {
-        val data =
-            hashMapOf("requestCode" to requestCode, "subject" to subject, "courseId" to courseId)
-        return functions.getHttpsCallable("cancelTomorrowAlarm").call(data).continueWith { }
+            hashMapOf(
+                "requestCode" to requestCode,
+                "subject" to subject,
+                "dayOfWeek" to dayOfWeek.name,
+                "courseId" to courseId
+            )
+        return functions.getHttpsCallable("cancelData").call(data).continueWith { }
     }
 }
