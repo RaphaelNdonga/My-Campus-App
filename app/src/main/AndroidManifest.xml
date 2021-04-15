@@ -28,7 +28,9 @@
         <receiver
             android:name=".timetable.receiver.TimetableAlarmReceiver"
             android:enabled="true"
-            android:exported="false"></receiver>
+            android:exported="false">
+
+        </receiver>
         <service
             android:name=".timetable.service.MyFirebaseMessagingService"
             android:exported="false">
