@@ -103,11 +103,8 @@ class TimetableInputViewModel(
         _snackbarText.value = Event("${timetableClass.subject} has been updated.")
         navigateToTimetable()
 
-        val currentClassIsLater =
-            compareCustomTime(getTimetableCustomTime(timetableClass), getCustomTimeNow())
-
-        val previousClassWasLater =
-            compareCustomTime(getTimetableCustomTime(previousClass!!), getCustomTimeNow())
+        val currentClassIsLater = isLater(timetableClass)
+        val previousClassWasLater = isLater(previousClass!!)
 
         //Do this if the class is set for later today
         if (getTodayEnumDay() == dayOfWeek && currentClassIsLater) {
@@ -132,7 +129,7 @@ class TimetableInputViewModel(
         _snackbarText.value = Event("${timetableClass.subject} has been saved")
         navigateToTimetable()
 
-        val isLater = compareCustomTime(getTimetableCustomTime(timetableClass), getCustomTimeNow())
+        val isLater = isLater(timetableClass)
 
         //Do this if the class is set for later today
         if (getTodayEnumDay() == dayOfWeek && isLater) {

@@ -34,11 +34,12 @@ fun getTimetableCalendar(timetableClass: TimetableClass, dayOfWeek: DayOfWeek): 
     }
 }
 
-fun compareCustomTime(greater: CustomTime, smaller: CustomTime): Boolean {
-    if (greater.hour > smaller.hour) {
+fun isLater(timetableClass: TimetableClass): Boolean {
+    val now = getCustomTimeNow()
+    if (timetableClass.hour > now.hour) {
         return true
     }
-    if ((greater.minute > smaller.minute) && (greater.hour == smaller.hour)) {
+    if ((timetableClass.minute > now.minute) && (timetableClass.hour == now.hour)) {
         return true
     }
     return false

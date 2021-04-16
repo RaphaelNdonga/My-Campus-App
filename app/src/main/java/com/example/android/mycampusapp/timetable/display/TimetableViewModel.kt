@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.util.*
@@ -71,10 +70,7 @@ class TimetableViewModel(
         list.forEach { timetableClass ->
             if (timetableClass != null) {
                 timetableFirestore.document(timetableClass.id).delete()
-                val isLater = compareCustomTime(
-                    CustomTime(timetableClass.hour, timetableClass.minute),
-                    getCustomTimeNow()
-                )
+                val isLater = isLater(timetableClass)
                 if (getTodayEnumDay() == dayOfWeek && isLater) {
                     cancelData(
                         timetableClass.alarmRequestCode.toString(),
