@@ -5,7 +5,9 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.text.format.DateFormat
 import androidx.core.content.ContextCompat
+import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.TimetableAlarmReceiver
 import com.example.android.mycampusapp.util.*
@@ -110,6 +112,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
 
             Timber.i("The cancel alarm id is $requestCode")
+        }
+    }
+
+    private fun formatTime(timetableCustomTime: CustomTime): String {
+        return if (DateFormat.is24HourFormat(applicationContext)) {
+            format24HourTime(timetableCustomTime)
+        } else {
+            formatAmPmTime(timetableCustomTime)
         }
     }
 
