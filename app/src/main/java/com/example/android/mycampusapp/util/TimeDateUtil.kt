@@ -56,10 +56,39 @@ fun getTimetableCustomTime(timetableClass: TimetableClass): CustomTime {
     return CustomTime(timetableClass.hour, timetableClass.minute)
 }
 
-fun formatTime(timeSet: CustomTime): String {
+fun format24HourTime(timeSet: CustomTime): String {
     val hourText = "${timeSet.hour}"
     val minuteText = addZeroText(timeSet.minute)
     return "$hourText:$minuteText"
+}
+
+fun formatAmPmTime(timeSet: CustomTime): String {
+    var amPm = ""
+    var hourText = ""
+
+    val minuteText = addZeroText(timeSet.minute)
+    return when {
+        timeSet.hour == 0 -> {
+            hourText = "12"
+            amPm = "midnight"
+            "$hourText:$minuteText $amPm"
+        }
+        timeSet.hour == 12 -> {
+            hourText = "12"
+            amPm = "noon"
+            "$hourText:$minuteText $amPm"
+        }
+        timeSet.hour < 12 -> {
+            hourText = "${timeSet.hour}"
+            amPm = "AM"
+            "$hourText:$minuteText $amPm"
+        }
+        else -> {
+            hourText = "${timeSet.hour - 12}"
+            amPm = "PM"
+            "$hourText:$minuteText $amPm"
+        }
+    }
 }
 
 fun formatDate(dateSet: CustomDate): String {
