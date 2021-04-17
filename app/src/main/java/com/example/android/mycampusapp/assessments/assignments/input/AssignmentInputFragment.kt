@@ -17,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
+import com.example.android.mycampusapp.assessments.AssessmentInputViewModel
+import com.example.android.mycampusapp.assessments.AssessmentInputViewModelFactory
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.databinding.FragmentAssignmentInputBinding
@@ -33,7 +35,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class AssignmentInputFragment : Fragment() {
-    private lateinit var viewModel: AssignmentInputViewModel
+    private lateinit var viewModel: AssessmentInputViewModel
 
     @Inject
     lateinit var courseCollection: CollectionReference
@@ -56,12 +58,12 @@ class AssignmentInputFragment : Fragment() {
 
         viewModel = ViewModelProvider(
             this,
-            AssignmentInputViewModelFactory(
+            AssessmentInputViewModelFactory(
                 courseCollection.document(courseId).collection("assignments"),
                 assignmentParcel,
                 application
             )
-        ).get(AssignmentInputViewModel::class.java)
+        ).get(AssessmentInputViewModel::class.java)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner

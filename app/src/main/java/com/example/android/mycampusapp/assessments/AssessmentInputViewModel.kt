@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.assessments.assignments.input
+package com.example.android.mycampusapp.assessments
 
 import android.app.Application
 import android.text.format.DateFormat
@@ -16,7 +16,7 @@ import com.example.android.mycampusapp.util.formatAmPmTime
 import com.example.android.mycampusapp.util.formatDate
 import com.google.firebase.firestore.CollectionReference
 
-class AssignmentInputViewModel(
+class AssessmentInputViewModel(
     private val assignmentsCollection: CollectionReference,
     private val assignment: Assessment?,
     application: Application

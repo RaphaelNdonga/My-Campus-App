@@ -147,7 +147,7 @@ class AssignmentsFragment : Fragment() {
             "assignmentSelection",
             recyclerView,
             MyItemKeyProvider(recyclerView),
-            AssignmentItemDetailsLookup(recyclerView),
+            AssessmentItemDetailsLookup(recyclerView),
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
 

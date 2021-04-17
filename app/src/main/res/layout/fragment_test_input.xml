@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.assessments.tests.input.TestsInputViewModel" />
+            type="com.example.android.mycampusapp.assessments.AssessmentInputViewModel" />
 
     </data>
 

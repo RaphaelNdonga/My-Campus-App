@@ -1,4 +1,4 @@
-package com.example.android.mycampusapp.assessments.tests.input
+package com.example.android.mycampusapp.assessments
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
@@ -6,13 +6,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.android.mycampusapp.data.Assessment
 import com.google.firebase.firestore.CollectionReference
 
-@Suppress("UNCHECKED_CAST")
-class TestsInputViewModelFactory(
-    private val assessment: Assessment?,
-    private val testCollection: CollectionReference,
+class AssessmentInputViewModelFactory(
+    private val assignmentsCollection: CollectionReference,
+    private val assignment: Assessment?,
     private val application: Application
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return TestsInputViewModel(assessment, testCollection, application) as T
+        return AssessmentInputViewModel(assignmentsCollection, assignment, application) as T
     }
 }

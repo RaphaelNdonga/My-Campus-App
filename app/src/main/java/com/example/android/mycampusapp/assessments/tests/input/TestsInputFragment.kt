@@ -19,6 +19,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
+import com.example.android.mycampusapp.assessments.AssessmentInputViewModel
+import com.example.android.mycampusapp.assessments.AssessmentInputViewModelFactory
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.databinding.FragmentTestInputBinding
@@ -33,7 +35,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class TestsInputFragment : Fragment() {
-    private lateinit var viewModel: TestsInputViewModel
+    private lateinit var viewModel: AssessmentInputViewModel
     private lateinit var binding: FragmentTestInputBinding
     private lateinit var dateSetListener: DatePickerDialog.OnDateSetListener
     private lateinit var timeSetListener: TimePickerDialog.OnTimeSetListener
@@ -59,9 +61,9 @@ class TestsInputFragment : Fragment() {
         viewModel =
             ViewModelProvider(
                 this,
-                TestsInputViewModelFactory(testArgs.assessment, testsCollection, application)
+                AssessmentInputViewModelFactory(testsCollection, testArgs.assessment, application)
             ).get(
-                TestsInputViewModel::class.java
+                AssessmentInputViewModel::class.java
             )
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

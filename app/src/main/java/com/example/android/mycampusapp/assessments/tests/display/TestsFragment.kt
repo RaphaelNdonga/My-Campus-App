@@ -130,7 +130,7 @@ class TestsFragment : Fragment() {
             "testSelection",
             binding.testsRecyclerView,
             MyItemKeyProvider(binding.testsRecyclerView),
-            TestItemDetailsLookup(binding.testsRecyclerView),
+            AssessmentItemDetailsLookup(binding.testsRecyclerView),
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
 
