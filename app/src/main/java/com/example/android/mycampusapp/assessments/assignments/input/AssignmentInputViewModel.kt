@@ -1,22 +1,26 @@
 package com.example.android.mycampusapp.assessments.assignments.input
 
+import android.app.Application
+import android.text.format.DateFormat
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.Location
 import com.example.android.mycampusapp.util.Event
+import com.example.android.mycampusapp.util.format24HourTime
+import com.example.android.mycampusapp.util.formatAmPmTime
 import com.example.android.mycampusapp.util.formatDate
-import com.example.android.mycampusapp.util.formatTime
 import com.google.firebase.firestore.CollectionReference
 
 class AssignmentInputViewModel(
     private val assignmentsCollection: CollectionReference,
-    private val assignment: Assessment?
-) : ViewModel() {
+    private val assignment: Assessment?,
+    application: Application
+) : AndroidViewModel(application) {
 
     // acquire the date values and save them as integers
     private val _dateSet = MutableLiveData<CustomDate>(assignment?.let {
@@ -35,6 +39,14 @@ class AssignmentInputViewModel(
     }
     private val timeText = _timeSet.value?.let { time ->
         formatTime(time)
+    }
+
+    private fun formatTime(time: CustomTime): String {
+        return if (DateFormat.is24HourFormat(getApplication())) {
+            format24HourTime(time)
+        } else {
+            formatAmPmTime(time)
+        }
     }
 
     private val _snackBarEvent = MutableLiveData<Event<Int>>()
@@ -120,7 +132,7 @@ class AssignmentInputViewModel(
     }
 
     fun setTimeFromTimePicker(customTime: CustomTime) {
-        val timeText = formatTime(customTime)
+        val timeText = format24HourTime(customTime)
         textBoxTime.value = timeText
         _timeSet.value = customTime
     }
