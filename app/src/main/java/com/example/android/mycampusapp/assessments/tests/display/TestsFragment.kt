@@ -14,9 +14,7 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.assessments.AssessmentsFragmentDirections
-import com.example.android.mycampusapp.assessments.AssessmentsViewModel
-import com.example.android.mycampusapp.assessments.AssessmentsViewModelFactory
+import com.example.android.mycampusapp.assessments.*
 import com.example.android.mycampusapp.databinding.FragmentTestBinding
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
@@ -32,7 +30,7 @@ class TestsFragment : Fragment() {
     private lateinit var binding: FragmentTestBinding
     private lateinit var snapshotListener: ListenerRegistration
     private lateinit var tracker: SelectionTracker<Long>
-    private lateinit var adapter: TestsAdapter
+    private lateinit var adapter: AssessmentsAdapter
     private var isAdmin: Boolean = false
     private var highlightState: Boolean = false
 
@@ -62,7 +60,7 @@ class TestsFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        adapter = TestsAdapter(TestClickListener {
+        adapter = AssessmentsAdapter(AssessmentsListener {
             if (isAdmin && !highlightState)
                 viewModel.displayDetails(it)
         })
