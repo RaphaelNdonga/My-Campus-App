@@ -54,8 +54,13 @@ class TestsInputFragment : Fragment() {
         val testsCollection = courseCollection.document(courseId).collection("tests")
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_test_input, container, false)
+
+        val application = requireActivity().application
         viewModel =
-            ViewModelProvider(this, TestsInputViewModelFactory(testArgs.assessment, testsCollection)).get(
+            ViewModelProvider(
+                this,
+                TestsInputViewModelFactory(testArgs.assessment, testsCollection, application)
+            ).get(
                 TestsInputViewModel::class.java
             )
         binding.lifecycleOwner = this

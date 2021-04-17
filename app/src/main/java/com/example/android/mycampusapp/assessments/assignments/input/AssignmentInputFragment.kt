@@ -52,11 +52,14 @@ class AssignmentInputFragment : Fragment() {
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         courseId = sharedPreferences.getString(COURSE_ID, "")!!
 
+        val application = requireActivity().application
+
         viewModel = ViewModelProvider(
             this,
             AssignmentInputViewModelFactory(
                 courseCollection.document(courseId).collection("assignments"),
-                assignmentParcel
+                assignmentParcel,
+                application
             )
         ).get(AssignmentInputViewModel::class.java)
 
