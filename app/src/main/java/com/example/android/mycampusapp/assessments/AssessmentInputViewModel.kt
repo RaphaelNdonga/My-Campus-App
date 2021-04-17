@@ -40,15 +40,6 @@ class AssessmentInputViewModel(
     private val timeText = _timeSet.value?.let { time ->
         formatTime(time)
     }
-
-    private fun formatTime(time: CustomTime): String {
-        return if (DateFormat.is24HourFormat(getApplication())) {
-            format24HourTime(time)
-        } else {
-            formatAmPmTime(time)
-        }
-    }
-
     private val _snackBarEvent = MutableLiveData<Event<Int>>()
     val snackBarEvent: LiveData<Event<Int>>
         get() = _snackBarEvent
@@ -132,7 +123,7 @@ class AssessmentInputViewModel(
     }
 
     fun setTimeFromTimePicker(customTime: CustomTime) {
-        val timeText = format24HourTime(customTime)
+        val timeText = formatTime(customTime)
         textBoxTime.value = timeText
         _timeSet.value = customTime
     }
@@ -141,4 +132,13 @@ class AssessmentInputViewModel(
         this.location = location
         textBoxLocation.value = location.name
     }
+
+    private fun formatTime(time: CustomTime): String {
+        return if (DateFormat.is24HourFormat(getApplication())) {
+            format24HourTime(time)
+        } else {
+            formatAmPmTime(time)
+        }
+    }
+
 }
