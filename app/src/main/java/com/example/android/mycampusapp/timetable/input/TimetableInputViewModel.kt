@@ -2,6 +2,7 @@ package com.example.android.mycampusapp.timetable.input
 
 import android.app.Application
 import android.content.Context
+import android.text.format.DateFormat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -192,5 +193,13 @@ class TimetableInputViewModel(
                 "courseId" to courseId
             )
         return functions.getHttpsCallable("cancelData").call(data).continueWith { }
+    }
+
+    private fun formatTime(customTime: CustomTime): String {
+        return if (DateFormat.is24HourFormat(getApplication())) {
+            format24HourTime(customTime)
+        } else {
+            formatAmPmTime(customTime)
+        }
     }
 }
