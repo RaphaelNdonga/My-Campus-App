@@ -2,6 +2,7 @@ package com.example.android.mycampusapp.timetable.display
 
 import android.content.Intent
 import android.net.Uri
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.selection.ItemDetailsLookup
@@ -12,7 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.databinding.ListItemTimetableBinding
-import com.example.android.mycampusapp.util.formatTime
+import com.example.android.mycampusapp.util.format24HourTime
+import com.example.android.mycampusapp.util.formatAmPmTime
 
 class TimetableAdapter(private val clickListener: TimetableListener) :
     ListAdapter<TimetableClass, TimetableAdapter.ViewHolder>(
@@ -41,15 +43,25 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
             binding.executePendingBindings()
             binding.timetableClass = timetableClass
             binding.listItemSubject.text = timetableClass.subject
-            binding.listItemTime.text = formatTime(CustomTime(
-                timetableClass.hour,
-                timetableClass.minute
-            ))
+            binding.listItemTime.text = formatTime(
+                CustomTime(
+                    timetableClass.hour,
+                    timetableClass.minute
+                )
+            )
             binding.listItemLocation.text = timetableClass.locationName
             val room = "Room ${timetableClass.room}"
             binding.listItemRoom.text = room
             binding.clickListener = clickListener
             itemView.isActivated = isActivated
+        }
+
+        private fun formatTime(customTime: CustomTime): String {
+            return if (DateFormat.is24HourFormat(itemView.context)) {
+                format24HourTime(customTime)
+            } else {
+                formatAmPmTime(customTime)
+            }
         }
 
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long>? =
