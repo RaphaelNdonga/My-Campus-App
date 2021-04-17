@@ -36,7 +36,7 @@ class TuesdayInputFragment : Fragment() {
     lateinit var firestore: FirebaseFirestore
 
     @Inject
-    lateinit var firebaseFunctions:FirebaseFunctions
+    lateinit var firebaseFunctions: FirebaseFunctions
 
     @Inject
     lateinit var courseCollection: CollectionReference
@@ -87,8 +87,8 @@ class TuesdayInputFragment : Fragment() {
         viewModel.timeSet.value?.let {
             displayTime = it
         }
-        viewModel.snackbarText.observe(viewLifecycleOwner,EventObserver{
-            Snackbar.make(requireView(),it,Snackbar.LENGTH_LONG).show()
+        viewModel.snackbarText.observe(viewLifecycleOwner, EventObserver {
+            Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
         })
 
         val timePickerListener =
@@ -96,7 +96,11 @@ class TuesdayInputFragment : Fragment() {
                 viewModel.setTime(CustomTime(hourSet, minuteSet))
             }
         val timePickerDialog = TimePickerDialog(
-            requireContext(), timePickerListener, displayTime.hour, displayTime.minute,
+            requireContext(),
+            R.style.MyCampusApp_Dialog,
+            timePickerListener,
+            displayTime.hour,
+            displayTime.minute,
             DateFormat.is24HourFormat(requireContext())
         )
 

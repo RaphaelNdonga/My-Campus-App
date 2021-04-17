@@ -33,10 +33,10 @@ import javax.inject.Inject
 class ThursdayInputFragment : Fragment() {
 
     @Inject
-    lateinit var courseCollection:CollectionReference
+    lateinit var courseCollection: CollectionReference
 
     @Inject
-    lateinit var firebaseFunctions:FirebaseFunctions
+    lateinit var firebaseFunctions: FirebaseFunctions
 
     private val thursdayArgs by navArgs<ThursdayInputFragmentArgs>()
     private lateinit var viewModel: TimetableInputViewModel
@@ -76,8 +76,8 @@ class ThursdayInputFragment : Fragment() {
                 findNavController().navigateUp()
             })
 
-        viewModel.snackbarText.observe(viewLifecycleOwner,EventObserver{
-            Snackbar.make(requireView(),it,Snackbar.LENGTH_LONG).show()
+        viewModel.snackbarText.observe(viewLifecycleOwner, EventObserver {
+            Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
         })
 
         val calendar = Calendar.getInstance()
@@ -95,6 +95,7 @@ class ThursdayInputFragment : Fragment() {
             }
         val timePickerDialog = TimePickerDialog(
             requireContext(),
+            R.style.MyCampusApp_Dialog,
             timePickerListener,
             displayTime.hour,
             displayTime.minute,
@@ -112,10 +113,10 @@ class ThursdayInputFragment : Fragment() {
         return binding.root
     }
 
-    private fun showLocationsList(){
-        val builder = AlertDialog.Builder(requireActivity(),R.style.MyCampusApp_Dialog)
+    private fun showLocationsList() {
+        val builder = AlertDialog.Builder(requireActivity(), R.style.MyCampusApp_Dialog)
             .setTitle(R.string.location_list_title)
-            .setItems(R.array.locations){_,which->
+            .setItems(R.array.locations) { _, which ->
                 viewModel.setLocation(LocationUtils.getJkuatLocations()[which])
             }
         builder.create().show()

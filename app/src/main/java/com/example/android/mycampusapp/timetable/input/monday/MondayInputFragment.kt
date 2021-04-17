@@ -39,7 +39,7 @@ class MondayInputFragment : Fragment() {
     lateinit var coursesCollection: CollectionReference
 
     @Inject
-    lateinit var firebaseFunctions:FirebaseFunctions
+    lateinit var firebaseFunctions: FirebaseFunctions
 
     private val mondayArgs by navArgs<MondayInputFragmentArgs>()
     private lateinit var viewModel: TimetableInputViewModel
@@ -78,8 +78,8 @@ class MondayInputFragment : Fragment() {
             EventObserver {
                 findNavController().navigateUp()
             })
-        viewModel.snackbarText.observe(viewLifecycleOwner,EventObserver{
-            Snackbar.make(requireView(),it,Snackbar.LENGTH_LONG).show()
+        viewModel.snackbarText.observe(viewLifecycleOwner, EventObserver {
+            Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
         })
 
         val timePickerListener =
@@ -91,14 +91,18 @@ class MondayInputFragment : Fragment() {
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
-        var displayTime = CustomTime(hour,minute)
+        var displayTime = CustomTime(hour, minute)
 
         viewModel.timeSet.value?.let {
             displayTime = it
         }
 
         val timePickerDialog = TimePickerDialog(
-            requireContext(), timePickerListener, displayTime.hour, displayTime.minute,
+            requireContext(),
+            R.style.MyCampusApp_Dialog,
+            timePickerListener,
+            displayTime.hour,
+            displayTime.minute,
             android.text.format.DateFormat.is24HourFormat(requireContext())
         )
 

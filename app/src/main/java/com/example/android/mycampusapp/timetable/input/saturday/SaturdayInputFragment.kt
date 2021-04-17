@@ -103,6 +103,7 @@ class SaturdayInputFragment : Fragment() {
             }
         val timePickerDialog = TimePickerDialog(
             requireContext(),
+            R.style.MyCampusApp_Dialog,
             timePickerListener,
             displayTime.hour,
             displayTime.minute,

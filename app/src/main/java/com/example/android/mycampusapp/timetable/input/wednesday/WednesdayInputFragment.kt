@@ -36,7 +36,7 @@ class WednesdayInputFragment : Fragment() {
     lateinit var courseCollection: CollectionReference
 
     @Inject
-    lateinit var firebaseFunctions:FirebaseFunctions
+    lateinit var firebaseFunctions: FirebaseFunctions
 
     private val wednesdayArgs by navArgs<WednesdayInputFragmentArgs>()
     private lateinit var viewModel: TimetableInputViewModel
@@ -85,8 +85,8 @@ class WednesdayInputFragment : Fragment() {
             displayTime = it
         }
 
-        viewModel.snackbarText.observe(viewLifecycleOwner,EventObserver{
-            Snackbar.make(requireView(),it,Snackbar.LENGTH_LONG).show()
+        viewModel.snackbarText.observe(viewLifecycleOwner, EventObserver {
+            Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
         })
 
         val timePickerListener =
@@ -95,6 +95,7 @@ class WednesdayInputFragment : Fragment() {
             }
         val timePickerDialog = TimePickerDialog(
             requireContext(),
+            R.style.MyCampusApp_Dialog,
             timePickerListener,
             displayTime.hour,
             displayTime.minute,
