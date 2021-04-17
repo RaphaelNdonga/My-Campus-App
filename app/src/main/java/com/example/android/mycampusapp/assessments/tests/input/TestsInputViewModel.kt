@@ -8,8 +8,8 @@ import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.Location
 import com.example.android.mycampusapp.util.Event
+import com.example.android.mycampusapp.util.format24HourTime
 import com.example.android.mycampusapp.util.formatDate
-import com.example.android.mycampusapp.util.formatTime
 import com.google.firebase.firestore.CollectionReference
 import timber.log.Timber
 
@@ -31,7 +31,7 @@ class TestsInputViewModel(
         formatDate(date)
     }?:""
     private var timeText = _timeSet.value?.let { time->
-        formatTime(time)
+        format24HourTime(time)
     }?:""
 
     val textBoxSubject = MutableLiveData<String>(test?.subject)
@@ -59,7 +59,7 @@ class TestsInputViewModel(
     }
 
     fun setTimeFromTimePicker(time: CustomTime) {
-        val timeText = formatTime(time)
+        val timeText = format24HourTime(time)
         textBoxTime.value = timeText
         _timeSet.value = time
     }
