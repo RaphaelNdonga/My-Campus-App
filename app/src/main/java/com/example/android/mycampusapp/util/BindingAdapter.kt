@@ -6,8 +6,7 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.assessments.assignments.display.AssignmentsAdapter
-import com.example.android.mycampusapp.assessments.tests.display.TestsAdapter
+import com.example.android.mycampusapp.assessments.AssessmentsAdapter
 import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.data.TimetableClass
@@ -50,15 +49,9 @@ fun bindRecyclerView(recyclerView: RecyclerView, data: List<TimetableClass>?) {
     adapter.submitList(data)
 }
 
-@BindingAdapter("assignmentListData")
+@BindingAdapter("assessmentListData")
 fun bindAssignmentRecyclerView(recyclerView: RecyclerView,data:List<Assessment>?){
-    val adapter = recyclerView.adapter as AssignmentsAdapter
-    adapter.submitList(data)
-}
-
-@BindingAdapter("testsListData")
-fun bindTestsListData(recyclerView: RecyclerView,data:List<Assessment>?){
-    val adapter = recyclerView.adapter as TestsAdapter
+    val adapter = recyclerView.adapter as AssessmentsAdapter
     adapter.submitList(data)
 }
 
