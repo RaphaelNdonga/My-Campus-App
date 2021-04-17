@@ -15,9 +15,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.assessments.AssessmentsFragmentDirections
-import com.example.android.mycampusapp.assessments.AssessmentsViewModel
-import com.example.android.mycampusapp.assessments.AssessmentsViewModelFactory
+import com.example.android.mycampusapp.assessments.*
 import com.example.android.mycampusapp.databinding.FragmentAssignmentsBinding
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
@@ -38,7 +36,7 @@ class AssignmentsFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var isAdmin: Boolean = false
     private var highlightState: Boolean = false
-    private lateinit var adapter: AssignmentsAdapter
+    private lateinit var adapter: AssessmentsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,7 +53,7 @@ class AssignmentsFragment : Fragment() {
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         courseId = sharedPreferences.getString(COURSE_ID, "")!!
         isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
-        adapter = AssignmentsAdapter(AssignmentsListener {
+        adapter = AssessmentsAdapter(AssessmentsListener {
             if (isAdmin && !highlightState)
                 viewModel.displayDetails(it)
         })

@@ -1,7 +1,8 @@
-package com.example.android.mycampusapp.assessments.assignments.display
+package com.example.android.mycampusapp.assessments
 
 import android.content.Intent
 import android.net.Uri
+import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.selection.ItemDetailsLookup
@@ -13,28 +14,29 @@ import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.databinding.ListItemAssignmentBinding
+import com.example.android.mycampusapp.util.format24HourTime
+import com.example.android.mycampusapp.util.formatAmPmTime
 import com.example.android.mycampusapp.util.formatDate
-import com.example.android.mycampusapp.util.formatTime
 
-class AssignmentsAdapter(private val clickListener: AssignmentsListener) :
-    ListAdapter<Assessment, AssignmentsAdapter.ViewHolder>(DiffUtilCallBack) {
+class AssessmentsAdapter(private val clickListener: AssessmentsListener) :
+    ListAdapter<Assessment, AssessmentsAdapter.ViewHolder>(DiffUtilCallBack) {
 
-    var tracker : SelectionTracker<Long>? = null
+    var tracker: SelectionTracker<Long>? = null
 
     class ViewHolder(private val binding: ListItemAssignmentBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        companion object{
-            fun from(parent: ViewGroup):ViewHolder{
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemAssignmentBinding.inflate(layoutInflater,parent,false)
+                val binding = ListItemAssignmentBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }
 
         fun bind(
             currentAssignment: Assessment,
-            clickListener: AssignmentsListener,
+            clickListener: AssessmentsListener,
             isActivated: Boolean = false
         ) {
             binding.executePendingBindings()
@@ -44,7 +46,7 @@ class AssignmentsAdapter(private val clickListener: AssignmentsListener) :
                 CustomDate(currentAssignment.year,currentAssignment.month,currentAssignment.day)
             )
             val time = formatTime(
-                CustomTime(currentAssignment.hour,currentAssignment.minute)
+                CustomTime(currentAssignment.hour, currentAssignment.minute)
             )
             binding.assignmentDate.text = date
             binding.assignmentTime.text = time
@@ -54,6 +56,14 @@ class AssignmentsAdapter(private val clickListener: AssignmentsListener) :
             itemView.isActivated = isActivated
         }
 
+        private fun formatTime(customTime: CustomTime): String {
+            return if (DateFormat.is24HourFormat(itemView.context)) {
+                format24HourTime(customTime)
+            } else {
+                formatAmPmTime(customTime)
+            }
+        }
+
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> {
             return object : ItemDetailsLookup.ItemDetails<Long>() {
                 override fun getPosition(): Int = adapterPosition
@@ -61,6 +71,7 @@ class AssignmentsAdapter(private val clickListener: AssignmentsListener) :
                 override fun getSelectionKey(): Long? = itemId
             }
         }
+
         fun setMapListener(assessment: Assessment?) {
             val mapUri = Uri.parse(assessment?.locationCoordinates)
             val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
@@ -107,6 +118,6 @@ class AssignmentsAdapter(private val clickListener: AssignmentsListener) :
     }
 }
 
-class AssignmentsListener(val clickListener: (assignment: Assessment) -> Unit) {
+class AssessmentsListener(val clickListener: (assignment: Assessment) -> Unit) {
     fun onClick(assignment: Assessment) = clickListener(assignment)
 }
