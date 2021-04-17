@@ -28,7 +28,7 @@
                     android:id="@+id/assignments_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:assignmentListData="@{viewModel.assessments}"
+                    app:assessmentListData="@{viewModel.assessments}"
                     app:layoutManager=".util.CustomLinearLayoutManager"
                     tools:listitem="@layout/list_item_assignment" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

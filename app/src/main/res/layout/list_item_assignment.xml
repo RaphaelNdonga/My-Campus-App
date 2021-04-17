@@ -10,7 +10,7 @@
 
         <variable
             name="clickListener"
-            type="com.example.android.mycampusapp.assessments.assignments.display.AssignmentsListener" />
+            type="com.example.android.mycampusapp.assessments.AssessmentsListener" />
     </data>
 
     <androidx.cardview.widget.CardView

@@ -5,7 +5,7 @@
     <data>
         <variable
             name="clickListener"
-            type="com.example.android.mycampusapp.assessments.tests.display.TestClickListener" />
+            type="com.example.android.mycampusapp.assessments.AssessmentsListener" />
         <variable
             name="test"
             type="com.example.android.mycampusapp.data.Assessment" />
