@@ -1,22 +1,26 @@
 package com.example.android.mycampusapp.assessments.tests.input
 
+import android.app.Application
+import android.text.format.DateFormat
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.Location
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.format24HourTime
+import com.example.android.mycampusapp.util.formatAmPmTime
 import com.example.android.mycampusapp.util.formatDate
 import com.google.firebase.firestore.CollectionReference
 import timber.log.Timber
 
 class TestsInputViewModel(
     private val test: Assessment?,
-    private val testCollection: CollectionReference
-) : ViewModel() {
+    private val testCollection: CollectionReference,
+    application: Application
+) : AndroidViewModel(application) {
     private val _dateSet =
         MutableLiveData<CustomDate>(test?.let { CustomDate(test.year, test.month, test.day) })
     val dateSet: LiveData<CustomDate>
@@ -27,12 +31,20 @@ class TestsInputViewModel(
     val timeSet: LiveData<CustomTime>
         get() = _timeSet
 
-    private var dateText = _dateSet.value?.let { date->
+    private var dateText = _dateSet.value?.let { date ->
         formatDate(date)
-    }?:""
-    private var timeText = _timeSet.value?.let { time->
-        format24HourTime(time)
-    }?:""
+    } ?: ""
+    private var timeText = _timeSet.value?.let { time ->
+        formatTime(time)
+    } ?: ""
+
+    private fun formatTime(time: CustomTime): String {
+        return if (DateFormat.is24HourFormat(getApplication())) {
+            format24HourTime(time)
+        } else {
+            formatAmPmTime(time)
+        }
+    }
 
     val textBoxSubject = MutableLiveData<String>(test?.subject)
     val textBoxTime = MutableLiveData(timeText)
@@ -41,10 +53,10 @@ class TestsInputViewModel(
     val textBoxRoom = MutableLiveData<String>(test?.room)
 
     private var location = test?.let {
-            Location(
-                test.locationName,
-                test.locationCoordinates
-            )
+        Location(
+            test.locationName,
+            test.locationCoordinates
+        )
         }
 
     private val _displayNavigator = MutableLiveData<Event<Unit>>()
