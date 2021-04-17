@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.text.format.DateFormat
 import androidx.hilt.work.HiltWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -41,7 +42,7 @@ class DailyAlarmWorker @AssistedInject constructor(
                 val tomorrowClass = documentSnapshot.toObject(TimetableClass::class.java)
                 val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
                 val message = "${tomorrowClass.subject} starts at ${
-                    formatTime(
+                    format24HourTime(
                         CustomTime(
                             tomorrowClass.hour,
                             tomorrowClass.minute
@@ -83,6 +84,14 @@ class DailyAlarmWorker @AssistedInject constructor(
         }
 
         return Result.success()
+    }
+
+    private fun formatTime(customTime: CustomTime): String {
+        return if (DateFormat.is24HourFormat(applicationContext)) {
+            format24HourTime(customTime)
+        } else {
+            formatAmPmTime(customTime)
+        }
     }
 
     companion object {
