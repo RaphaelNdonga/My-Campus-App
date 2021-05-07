@@ -44,7 +44,7 @@
             app:enterAnim="@android:anim/fade_in"
             app:popEnterAnim="@android:anim/fade_in" />
         <action
-            android:id="@+id/action_timetableFragment_to_fridayFragment2"
+            android:id="@+id/action_timetableFragment_to_fridayFragment"
             app:destination="@id/fridayFragment" />
         <action
             android:id="@+id/action_timetableFragment_to_saturdayFragment"
@@ -196,29 +196,64 @@
     <fragment
         android:id="@+id/fridayFragment"
         android:name="com.example.android.mycampusapp.timetable.display.days.friday.FridayFragment"
-        android:label="Friday" />
+        android:label="Friday">
+        <argument
+            android:name="isClickable"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
     <fragment
         android:id="@+id/saturdayFragment"
         android:name="com.example.android.mycampusapp.timetable.display.days.saturday.SaturdayFragment"
-        android:label="Saturday" />
+        android:label="Saturday">
+        <argument
+            android:name="isClickable"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
     <fragment
         android:id="@+id/sundayFragment"
         android:name="com.example.android.mycampusapp.timetable.display.days.sunday.SundayFragment"
-        android:label="Sunday" />
+        android:label="Sunday">
+        <argument
+            android:name="isClickable"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
     <fragment
         android:id="@+id/mondayFragment"
         android:name="com.example.android.mycampusapp.timetable.display.days.monday.MondayFragment"
-        android:label="Monday" />
+        android:label="Monday">
+        <argument
+            android:name="isClickable"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
     <fragment
         android:id="@+id/tuesdayFragment"
         android:name="com.example.android.mycampusapp.timetable.display.days.tuesday.TuesdayFragment"
-        android:label="Tuesday" />
+        android:label="Tuesday">
+        <argument
+            android:name="isClickable"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
     <fragment
         android:id="@+id/wednesdayFragment"
         android:name="com.example.android.mycampusapp.timetable.display.days.wednesday.WednesdayFragment"
-        android:label="Wednesday" />
+        android:label="Wednesday">
+        <argument
+            android:name="isClickable"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
     <fragment
         android:id="@+id/thursdayFragment"
         android:name="com.example.android.mycampusapp.timetable.display.days.thursday.ThursdayFragment"
-        android:label="Thursday" />
+        android:label="Thursday">
+        <argument
+            android:name="isClickable"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
 </navigation>
