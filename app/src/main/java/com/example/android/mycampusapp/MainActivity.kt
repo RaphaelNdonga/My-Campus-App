@@ -14,6 +14,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.android.mycampusapp.data.AdminEmail
 import com.example.android.mycampusapp.databinding.ActivityMainBinding
+import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
@@ -75,25 +76,51 @@ class MainActivity : AppCompatActivity() {
         dayOfWeek?.let {
             when (it) {
                 DayOfWeek.MONDAY -> {
-                    navController.navigate(R.id.mondayFragment)
+                    navController.navigate(
+                        TimetableFragmentDirections.actionTimetableFragmentToMondayFragment(
+                            false
+                        )
+                    )
                 }
                 DayOfWeek.TUESDAY -> {
-                    navController.navigate(R.id.tuesdayFragment)
+                    navController.navigate(
+                        TimetableFragmentDirections.actionTimetableFragmentToTuesdayFragment(false)
+                    )
                 }
                 DayOfWeek.WEDNESDAY -> {
-                    navController.navigate(R.id.wednesdayFragment)
+                    navController.navigate(
+                        TimetableFragmentDirections.actionTimetableFragmentToWednesdayFragment(
+                            false
+                        )
+                    )
                 }
                 DayOfWeek.THURSDAY -> {
-                    navController.navigate(R.id.thursdayFragment)
+                    navController.navigate(
+                        TimetableFragmentDirections.actionTimetableFragmentToThursdayFragment(
+                            false
+                        )
+                    )
                 }
                 DayOfWeek.FRIDAY -> {
-                    navController.navigate(R.id.fridayFragment)
+                    navController.navigate(
+                        TimetableFragmentDirections.actionTimetableFragmentToFridayFragment(
+                            false
+                        )
+                    )
                 }
                 DayOfWeek.SATURDAY -> {
-                    navController.navigate(R.id.saturdayFragment)
+                    navController.navigate(
+                        TimetableFragmentDirections.actionTimetableFragmentToSaturdayFragment(
+                            false
+                        )
+                    )
                 }
                 DayOfWeek.SUNDAY -> {
-                    navController.navigate(R.id.sundayFragment)
+                    navController.navigate(
+                        TimetableFragmentDirections.actionTimetableFragmentToSundayFragment(
+                            false
+                        )
+                    )
                 }
             }
         }
