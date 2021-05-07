@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -47,6 +48,8 @@ class MondayFragment : Fragment() {
     private lateinit var courseId: String
     private val monday = DayOfWeek.MONDAY
 
+    private val mondayArgs by navArgs<MondayFragmentArgs>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,8 +71,20 @@ class MondayFragment : Fragment() {
         )
         Timber.i("monday fragment created")
 
+        /**
+         * The try catch below has to be implemented because android does not support nullable
+         * booleans in NavDirections.
+         * Thanks to the viewpager, there are situations whereby the fragment has been instantiated
+         * without the navArgs
+         */
+        val fragmentIsClickable = try {
+            mondayArgs.isClickable
+        } catch (ex: IllegalStateException) {
+            true
+        }
+
         val fab = binding.timetableFab
-        if (isAdmin) {
+        if (isAdmin && fragmentIsClickable) {
             fab.visibility = View.VISIBLE
         }
         val app = requireActivity().application
@@ -90,7 +105,7 @@ class MondayFragment : Fragment() {
         adapter =
             TimetableAdapter(
                 TimetableListener {
-                    if (isAdmin && !highlightState) {
+                    if (isAdmin && !highlightState && fragmentIsClickable) {
                         viewModel.displayFridayClassDetails(it)
                     }
                 })
