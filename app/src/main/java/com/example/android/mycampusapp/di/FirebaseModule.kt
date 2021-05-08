@@ -9,32 +9,26 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
 object FirebaseModule {
-    @Singleton
     @Provides
     fun provideFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
     }
-    @Singleton
     @Provides
     fun provideAuthentication():FirebaseAuth{
         return FirebaseAuth.getInstance()
     }
-    @Singleton
     @Provides
     fun provideFunctions(): FirebaseFunctions{
         return FirebaseFunctions.getInstance()
     }
-    @Singleton
     @Provides
     fun provideCoursesCollection(firestore: FirebaseFirestore):CollectionReference{
         return firestore.collection("courses")
     }
-    @Singleton
     @Provides
     fun provideCloudMessaging():FirebaseMessaging{
         return FirebaseMessaging.getInstance()
