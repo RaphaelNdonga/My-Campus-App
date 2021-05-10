@@ -1,5 +1,6 @@
 package com.example.android.mycampusapp.util
 
+import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.TimetableClass
@@ -189,6 +190,27 @@ fun getDayOfWeekFromEnum(dayOfWeek: DayOfWeek): Int {
     }
 }
 
+fun getAssessmentCalendar(assessment: Assessment): Calendar {
+    return Calendar.getInstance().apply {
+        set(Calendar.MILLISECOND, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MINUTE, assessment.minute)
+        set(Calendar.HOUR_OF_DAY, assessment.hour)
+        set(Calendar.MONTH, assessment.month)
+        set(Calendar.DAY_OF_MONTH, assessment.day)
+        set(Calendar.YEAR, assessment.year)
+    }
+}
+
+/**
+ * Gets the assessment time difference from the present time
+ */
+fun getAssessmentTimeDifference(assessment: Assessment): Long {
+    val assessmentCalendar = getAssessmentCalendar(assessment)
+    val currentTimeCalendar = Calendar.getInstance()
+
+    return assessmentCalendar.timeInMillis - currentTimeCalendar.timeInMillis
+}
 
 enum class DayOfWeek {
     MONDAY,
