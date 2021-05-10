@@ -1,15 +1,19 @@
 package com.example.android.mycampusapp.assessments
 
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.ColorInt
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
@@ -17,6 +21,8 @@ import com.example.android.mycampusapp.databinding.ListItemAssignmentBinding
 import com.example.android.mycampusapp.util.format24HourTime
 import com.example.android.mycampusapp.util.formatAmPmTime
 import com.example.android.mycampusapp.util.formatDate
+import com.example.android.mycampusapp.util.getAssessmentTimeDifference
+import java.util.concurrent.TimeUnit
 
 class AssessmentsAdapter(private val clickListener: AssessmentsListener) :
     ListAdapter<Assessment, AssessmentsAdapter.ViewHolder>(DiffUtilCallBack) {
@@ -35,23 +41,30 @@ class AssessmentsAdapter(private val clickListener: AssessmentsListener) :
         }
 
         fun bind(
-            currentAssignment: Assessment,
+            currentAssessment: Assessment,
             clickListener: AssessmentsListener,
             isActivated: Boolean = false
         ) {
             binding.executePendingBindings()
-            binding.assignment = currentAssignment
-            binding.assignmentSubject.text = currentAssignment.subject
+            binding.assignment = currentAssessment
+            binding.assignmentSubject.text = currentAssessment.subject
             val date = formatDate(
-                CustomDate(currentAssignment.year,currentAssignment.month,currentAssignment.day)
+                CustomDate(currentAssessment.year, currentAssessment.month, currentAssessment.day)
             )
             val time = formatTime(
-                CustomTime(currentAssignment.hour, currentAssignment.minute)
+                CustomTime(currentAssessment.hour, currentAssessment.minute)
             )
             binding.assignmentDate.text = date
             binding.assignmentTime.text = time
-            binding.assignmentLocation.text = currentAssignment.locationName
-            binding.assignmentRoom.text = currentAssignment.room
+            binding.assignmentLocation.text = currentAssessment.locationName
+            binding.assignmentRoom.text = currentAssessment.room
+
+            val milliSecDifference = getAssessmentTimeDifference(currentAssessment)
+            val dayDifference = TimeUnit.MILLISECONDS.toDays(milliSecDifference)
+
+            binding.assignmentSubject.setTextColor(colorText(dayDifference))
+            binding.assignmentDate.setTextColor(colorText(dayDifference))
+
             binding.clickListener = clickListener
             itemView.isActivated = isActivated
         }
@@ -81,6 +94,28 @@ class AssessmentsAdapter(private val clickListener: AssessmentsListener) :
                 this.itemView.context.startActivity(mapIntent)
             }
         }
+
+        @ColorInt
+        private fun colorText(dayDifference: Long): Int {
+            if (dayDifference in 0..1) {
+                return Color.RED
+            }
+            if (dayDifference in 2..4) {
+                return ResourcesCompat.getColor(
+                    itemView.context.resources,
+                    R.color.yellow,
+                    null
+                )
+            }
+            if (dayDifference >= 7) {
+                return ResourcesCompat.getColor(
+                    itemView.context.resources,
+                    R.color.colorPrimary,
+                    null
+                )
+            }
+            return Color.BLACK
+        }
     }
 
     init {
@@ -93,8 +128,8 @@ class AssessmentsAdapter(private val clickListener: AssessmentsListener) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentAssignment = getItem(position)
-        tracker?.let{
-            holder.bind(currentAssignment, clickListener,it.isSelected(position.toLong()))
+        tracker?.let {
+            holder.bind(currentAssignment, clickListener, it.isSelected(position.toLong()))
         }
         holder.setMapListener(currentAssignment)
     }
