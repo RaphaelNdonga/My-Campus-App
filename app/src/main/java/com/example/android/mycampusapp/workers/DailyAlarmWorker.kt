@@ -15,6 +15,7 @@ import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltWorker
@@ -56,12 +57,13 @@ class DailyAlarmWorker @AssistedInject constructor(
          * around.
          */
         sharedPreferences.edit().putStringSet(
-            ALARM_SET_COLLECTION, setOf(tomorrowCollection, todayCollection)
+            ALARM_SET_COLLECTION, setOf(todayCollection, tomorrowCollection)
         ).apply()
 
         val todayClasses = coursesCollection.document(courseId).collection(todayCollection).get()
 
         todayClasses.addOnSuccessListener {
+            Timber.i("In today's loop")
             it.forEach { documentSnapshot ->
                 val todayClass = documentSnapshot.toObject(TimetableClass::class.java)
                 if (isLater(todayClass)) {
@@ -97,6 +99,7 @@ class DailyAlarmWorker @AssistedInject constructor(
             coursesCollection.document(courseId).collection(tomorrowCollection).get()
 
         tomorrowTimetableClasses.addOnSuccessListener {
+            Timber.i("In tomorrow's loop")
             it.forEach { documentSnapshot ->
                 val tomorrowClass = documentSnapshot.toObject(TimetableClass::class.java)
                 val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
