@@ -13,6 +13,8 @@ import com.example.android.mycampusapp.LoginActivity
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentAccountManagementBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -20,6 +22,12 @@ import javax.inject.Inject
 class ManageAccountFragment : Fragment() {
     @Inject
     lateinit var auth: FirebaseAuth
+
+    @Inject
+    lateinit var courseCollection: CollectionReference
+
+    @Inject
+    lateinit var messaging: FirebaseMessaging
 
     private lateinit var viewModel: ManageAccountViewModel
 
@@ -36,14 +44,14 @@ class ManageAccountFragment : Fragment() {
         val app = requireActivity().application
         viewModel = ViewModelProvider(
             this,
-            ManageAccountViewModelFactory(app)
+            ManageAccountViewModelFactory(app, courseCollection, messaging, auth)
         ).get(ManageAccountViewModel::class.java)
 
         binding.accountDetailsEmail.text = viewModel.getEmail()
         binding.accountDetailsCourse.text = viewModel.getCourseId()
 
         binding.logOutBtn.setOnClickListener {
-            auth.signOut()
+            viewModel.logOut()
             viewModel.performClearance()
             val loginIntent = Intent(this.context, LoginActivity::class.java)
             startActivity(loginIntent)
@@ -61,7 +69,7 @@ class ManageAccountFragment : Fragment() {
         builder.setNegativeButton(R.string.dialog_negative) { _, _ -> }
         builder.setPositiveButton(R.string.dialog_delete) { _, _ ->
             run {
-                auth.currentUser?.delete()
+                viewModel.delete()
                 viewModel.performClearance()
                 val loginIntent = Intent(this.context, LoginActivity::class.java)
                 startActivity(loginIntent)
