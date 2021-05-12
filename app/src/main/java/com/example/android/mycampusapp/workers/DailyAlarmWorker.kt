@@ -8,6 +8,8 @@ import android.text.format.DateFormat
 import androidx.hilt.work.HiltWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.example.android.mycampusapp.assessments.AssessmentType
+import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.TimetableAlarmReceiver
@@ -66,10 +68,10 @@ class DailyAlarmWorker @AssistedInject constructor(
             Timber.i("In today's loop")
             it.forEach { documentSnapshot ->
                 val todayClass = documentSnapshot.toObject(TimetableClass::class.java)
-                if (isLater(todayClass)) {
+                if (timetableClassIsLater(todayClass)) {
                     val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
                     val message = "${todayClass.subject} starts at ${
-                        format24HourTime(
+                        formatTime(
                             CustomTime(
                                 todayClass.hour,
                                 todayClass.minute
@@ -82,7 +84,7 @@ class DailyAlarmWorker @AssistedInject constructor(
                         applicationContext,
                         todayClass.alarmRequestCode,
                         intent,
-                        PendingIntent.FLAG_CANCEL_CURRENT
+                        PendingIntent.FLAG_UPDATE_CURRENT
                     )
                     val alarmManager =
                         applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -104,7 +106,7 @@ class DailyAlarmWorker @AssistedInject constructor(
                 val tomorrowClass = documentSnapshot.toObject(TimetableClass::class.java)
                 val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
                 val message = "${tomorrowClass.subject} starts at ${
-                    format24HourTime(
+                    formatTime(
                         CustomTime(
                             tomorrowClass.hour,
                             tomorrowClass.minute
@@ -130,6 +132,85 @@ class DailyAlarmWorker @AssistedInject constructor(
                 )
             }
         }
+
+        val assignmentsCollection = AssessmentType.ASSIGNMENT.name
+        val assessmentQuerySnapshot =
+            coursesCollection.document(courseId).collection(assignmentsCollection).get()
+
+        assessmentQuerySnapshot.addOnSuccessListener {
+            it.forEach { documentSnapshot ->
+                val assignment = documentSnapshot.toObject(Assessment::class.java)
+                val message = "${assignment.subject} starts at ${
+                    formatTime(
+                        CustomTime(
+                            assignment.hour,
+                            assignment.minute
+                        )
+                    )
+                } in ${assignment.locationName} room ${assignment.room}"
+                if (assessmentIsLater(assignment)) {
+                    Timber.i("We're in the loop")
+                    val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
+                    intent.putExtra("assessmentType", assignmentsCollection)
+                    intent.putExtra("message", message)
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        applicationContext,
+                        assignment.alarmRequestCode,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+
+                    val alarmManager =
+                        applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    alarmManager.setExact(
+                        AlarmManager.RTC_WAKEUP,
+                        getAssessmentCalendar(assignment).timeInMillis,
+                        pendingIntent
+                    )
+                }
+            }
+        }
+
+        val testsCollection = AssessmentType.TEST.name
+
+        val testQuerySnapshot =
+            coursesCollection.document(courseId).collection(testsCollection).get()
+
+        testQuerySnapshot.addOnSuccessListener {
+            it.forEach { documentSnapshot ->
+                val test = documentSnapshot.toObject(Assessment::class.java)
+                val message = "${test.subject} starts at ${
+                    formatTime(
+                        CustomTime(
+                            test.hour,
+                            test.minute
+                        )
+                    )
+                } in ${test.locationName} room ${test.room}"
+                if (assessmentIsLater(test)) {
+                    Timber.i("We're in the loop")
+                    val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
+                    intent.putExtra("assessmentType", testsCollection)
+                    intent.putExtra("message", message)
+
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        applicationContext,
+                        test.alarmRequestCode,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+
+                    val alarmManager =
+                        applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    alarmManager.setExact(
+                        AlarmManager.RTC_WAKEUP,
+                        getAssessmentCalendar(test).timeInMillis,
+                        pendingIntent
+                    )
+                }
+            }
+        }
+
 
         return Result.success()
     }
