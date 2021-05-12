@@ -35,7 +35,7 @@ fun getTimetableCalendar(timetableClass: TimetableClass, dayOfWeek: DayOfWeek): 
     }
 }
 
-fun isLater(timetableClass: TimetableClass): Boolean {
+fun timetableClassIsLater(timetableClass: TimetableClass): Boolean {
     val now = getCustomTimeNow()
     if (timetableClass.hour > now.hour) {
         return true
@@ -210,6 +210,11 @@ fun getAssessmentTimeDifference(assessment: Assessment): Long {
     val currentTimeCalendar = Calendar.getInstance()
 
     return assessmentCalendar.timeInMillis - currentTimeCalendar.timeInMillis
+}
+
+fun assessmentIsLater(assessment: Assessment): Boolean {
+    val timeDifference = getAssessmentTimeDifference(assessment)
+    return timeDifference > 0
 }
 
 enum class DayOfWeek {
