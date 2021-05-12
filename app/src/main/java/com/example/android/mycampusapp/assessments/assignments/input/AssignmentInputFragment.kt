@@ -133,7 +133,7 @@ class AssignmentInputFragment : Fragment() {
             Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
         })
         viewModel.displayNavigator.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(AssignmentInputFragmentDirections.actionAssignmentInputToAssessmentsFragment())
+            findNavController().navigateUp()
         })
         return binding.root
     }

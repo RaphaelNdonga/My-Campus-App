@@ -131,7 +131,7 @@ class TestsInputFragment : Fragment() {
         }
 
         viewModel.displayNavigator.observe(viewLifecycleOwner, EventObserver {
-            findNavController().navigate(TestsInputFragmentDirections.actionTestsInputFragmentToAssessmentsFragment())
+            findNavController().navigateUp()
         })
 
         return binding.root
