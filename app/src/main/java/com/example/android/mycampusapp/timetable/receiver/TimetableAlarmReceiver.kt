@@ -22,9 +22,16 @@ class TimetableAlarmReceiver : BroadcastReceiver() {
         Timber.i("The extra message is $message")
         val dayOfWeek = intent?.getStringExtra("dayOfWeek")
         Timber.i("The extra dayOfWeek is $dayOfWeek")
+        val assessmentType = intent?.getStringExtra("assessmentType")
+        Timber.i("The assessment type is $assessmentType")
 
-        if (!message.isNullOrEmpty() && !dayOfWeek.isNullOrEmpty()) {
-            notificationManager.sendNotification(message, dayOfWeek, context)
+        if (!message.isNullOrEmpty()) {
+            notificationManager.sendNotification(
+                message = message,
+                dayOfWeekString = dayOfWeek,
+                assessmentTypeString = assessmentType,
+                context = context
+            )
         }
     }
 }

@@ -7,17 +7,25 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.example.android.mycampusapp.MainActivity
 import com.example.android.mycampusapp.R
+import com.example.android.mycampusapp.assessments.AssessmentType
 
 private const val REQUEST_CODE = 0
 private const val NOTIFICATION_ID = 0
 fun NotificationManager.sendNotification(
     message: String,
-    dayOfWeekString: String,
+    dayOfWeekString: String? = null,
+    assessmentTypeString: String? = null,
     context: Context
 ) {
     val intent = Intent(context, MainActivity::class.java)
-    val dayOfWeekEnum = enumValueOf<DayOfWeek>(dayOfWeekString)
-    intent.putExtra("dayOfWeek", dayOfWeekEnum)
+    dayOfWeekString?.let {
+        val dayOfWeekEnum = enumValueOf<DayOfWeek>(it)
+        intent.putExtra("dayOfWeek", dayOfWeekEnum)
+    }
+    assessmentTypeString?.let {
+        val assessmentTypeEnum = enumValueOf<AssessmentType>(it)
+        intent.putExtra("assessmentType", assessmentTypeEnum)
+    }
     val pendingIntent =
         PendingIntent.getActivity(context, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
@@ -33,9 +41,9 @@ fun NotificationManager.sendNotification(
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setAutoCancel(true)
 
-    notify(NOTIFICATION_ID,notificationBuilder.build())
-    }
+    notify(NOTIFICATION_ID, notificationBuilder.build())
+}
 
-fun NotificationManager.cancelNotification(){
+fun NotificationManager.cancelNotification() {
     cancelAll()
 }
