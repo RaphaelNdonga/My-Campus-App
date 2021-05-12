@@ -64,6 +64,12 @@
         <action
             android:id="@+id/action_timetableFragment_to_thursdayFragment"
             app:destination="@id/thursdayFragment" />
+        <action
+            android:id="@+id/action_timetableFragment_to_testsFragment"
+            app:destination="@id/testsFragment" />
+        <action
+            android:id="@+id/action_timetableFragment_to_assignmentsFragment"
+            app:destination="@id/assignmentsFragment" />
     </fragment>
     <fragment
         android:id="@+id/mondayInputFragment"
@@ -161,11 +167,6 @@
             android:defaultValue="@null"
             app:argType="com.example.android.mycampusapp.data.Assessment"
             app:nullable="true" />
-        <action
-            android:id="@+id/action_assignmentInput_to_assessmentsFragment"
-            app:destination="@id/assessmentsFragment"
-            app:popUpTo="@id/assessmentsFragment"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/testsInputFragment"
@@ -176,11 +177,6 @@
             android:defaultValue="@null"
             app:argType="com.example.android.mycampusapp.data.Assessment"
             app:nullable="true" />
-        <action
-            android:id="@+id/action_testsInputFragment_to_assessmentsFragment"
-            app:destination="@id/assessmentsFragment"
-            app:popUpTo="@id/assessmentsFragment"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/assessmentsFragment"
@@ -251,6 +247,24 @@
         android:id="@+id/thursdayFragment"
         android:name="com.example.android.mycampusapp.timetable.display.days.thursday.ThursdayFragment"
         android:label="Thursday">
+        <argument
+            android:name="isClickable"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/testsFragment"
+        android:name="com.example.android.mycampusapp.assessments.tests.display.TestsFragment"
+        android:label="TestsFragment">
+        <argument
+            android:name="isClickable"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/assignmentsFragment"
+        android:name="com.example.android.mycampusapp.assessments.assignments.display.AssignmentsFragment"
+        android:label="AssignmentsFragment">
         <argument
             android:name="isClickable"
             android:defaultValue="true"
