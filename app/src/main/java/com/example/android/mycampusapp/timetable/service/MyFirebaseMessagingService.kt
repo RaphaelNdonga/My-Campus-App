@@ -133,6 +133,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             applicationContext,
             NotificationManager::class.java
         ) as NotificationManager
-        notificationManager.sendNotification(message, dayOfWeek.name, applicationContext)
+        notificationManager.sendNotification(
+            message = message,
+            dayOfWeekString = dayOfWeek.name,
+            context = applicationContext
+        )
     }
 }
