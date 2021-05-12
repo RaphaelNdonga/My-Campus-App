@@ -13,7 +13,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.example.android.mycampusapp.assessments.AssessmentType
-import com.example.android.mycampusapp.assessments.AssessmentsFragmentDirections
 import com.example.android.mycampusapp.data.AdminEmail
 import com.example.android.mycampusapp.databinding.ActivityMainBinding
 import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
@@ -133,14 +132,14 @@ class MainActivity : AppCompatActivity() {
             when (it) {
                 AssessmentType.ASSIGNMENT -> {
                     navController.navigate(
-                        AssessmentsFragmentDirections.actionAssessmentsFragmentToAssignmentsFragment(
+                        TimetableFragmentDirections.actionTimetableFragmentToAssignmentsFragment(
                             false
                         )
                     )
                 }
                 AssessmentType.TEST -> {
                     navController.navigate(
-                        AssessmentsFragmentDirections.actionAssessmentsFragmentToTestsFragment(
+                        TimetableFragmentDirections.actionTimetableFragmentToTestsFragment(
                             false
                         )
                     )
