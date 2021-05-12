@@ -45,7 +45,7 @@ class ManageAccountViewModel(
             Timber.i("In today's loop")
             it.forEach { documentSnapshot ->
                 val todayClass = documentSnapshot.toObject(TimetableClass::class.java)
-                if (isLater(todayClass)) {
+                if (timetableClassIsLater(todayClass)) {
                     Timber.i("The cancelled class is: $todayClass")
                     val intent = Intent(app, TimetableAlarmReceiver::class.java)
                     val pendingIntent = PendingIntent.getBroadcast(
