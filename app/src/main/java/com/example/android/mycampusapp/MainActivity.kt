@@ -12,6 +12,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.navigateUp
 import androidx.navigation.ui.setupWithNavController
+import com.example.android.mycampusapp.assessments.AssessmentType
+import com.example.android.mycampusapp.assessments.AssessmentsFragmentDirections
 import com.example.android.mycampusapp.data.AdminEmail
 import com.example.android.mycampusapp.databinding.ActivityMainBinding
 import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
@@ -120,6 +122,25 @@ class MainActivity : AppCompatActivity() {
                 DayOfWeek.SUNDAY -> {
                     navController.navigate(
                         TimetableFragmentDirections.actionTimetableFragmentToSundayFragment(
+                            false
+                        )
+                    )
+                }
+            }
+        }
+        val assessmentType = intent.getSerializableExtra("assessmentType") as AssessmentType?
+        assessmentType?.let {
+            when (it) {
+                AssessmentType.ASSIGNMENT -> {
+                    navController.navigate(
+                        AssessmentsFragmentDirections.actionAssessmentsFragmentToAssignmentsFragment(
+                            false
+                        )
+                    )
+                }
+                AssessmentType.TEST -> {
+                    navController.navigate(
+                        AssessmentsFragmentDirections.actionAssessmentsFragmentToTestsFragment(
                             false
                         )
                     )
