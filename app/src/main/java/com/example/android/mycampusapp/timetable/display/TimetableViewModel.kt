@@ -70,7 +70,7 @@ class TimetableViewModel(
         list.forEach { timetableClass ->
             if (timetableClass != null) {
                 timetableFirestore.document(timetableClass.id).delete()
-                val isLater = isLater(timetableClass)
+                val isLater = timetableClassIsLater(timetableClass)
                 if (getTodayEnumDay() == dayOfWeek && isLater) {
                     cancelData(
                         timetableClass.alarmRequestCode.toString(),

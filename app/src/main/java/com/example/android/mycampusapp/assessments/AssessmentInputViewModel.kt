@@ -18,18 +18,18 @@ import com.google.firebase.firestore.CollectionReference
 
 class AssessmentInputViewModel(
     private val assignmentsCollection: CollectionReference,
-    private val assignment: Assessment?,
+    private val assessment: Assessment?,
     application: Application
 ) : AndroidViewModel(application) {
 
     // acquire the date values and save them as integers
-    private val _dateSet = MutableLiveData<CustomDate>(assignment?.let {
-        CustomDate(assignment.year, assignment.month, assignment.day)
+    private val _dateSet = MutableLiveData<CustomDate>(assessment?.let {
+        CustomDate(assessment.year, assessment.month, assessment.day)
     })
     val dateSet: LiveData<CustomDate>
         get() = _dateSet
-    private val _timeSet = MutableLiveData<CustomTime>(assignment?.let {
-        CustomTime(assignment.hour, assignment.minute)
+    private val _timeSet = MutableLiveData<CustomTime>(assessment?.let {
+        CustomTime(assessment.hour, assessment.minute)
     })
     val timeSet: LiveData<CustomTime>
         get() = _timeSet
@@ -48,14 +48,14 @@ class AssessmentInputViewModel(
     val displayNavigator: LiveData<Event<Unit>>
         get() = _displayNavigator
 
-    // The vals below are connected to the xml file through a two-way databinding.
-    val textBoxSubject = MutableLiveData<String>(assignment?.subject)
+    // The immutable variables below are connected to the xml file through a two-way dataBinding.
+    val textBoxSubject = MutableLiveData<String>(assessment?.subject)
     val textBoxDate = MutableLiveData<String>(dateText)
     val textBoxTime = MutableLiveData<String>(timeText)
-    val textBoxLocation = MutableLiveData<String>(assignment?.locationName)
-    val textBoxRoom = MutableLiveData<String>(assignment?.room)
+    val textBoxLocation = MutableLiveData<String>(assessment?.locationName)
+    val textBoxRoom = MutableLiveData<String>(assessment?.room)
 
-    private var location = assignment?.let {
+    private var location = assessment?.let {
         Location(
             it.locationName,
             it.locationCoordinates
@@ -71,11 +71,12 @@ class AssessmentInputViewModel(
         val currentRoom = textBoxRoom.value
 
         if (currentDate == null || currentSubject.isNullOrBlank() || currentRoom.isNullOrBlank() ||
-            currentTime == null || currentLocation == null) {
+            currentTime == null || currentLocation == null
+        ) {
             _snackBarEvent.value = Event(R.string.empty_message)
             return
         }
-        if (assignment == null) {
+        if (assessment == null) {
             val currentAssignment = Assessment(
                 subject = currentSubject,
                 day = currentDate.day,
@@ -91,7 +92,7 @@ class AssessmentInputViewModel(
             navigateToDisplay()
         } else {
             val currentAssignment = Assessment(
-                id = assignment.id,
+                id = assessment.id,
                 subject = currentSubject,
                 day = currentDate.day,
                 month = currentDate.month,
@@ -100,7 +101,7 @@ class AssessmentInputViewModel(
                 minute = currentTime.minute,
                 locationName = currentLocation.name,
                 locationCoordinates = currentLocation.coordinates,
-                alarmRequestCode = assignment.alarmRequestCode,
+                alarmRequestCode = assessment.alarmRequestCode,
                 room = currentRoom
             )
             addFirestoreData(currentAssignment)
