@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -38,6 +39,8 @@ class TestsFragment : Fragment() {
     lateinit var courseCollection: CollectionReference
     private lateinit var sharedPreferences: SharedPreferences
 
+    private val testArgs by navArgs<TestsFragmentArgs>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,11 +64,21 @@ class TestsFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        val fragmentIsClickable = try {
+            testArgs.isClickable
+        } catch (ex: IllegalStateException) {
+            true
+        }
+
         adapter = AssessmentsAdapter(AssessmentsListener {
-            if (isAdmin && !highlightState)
+            if (isAdmin && !highlightState && fragmentIsClickable)
                 viewModel.displayDetails(it)
         })
         binding.testsRecyclerView.adapter = adapter
+
+        if (isAdmin && fragmentIsClickable) {
+            binding.testsFab.visibility = View.VISIBLE
+        }
 
         binding.testsRefresher.setOnRefreshListener {
             snapshotListener.remove()

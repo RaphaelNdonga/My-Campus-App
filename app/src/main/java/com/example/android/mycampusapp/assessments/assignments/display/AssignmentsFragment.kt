@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -38,6 +39,7 @@ class AssignmentsFragment : Fragment() {
     private var highlightState: Boolean = false
     private lateinit var adapter: AssessmentsAdapter
 
+    private val assignmentsArgs by navArgs<AssignmentsFragmentArgs>()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,8 +55,13 @@ class AssignmentsFragment : Fragment() {
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         courseId = sharedPreferences.getString(COURSE_ID, "")!!
         isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
+        val fragmentIsClickable = try {
+            assignmentsArgs.isClickable
+        } catch (ex: IllegalStateException) {
+            true
+        }
         adapter = AssessmentsAdapter(AssessmentsListener {
-            if (isAdmin && !highlightState)
+            if (isAdmin && !highlightState && fragmentIsClickable)
                 viewModel.displayDetails(it)
         })
         recyclerView = binding.assignmentsRecyclerView
@@ -65,6 +72,10 @@ class AssignmentsFragment : Fragment() {
                 courseCollection.document(courseId).collection(AssessmentType.ASSIGNMENT.name)
             )
         ).get(AssessmentsViewModel::class.java)
+
+        if (isAdmin && fragmentIsClickable) {
+            binding.assignmentsFab.visibility = View.VISIBLE
+        }
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
