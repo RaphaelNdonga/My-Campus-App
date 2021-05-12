@@ -62,7 +62,7 @@ class AssignmentsFragment : Fragment() {
         viewModel = ViewModelProvider(
             this,
             AssessmentsViewModelFactory(
-                courseCollection.document(courseId).collection("assignments")
+                courseCollection.document(courseId).collection(AssessmentType.ASSIGNMENT.name)
             )
         ).get(AssessmentsViewModel::class.java)
 

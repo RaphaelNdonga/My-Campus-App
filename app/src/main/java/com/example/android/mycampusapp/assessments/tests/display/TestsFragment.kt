@@ -48,7 +48,8 @@ class TestsFragment : Fragment() {
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         val courseId = sharedPreferences.getString(COURSE_ID, "")!!
         isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
-        val testsCollection = courseCollection.document(courseId).collection("tests")
+        val testsCollection =
+            courseCollection.document(courseId).collection(AssessmentType.TEST.name)
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_test, container, false)
 
