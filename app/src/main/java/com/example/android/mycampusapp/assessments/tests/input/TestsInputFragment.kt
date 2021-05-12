@@ -21,6 +21,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.assessments.AssessmentInputViewModel
 import com.example.android.mycampusapp.assessments.AssessmentInputViewModelFactory
+import com.example.android.mycampusapp.assessments.AssessmentType
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.databinding.FragmentTestInputBinding
@@ -45,15 +46,16 @@ class TestsInputFragment : Fragment() {
     lateinit var courseCollection: CollectionReference
     private lateinit var sharedPreferences: SharedPreferences
 
+    private val testType = AssessmentType.TEST
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         sharedPreferences =
             requireActivity().getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         val courseId = sharedPreferences.getString(COURSE_ID, "")!!
-        val testsCollection = courseCollection.document(courseId).collection("tests")
+        val testsCollection = courseCollection.document(courseId).collection(testType.name)
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_test_input, container, false)
 
@@ -69,7 +71,7 @@ class TestsInputFragment : Fragment() {
         binding.viewModel = viewModel
 
         var dateSet: CustomDate? = null
-        viewModel.dateSet.observe(viewLifecycleOwner, androidx.lifecycle.Observer { customDate ->
+        viewModel.dateSet.observe(viewLifecycleOwner, { customDate ->
             dateSet = customDate
         })
 
@@ -94,7 +96,7 @@ class TestsInputFragment : Fragment() {
             }
 
         var timeSet: CustomTime? = null
-        viewModel.timeSet.observe(viewLifecycleOwner, androidx.lifecycle.Observer { customTime ->
+        viewModel.timeSet.observe(viewLifecycleOwner, { customTime ->
             timeSet = customTime
         })
 

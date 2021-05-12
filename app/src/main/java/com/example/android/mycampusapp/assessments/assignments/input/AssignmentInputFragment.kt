@@ -19,6 +19,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.assessments.AssessmentInputViewModel
 import com.example.android.mycampusapp.assessments.AssessmentInputViewModelFactory
+import com.example.android.mycampusapp.assessments.AssessmentType
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.databinding.FragmentAssignmentInputBinding
@@ -46,7 +47,7 @@ class AssignmentInputFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentAssignmentInputBinding.inflate(inflater, container, false)
         val assignmentParcel = assignmentArgs.assignment
 
@@ -59,7 +60,7 @@ class AssignmentInputFragment : Fragment() {
         viewModel = ViewModelProvider(
             this,
             AssessmentInputViewModelFactory(
-                courseCollection.document(courseId).collection("assignments"),
+                courseCollection.document(courseId).collection(AssessmentType.ASSIGNMENT.name),
                 assignmentParcel,
                 application
             )
@@ -69,7 +70,7 @@ class AssignmentInputFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         var displayDate: CustomDate? = null
-        viewModel.dateSet.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.dateSet.observe(viewLifecycleOwner, {
             displayDate = it
         })
 
@@ -92,10 +93,10 @@ class AssignmentInputFragment : Fragment() {
         }
 
         var displayTime: CustomTime? = null
-        viewModel.timeSet.observe(viewLifecycleOwner, androidx.lifecycle.Observer { time ->
+        viewModel.timeSet.observe(viewLifecycleOwner, { time ->
             displayTime = time
         })
-        val timePickerListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+        val timePickerListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
             viewModel.setTimeFromTimePicker(
                 CustomTime(hourOfDay, minute)
             )
@@ -129,7 +130,7 @@ class AssignmentInputFragment : Fragment() {
 
 
         viewModel.snackBarEvent.observe(viewLifecycleOwner, EventObserver {
-            Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT)
+            Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
         })
         viewModel.displayNavigator.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(AssignmentInputFragmentDirections.actionAssignmentInputToAssessmentsFragment())
