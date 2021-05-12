@@ -63,6 +63,7 @@
             android:layout_margin="@dimen/fab_margin"
             android:onClick="@{()->viewModel.navigateToInput()}"
             app:backgroundTint="@color/colorPrimary"
+            android:visibility="gone"
             app:borderWidth="0dp"
             app:srcCompat="@drawable/ic_add" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
