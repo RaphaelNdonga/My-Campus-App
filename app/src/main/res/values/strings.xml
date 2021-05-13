@@ -5,6 +5,7 @@
     <string name="time">time</string>
     <string name="save">SAVE</string>
     <string name="empty_message">Please fill in all the blanks before saving</string>
+    <string name="no_details_changed">No details have been changed</string>
     <string name="monday_saved">The Monday class has been saved</string>
     <string name="monday_updated">Monday Class has been updated</string>
     <string name="delete">Delete selected classes</string>

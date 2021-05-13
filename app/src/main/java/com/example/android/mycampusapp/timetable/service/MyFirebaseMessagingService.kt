@@ -7,6 +7,9 @@ import android.content.Context
 import android.content.Intent
 import android.text.format.DateFormat
 import androidx.core.content.ContextCompat
+import com.example.android.mycampusapp.assessments.AssessmentType
+import com.example.android.mycampusapp.data.Assessment
+import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.TimetableAlarmReceiver
@@ -16,6 +19,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,6 +42,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val updateId = remoteMessage.data["updateId"]
         val updateDay = remoteMessage.data["updateDay"]
+
+        val updateAssessmentId = remoteMessage.data["updateAssessmentId"]
+        val updateAssessmentType = remoteMessage.data["updateAssessmentType"]
 
         if (!updateDay.isNullOrEmpty() && !updateId.isNullOrEmpty()) {
             val dayOfWeek = enumValueOf<DayOfWeek>(updateDay)
@@ -85,6 +92,49 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 }
         }
 
+        if (!updateAssessmentId.isNullOrEmpty() && !updateAssessmentType.isNullOrEmpty()) {
+            val assessmentType = enumValueOf<AssessmentType>(updateAssessmentType)
+            courses.document(courseId).collection(assessmentType.name).get()
+                .addOnSuccessListener {
+                    it.forEach { documentSnapshot ->
+                        val assessment = documentSnapshot.toObject(Assessment::class.java)
+                        val message = "${assessment.subject} ${
+                            assessmentType.name.toLowerCase(
+                                Locale.ROOT
+                            )
+                        } has been set to be collected on ${
+                            formatDate(
+                                CustomDate(assessment.year, assessment.month, assessment.day)
+                            )
+                        } at ${
+                            formatTime(
+                                CustomTime(assessment.hour, assessment.minute)
+                            )
+                        }"
+                        val intent = Intent(this, TimetableAlarmReceiver::class.java).apply {
+                            putExtra("message", message)
+                            putExtra("assessmentType", assessmentType.name)
+                        }
+
+                        val pendingIntent = PendingIntent.getBroadcast(
+                            this,
+                            assessment.alarmRequestCode,
+                            intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                        )
+
+                        val alarmManager =
+                            applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                        alarmManager.setExact(
+                            AlarmManager.RTC_WAKEUP,
+                            getAssessmentCalendar(assessment).timeInMillis,
+                            pendingIntent
+                        )
+                        sendNotification(message = message, assessmentType = assessmentType)
+                    }
+                }
+        }
+
         if (!requestCode.isNullOrEmpty() && !cancelDay.isNullOrEmpty() && !cancelledSubject.isNullOrEmpty()) {
             Timber.i("Cancel today success")
             val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
@@ -128,14 +178,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Timber.i("A new token has been received $token")
     }
 
-    private fun sendNotification(message: String, dayOfWeek: DayOfWeek) {
+    private fun sendNotification(
+        message: String,
+        dayOfWeek: DayOfWeek? = null,
+        assessmentType: AssessmentType? = null
+    ) {
         val notificationManager = ContextCompat.getSystemService(
             applicationContext,
             NotificationManager::class.java
         ) as NotificationManager
         notificationManager.sendNotification(
             message = message,
-            dayOfWeekString = dayOfWeek.name,
+            dayOfWeekString = dayOfWeek?.name,
+            assessmentTypeString = assessmentType?.name,
             context = applicationContext
         )
     }

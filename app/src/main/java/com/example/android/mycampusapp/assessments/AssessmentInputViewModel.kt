@@ -1,6 +1,7 @@
 package com.example.android.mycampusapp.assessments
 
 import android.app.Application
+import android.content.Context
 import android.text.format.DateFormat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -10,10 +11,8 @@ import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.Location
-import com.example.android.mycampusapp.util.Event
-import com.example.android.mycampusapp.util.format24HourTime
-import com.example.android.mycampusapp.util.formatAmPmTime
-import com.example.android.mycampusapp.util.formatDate
+import com.example.android.mycampusapp.util.*
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.functions.FirebaseFunctions
 
@@ -22,8 +21,8 @@ class AssessmentInputViewModel(
     private val assessment: Assessment?,
     private val functions: FirebaseFunctions,
     private val assessmentType: AssessmentType,
-    application: Application
-) : AndroidViewModel(application) {
+    private val app: Application
+) : AndroidViewModel(app) {
 
     // acquire the date values and save them as integers
     private val _dateSet = MutableLiveData<CustomDate>(assessment?.let {
@@ -65,6 +64,9 @@ class AssessmentInputViewModel(
         )
     }
 
+    private val sharedPreferences = app.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+    private val courseId = sharedPreferences.getString(COURSE_ID, "")!!
+
 
     fun save() {
         val currentSubject = textBoxSubject.value
@@ -80,7 +82,7 @@ class AssessmentInputViewModel(
             return
         }
         if (assessment == null) {
-            val currentAssignment = Assessment(
+            val currentAssessment = Assessment(
                 subject = currentSubject,
                 day = currentDate.day,
                 month = currentDate.month,
@@ -91,25 +93,44 @@ class AssessmentInputViewModel(
                 locationCoordinates = currentLocation.coordinates,
                 room = currentRoom
             )
-            addFirestoreData(currentAssignment)
+            if (assessmentIsLater(currentAssessment)) {
+                updateAssessmentData(
+                    currentAssessment.id,
+                    assessmentType,
+                    courseId
+                )
+            }
+            addFirestoreData(currentAssessment)
             navigateToDisplay()
-        } else {
-            val currentAssignment = Assessment(
-                id = assessment.id,
-                subject = currentSubject,
-                day = currentDate.day,
-                month = currentDate.month,
-                year = currentDate.year,
-                hour = currentTime.hour,
-                minute = currentTime.minute,
-                locationName = currentLocation.name,
-                locationCoordinates = currentLocation.coordinates,
-                alarmRequestCode = assessment.alarmRequestCode,
-                room = currentRoom
-            )
-            addFirestoreData(currentAssignment)
-            navigateToDisplay()
+            return
         }
+        val currentAssessment = Assessment(
+            id = assessment.id,
+            subject = currentSubject,
+            day = currentDate.day,
+            month = currentDate.month,
+            year = currentDate.year,
+            hour = currentTime.hour,
+            minute = currentTime.minute,
+            locationName = currentLocation.name,
+            locationCoordinates = currentLocation.coordinates,
+            alarmRequestCode = assessment.alarmRequestCode,
+            room = currentRoom
+        )
+        if (currentAssessment == assessment) {
+            _snackBarEvent.value = Event(R.string.no_details_changed)
+            navigateToDisplay()
+            return
+        }
+        if (assessmentIsLater(currentAssessment)) {
+            updateAssessmentData(
+                currentAssessment.id,
+                assessmentType,
+                courseId
+            )
+        }
+        addFirestoreData(currentAssessment)
+        navigateToDisplay()
     }
 
     private fun addFirestoreData(currentAssignment: Assessment) {
@@ -143,6 +164,19 @@ class AssessmentInputViewModel(
         } else {
             formatAmPmTime(time)
         }
+    }
+
+    private fun updateAssessmentData(
+        assessmentId: String,
+        assessmentType: AssessmentType,
+        courseId: String
+    ): Task<Unit> {
+        val data = hashMapOf(
+            "assessmentId" to assessmentId,
+            "assessmentType" to assessmentType.name,
+            "courseId" to courseId
+        )
+        return functions.getHttpsCallable("updateAssessmentData").call(data).continueWith { }
     }
 
 }

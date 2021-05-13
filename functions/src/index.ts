@@ -48,6 +48,14 @@ exports.updateData = functions.https.onCall((data,context)=>{
   return updateData(timetableId,dayOfWeek,topic)
 })
 
+exports.updateAssessmentData = functions.https.onCall((data,context)=>{
+  const assessmentId = data.assessmentId
+  const assessmentType = data.assessmentType
+  const topic = data.courseId
+
+  return updateAssessmentData(assessmentId,assessmentType,topic)
+})
+
 exports.cancelData = functions.https.onCall((data,context)=>{
   const requestCode = data.requestCode
   const subject = data.subject
@@ -84,6 +92,22 @@ async function updateData(timetableId:string,dayOfWeek:string,topic:string){
   }
   return admin.messaging().send(data).then((response)=>{
     functions.logger.info(`The update alarm id ${data.data} to topic ${data.topic} was sent successfully`)
+  }).catch((error)=>{
+    functions.logger.error(`An error occurred ${error}`)
+  })
+}
+
+async function updateAssessmentData(assessmentId:string, assessmentType:string, topic:string){
+  const data = {
+    data:{
+      updateAssessmentId:assessmentId,
+      updateAssessmentType:assessmentType
+    },
+    topic:topic
+  }
+
+  return admin.messaging().send(data).then((response)=>{
+    functions.logger.info(`The update assessment id ${data.data} to topic ${data.topic} was sent successfully`)
   }).catch((error)=>{
     functions.logger.error(`An error occurred ${error}`)
   })
