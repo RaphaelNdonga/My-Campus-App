@@ -65,6 +65,31 @@ exports.cancelData = functions.https.onCall((data,context)=>{
   return cancelData(requestCode,subject,dayOfWeek,topic)
 })
 
+exports.cancelAssessmentData = functions.https.onCall((data,context)=>{
+  const requestCode = data.requestCode
+  const subject = data.subject
+  const assessmentType = data.assessmentType
+  const topic = data.courseId
+
+  return cancelAssessmentData(requestCode,subject,assessmentType,topic)
+})
+
+async function cancelAssessmentData(requestCode:string,subject:string,assessmentType:string,topic:string){
+  const data = {
+    data:{
+      assessmentRequestCode:requestCode,
+      assessmentSubject:subject,
+      assessmentType:assessmentType
+    },
+    topic:topic
+  }
+  return admin.messaging().send(data).then((response)=>{
+    functions.logger.info(`cancel data was sent successfully ${data.data} to topic ${data.topic}`)
+  }).catch((error)=>{
+    functions.logger.error(`error occurred ${error}`)
+  })
+}
+
 async function cancelData(requestCode:string,subject:string,dayOfWeek:string,topic:string) {
   const data = {
     data:{

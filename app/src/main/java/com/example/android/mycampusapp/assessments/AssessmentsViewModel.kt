@@ -1,12 +1,17 @@
 package com.example.android.mycampusapp.assessments
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.DataStatus
+import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.Event
+import com.example.android.mycampusapp.util.assessmentIsLater
+import com.example.android.mycampusapp.util.sharedPrefFile
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
@@ -16,7 +21,8 @@ import timber.log.Timber
 class AssessmentsViewModel(
     private val assessmentsFirestore: CollectionReference,
     private val app: Application,
-    private val function: FirebaseFunctions
+    private val functions: FirebaseFunctions,
+    private val assessmentType: AssessmentType
 ) : AndroidViewModel(app) {
     private val _assessments = MutableLiveData<List<Assessment>>()
     val assessments: LiveData<List<Assessment>>
@@ -37,6 +43,9 @@ class AssessmentsViewModel(
     private val _status = MutableLiveData<DataStatus>()
     val status: LiveData<DataStatus>
         get() = _status
+
+    private val sharedPreferences = app.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
+    private val courseId = sharedPreferences.getString(COURSE_ID, "")!!
 
     fun addSnapshotListener(): ListenerRegistration {
         _status.value = DataStatus.LOADING
@@ -89,10 +98,34 @@ class AssessmentsViewModel(
 
     fun deleteList(list: List<Assessment?>) {
         list.forEach { assessment ->
-            if (assessment != null)
+            if (assessment != null) {
                 assessmentsFirestore.document(assessment.id).delete()
+                if (assessmentIsLater(assessment)) {
+                    cancelAssessmentData(
+                        assessment.alarmRequestCode.toString(),
+                        assessment.subject,
+                        assessmentType,
+                        courseId
+                    )
+                }
+            }
         }
         checkDataStatus()
+    }
+
+    private fun cancelAssessmentData(
+        assessmentRequestCode: String,
+        assessmentSubject: String,
+        assessmentType: AssessmentType,
+        courseId: String
+    ): Task<Unit> {
+        val data = hashMapOf(
+            "requestCode" to assessmentRequestCode,
+            "subject" to assessmentSubject,
+            "assessmentType" to assessmentType.name,
+            "courseId" to courseId
+        )
+        return functions.getHttpsCallable("cancelAssessmentData").call(data).continueWith { }
     }
 
 }

@@ -9,9 +9,10 @@ import com.google.firebase.functions.FirebaseFunctions
 class AssessmentsViewModelFactory(
     private val collection: CollectionReference,
     private val app: Application,
-    private val functions: FirebaseFunctions
+    private val functions: FirebaseFunctions,
+    private val assessmentType: AssessmentType
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return AssessmentsViewModel(collection, app, functions) as T
+        return AssessmentsViewModel(collection, app, functions, assessmentType) as T
     }
 }

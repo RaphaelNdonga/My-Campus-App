@@ -46,6 +46,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val updateAssessmentId = remoteMessage.data["updateAssessmentId"]
         val updateAssessmentType = remoteMessage.data["updateAssessmentType"]
 
+        val cancelRequestCode = remoteMessage.data["assessmentRequestCode"]
+        val cancelAssessmentSubject = remoteMessage.data["assessmentSubject"]
+        val cancelAssessmentType = remoteMessage.data["assessmentType"]
+
         if (!updateDay.isNullOrEmpty() && !updateId.isNullOrEmpty()) {
             val dayOfWeek = enumValueOf<DayOfWeek>(updateDay)
             courses.document(courseId).collection(dayOfWeek.name).document(updateId).get()
@@ -162,6 +166,23 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
 
             Timber.i("The cancel alarm id is $requestCode")
+        }
+        if (!cancelRequestCode.isNullOrEmpty() && !cancelAssessmentSubject.isNullOrEmpty() && !cancelAssessmentType.isNullOrEmpty()) {
+            val intent = Intent(this, TimetableAlarmReceiver::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(
+                this,
+                cancelRequestCode.toInt(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            val alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarmManager.cancel(pendingIntent)
+
+            val assessmentType = enumValueOf<AssessmentType>(cancelAssessmentType)
+            val notificationMessage =
+                "$cancelAssessmentSubject ${assessmentType.name.toLowerCase(Locale.ROOT)} will not be happening"
+
+            sendNotification(message = notificationMessage, assessmentType = assessmentType)
         }
     }
 

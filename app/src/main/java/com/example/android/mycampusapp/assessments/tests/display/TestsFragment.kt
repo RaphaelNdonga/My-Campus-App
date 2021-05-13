@@ -45,6 +45,8 @@ class TestsFragment : Fragment() {
 
     private val testArgs by navArgs<TestsFragmentArgs>()
 
+    private val test = AssessmentType.TEST
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,7 +58,7 @@ class TestsFragment : Fragment() {
         val courseId = sharedPreferences.getString(COURSE_ID, "")!!
         isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
         val testsCollection =
-            courseCollection.document(courseId).collection(AssessmentType.TEST.name)
+            courseCollection.document(courseId).collection(test.name)
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_test, container, false)
 
@@ -65,7 +67,8 @@ class TestsFragment : Fragment() {
             AssessmentsViewModelFactory(
                 testsCollection,
                 requireActivity().application,
-                functions
+                functions,
+                test
             )
         ).get(AssessmentsViewModel::class.java)
 

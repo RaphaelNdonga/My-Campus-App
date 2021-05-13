@@ -40,6 +40,8 @@ class AssignmentsFragment : Fragment() {
     private var highlightState: Boolean = false
     private lateinit var adapter: AssessmentsAdapter
 
+    private val assignment = AssessmentType.ASSIGNMENT
+
     @Inject
     lateinit var functions: FirebaseFunctions
 
@@ -73,9 +75,10 @@ class AssignmentsFragment : Fragment() {
         viewModel = ViewModelProvider(
             this,
             AssessmentsViewModelFactory(
-                courseCollection.document(courseId).collection(AssessmentType.ASSIGNMENT.name),
+                courseCollection.document(courseId).collection(assignment.name),
                 requireActivity().application,
-                functions
+                functions,
+                assignment
             )
         ).get(AssessmentsViewModel::class.java)
 
