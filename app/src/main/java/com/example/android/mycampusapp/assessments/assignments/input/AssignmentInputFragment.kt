@@ -45,6 +45,8 @@ class AssignmentInputFragment : Fragment() {
     private lateinit var courseId: String
     private val assignmentArgs by navArgs<AssignmentInputFragmentArgs>()
 
+    private val assignment = AssessmentType.ASSIGNMENT
+
     @Inject
     lateinit var functions: FirebaseFunctions
     override fun onCreateView(
@@ -64,9 +66,10 @@ class AssignmentInputFragment : Fragment() {
         viewModel = ViewModelProvider(
             this,
             AssessmentInputViewModelFactory(
-                courseCollection.document(courseId).collection(AssessmentType.ASSIGNMENT.name),
+                courseCollection.document(courseId).collection(assignment.name),
                 assignmentParcel,
                 functions,
+                assignment,
                 application
             )
         ).get(AssessmentInputViewModel::class.java)

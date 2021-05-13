@@ -21,6 +21,7 @@ class AssessmentInputViewModel(
     private val assignmentsCollection: CollectionReference,
     private val assessment: Assessment?,
     private val functions: FirebaseFunctions,
+    private val assessmentType: AssessmentType,
     application: Application
 ) : AndroidViewModel(application) {
 

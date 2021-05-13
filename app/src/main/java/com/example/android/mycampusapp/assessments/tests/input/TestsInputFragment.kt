@@ -71,6 +71,7 @@ class TestsInputFragment : Fragment() {
                     testsCollection,
                     testArgs.assessment,
                     functions,
+                    testType,
                     application
                 )
             ).get(

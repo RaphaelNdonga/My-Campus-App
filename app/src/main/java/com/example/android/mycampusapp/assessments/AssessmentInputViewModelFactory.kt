@@ -11,6 +11,7 @@ class AssessmentInputViewModelFactory(
     private val assignmentsCollection: CollectionReference,
     private val assignment: Assessment?,
     private val functions: FirebaseFunctions,
+    private val assessmentType: AssessmentType,
     private val application: Application
 ) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
@@ -18,6 +19,7 @@ class AssessmentInputViewModelFactory(
             assignmentsCollection,
             assignment,
             functions,
+            assessmentType,
             application
         ) as T
     }
