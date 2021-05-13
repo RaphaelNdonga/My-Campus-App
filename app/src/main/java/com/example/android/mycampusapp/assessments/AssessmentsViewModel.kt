@@ -1,17 +1,23 @@
 package com.example.android.mycampusapp.assessments
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.DataStatus
 import com.example.android.mycampusapp.util.Event
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
+import com.google.firebase.functions.FirebaseFunctions
 import timber.log.Timber
 
-class AssessmentsViewModel(private val assessmentsFirestore: CollectionReference) : ViewModel() {
+class AssessmentsViewModel(
+    private val assessmentsFirestore: CollectionReference,
+    private val app: Application,
+    private val function: FirebaseFunctions
+) : AndroidViewModel(app) {
     private val _assessments = MutableLiveData<List<Assessment>>()
     val assessments: LiveData<List<Assessment>>
         get() = _assessments
@@ -38,8 +44,8 @@ class AssessmentsViewModel(private val assessmentsFirestore: CollectionReference
             .orderBy("year", Query.Direction.ASCENDING)
             .orderBy("month", Query.Direction.ASCENDING)
             .orderBy("day", Query.Direction.ASCENDING)
-            .orderBy("hour",Query.Direction.ASCENDING)
-            .orderBy("minute",Query.Direction.ASCENDING)
+            .orderBy("hour", Query.Direction.ASCENDING)
+            .orderBy("minute", Query.Direction.ASCENDING)
             .addSnapshotListener { querySnapshot, firebaseException ->
                 _assessments.value = querySnapshot?.toObjects(Assessment::class.java)
                 checkDataStatus()

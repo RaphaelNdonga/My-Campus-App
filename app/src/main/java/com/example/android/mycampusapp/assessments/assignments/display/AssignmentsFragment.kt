@@ -21,6 +21,7 @@ import com.example.android.mycampusapp.databinding.FragmentAssignmentsBinding
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.functions.FirebaseFunctions
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -38,6 +39,9 @@ class AssignmentsFragment : Fragment() {
     private var isAdmin: Boolean = false
     private var highlightState: Boolean = false
     private lateinit var adapter: AssessmentsAdapter
+
+    @Inject
+    lateinit var functions: FirebaseFunctions
 
     private val assignmentsArgs by navArgs<AssignmentsFragmentArgs>()
     override fun onCreateView(
@@ -69,7 +73,9 @@ class AssignmentsFragment : Fragment() {
         viewModel = ViewModelProvider(
             this,
             AssessmentsViewModelFactory(
-                courseCollection.document(courseId).collection(AssessmentType.ASSIGNMENT.name)
+                courseCollection.document(courseId).collection(AssessmentType.ASSIGNMENT.name),
+                requireActivity().application,
+                functions
             )
         ).get(AssessmentsViewModel::class.java)
 

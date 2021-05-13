@@ -20,6 +20,7 @@ import com.example.android.mycampusapp.databinding.FragmentTestBinding
 import com.example.android.mycampusapp.util.*
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.functions.FirebaseFunctions
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -38,6 +39,9 @@ class TestsFragment : Fragment() {
     @Inject
     lateinit var courseCollection: CollectionReference
     private lateinit var sharedPreferences: SharedPreferences
+
+    @Inject
+    lateinit var functions: FirebaseFunctions
 
     private val testArgs by navArgs<TestsFragmentArgs>()
 
@@ -58,7 +62,11 @@ class TestsFragment : Fragment() {
 
         viewModel = ViewModelProvider(
             this,
-            AssessmentsViewModelFactory(testsCollection)
+            AssessmentsViewModelFactory(
+                testsCollection,
+                requireActivity().application,
+                functions
+            )
         ).get(AssessmentsViewModel::class.java)
 
         binding.viewModel = viewModel
