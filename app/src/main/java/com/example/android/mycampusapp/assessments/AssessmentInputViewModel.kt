@@ -15,10 +15,12 @@ import com.example.android.mycampusapp.util.format24HourTime
 import com.example.android.mycampusapp.util.formatAmPmTime
 import com.example.android.mycampusapp.util.formatDate
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.functions.FirebaseFunctions
 
 class AssessmentInputViewModel(
     private val assignmentsCollection: CollectionReference,
     private val assessment: Assessment?,
+    private val functions: FirebaseFunctions,
     application: Application
 ) : AndroidViewModel(application) {
 

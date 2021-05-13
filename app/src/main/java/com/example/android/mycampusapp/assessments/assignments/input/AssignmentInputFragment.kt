@@ -29,6 +29,7 @@ import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.functions.FirebaseFunctions
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
@@ -43,6 +44,9 @@ class AssignmentInputFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var courseId: String
     private val assignmentArgs by navArgs<AssignmentInputFragmentArgs>()
+
+    @Inject
+    lateinit var functions: FirebaseFunctions
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -62,6 +66,7 @@ class AssignmentInputFragment : Fragment() {
             AssessmentInputViewModelFactory(
                 courseCollection.document(courseId).collection(AssessmentType.ASSIGNMENT.name),
                 assignmentParcel,
+                functions,
                 application
             )
         ).get(AssessmentInputViewModel::class.java)

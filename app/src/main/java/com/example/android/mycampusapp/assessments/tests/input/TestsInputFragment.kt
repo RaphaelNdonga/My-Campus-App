@@ -30,6 +30,7 @@ import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.functions.FirebaseFunctions
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
@@ -45,6 +46,9 @@ class TestsInputFragment : Fragment() {
     @Inject
     lateinit var courseCollection: CollectionReference
     private lateinit var sharedPreferences: SharedPreferences
+
+    @Inject
+    lateinit var functions: FirebaseFunctions
 
     private val testType = AssessmentType.TEST
 
@@ -63,7 +67,12 @@ class TestsInputFragment : Fragment() {
         viewModel =
             ViewModelProvider(
                 this,
-                AssessmentInputViewModelFactory(testsCollection, testArgs.assessment, application)
+                AssessmentInputViewModelFactory(
+                    testsCollection,
+                    testArgs.assessment,
+                    functions,
+                    application
+                )
             ).get(
                 AssessmentInputViewModel::class.java
             )
