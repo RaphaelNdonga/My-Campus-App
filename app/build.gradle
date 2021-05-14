@@ -133,8 +133,3 @@ dependencies {
     implementation 'androidx.hilt:hilt-work:1.0.0-beta01'
     kapt 'androidx.hilt:hilt-compiler:1.0.0-beta01'
 }
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    kotlinOptions {
-        freeCompilerArgs = ["-XXLanguage:+InlineClasses"]
-    }
-}
