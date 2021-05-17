@@ -2,6 +2,5 @@ package com.example.android.mycampusapp.util
 
 import android.util.Patterns
 
-fun String?.isValidEmail() = !isNullOrEmpty()&& Patterns.EMAIL_ADDRESS.matcher(this).matches()
-fun String.removeWhiteSpace() = replace("\\s".toRegex(), "")
-fun String.containsWhiteSpace() = contains("\\s".toRegex())
+fun String.isValidEmail() = Patterns.EMAIL_ADDRESS.matcher(this).matches()
+fun String.isValidMessagingTopic() = contains("[^a-zA-Z0-9-_.~%]".toRegex())
