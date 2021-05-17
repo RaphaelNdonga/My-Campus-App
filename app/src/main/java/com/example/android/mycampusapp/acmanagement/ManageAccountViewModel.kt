@@ -154,7 +154,13 @@ class ManageAccountViewModel(
         cancelAssignmentAlarms()
         cancelTestAlarms()
         cancelTodayAlarms()
-        //start cancelling tomorrow alarms only after today alarms have been cancelled
+        /**
+         * Cancel tomorrow alarms is conducted only after all the other alarms have been cancelled.
+         * This is because it also has the responsibility of signing out the user. It has that
+         * responsibility because we need to signout the user in the same thread that is cancelling
+         * the alarms. Otherwise, if signing out is handled in the main thread, the user will be
+         * signed out before the alarms are obtained and cancelled.
+         */
         cancelTomorrowAndSignOut()
         removeDailyAlarmWorker()
         unsubscribeFromTopic()
