@@ -8,6 +8,8 @@ import android.content.Intent
 import androidx.lifecycle.AndroidViewModel
 import androidx.preference.PreferenceManager
 import androidx.work.WorkManager
+import com.example.android.mycampusapp.assessments.AssessmentType
+import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.timetable.receiver.TimetableAlarmReceiver
 import com.example.android.mycampusapp.util.*
@@ -28,16 +30,16 @@ class ManageAccountViewModel(
         app.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
 
     private val settingsPreferences = PreferenceManager.getDefaultSharedPreferences(app)
+    private val alarmSet = sharedPreferences.getStringSet(ALARM_SET_COLLECTION, setOf())!!
+    private val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     private var signOutOption: SignOutOptions? = null
 
     fun getEmail(): String = sharedPreferences.getString(USER_EMAIL, "")!!
     fun getCourseId(): String = sharedPreferences.getString(COURSE_ID, "")!!
 
-    private fun cancelAllAlarms() {
-        val alarmSet = sharedPreferences.getStringSet(ALARM_SET_COLLECTION, setOf())!!
+    private fun cancelTodayAlarms() {
         val todayCollection = alarmSet.elementAt(0)
-        val tomorrowCollection = alarmSet.elementAt(1)
 
         val todayClasses =
             courseCollection.document(getCourseId()).collection(todayCollection).get()
@@ -46,7 +48,7 @@ class ManageAccountViewModel(
             it.forEach { documentSnapshot ->
                 val todayClass = documentSnapshot.toObject(TimetableClass::class.java)
                 if (timetableClassIsLater(todayClass)) {
-                    Timber.i("The cancelled class is: $todayClass")
+                    Timber.i("The cancelled today class is: $todayClass")
                     val intent = Intent(app, TimetableAlarmReceiver::class.java)
                     val pendingIntent = PendingIntent.getBroadcast(
                         app,
@@ -62,14 +64,17 @@ class ManageAccountViewModel(
         }.addOnFailureListener {
             Timber.i("$it")
         }
+    }
 
+    private fun cancelTomorrowAndSignOut() {
+        val tomorrowCollection = alarmSet.elementAt(1)
         val tomorrowClasses =
             courseCollection.document(getCourseId()).collection(tomorrowCollection).get()
         tomorrowClasses.addOnSuccessListener {
             Timber.i("In tomorow's loop")
             it.forEach { classDocument ->
                 val timetableClass = classDocument.toObject(TimetableClass::class.java)
-                Timber.i("The cancelled class is: $timetableClass")
+                Timber.i("The cancelled tomorrow class is: $timetableClass")
                 val intent = Intent(app, TimetableAlarmReceiver::class.java)
                 val pendingIntent =
                     PendingIntent.getBroadcast(
@@ -78,7 +83,6 @@ class ManageAccountViewModel(
                         intent,
                         PendingIntent.FLAG_UPDATE_CURRENT
                     )
-                val alarmManager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 alarmManager.cancel(pendingIntent)
                 when (signOutOption) {
                     SignOutOptions.LOG_OUT -> auth.signOut()
@@ -89,6 +93,48 @@ class ManageAccountViewModel(
         }.addOnFailureListener {
             Timber.i("$it")
         }
+    }
+
+    private fun cancelTestAlarms() {
+        val testCollection = AssessmentType.TEST.name
+        courseCollection.document(getCourseId()).collection(testCollection).get()
+            .addOnSuccessListener {
+                it.forEach { document ->
+                    val test = document.toObject(Assessment::class.java)
+                    Timber.i("The cancelled test is $test")
+                    val intent = Intent(app, TimetableAlarmReceiver::class.java)
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        app,
+                        test.alarmRequestCode,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                    alarmManager.cancel(pendingIntent)
+                }
+            }.addOnFailureListener {
+                Timber.i("$it")
+            }
+    }
+
+    private fun cancelAssignmentAlarms() {
+        val assignmentCollection = AssessmentType.ASSIGNMENT.name
+        courseCollection.document(getCourseId()).collection(assignmentCollection).get()
+            .addOnSuccessListener {
+                it.forEach { document ->
+                    val assignment = document.toObject(Assessment::class.java)
+                    Timber.i("the cancelled alarm is assignment $assignment")
+                    val intent = Intent(app, TimetableAlarmReceiver::class.java)
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        app,
+                        assignment.alarmRequestCode,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+                    alarmManager.cancel(pendingIntent)
+                }
+            }.addOnFailureListener {
+                Timber.i("$it")
+            }
     }
 
     private fun removeDailyAlarmWorker() {
@@ -105,7 +151,11 @@ class ManageAccountViewModel(
     }
 
     fun performClearance() {
-        cancelAllAlarms()
+        cancelAssignmentAlarms()
+        cancelTestAlarms()
+        cancelTodayAlarms()
+        //start cancelling tomorrow alarms only after today alarms have been cancelled
+        cancelTomorrowAndSignOut()
         removeDailyAlarmWorker()
         unsubscribeFromTopic()
         removeSharedPreferences()
