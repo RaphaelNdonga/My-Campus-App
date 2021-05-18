@@ -35,7 +35,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/class_subject_input"
-                style="@style/Widget.MyCampusApp.TextInputLayout"
+                style="@style/Widget.MyCampusApp.OutlinedBoxLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_box_margin"
@@ -51,7 +51,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/class_time_input"
-                style="@style/Widget.MyCampusApp.TextInputLayout"
+                style="@style/Widget.MyCampusApp.OutlinedBoxLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_box_margin"
@@ -70,7 +70,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/class_location_input"
-                style="@style/Widget.MyCampusApp.TextInputLayout"
+                style="@style/Widget.MyCampusApp.OutlinedBoxLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_box_margin"
@@ -88,7 +88,7 @@
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/class_room_input"
-                style="@style/Widget.MyCampusApp.TextInputLayout"
+                style="@style/Widget.MyCampusApp.OutlinedBoxLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_box_margin"

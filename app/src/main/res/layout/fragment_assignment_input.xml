@@ -37,7 +37,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/assignment_subject_input"
-                style="@style/Widget.MyCampusApp.TextInputLayout"
+                style="@style/Widget.MyCampusApp.OutlinedBoxLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_box_margin"
@@ -53,7 +53,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/assignment_date_layout"
-                style="@style/Widget.MyCampusApp.TextInputLayout"
+                style="@style/Widget.MyCampusApp.OutlinedBoxLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_box_margin"
@@ -71,7 +71,7 @@
                     android:text="@={viewModel.textBoxDate}"/>
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/assignment_time_input"
-                    style="@style/Widget.MyCampusApp.TextInputLayout"
+                    style="@style/Widget.MyCampusApp.OutlinedBoxLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/text_box_margin"
@@ -91,7 +91,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/assignment_location_input"
-                    style="@style/Widget.MyCampusApp.TextInputLayout"
+                    style="@style/Widget.MyCampusApp.OutlinedBoxLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/text_box_margin"
@@ -110,7 +110,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/assignment_room_input"
-                    style="@style/Widget.MyCampusApp.TextInputLayout"
+                    style="@style/Widget.MyCampusApp.OutlinedBoxLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/text_box_margin"
