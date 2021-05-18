@@ -17,6 +17,7 @@ import com.example.android.mycampusapp.databinding.FragmentLoginBinding
 import com.example.android.mycampusapp.util.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -33,6 +34,10 @@ class LoginFragment : Fragment() {
 
     @Inject
     lateinit var auth: FirebaseAuth
+
+    @Inject
+    lateinit var courseCollection: CollectionReference
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -49,7 +54,10 @@ class LoginFragment : Fragment() {
         )
         checkCurrentUser()
 
-        viewModel = ViewModelProvider(this, LoginViewModelFactory(auth, sharedPreferences)).get(
+        viewModel = ViewModelProvider(
+            this,
+            LoginViewModelFactory(auth, sharedPreferences, courseCollection)
+        ).get(
             LoginViewModel::class.java
         )
         binding.lifecycleOwner = this
