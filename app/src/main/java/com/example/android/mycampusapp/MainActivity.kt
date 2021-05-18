@@ -13,12 +13,12 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.example.android.mycampusapp.assessments.AssessmentType
-import com.example.android.mycampusapp.data.AdminEmail
 import com.example.android.mycampusapp.databinding.ActivityMainBinding
 import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
-import com.example.android.mycampusapp.util.*
+import com.example.android.mycampusapp.util.COURSE_ID
+import com.example.android.mycampusapp.util.DayOfWeek
+import com.example.android.mycampusapp.util.sharedPrefFile
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navController: NavController
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var snapshotListener: ListenerRegistration
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var courseId: String
 
@@ -56,22 +55,13 @@ class MainActivity : AppCompatActivity() {
 
         sharedPreferences = this.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         courseId = sharedPreferences.getString(COURSE_ID, "")!!
-        val userEmail = sharedPreferences.getString(USER_EMAIL, "")!!
-        val isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
 
-        val adminEmail = AdminEmail(userEmail)
         viewModel = ViewModelProvider(
             this,
             MainActivityViewModelFactory(
-                courseCollection.document(courseId).collection("admins"),
                 this.application
             )
         ).get(MainActivityViewModel::class.java)
-
-        viewModel.adminList.observe(this, {
-            if (isAdmin)
-                viewModel.checkAndAddEmail(it, adminEmail)
-        })
 
         viewModel.setupRecurringWork()
 
@@ -151,12 +141,6 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         subscribeToTopic(courseId)
-        snapshotListener = viewModel.addSnapshotListener()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        snapshotListener.remove()
     }
 
     override fun onSupportNavigateUp(): Boolean {
