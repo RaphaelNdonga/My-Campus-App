@@ -16,13 +16,21 @@
         android:padding="@dimen/layout_padding"
         tools:context=".login.SignUpFragment">
 
+        <TextView
+            android:id="@+id/sign_up_heading"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/signup_view_margin"
+            android:text="Sign up" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/class_rep_course_name"
-            style="@style/Widget.MyCampusApp.TextInputLayout"
+            style="@style/Widget.MyCampusApp.OutlinedBoxLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/signup_view_margin"
-            android:hint="Course Name">
+            android:hint="Course Id">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -32,7 +40,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/class_rep_email"
-            style="@style/Widget.MyCampusApp.TextInputLayout"
+            style="@style/Widget.MyCampusApp.OutlinedBoxLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/signup_view_margin"
@@ -46,8 +54,8 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/class_rep_password"
-            style="@style/Widget.MyCampusApp.TextInputLayout"
+            android:id="@+id/password"
+            style="@style/Widget.MyCampusApp.OutlinedBoxLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/signup_view_margin"
@@ -58,6 +66,21 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:text="@={viewModel.password}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/confirm_password"
+            style="@style/Widget.MyCampusApp.OutlinedBoxLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/signup_view_margin"
+            android:hint="@string/confirm_password">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:text="@={viewModel.confirmPassword}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
