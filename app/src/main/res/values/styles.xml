@@ -10,10 +10,15 @@
         <item name="android:colorBackground">@color/backgroundColor</item>
     </style>
 
-    <style name="Widget.MyCampusApp.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="Widget.MyCampusApp.OutlinedBoxLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="hintTextAppearance">@style/TextAppearance.MyCampusApp.TextInputLayout.HintText
         </item>
         <item name="hintTextColor">@color/textColorPrimary</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="boxStrokeColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="Widget.MyCampusApp.FilledBoxLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="android:paddingBottom">8dp</item>
         <item name="boxStrokeColor">@color/colorPrimary</item>
     </style>
