@@ -61,6 +61,9 @@ class SignUpFragment : Fragment() {
             )
         binding.viewModel = viewModel
 
+        val signUpHeadingText = "Sign up for ${status.studentStatus.name} account"
+        binding.signUpHeading.text = signUpHeadingText
+
         var data: HashMap<String, String> = hashMapOf()
         var password = ""
 
@@ -72,9 +75,19 @@ class SignUpFragment : Fragment() {
                 password = it
             }
             val courseId = viewModel.courseName.value
+            val confirmPassword = viewModel.confirmPassword.value
 
             if (email.isNullOrEmpty() || courseId.isNullOrEmpty() || password.isEmpty()) {
                 Snackbar.make(requireView(), R.string.fill_blanks, Snackbar.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            if (password != confirmPassword) {
+                Snackbar.make(
+                    requireView(),
+                    R.string.confirm_password_request,
+                    Snackbar.LENGTH_LONG
+                )
+                    .show()
                 return@setOnClickListener
             }
             if (courseId.isValidMessagingTopic()) {
@@ -153,7 +166,7 @@ class SignUpFragment : Fragment() {
     private fun startLoading() {
         binding.classRepCourseName.visibility = View.GONE
         binding.classRepEmail.visibility = View.GONE
-        binding.classRepPassword.visibility = View.GONE
+        binding.password.visibility = View.GONE
         binding.classRepSignedUpBtn.visibility = View.GONE
         binding.progressBar.visibility = View.VISIBLE
         binding.signUpTxt.visibility = View.VISIBLE
@@ -162,7 +175,7 @@ class SignUpFragment : Fragment() {
     private fun stopLoading() {
         binding.classRepCourseName.visibility = View.VISIBLE
         binding.classRepEmail.visibility = View.VISIBLE
-        binding.classRepPassword.visibility = View.VISIBLE
+        binding.password.visibility = View.VISIBLE
         binding.classRepSignedUpBtn.visibility = View.VISIBLE
         binding.progressBar.visibility = View.GONE
         binding.signUpTxt.visibility = View.GONE

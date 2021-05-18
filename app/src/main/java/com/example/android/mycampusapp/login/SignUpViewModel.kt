@@ -38,6 +38,7 @@ class SignUpViewModel(
     val courseName = MutableLiveData<String>()
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
+    val confirmPassword = MutableLiveData<String>()
 
     fun checkIfAdminExists(data: HashMap<String, String>): Task<Boolean> {
         return functions.getHttpsCallable("checkIfAdminExists").call(data).continueWith { task ->
