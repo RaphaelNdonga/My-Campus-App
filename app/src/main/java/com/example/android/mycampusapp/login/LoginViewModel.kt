@@ -81,6 +81,8 @@ class LoginViewModel(
                         if (isModerator != null) {
                             Timber.i("This user is an admin")
                             sharedPrefEdit.putBoolean(IS_ADMIN, isModerator)
+                            sharedPrefEdit.apply()
+                            Timber.i("$isModerator")
                             val adminEmail = AdminEmail(email)
                             val adminCollection =
                                 courseCollection.document(courseId).collection("admins")
@@ -88,6 +90,8 @@ class LoginViewModel(
                         } else {
                             Timber.i("This user is not an admin")
                         }
+                        val sharedPrefBol = sharedPreferences.getBoolean(IS_ADMIN, false)
+                        Timber.i("The shared preferences boolean is $sharedPrefBol")
                         initiateEvent(_mainNavigator)
                     }
 
