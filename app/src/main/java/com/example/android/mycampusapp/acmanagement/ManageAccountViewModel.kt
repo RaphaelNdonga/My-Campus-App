@@ -150,7 +150,15 @@ class ManageAccountViewModel(
         sharedPreferences.edit().clear().apply()
     }
 
+    private fun deleteAdminCollection() {
+        val adminCollection = courseCollection.document(getCourseId()).collection("admins")
+        adminCollection.document(getEmail()).delete()
+    }
+
     fun performClearance() {
+        if (signOutOption == SignOutOptions.DELETE) {
+            deleteAdminCollection()
+        }
         cancelAssignmentAlarms()
         cancelTestAlarms()
         cancelTodayAlarms()
