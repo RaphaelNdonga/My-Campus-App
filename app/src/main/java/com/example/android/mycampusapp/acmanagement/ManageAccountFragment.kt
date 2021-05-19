@@ -51,6 +51,7 @@ class ManageAccountFragment : Fragment() {
         binding.accountDetailsCourse.text = viewModel.getCourseId()
 
         binding.logOutBtn.setOnClickListener {
+            it.isClickable = false
             viewModel.logOut()
             viewModel.performClearance()
             val loginIntent = Intent(this.context, LoginActivity::class.java)
