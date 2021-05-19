@@ -170,6 +170,8 @@ class SignUpFragment : Fragment() {
         binding.classRepSignedUpBtn.visibility = View.GONE
         binding.progressBar.visibility = View.VISIBLE
         binding.signUpTxt.visibility = View.VISIBLE
+        binding.signUpHeading.visibility = View.GONE
+        binding.confirmPassword.visibility = View.GONE
     }
 
     private fun stopLoading() {
@@ -179,6 +181,8 @@ class SignUpFragment : Fragment() {
         binding.classRepSignedUpBtn.visibility = View.VISIBLE
         binding.progressBar.visibility = View.GONE
         binding.signUpTxt.visibility = View.GONE
+        binding.signUpHeading.visibility = View.VISIBLE
+        binding.confirmPassword.visibility = View.VISIBLE
     }
 
 }
