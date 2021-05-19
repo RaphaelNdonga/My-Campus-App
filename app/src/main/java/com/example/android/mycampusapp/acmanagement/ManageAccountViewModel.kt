@@ -84,11 +84,17 @@ class ManageAccountViewModel(
                         PendingIntent.FLAG_UPDATE_CURRENT
                     )
                 alarmManager.cancel(pendingIntent)
-                when (signOutOption) {
-                    SignOutOptions.LOG_OUT -> auth.signOut()
-                    SignOutOptions.DELETE -> auth.currentUser?.delete()
-                    null -> throw NullPointerException("Sign out option should never be null")
+            }
+            when (signOutOption) {
+                SignOutOptions.LOG_OUT -> {
+                    auth.signOut()
+                    Timber.i("Logging out")
                 }
+                SignOutOptions.DELETE -> {
+                    auth.currentUser?.delete()
+                    Timber.i("Deleting account")
+                }
+                null -> throw NullPointerException("Sign out option should never be null")
             }
         }.addOnFailureListener {
             Timber.i("$it")
