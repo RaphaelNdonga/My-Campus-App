@@ -157,7 +157,11 @@
     <fragment
         android:id="@+id/manageAccountFragment"
         android:name="com.example.android.mycampusapp.acmanagement.ManageAccountFragment"
-        android:label="Manage Account" />
+        android:label="Manage Account">
+        <action
+            android:id="@+id/action_manageAccountFragment_to_manageUsersFragment"
+            app:destination="@id/manageUsersFragment" />
+    </fragment>
     <fragment
         android:id="@+id/assignmentInput"
         android:name="com.example.android.mycampusapp.assessments.assignments.input.AssignmentInputFragment"
@@ -270,4 +274,8 @@
             android:defaultValue="true"
             app:argType="boolean" />
     </fragment>
+    <fragment
+        android:id="@+id/manageUsersFragment"
+        android:name="com.example.android.mycampusapp.acmanagement.ManageUsersFragment"
+        android:label="ManageUsersFragment" />
 </navigation>
