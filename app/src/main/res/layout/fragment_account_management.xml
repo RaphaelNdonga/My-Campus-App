@@ -45,23 +45,32 @@
                 app:layout_constraintTop_toBottomOf="@+id/account_details_email" />
 
             <Button
-                android:id="@+id/log_out_btn"
-                style="@style/Widget.MyCampusApp.TextButton"
+                android:id="@+id/manage_users_btn"
+                style="@style/Widget.MyCampusApp.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/big_distance_margin"
+                android:layout_marginTop="@dimen/text_view_margin"
+                android:text="Upgrade or demote admins"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/account_details_course" />
+
+            <Button
+                android:id="@+id/log_out_btn"
+                style="@style/Widget.MyCampusApp.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/text_view_margin"
                 android:text="Log out"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/account_details_email" />
+                app:layout_constraintTop_toBottomOf="@+id/manage_users_btn" />
 
             <Button
                 android:id="@+id/delete_account_btn"
-                style="@style/Widget.MyCampusApp.TextButton"
+                style="@style/Widget.MyCampusApp.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/text_view_margin"
                 android:text="Delete Account"
-                android:textColor="#FF0000"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/log_out_btn" />
         </androidx.constraintlayout.widget.ConstraintLayout>
