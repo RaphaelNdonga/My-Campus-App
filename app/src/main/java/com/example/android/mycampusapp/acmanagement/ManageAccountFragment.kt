@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.android.mycampusapp.LoginActivity
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.FragmentAccountManagementBinding
@@ -49,6 +50,10 @@ class ManageAccountFragment : Fragment() {
 
         binding.accountDetailsEmail.text = viewModel.getEmail()
         binding.accountDetailsCourse.text = viewModel.getCourseId()
+
+        binding.manageUsersBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_manageAccountFragment_to_manageUsersFragment)
+        }
 
         binding.logOutBtn.setOnClickListener {
             it.isClickable = false
