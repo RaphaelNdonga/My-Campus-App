@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.android.mycampusapp.data.AdminEmail
+import com.example.android.mycampusapp.data.UserEmail
 import com.example.android.mycampusapp.util.COURSE_ID
 import com.example.android.mycampusapp.util.Event
 import com.example.android.mycampusapp.util.IS_ADMIN
@@ -78,17 +78,21 @@ class LoginViewModel(
                         sharedPrefEdit.apply()
                         Timber.i("The course id is $courseId")
                         val isModerator: Boolean? = result?.claims?.get("admin") as Boolean?
-                        if (isModerator != null) {
+                        if (isModerator != null && isModerator) {
                             Timber.i("This user is an admin")
                             sharedPrefEdit.putBoolean(IS_ADMIN, isModerator)
                             sharedPrefEdit.apply()
                             Timber.i("$isModerator")
-                            val adminEmail = AdminEmail(email)
+                            val adminEmail = UserEmail(email)
                             val adminCollection =
                                 courseCollection.document(courseId).collection("admins")
                             adminCollection.document(adminEmail.email).set(adminEmail)
                         } else {
                             Timber.i("This user is not an admin")
+                            val regularEmail = UserEmail(email)
+                            val regularCollection =
+                                courseCollection.document(courseId).collection("regulars")
+                            regularCollection.document(regularEmail.email).set(regularEmail)
                         }
                         val sharedPrefBol = sharedPreferences.getBoolean(IS_ADMIN, false)
                         Timber.i("The shared preferences boolean is $sharedPrefBol")
