@@ -8,8 +8,8 @@ class ManageUsersAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> AdminsFragment()
-            1 -> RegularsFragment()
+            0 -> RegularsFragment()
+            1 -> AdminsFragment()
             else -> throw IllegalArgumentException("No other fragment should be obtained")
         }
     }
