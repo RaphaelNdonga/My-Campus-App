@@ -1,7 +1,32 @@
 package com.example.android.mycampusapp.acmanagement
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.android.mycampusapp.data.UserEmail
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.ListenerRegistration
+import timber.log.Timber
 
-class RegularsViewModel : ViewModel() {
-    // TODO: Implement the ViewModel
+class RegularsViewModel(private val regularsCollection: CollectionReference) : ViewModel() {
+    private val _regularsList = MutableLiveData<List<UserEmail>>()
+    val regularsList: LiveData<List<UserEmail>> = _regularsList
+
+    fun addSnapshotListener(): ListenerRegistration {
+        return regularsCollection.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
+            val mutableList = mutableListOf<UserEmail>()
+            querySnapshot?.forEach { document ->
+                Timber.i("In the loop")
+                val email = document.data["email"] as? String
+                email?.let {
+                    Timber.i("Email obtained $email")
+                    mutableList.add(UserEmail(email))
+                }
+            }
+            _regularsList.value = mutableList
+            firebaseFirestoreException?.let {
+                Timber.i("An exception occurred $it")
+            }
+        }
+    }
 }
