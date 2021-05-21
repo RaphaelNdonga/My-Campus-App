@@ -1,4 +1,4 @@
 package com.example.android.mycampusapp.data
 
 @JvmInline
-value class AdminEmail(val email: String)
+value class UserEmail(val email: String)
