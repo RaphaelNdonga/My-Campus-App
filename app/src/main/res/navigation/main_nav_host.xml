@@ -277,5 +277,5 @@
     <fragment
         android:id="@+id/manageUsersFragment"
         android:name="com.example.android.mycampusapp.acmanagement.ManageUsersFragment"
-        android:label="ManageUsersFragment" />
+        android:label="Manage Users" />
 </navigation>
