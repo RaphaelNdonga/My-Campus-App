@@ -51,6 +51,10 @@ class ManageAccountFragment : Fragment() {
         binding.accountDetailsEmail.text = viewModel.getEmail()
         binding.accountDetailsCourse.text = viewModel.getCourseId()
 
+        if (viewModel.isAdmin()) {
+            binding.manageUsersBtn.visibility = View.VISIBLE
+        }
+
         binding.manageUsersBtn.setOnClickListener {
             findNavController().navigate(R.id.action_manageAccountFragment_to_manageUsersFragment)
         }

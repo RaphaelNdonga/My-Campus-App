@@ -37,6 +37,7 @@ class ManageAccountViewModel(
 
     fun getEmail(): String = sharedPreferences.getString(USER_EMAIL, "")!!
     fun getCourseId(): String = sharedPreferences.getString(COURSE_ID, "")!!
+    fun isAdmin(): Boolean = sharedPreferences.getBoolean(IS_ADMIN, false)
 
     private fun cancelTodayAlarms() {
         val todayCollection = alarmSet.elementAt(0)
