@@ -81,6 +81,21 @@ exports.upgradeToAdmin = functions.https.onCall((data,context)=>{
   return upgradeToAdmin(email,courseId)
 })
 
+exports.demoteToRegular = functions.https.onCall((data,context)=>{
+  const email = data.email
+  const courseId = data.courseId
+
+  return demoteToRegular(email,courseId)
+})
+
+async function demoteToRegular(email:string,courseId:string) {
+  const user = await admin.auth().getUserByEmail(email)
+  return admin.auth().setCustomUserClaims(user.uid,{
+    admin:false,
+    courseId:courseId
+  }).then((response)=>{functions.logger.info(`Successfully upgraded ${email} to an admin`)})
+}
+
 async function upgradeToAdmin(email:string,courseId:string){
   const user = await admin.auth().getUserByEmail(email)
   return admin.auth().setCustomUserClaims(user.uid,{
