@@ -138,6 +138,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         viewModel.subscribeToTopic()
+        viewModel.confirmAdminStatus()
     }
 
     override fun onSupportNavigateUp(): Boolean {
