@@ -74,6 +74,21 @@ exports.cancelAssessmentData = functions.https.onCall((data,context)=>{
   return cancelAssessmentData(requestCode,subject,assessmentType,topic)
 })
 
+exports.upgradeToAdmin = functions.https.onCall((data,context)=>{
+  const email = data.email
+  const courseId = data.courseId
+
+  return upgradeToAdmin(email,courseId)
+})
+
+async function upgradeToAdmin(email:string,courseId:string){
+  const user = await admin.auth().getUserByEmail(email)
+  return admin.auth().setCustomUserClaims(user.uid,{
+    admin:true,
+    courseId:courseId
+  }).then((response)=>{functions.logger.info(`Successfully upgraded ${email} to an admin`)})
+}
+
 async function cancelAssessmentData(requestCode:string,subject:string,assessmentType:string,topic:string){
   const data = {
     data:{

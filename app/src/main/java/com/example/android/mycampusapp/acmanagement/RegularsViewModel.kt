@@ -4,11 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.data.UserEmail
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.functions.FirebaseFunctions
 import timber.log.Timber
 
-class RegularsViewModel(private val regularsCollection: CollectionReference) : ViewModel() {
+class RegularsViewModel(
+    private val regularsCollection: CollectionReference,
+    private val functions: FirebaseFunctions
+) : ViewModel() {
     private val _regularsList = MutableLiveData<List<UserEmail>>()
     val regularsList: LiveData<List<UserEmail>> = _regularsList
 
@@ -28,5 +33,10 @@ class RegularsViewModel(private val regularsCollection: CollectionReference) : V
                 Timber.i("An exception occurred $it")
             }
         }
+    }
+
+    fun upgradeToAdmins(email: String, courseId: String): Task<Unit> {
+        val data = hashMapOf("email" to email, "courseId" to courseId)
+        return functions.getHttpsCallable("upgradeToAdmin").call(data).continueWith { }
     }
 }
