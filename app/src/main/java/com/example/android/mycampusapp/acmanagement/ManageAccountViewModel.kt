@@ -161,9 +161,19 @@ class ManageAccountViewModel(
         adminCollection.document(getEmail()).delete()
     }
 
+    private fun deleteRegularCollection() {
+        val regularCollection = courseCollection.document(getCourseId()).collection("regulars")
+        regularCollection.document(getEmail()).delete()
+    }
+
     fun performClearance() {
         if (signOutOption == SignOutOptions.DELETE) {
-            deleteAdminCollection()
+            val isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
+            if (isAdmin) {
+                deleteAdminCollection()
+            } else {
+                deleteRegularCollection()
+            }
         }
         cancelAssignmentAlarms()
         cancelTestAlarms()
