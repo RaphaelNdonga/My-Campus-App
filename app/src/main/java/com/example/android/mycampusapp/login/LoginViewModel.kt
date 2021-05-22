@@ -65,7 +65,7 @@ class LoginViewModel(
                 sharedPrefEdit.putString(USER_EMAIL, email)
 
                 Timber.i("Signed in successfully with email and password")
-                auth.currentUser?.getIdToken(false)
+                auth.currentUser?.getIdToken(true)
                     ?.addOnSuccessListener { result: GetTokenResult? ->
                         val courseId: String? = result?.claims?.get("courseId") as String?
                         if (courseId.isNullOrEmpty()) {
@@ -89,6 +89,8 @@ class LoginViewModel(
                             adminCollection.document(adminEmail.email).set(adminEmail)
                         } else {
                             Timber.i("This user is not an admin")
+                            sharedPrefEdit.putBoolean(IS_ADMIN, false)
+                            sharedPrefEdit.apply()
                             val regularEmail = UserEmail(email)
                             val regularCollection =
                                 courseCollection.document(courseId).collection("regulars")

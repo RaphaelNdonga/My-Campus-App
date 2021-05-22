@@ -61,6 +61,8 @@ class MainActivity : AppCompatActivity() {
         ).get(MainActivityViewModel::class.java)
 
         viewModel.setupRecurringWork()
+        viewModel.subscribeToTopic()
+        viewModel.confirmAdminStatus()
 
         val dayOfWeek = intent.getSerializableExtra("dayOfWeek") as DayOfWeek?
         dayOfWeek?.let {
@@ -133,12 +135,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        viewModel.subscribeToTopic()
-        viewModel.confirmAdminStatus()
     }
 
     override fun onSupportNavigateUp(): Boolean {

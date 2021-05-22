@@ -67,8 +67,7 @@ class MainActivityViewModel(
     fun confirmAdminStatus() {
         val email = sharedPreferences.getString(USER_EMAIL, "")!!
         val sharedPrefEdit = sharedPreferences.edit()
-        sharedPrefEdit.putString(USER_EMAIL, email)
-        auth.currentUser?.getIdToken(false)
+        auth.currentUser?.getIdToken(true)
             ?.addOnSuccessListener { result: GetTokenResult? ->
                 val isModerator: Boolean? = result?.claims?.get("admin") as Boolean?
                 if (isModerator != null && isModerator) {
@@ -83,6 +82,7 @@ class MainActivityViewModel(
                 } else {
                     Timber.i("This user is not an admin")
                     sharedPrefEdit.putBoolean(IS_ADMIN, false)
+                    sharedPrefEdit.apply()
                     val regularEmail = UserEmail(email)
                     val regularCollection =
                         courseCollection.document(courseId).collection("regulars")
