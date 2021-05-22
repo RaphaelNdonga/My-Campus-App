@@ -39,4 +39,13 @@ class RegularsViewModel(
         val data = hashMapOf("email" to email, "courseId" to courseId)
         return functions.getHttpsCallable("upgradeToAdmin").call(data).continueWith { }
     }
+
+    fun deleteRegularAccount(email: String) {
+        regularsCollection.document(email).delete()
+    }
+
+    fun setAdminAccount(userEmail: UserEmail) {
+        val adminCollection = regularsCollection.parent?.collection("admins")
+        adminCollection?.document(userEmail.email)?.set(userEmail)
+    }
 }
