@@ -78,12 +78,28 @@ exports.upgradeToAdmin = functions.https.onCall((data,context)=>{
   const email = data.email
   const courseId = data.courseId
 
-  return upgradeToAdmin(email,courseId)
+  if(context.auth?.token.admin !==true){
+    return {
+      error: "Request not authorized. Must be an admin to fulfill request"
+    }
+  }
+
+  return upgradeToAdmin(email,courseId).then(()=>{
+    return {
+      result: `Request fulfilled! ${email} is now a moderator`
+    }
+  })
 })
 
 exports.demoteToRegular = functions.https.onCall((data,context)=>{
   const email = data.email
   const courseId = data.courseId
+
+  if(context.auth?.token.admin !==true){
+    return {
+      error: "Request not authorized. Must be an admin to fulfill request"
+    }
+  }
 
   return demoteToRegular(email,courseId)
 })
