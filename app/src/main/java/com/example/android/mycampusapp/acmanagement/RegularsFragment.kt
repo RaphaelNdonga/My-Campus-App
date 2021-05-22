@@ -69,8 +69,8 @@ class RegularsFragment : Fragment() {
             .setMessage("Are you sure you want to make ${userEmail.email} an admin?")
             .setPositiveButton(R.string.dialog_positive) { _, _ ->
                 viewModel.upgradeToAdmins(userEmail.email, courseId).addOnSuccessListener {
-                    viewModel.deleteRegularsCollection(userEmail.email)
-                    viewModel.setAdminCollection(userEmail)
+                    viewModel.deleteRegularsDocument(userEmail.email)
+                    viewModel.setAdminsDocument(userEmail)
                 }
             }
             .setNegativeButton(R.string.dialog_negative) { _, _ ->

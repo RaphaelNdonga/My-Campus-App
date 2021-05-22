@@ -40,11 +40,11 @@ class RegularsViewModel(
         return functions.getHttpsCallable("upgradeToAdmin").call(data).continueWith { }
     }
 
-    fun deleteRegularsCollection(email: String) {
+    fun deleteRegularsDocument(email: String) {
         regularsCollection.document(email).delete()
     }
 
-    fun setAdminCollection(userEmail: UserEmail) {
+    fun setAdminsDocument(userEmail: UserEmail) {
         val adminCollection = regularsCollection.parent?.collection("admins")
         adminCollection?.document(userEmail.email)?.set(userEmail)
     }
