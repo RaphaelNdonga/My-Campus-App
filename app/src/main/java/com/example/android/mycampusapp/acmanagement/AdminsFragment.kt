@@ -86,10 +86,24 @@ class AdminsFragment : Fragment() {
         AlertDialog.Builder(requireContext(), R.style.MyCampusApp_Dialog)
             .setNegativeButton(R.string.dialog_negative) { _, _ -> }
             .setPositiveButton(R.string.dialog_positive) { _, _ ->
-                viewModel.demoteToRegular(userEmail, courseId)
+                startLoading()
+                viewModel.demoteToRegular(userEmail, courseId).addOnCompleteListener {
+                    stopLoading()
+                }
             }
             .setTitle("Demote to regular")
             .setMessage("Are you sure you want to demote ${userEmail.email} to a regular user?")
             .create().show()
     }
+
+    private fun startLoading() {
+        binding.recyclerView.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun stopLoading() {
+        binding.recyclerView.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.GONE
+    }
+
 }

@@ -74,7 +74,10 @@ class RegularsFragment : Fragment() {
             .setTitle("Upgrade to Admin")
             .setMessage("Are you sure you want to make ${userEmail.email} an admin?")
             .setPositiveButton(R.string.dialog_positive) { _, _ ->
-                viewModel.upgradeToAdmins(userEmail, courseId)
+                startLoading()
+                viewModel.upgradeToAdmins(userEmail, courseId).addOnCompleteListener {
+                    stopLoading()
+                }
             }
             .setNegativeButton(R.string.dialog_negative) { _, _ ->
 
@@ -90,5 +93,15 @@ class RegularsFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         snapshotListener.remove()
+    }
+
+    private fun startLoading() {
+        binding.recyclerView.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun stopLoading() {
+        binding.recyclerView.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.GONE
     }
 }
