@@ -86,7 +86,7 @@ exports.upgradeToAdmin = functions.https.onCall((data,context)=>{
 
   return upgradeToAdmin(email,courseId).then(()=>{
     return {
-      result: `Request fulfilled! ${email} is now a moderator`
+      result: `Request fulfilled! ${email} is now an admin`
     }
   })
 })
@@ -101,7 +101,11 @@ exports.demoteToRegular = functions.https.onCall((data,context)=>{
     }
   }
 
-  return demoteToRegular(email,courseId)
+  return demoteToRegular(email,courseId).then(()=>{
+    return {
+      result: `Request fulfilled. ${email} has been demoted to a regular user.`
+    }
+  })
 })
 
 async function demoteToRegular(email:string,courseId:string) {
