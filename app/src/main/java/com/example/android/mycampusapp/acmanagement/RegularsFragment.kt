@@ -13,7 +13,9 @@ import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.UserEmail
 import com.example.android.mycampusapp.databinding.UsersFragmentBinding
 import com.example.android.mycampusapp.util.COURSE_ID
+import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.util.sharedPrefFile
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.functions.FirebaseFunctions
@@ -59,6 +61,10 @@ class RegularsFragment : Fragment() {
             adapter.submitList(it)
         })
 
+        viewModel.snackBarText.observe(viewLifecycleOwner, EventObserver {
+            Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
+        })
+
         binding.recyclerView.adapter = adapter
         return binding.root
     }
@@ -68,10 +74,7 @@ class RegularsFragment : Fragment() {
             .setTitle("Upgrade to Admin")
             .setMessage("Are you sure you want to make ${userEmail.email} an admin?")
             .setPositiveButton(R.string.dialog_positive) { _, _ ->
-                viewModel.upgradeToAdmins(userEmail.email, courseId).addOnSuccessListener {
-                    viewModel.deleteRegularsDocument(userEmail.email)
-                    viewModel.setAdminsDocument(userEmail)
-                }
+                viewModel.upgradeToAdmins(userEmail, courseId)
             }
             .setNegativeButton(R.string.dialog_negative) { _, _ ->
 

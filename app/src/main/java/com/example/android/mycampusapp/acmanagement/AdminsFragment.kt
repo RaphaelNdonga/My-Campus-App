@@ -13,7 +13,9 @@ import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.UserEmail
 import com.example.android.mycampusapp.databinding.UsersFragmentBinding
 import com.example.android.mycampusapp.util.COURSE_ID
+import com.example.android.mycampusapp.util.EventObserver
 import com.example.android.mycampusapp.util.sharedPrefFile
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.functions.FirebaseFunctions
@@ -61,6 +63,10 @@ class AdminsFragment : Fragment() {
             adapter.submitList(it)
         })
 
+        viewModel.snackBarText.observe(viewLifecycleOwner, EventObserver {
+            Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
+        })
+
         binding.recyclerView.adapter = adapter
 
         return binding.root
@@ -80,10 +86,7 @@ class AdminsFragment : Fragment() {
         AlertDialog.Builder(requireContext(), R.style.MyCampusApp_Dialog)
             .setNegativeButton(R.string.dialog_negative) { _, _ -> }
             .setPositiveButton(R.string.dialog_positive) { _, _ ->
-                viewModel.demoteToRegular(userEmail.email, courseId).addOnSuccessListener {
-                    viewModel.deleteAdminsDocument(userEmail.email)
-                    viewModel.createRegularsDocument(userEmail)
-                }
+                viewModel.demoteToRegular(userEmail, courseId)
             }
             .setTitle("Demote to regular")
             .setMessage("Are you sure you want to demote ${userEmail.email} to a regular user?")
