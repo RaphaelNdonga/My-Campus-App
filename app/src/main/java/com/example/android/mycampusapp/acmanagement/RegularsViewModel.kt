@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.data.UserEmail
+import com.example.android.mycampusapp.util.Event
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
@@ -16,6 +17,9 @@ class RegularsViewModel(
 ) : ViewModel() {
     private val _regularsList = MutableLiveData<List<UserEmail>>()
     val regularsList: LiveData<List<UserEmail>> = _regularsList
+
+    private val _snackBarText = MutableLiveData<Event<String>>()
+    val snackBarText: LiveData<Event<String>> = _snackBarText
 
     fun addSnapshotListener(): ListenerRegistration {
         return regularsCollection.addSnapshotListener { querySnapshot, firebaseFirestoreException ->
@@ -35,9 +39,22 @@ class RegularsViewModel(
         }
     }
 
-    fun upgradeToAdmins(email: String, courseId: String): Task<Unit> {
-        val data = hashMapOf("email" to email, "courseId" to courseId)
-        return functions.getHttpsCallable("upgradeToAdmin").call(data).continueWith { }
+    fun upgradeToAdmins(userEmail: UserEmail, courseId: String): Task<String> {
+        val data = hashMapOf("email" to userEmail.email, "courseId" to courseId)
+        return functions.getHttpsCallable("upgradeToAdmin").call(data).continueWith { task ->
+            val receivedHashMap = task.result?.data as HashMap<String, String>
+            val result = receivedHashMap["result"]
+            result!!
+        }.addOnCompleteListener {
+            if (it.isSuccessful) {
+                deleteRegularsDocument(userEmail.email)
+                setAdminsDocument(userEmail)
+                _snackBarText.value = Event(it.result ?: "")
+            } else {
+                _snackBarText.value =
+                    Event("Unable to upgrade user at this time. Please check your internet connection and try again.")
+            }
+        }
     }
 
     fun deleteRegularsDocument(email: String) {

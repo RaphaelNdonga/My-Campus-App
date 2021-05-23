@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.mycampusapp.data.UserEmail
+import com.example.android.mycampusapp.util.Event
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
@@ -16,6 +17,9 @@ class AdminsViewModel(
 ) : ViewModel() {
     private val _adminsList = MutableLiveData<List<UserEmail>>()
     val adminsList: LiveData<List<UserEmail>> = _adminsList
+
+    private val _snackBarText = MutableLiveData<Event<String>>()
+    val snackBarText: LiveData<Event<String>> = _snackBarText
 
     fun addSnapshotListener(): ListenerRegistration {
         return adminsCollection.addSnapshotListener { querySnapshot, firebaseException ->
@@ -35,9 +39,22 @@ class AdminsViewModel(
         }
     }
 
-    fun demoteToRegular(email: String, courseId: String): Task<Unit> {
-        val data = hashMapOf("email" to email, "courseId" to courseId)
-        return functions.getHttpsCallable("demoteToRegular").call(data).continueWith { }
+    fun demoteToRegular(userEmail: UserEmail, courseId: String): Task<String> {
+        val data = hashMapOf("email" to userEmail.email, "courseId" to courseId)
+        return functions.getHttpsCallable("demoteToRegular").call(data).continueWith { task ->
+            val receivedHashMap = task.result?.data as HashMap<String?, String?>
+            val result = receivedHashMap["result"]
+            result!!
+        }.addOnCompleteListener {
+            if (it.isSuccessful) {
+                deleteAdminsDocument(userEmail.email)
+                createRegularsDocument(userEmail)
+                _snackBarText.value = Event(it.result ?: "")
+            } else {
+                _snackBarText.value =
+                    Event("Unable to demote at this time. Please check your internet connection and try again.")
+            }
+        }
     }
 
     fun deleteAdminsDocument(email: String) {
