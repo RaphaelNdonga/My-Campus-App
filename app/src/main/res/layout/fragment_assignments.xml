@@ -40,7 +40,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:contentDescription="@string/my_campus_app_logo"
+                android:contentDescription="@string/no_assignments_message"
                 app:layout_constraintTop_toTopOf="parent" />
             <TextView
                 android:id="@+id/assignment_empty_text"
