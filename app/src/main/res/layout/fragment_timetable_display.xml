@@ -43,6 +43,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:contentDescription="@string/no_classes_message"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -69,6 +70,7 @@
             android:onClick="@{()->viewModel.addNewClass()}"
             android:visibility="gone"
             app:borderWidth="0dp"
+            android:contentDescription="@string/new_class_txt"
             app:srcCompat="@drawable/ic_add" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

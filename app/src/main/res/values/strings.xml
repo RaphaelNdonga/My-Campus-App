@@ -74,4 +74,5 @@
     <string name="admin_sign_up_txt">sign up as class rep</string>
     <string name="regular_sign_up_txt">sign up as regular student</string>
     <string name="new_user_txt">New User?</string>
+    <string name="new_class_txt">Create a new class</string>
 </resources>
