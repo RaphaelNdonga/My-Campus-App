@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="clickListener"
             type="com.example.android.mycampusapp.assessments.AssessmentsListener" />
+
         <variable
             name="test"
             type="com.example.android.mycampusapp.data.Assessment" />
@@ -26,31 +28,31 @@
 
             <TextView
                 android:id="@+id/test_subject"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/subject"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/test_time"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/time"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/test_date" />
 
             <TextView
                 android:id="@+id/test_date"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/date"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/test_subject" />
 
@@ -58,6 +60,7 @@
                 android:id="@+id/test_location_img"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:contentDescription="@string/location"
                 app:layout_constraintBottom_toBottomOf="@id/test_location"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/test_location"
@@ -67,22 +70,22 @@
 
             <TextView
                 android:id="@+id/test_location"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/location"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 android:textColor="@color/location"
                 app:layout_constraintStart_toEndOf="@id/test_location_img"
                 app:layout_constraintTop_toBottomOf="@+id/test_time" />
 
             <TextView
                 android:id="@+id/test_room"
-                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/room"
+                android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/test_location" />
 
