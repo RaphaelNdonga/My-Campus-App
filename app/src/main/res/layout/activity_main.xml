@@ -22,8 +22,7 @@
                 android:id="@+id/app_bar"
                 style="@style/Widget.MyCampusApp.Toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:elevation="0dp"/>
+                android:layout_height="?attr/actionBarSize" />
         </com.google.android.material.appbar.AppBarLayout>
 
         <fragment
