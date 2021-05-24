@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/signup_view_margin"
-            android:text="Sign up" />
+            android:text="@string/place_holder" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/class_rep_course_name"
