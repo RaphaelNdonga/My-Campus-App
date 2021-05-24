@@ -30,11 +30,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/signup_view_margin"
-            android:hint="Course Id">
+            android:hint="@string/course_id">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="text"
                 android:text="@={viewModel.courseName}" />
         </com.google.android.material.textfield.TextInputLayout>
 
