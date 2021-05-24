@@ -69,4 +69,5 @@
     <string name="manage_users">Manage Users</string>
     <string name="delete_account">Delete Account</string>
     <string name="place_holder">Place holder</string>
+    <string name="new_assessment_text">Create a new assessment</string>
 </resources>

@@ -40,6 +40,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                android:contentDescription="@string/my_campus_app_logo"
                 app:layout_constraintTop_toTopOf="parent" />
             <TextView
                 android:id="@+id/assignment_empty_text"
@@ -63,6 +64,7 @@
             android:onClick="@{()->viewModel.navigateToInput()}"
             android:visibility="gone"
             app:backgroundTint="@color/colorPrimary"
+            android:contentDescription="@string/new_assessment_text"
             app:srcCompat="@drawable/ic_add" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
