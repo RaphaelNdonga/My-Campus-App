@@ -22,8 +22,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/card_constraint_layout_padding"
-            android:background="@drawable/item_background">
+            android:background="@drawable/item_background"
+            android:padding="@dimen/card_constraint_layout_padding">
 
             <TextView
                 android:id="@+id/list_item_subject"
@@ -33,7 +33,7 @@
                 android:text="@string/subject"
                 android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/list_item_time"
@@ -43,18 +43,18 @@
                 android:text="@string/time"
                 android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_item_subject"
-                />
+                app:layout_constraintTop_toBottomOf="@id/list_item_subject" />
+
             <ImageView
                 android:id="@+id/location_img"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:contentDescription="@string/location"
                 app:layout_constraintBottom_toBottomOf="@id/list_item_location"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/list_item_location"
-                app:srcCompat="@drawable/ic_location"
 
-                />
+                app:srcCompat="@drawable/ic_location" />
 
             <TextView
                 android:id="@+id/list_item_location"
@@ -65,8 +65,8 @@
                 android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 android:textColor="@color/location"
                 app:layout_constraintStart_toEndOf="@id/location_img"
-                app:layout_constraintTop_toBottomOf="@id/list_item_time"
-                />
+                app:layout_constraintTop_toBottomOf="@id/list_item_time" />
+
             <TextView
                 android:id="@+id/list_item_room"
                 android:layout_width="wrap_content"
