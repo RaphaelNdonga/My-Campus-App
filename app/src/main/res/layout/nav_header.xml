@@ -12,7 +12,8 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:srcCompat="@drawable/ic_open_book"
-        android:padding="@dimen/toolbar_padding"/>
+        android:contentDescription="@string/my_campus_app_logo"
+        android:padding="@dimen/toolbar_padding" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
