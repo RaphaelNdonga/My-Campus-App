@@ -59,12 +59,11 @@
                 android:id="@+id/assignment_location_img"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:contentDescription="@string/location"
                 app:layout_constraintBottom_toBottomOf="@id/assignment_location"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/assignment_location"
-                app:srcCompat="@drawable/ic_location"
-
-                />
+                app:srcCompat="@drawable/ic_location" />
 
             <TextView
                 android:id="@+id/assignment_location"
