@@ -70,4 +70,8 @@
     <string name="delete_account">Delete Account</string>
     <string name="place_holder">Place holder</string>
     <string name="new_assessment_text">Create a new assessment</string>
+    <string name="next">Next</string>
+    <string name="admin_sign_up_txt">sign up as class rep</string>
+    <string name="regular_sign_up_txt">sign up as regular student</string>
+    <string name="new_user_txt">New User?</string>
 </resources>

@@ -26,6 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
+            android:contentDescription="@string/my_campus_app_logo"
             app:srcCompat="@drawable/ic_open_book" />
 
         <TextView
@@ -91,7 +92,7 @@
             style="@style/Widget.MyCampusApp.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Next"
+            android:text="@string/next"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_password" />
 
@@ -101,7 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="@{()->viewModel.navigateToAdminSignUp()}"
-            android:text="sign up as class rep"
+            android:text="@string/admin_sign_up_txt"
             app:layout_constraintBottom_toTopOf="@+id/regular_student_sign_up_btn"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -112,7 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:onClick="@{()->viewModel.navigateToRegularSignUp()}"
-            android:text="sign up as regular student"
+            android:text="@string/regular_sign_up_txt"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -122,7 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="New User?"
+            android:text="@string/new_user_txt"
             android:textColor="@color/colorSecondary"
             app:layout_constraintBottom_toTopOf="@+id/class_rep_sign_up_btn"
             app:layout_constraintStart_toStartOf="parent" />
