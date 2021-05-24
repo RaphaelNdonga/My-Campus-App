@@ -65,4 +65,8 @@
     <string name="confirm_password">Confirm password</string>
     <string name="confirm_password_request">Your passwords do not match</string>
     <string name="course_id">Course Id</string>
+    <string name="account_details">Account Details</string>
+    <string name="manage_users">Manage Users</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="place_holder">Place holder</string>
 </resources>
