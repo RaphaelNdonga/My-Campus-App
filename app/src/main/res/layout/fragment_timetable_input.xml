@@ -74,7 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/text_box_margin"
-                android:hint="@string/location">
+                android:hint="@string/location_link">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/class_location_edit_text"
