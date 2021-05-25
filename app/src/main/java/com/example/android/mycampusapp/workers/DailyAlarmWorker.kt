@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.text.format.DateFormat
 import androidx.hilt.work.HiltWorker
+import androidx.preference.PreferenceManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.android.mycampusapp.assessments.AssessmentType
@@ -18,6 +19,7 @@ import com.google.firebase.firestore.CollectionReference
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltWorker
@@ -32,6 +34,9 @@ class DailyAlarmWorker @AssistedInject constructor(
         val sharedPreferences =
             applicationContext.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         val courseId = sharedPreferences.getString(COURSE_ID, "")!!
+
+        val settingsPreference = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val minutesPrior = settingsPreference.getString("prior_alarm", "")!!.toLong()
 
         /**
          * Why do we set two alarms?
@@ -88,9 +93,12 @@ class DailyAlarmWorker @AssistedInject constructor(
                     )
                     val alarmManager =
                         applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
+                    val triggerTime = getTimetableCalendar(todayClass, getTodayEnumDay())
+                        .timeInMillis - millisPrior
                     alarmManager.setExact(
                         AlarmManager.RTC_WAKEUP,
-                        getTimetableCalendar(todayClass, getTodayEnumDay()).timeInMillis,
+                        triggerTime,
                         pendingIntent
                     )
                 }
@@ -125,9 +133,11 @@ class DailyAlarmWorker @AssistedInject constructor(
 
                 val alarmManager =
                     applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
+                val triggerTime = tomorrowCalendar.timeInMillis - millisPrior
                 alarmManager.setExact(
                     AlarmManager.RTC_WAKEUP,
-                    tomorrowCalendar.timeInMillis,
+                    triggerTime,
                     pendingIntent
                 )
             }
@@ -162,9 +172,11 @@ class DailyAlarmWorker @AssistedInject constructor(
 
                     val alarmManager =
                         applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
+                    val triggerTime = getAssessmentCalendar(assignment).timeInMillis - millisPrior
                     alarmManager.setExact(
                         AlarmManager.RTC_WAKEUP,
-                        getAssessmentCalendar(assignment).timeInMillis,
+                        triggerTime,
                         pendingIntent
                     )
                 }
@@ -202,9 +214,11 @@ class DailyAlarmWorker @AssistedInject constructor(
 
                     val alarmManager =
                         applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
+                    val triggerTime = getAssessmentCalendar(test).timeInMillis - millisPrior
                     alarmManager.setExact(
                         AlarmManager.RTC_WAKEUP,
-                        getAssessmentCalendar(test).timeInMillis,
+                        triggerTime,
                         pendingIntent
                     )
                 }

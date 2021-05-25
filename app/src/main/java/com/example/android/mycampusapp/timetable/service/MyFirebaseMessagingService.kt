@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.text.format.DateFormat
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import com.example.android.mycampusapp.assessments.AssessmentType
 import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.CustomDate
@@ -20,6 +21,7 @@ import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -33,6 +35,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val sharedPreferences =
             applicationContext.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
         val courseId = sharedPreferences.getString(COURSE_ID, "")!!
+
+        val settingsPreference = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        val minutesPrior = settingsPreference.getString("prior_alarm", "")!!.toLong()
 
         Timber.i("A new message has been received from ${remoteMessage.from}")
         Timber.i("The message is ${remoteMessage.data}")
@@ -74,11 +79,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     )
                     val alarmManager =
                         applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
+                    val triggerTime =
+                        getTimetableCalendar(timetableClass, dayOfWeek).timeInMillis - millisPrior
                     alarmManager.setExact(
                         AlarmManager.RTC_WAKEUP,
-                        getTimetableCalendar(timetableClass, dayOfWeek).timeInMillis,
+                        triggerTime,
                         pendingIntent
                     )
+                    Timber.i("The alarm will ring ${TimeUnit.MILLISECONDS.toMinutes(triggerTime - System.currentTimeMillis())} minutes from now")
                     if (dayOfWeek == getTodayEnumDay()) {
                         val immediateMessage =
                             "**TODAY** ${timetableClass.subject} will start at ${
@@ -103,7 +112,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     it.forEach { documentSnapshot ->
                         val assessment = documentSnapshot.toObject(Assessment::class.java)
                         val message = "${assessment.subject} ${
-                            assessmentType.name.toLowerCase(
+                            assessmentType.name.lowercase(
                                 Locale.ROOT
                             )
                         } has been set to be collected on ${
@@ -129,9 +138,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
                         val alarmManager =
                             applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                        val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
+                        val triggerTime =
+                            getAssessmentCalendar(assessment).timeInMillis - millisPrior
                         alarmManager.setExact(
                             AlarmManager.RTC_WAKEUP,
-                            getAssessmentCalendar(assessment).timeInMillis,
+                            triggerTime,
                             pendingIntent
                         )
                         sendNotification(message = message, assessmentType = assessmentType)
@@ -180,7 +192,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
             val assessmentType = enumValueOf<AssessmentType>(cancelAssessmentType)
             val notificationMessage =
-                "$cancelAssessmentSubject ${assessmentType.name.toLowerCase(Locale.ROOT)} will not be happening"
+                "$cancelAssessmentSubject ${assessmentType.name.lowercase(Locale.ROOT)} will not be happening"
 
             sendNotification(message = notificationMessage, assessmentType = assessmentType)
         }
