@@ -17,7 +17,7 @@ import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.Assessment
 import com.example.android.mycampusapp.data.CustomDate
 import com.example.android.mycampusapp.data.CustomTime
-import com.example.android.mycampusapp.databinding.ListItemAssignmentBinding
+import com.example.android.mycampusapp.databinding.ListItemAssessmentBinding
 import com.example.android.mycampusapp.util.format24HourTime
 import com.example.android.mycampusapp.util.formatAmPmTime
 import com.example.android.mycampusapp.util.formatDate
@@ -29,13 +29,13 @@ class AssessmentsAdapter(private val clickListener: AssessmentsListener) :
 
     var tracker: SelectionTracker<Long>? = null
 
-    class ViewHolder(private val binding: ListItemAssignmentBinding) :
+    class ViewHolder(private val binding: ListItemAssessmentBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemAssignmentBinding.inflate(layoutInflater, parent, false)
+                val binding = ListItemAssessmentBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }
@@ -46,24 +46,24 @@ class AssessmentsAdapter(private val clickListener: AssessmentsListener) :
             isActivated: Boolean = false
         ) {
             binding.executePendingBindings()
-            binding.assignment = currentAssessment
-            binding.assignmentSubject.text = currentAssessment.subject
+            binding.assessment = currentAssessment
+            binding.assessmentSubject.text = currentAssessment.subject
             val date = formatDate(
                 CustomDate(currentAssessment.year, currentAssessment.month, currentAssessment.day)
             )
             val time = formatTime(
                 CustomTime(currentAssessment.hour, currentAssessment.minute)
             )
-            binding.assignmentDate.text = date
-            binding.assignmentTime.text = time
-            binding.assignmentLocation.text = currentAssessment.locationName
-            binding.assignmentRoom.text = currentAssessment.room
+            binding.assessmentDate.text = date
+            binding.assessmentTime.text = time
+            binding.assessmentLocation.text = currentAssessment.locationName
+            binding.assessmentRoom.text = currentAssessment.room
 
             val milliSecDifference = getAssessmentTimeDifference(currentAssessment)
             val dayDifference = TimeUnit.MILLISECONDS.toDays(milliSecDifference)
 
-            binding.assignmentSubject.setTextColor(colorText(dayDifference))
-            binding.assignmentDate.setTextColor(colorText(dayDifference))
+            binding.assessmentSubject.setTextColor(colorText(dayDifference))
+            binding.assessmentDate.setTextColor(colorText(dayDifference))
 
             binding.clickListener = clickListener
             itemView.isActivated = isActivated
@@ -90,7 +90,7 @@ class AssessmentsAdapter(private val clickListener: AssessmentsListener) :
             val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
             mapIntent.setPackage("com.google.android.apps.maps")
 
-            binding.assignmentLocation.setOnClickListener {
+            binding.assessmentLocation.setOnClickListener {
                 this.itemView.context.startActivity(mapIntent)
             }
         }
@@ -127,11 +127,11 @@ class AssessmentsAdapter(private val clickListener: AssessmentsListener) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val currentAssignment = getItem(position)
+        val currentassessment = getItem(position)
         tracker?.let {
-            holder.bind(currentAssignment, clickListener, it.isSelected(position.toLong()))
+            holder.bind(currentassessment, clickListener, it.isSelected(position.toLong()))
         }
-        holder.setMapListener(currentAssignment)
+        holder.setMapListener(currentassessment)
     }
 
     override fun getItemId(position: Int): Long {
@@ -153,6 +153,6 @@ class AssessmentsAdapter(private val clickListener: AssessmentsListener) :
     }
 }
 
-class AssessmentsListener(val clickListener: (assignment: Assessment) -> Unit) {
-    fun onClick(assignment: Assessment) = clickListener(assignment)
+class AssessmentsListener(val clickListener: (assessment: Assessment) -> Unit) {
+    fun onClick(assessment: Assessment) = clickListener(assessment)
 }

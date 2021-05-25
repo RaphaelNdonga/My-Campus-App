@@ -30,7 +30,7 @@
                     android:layout_height="match_parent"
                     app:layoutManager=".util.CustomLinearLayoutManager"
                     app:assessmentListData="@{viewModel.assessments}"
-                    tools:listitem="@layout/list_item_test" />
+                    tools:listitem="@layout/list_item_assessment" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <ImageView

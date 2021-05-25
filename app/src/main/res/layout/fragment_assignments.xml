@@ -30,7 +30,7 @@
                     android:layout_height="match_parent"
                     app:assessmentListData="@{viewModel.assessments}"
                     app:layoutManager=".util.CustomLinearLayoutManager"
-                    tools:listitem="@layout/list_item_assignment" />
+                    tools:listitem="@layout/list_item_assessment" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
             <ImageView
                 android:id="@+id/assignment_empty_image"

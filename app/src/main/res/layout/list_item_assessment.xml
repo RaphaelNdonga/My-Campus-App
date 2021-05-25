@@ -5,20 +5,19 @@
     <data>
 
         <variable
-            name="clickListener"
-            type="com.example.android.mycampusapp.assessments.AssessmentsListener" />
-
-        <variable
-            name="test"
+            name="assessment"
             type="com.example.android.mycampusapp.data.Assessment" />
 
+        <variable
+            name="clickListener"
+            type="com.example.android.mycampusapp.assessments.AssessmentsListener" />
     </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/card_margin"
-        android:onClick="@{()->clickListener.onClick(test)}">
+        android:onClick="@{()->clickListener.onClick(assessment)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -27,7 +26,7 @@
             android:padding="@dimen/card_constraint_layout_padding">
 
             <TextView
-                android:id="@+id/test_subject"
+                android:id="@+id/assessment_subject"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
@@ -37,58 +36,56 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/test_time"
+                android:id="@+id/assessment_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/time"
                 android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/test_date" />
+                app:layout_constraintTop_toBottomOf="@+id/assessment_date" />
 
             <TextView
-                android:id="@+id/test_date"
+                android:id="@+id/assessment_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/date"
                 android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/test_subject" />
+                app:layout_constraintTop_toBottomOf="@+id/assessment_subject" />
 
             <ImageView
-                android:id="@+id/test_location_img"
+                android:id="@+id/assessment_location_img"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:contentDescription="@string/location"
-                app:layout_constraintBottom_toBottomOf="@id/test_location"
+                app:layout_constraintBottom_toBottomOf="@id/assessment_location"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/test_location"
-                app:srcCompat="@drawable/ic_location"
-
-                />
+                app:layout_constraintTop_toTopOf="@id/assessment_location"
+                app:srcCompat="@drawable/ic_location" />
 
             <TextView
-                android:id="@+id/test_location"
+                android:id="@+id/assessment_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/location"
                 android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 android:textColor="@color/location"
-                app:layout_constraintStart_toEndOf="@id/test_location_img"
-                app:layout_constraintTop_toBottomOf="@+id/test_time" />
+                app:layout_constraintStart_toEndOf="@id/assessment_location_img"
+                app:layout_constraintTop_toBottomOf="@+id/assessment_time" />
 
             <TextView
-                android:id="@+id/test_room"
+                android:id="@+id/assessment_room"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_box_margin"
                 android:text="@string/room"
                 android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/test_location" />
-
+                app:layout_constraintTop_toBottomOf="@+id/assessment_location" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.cardview.widget.CardView>
 </layout>
