@@ -24,6 +24,9 @@ class TimetableInputViewModel(
     private val dayOfWeek: DayOfWeek
 ) : AndroidViewModel(app) {
 
+    private val _classType = MutableLiveData<ClassType>()
+    val classType: LiveData<ClassType> = _classType
+
     private val _displayNavigator = MutableLiveData<Event<Unit>>()
     val displayNavigator: LiveData<Event<Unit>>
         get() = _displayNavigator
@@ -58,12 +61,24 @@ class TimetableInputViewModel(
     fun save() {
         val currentSubject: String? = textBoxSubject.value
         val currentTime: CustomTime? = _timeSet.value
-        val currentLocation: Location? = location
+        val locationOrLink: String? = textBoxLocation.value
         val currentRoom: String? = textBoxRoom.value
-        if (currentSubject.isNullOrBlank() || currentTime == null || currentLocation == null || currentRoom.isNullOrBlank()) {
+        if (currentSubject.isNullOrBlank() || currentTime == null || locationOrLink.isNullOrBlank() || currentRoom.isNullOrBlank()) {
             _snackbarText.value = Event(app.getString(R.string.empty_message))
             return
         }
+        /**
+         * If the class is online, check if the link is a valid url
+         */
+        if (_classType.value == ClassType.ONLINE && !locationOrLink.isValidUrl()) {
+            _snackbarText.value = Event("Please enter a valid url")
+            return
+        }
+        /**
+         * The following logic will be used to construct new classes:
+         * If the location has not been set, just save the text(which will most probably be a link)
+         * and set the coordinates to an empty string
+         */
         if (previousClass == null) {
             //Create new class
             val newClass =
@@ -71,8 +86,8 @@ class TimetableInputViewModel(
                     subject = currentSubject,
                     hour = currentTime.hour,
                     minute = currentTime.minute,
-                    locationName = currentLocation.name,
-                    locationCoordinates = currentLocation.coordinates,
+                    locationName = location?.name ?: locationOrLink,
+                    locationCoordinates = location?.coordinates ?: "",
                     room = currentRoom
                 )
             createNewClass(newClass)
@@ -85,8 +100,8 @@ class TimetableInputViewModel(
                 currentSubject,
                 currentTime.hour,
                 currentTime.minute,
-                currentLocation.name,
-                currentLocation.coordinates,
+                location?.name ?: locationOrLink,
+                location?.coordinates ?: "",
                 alarmRequestCode!!,
                 currentRoom
             )
@@ -159,6 +174,14 @@ class TimetableInputViewModel(
         textBoxLocation.value = loc.name
     }
 
+    /**
+     * Is necessary when the class is online. Since upon saving, the user might change their minds
+     * after saving a location. Therefore if the class is online, nullify the location
+     */
+    fun nullifyLocation() {
+        location = null
+    }
+
     fun setTime(time: CustomTime) {
         textBoxTime.value = formatTime(time)
         _timeSet.value = time
@@ -201,5 +224,9 @@ class TimetableInputViewModel(
         } else {
             formatAmPmTime(customTime)
         }
+    }
+
+    fun setClassType(classType: ClassType) {
+        _classType.value = classType
     }
 }
