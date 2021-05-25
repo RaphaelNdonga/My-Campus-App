@@ -10,6 +10,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.data.TimetableClass
 import com.example.android.mycampusapp.databinding.ListItemTimetableBinding
@@ -70,13 +71,28 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
                 override fun getPosition(): Int = adapterPosition
             }
 
-        fun setMapListener(currentClass: TimetableClass?) {
-            val mapUri = Uri.parse(currentClass?.locationCoordinates)
-            val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
-            mapIntent.setPackage("com.google.android.apps.maps")
+        fun setClickListener(currentClass: TimetableClass?) {
+            /**
+             * The location coordinates shall be used to determine whether a timetableClass
+             * contains a location or a link
+             */
+            if (!currentClass?.locationCoordinates.isNullOrBlank()) {
+                val mapUri = Uri.parse(currentClass?.locationCoordinates)
+                val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
+                mapIntent.setPackage("com.google.android.apps.maps")
 
-            binding.listItemLocation.setOnClickListener {
-                it.context.startActivity(mapIntent)
+                binding.listItemLocation.setOnClickListener {
+                    it.context.startActivity(mapIntent)
+                }
+            } else {
+                val browserUri = Uri.parse(currentClass?.locationName)
+                val browserIntent = Intent(Intent.ACTION_VIEW, browserUri)
+
+                binding.locationImg.setImageResource(R.drawable.ic_internet)
+
+                binding.listItemLocation.setOnClickListener {
+                    it.context.startActivity(browserIntent)
+                }
             }
         }
     }
@@ -100,7 +116,7 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
         tracker?.let {
             holder.bind(currentClass, clickListener, it.isSelected(position.toLong()))
         }
-        holder.setMapListener(currentClass)
+        holder.setClickListener(currentClass)
     }
 
     companion object DiffUtilCallBack : DiffUtil.ItemCallback<TimetableClass>() {
