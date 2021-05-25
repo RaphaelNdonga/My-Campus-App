@@ -30,4 +30,5 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }}
+    }
+}

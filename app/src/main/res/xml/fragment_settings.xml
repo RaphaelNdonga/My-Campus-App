@@ -8,6 +8,17 @@
             app:title="Include weekends" />
     </PreferenceCategory>
     <PreferenceCategory
+        app:key="alarm_category"
+        app:title="Alarm">
+        <ListPreference
+            app:defaultValue="0"
+            app:entries="@array/alert_entries"
+            app:entryValues="@array/alert_values"
+            app:key="prior_alarm"
+            app:title="Alert how many minutes before?"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+    <PreferenceCategory
         app:key="feedback_category"
         app:title="Feedback">
         <Preference
