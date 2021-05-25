@@ -3,6 +3,7 @@ package com.example.android.mycampusapp.timetable.input.thursday
 import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.text.InputType
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,7 @@ import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.data.CustomTime
 import com.example.android.mycampusapp.databinding.FragmentTimetableInputBinding
 import com.example.android.mycampusapp.location.LocationUtils
+import com.example.android.mycampusapp.timetable.input.ClassType
 import com.example.android.mycampusapp.timetable.input.TimetableInputViewModel
 import com.example.android.mycampusapp.timetable.input.TimetableInputViewModelFactory
 import com.example.android.mycampusapp.util.DayOfWeek
@@ -107,8 +109,33 @@ class ThursdayInputFragment : Fragment() {
         }
 
 
+
         binding.classLocationEditText.setOnClickListener {
-            showLocationsList()
+            setClassType()
+        }
+        viewModel.classType.observe(viewLifecycleOwner) { classType ->
+            when (classType) {
+                ClassType.PHYSICAL -> {
+                    showLocationsList()
+                    binding.classLocationEditText.isCursorVisible = false
+                    binding.classLocationEditText.isFocusable = false
+                    binding.classLocationEditText.isFocusableInTouchMode = false
+                    binding.classLocationEditText.inputType =
+                        InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
+                    binding.classLocationInput.helperText = null
+                }
+                ClassType.ONLINE -> {
+                    viewModel.nullifyLocation()
+                    binding.classLocationEditText.text = null
+                    binding.classLocationEditText.isCursorVisible = true
+                    binding.classLocationEditText.isFocusable = true
+                    binding.classLocationEditText.isFocusableInTouchMode = true
+                    binding.classLocationEditText.inputType =
+                        InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
+                    binding.classLocationInput.helperText = "Paste the link here"
+                }
+                else -> throw IllegalArgumentException("No other argument should be obtained")
+            }
         }
         return binding.root
     }
@@ -119,6 +146,19 @@ class ThursdayInputFragment : Fragment() {
             .setItems(R.array.locations) { _, which ->
                 viewModel.setLocation(LocationUtils.getJkuatLocations()[which])
             }
+        builder.create().show()
+    }
+
+    private fun setClassType() {
+        val builder = AlertDialog.Builder(requireActivity(), R.style.MyCampusApp_Dialog)
+            .setItems(R.array.class_type) { _, which ->
+                if (which == 0) {
+                    viewModel.setClassType(ClassType.ONLINE)
+                } else {
+                    viewModel.setClassType(ClassType.PHYSICAL)
+                }
+            }
+            .setTitle("Is the class online or physical?")
         builder.create().show()
     }
 }
