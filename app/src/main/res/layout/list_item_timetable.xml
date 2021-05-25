@@ -52,9 +52,7 @@
                 android:contentDescription="@string/location"
                 app:layout_constraintBottom_toBottomOf="@id/list_item_location"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/list_item_location"
-
-                app:srcCompat="@drawable/ic_location" />
+                app:layout_constraintTop_toTopOf="@id/list_item_location" />
 
             <TextView
                 android:id="@+id/list_item_location"

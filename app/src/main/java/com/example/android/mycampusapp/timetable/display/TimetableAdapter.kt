@@ -80,7 +80,7 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
                 val mapUri = Uri.parse(currentClass?.locationCoordinates)
                 val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
                 mapIntent.setPackage("com.google.android.apps.maps")
-
+                binding.locationImg.setImageResource(R.drawable.ic_location)
                 binding.listItemLocation.setOnClickListener {
                     it.context.startActivity(mapIntent)
                 }
