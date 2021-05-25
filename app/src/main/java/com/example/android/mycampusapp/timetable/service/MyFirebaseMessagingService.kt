@@ -67,7 +67,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                             val message =
                                 "${timetableClass.subject} is starting at ${
                                     formatTime(getTimetableCustomTime(timetableClass))
-                                } in ${timetableClass.locationName} Room ${timetableClass.room}"
+                                } in ${timetableClass.locationNameOrLink} Room ${timetableClass.room}"
                             putExtra("message", message)
                             putExtra("dayOfWeek", dayOfWeek.name)
                         }
@@ -92,14 +92,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         val immediateMessage =
                             "**TODAY** ${timetableClass.subject} will start at ${
                                 formatTime(getTimetableCustomTime(timetableClass))
-                            } in ${timetableClass.locationName} Room ${timetableClass.room}"
+                            } in ${timetableClass.locationNameOrLink} Room ${timetableClass.room}"
                         sendNotification(immediateMessage, getTodayEnumDay())
                     }
                     if (dayOfWeek == getTomorrowEnumDay()) {
                         val immediateMessage =
                             "**TOMORROW** ${timetableClass.subject} will start at ${
                                 formatTime(getTimetableCustomTime(timetableClass))
-                            } in ${timetableClass.locationName} Room ${timetableClass.room}"
+                            } in ${timetableClass.locationNameOrLink} Room ${timetableClass.room}"
                         sendNotification(immediateMessage, getTodayEnumDay())
                     }
                 }

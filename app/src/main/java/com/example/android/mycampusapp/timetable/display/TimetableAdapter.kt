@@ -50,7 +50,7 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
                     timetableClass.minute
                 )
             )
-            binding.listItemLocation.text = timetableClass.locationName
+            binding.listItemLocation.text = timetableClass.locationNameOrLink
             val room = "Room ${timetableClass.room}"
             binding.listItemRoom.text = room
             binding.clickListener = clickListener
@@ -85,7 +85,7 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
                     it.context.startActivity(mapIntent)
                 }
             } else {
-                val browserUri = Uri.parse(currentClass?.locationName)
+                val browserUri = Uri.parse(currentClass?.locationNameOrLink)
                 val browserIntent = Intent(Intent.ACTION_VIEW, browserUri)
 
                 binding.locationImg.setImageResource(R.drawable.ic_internet)

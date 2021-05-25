@@ -35,11 +35,12 @@ class TimetableInputViewModel(
     val textBoxTime = MutableLiveData(previousClass?.let {
         formatTime(CustomTime(it.hour, it.minute))
     })
-    val textBoxLocation = MutableLiveData<String>(previousClass?.locationName)
+    val textBoxLocation = MutableLiveData<String>(previousClass?.locationNameOrLink)
     val textBoxRoom = MutableLiveData<String>(previousClass?.room)
     private val id = previousClass?.id
     private val alarmRequestCode = previousClass?.alarmRequestCode
-    private var location = previousClass?.let { Location(it.locationName, it.locationCoordinates) }
+    private var location =
+        previousClass?.let { Location(it.locationNameOrLink, it.locationCoordinates) }
     private val _timeSet: MutableLiveData<CustomTime> = MutableLiveData(
         previousClass?.let {
             CustomTime(it.hour, it.minute)
@@ -86,7 +87,7 @@ class TimetableInputViewModel(
                     subject = currentSubject,
                     hour = currentTime.hour,
                     minute = currentTime.minute,
-                    locationName = location?.name ?: locationOrLink,
+                    locationNameOrLink = location?.name ?: locationOrLink,
                     locationCoordinates = location?.coordinates ?: "",
                     room = currentRoom
                 )

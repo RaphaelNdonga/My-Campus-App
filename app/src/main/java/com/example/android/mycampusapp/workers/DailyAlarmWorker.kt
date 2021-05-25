@@ -82,7 +82,7 @@ class DailyAlarmWorker @AssistedInject constructor(
                                 todayClass.minute
                             )
                         )
-                    } in ${todayClass.locationName} room ${todayClass.room}"
+                    } in ${todayClass.locationNameOrLink} room ${todayClass.room}"
                     intent.putExtra("message", message)
                     intent.putExtra("dayOfWeek", getTodayEnumDay().name)
                     val pendingIntent = PendingIntent.getBroadcast(
@@ -120,7 +120,7 @@ class DailyAlarmWorker @AssistedInject constructor(
                             tomorrowClass.minute
                         )
                     )
-                } in ${tomorrowClass.locationName} room ${tomorrowClass.room}"
+                } in ${tomorrowClass.locationNameOrLink} room ${tomorrowClass.room}"
                 intent.putExtra("message", message)
                 intent.putExtra("dayOfWeek", getTomorrowEnumDay().name)
                 val pendingIntent = PendingIntent.getBroadcast(
