@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_host"
     app:startDestination="@id/timetableFragment">
 
@@ -278,4 +279,9 @@
         android:id="@+id/manageUsersFragment"
         android:name="com.example.android.mycampusapp.acmanagement.ManageUsersFragment"
         android:label="Manage Users" />
+    <fragment
+        android:id="@+id/sendFeedbackFragment"
+        android:name="com.example.android.mycampusapp.settings.SendFeedbackFragment"
+        android:label="Send Feedback"
+        tools:layout="@layout/send_feedback_fragment" />
 </navigation>

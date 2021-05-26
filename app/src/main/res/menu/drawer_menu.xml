@@ -16,5 +16,9 @@
         android:id="@+id/manageAccountFragment"
         android:icon="@drawable/ic_manage_account"
         android:title="@string/manage_account" />
+    <item
+        android:id="@+id/sendFeedbackFragment"
+        android:icon="@drawable/ic_feedback"
+        android:title="@string/send_feedback" />
 
 </menu>

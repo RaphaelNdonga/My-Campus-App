@@ -7,4 +7,5 @@ const val COURSE_ID: String = "courseId"
 const val sharedPrefFile = "com.example.android.mycampusapp"
 const val SUBJECT = "SUBJECT"
 const val TIME = "TIME"
-const val RUN_DAILY:Long = 24*60*60*1000
+const val RUN_DAILY: Long = 24 * 60 * 60 * 1000
+const val WORK_EMAIL = "raphaelndongawork@gmail.com"

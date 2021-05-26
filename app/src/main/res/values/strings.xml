@@ -76,4 +76,6 @@
     <string name="new_user_txt">New User?</string>
     <string name="new_class_txt">Create a new class</string>
     <string name="location_link">Location/Link</string>
+    <string name="send_feedback">Send Feedback</string>
+    <string name="send_feedback_heading">Please share your thoughts with us</string>
 </resources>
