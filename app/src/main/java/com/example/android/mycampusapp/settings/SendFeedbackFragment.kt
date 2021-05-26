@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.android.mycampusapp.R
 import com.example.android.mycampusapp.databinding.SendFeedbackFragmentBinding
 import com.example.android.mycampusapp.util.WORK_EMAIL
@@ -19,7 +18,6 @@ class SendFeedbackFragment : Fragment() {
         fun newInstance() = SendFeedbackFragment()
     }
 
-    private lateinit var viewModel: SendFeedbackViewModel
     private lateinit var binding: SendFeedbackFragmentBinding
 
     override fun onCreateView(
@@ -27,7 +25,6 @@ class SendFeedbackFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = SendFeedbackFragmentBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(SendFeedbackViewModel::class.java)
 
         binding.sendFeedbackBtn.setOnClickListener {
             val feedbackText = binding.feedbackEditText.text.toString()
