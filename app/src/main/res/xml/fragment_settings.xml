@@ -18,12 +18,4 @@
             app:title="Alert how many minutes before?"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
-    <PreferenceCategory
-        app:key="feedback_category"
-        app:title="Feedback">
-        <Preference
-            app:key="feedback"
-            app:summary="Report technical issues or suggest new features"
-            app:title="Send Feedback" />
-    </PreferenceCategory>
 </PreferenceScreen>
