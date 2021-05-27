@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.login.LoginViewModel" />
+            type="com.mycampusapp.login.LoginViewModel" />
 
     </data>
 

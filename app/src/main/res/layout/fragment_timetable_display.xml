@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.timetable.display.TimetableViewModel" />
+            type="com.mycampusapp.timetable.display.TimetableViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -29,7 +29,7 @@
                     android:id="@+id/timetable_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:layoutManager=".util.CustomLinearLayoutManager"
+                    app:layoutManager="com.mycampusapp.util.CustomLinearLayoutManager"
                     app:timetableListData="@{viewModel.timetableClasses}"
                     tools:itemCount="5"
                     tools:listitem="@layout/list_item_timetable" />

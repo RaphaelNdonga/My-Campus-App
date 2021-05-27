@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/timetableFragment"
-        android:name="com.example.android.mycampusapp.timetable.display.TimetableFragment"
+        android:name="com.mycampusapp.timetable.display.TimetableFragment"
         android:label="Timetable">
         <action
             android:id="@+id/action_timetableFragment_to_mondayInputFragment"
@@ -74,7 +74,7 @@
     </fragment>
     <fragment
         android:id="@+id/mondayInputFragment"
-        android:name="com.example.android.mycampusapp.timetable.input.monday.MondayInputFragment"
+        android:name="com.mycampusapp.timetable.input.monday.MondayInputFragment"
         android:label="Set Monday Class">
         <argument
             android:name="mondayClass"
@@ -84,7 +84,7 @@
     </fragment>
     <fragment
         android:id="@+id/tuesdayInputFragment"
-        android:name="com.example.android.mycampusapp.timetable.input.tuesday.TuesdayInputFragment"
+        android:name="com.mycampusapp.timetable.input.tuesday.TuesdayInputFragment"
         android:label="Set Tuesday Class">
         <argument
             android:name="tuesdayClass"
@@ -94,7 +94,7 @@
     </fragment>
     <fragment
         android:id="@+id/sundayInputFragment"
-        android:name="com.example.android.mycampusapp.timetable.input.sunday.SundayInputFragment"
+        android:name="com.mycampusapp.timetable.input.sunday.SundayInputFragment"
         android:label="Set Sunday Class">
         <argument
             android:name="sundayClass"
@@ -104,7 +104,7 @@
     </fragment>
     <fragment
         android:id="@+id/wednesdayInputFragment"
-        android:name="com.example.android.mycampusapp.timetable.input.wednesday.WednesdayInputFragment"
+        android:name="com.mycampusapp.timetable.input.wednesday.WednesdayInputFragment"
         android:label="set wednesday class">
         <argument
             android:name="wednesdayClass"
@@ -114,7 +114,7 @@
     </fragment>
     <fragment
         android:id="@+id/thursdayInputFragment"
-        android:name="com.example.android.mycampusapp.timetable.input.thursday.ThursdayInputFragment"
+        android:name="com.mycampusapp.timetable.input.thursday.ThursdayInputFragment"
         android:label="set thursday class">
         <argument
             android:name="thursdayClass"
@@ -124,7 +124,7 @@
     </fragment>
     <fragment
         android:id="@+id/fridayInputFragment"
-        android:name="com.example.android.mycampusapp.timetable.input.friday.FridayInputFragment"
+        android:name="com.mycampusapp.timetable.input.friday.FridayInputFragment"
         android:label="set friday class">
         <argument
             android:name="fridayClass"
@@ -134,7 +134,7 @@
     </fragment>
     <fragment
         android:id="@+id/saturdayInputFragment"
-        android:name="com.example.android.mycampusapp.timetable.input.saturday.SaturdayInputFragment"
+        android:name="com.mycampusapp.timetable.input.saturday.SaturdayInputFragment"
         android:label="set saturday class">
         <argument
             android:name="saturdayClass"
@@ -144,7 +144,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.android.mycampusapp.settings.SettingsFragment"
+        android:name="com.mycampusapp.settings.SettingsFragment"
         android:label="Settings">
         <action
             android:id="@+id/action_settingsFragment_to_timetableFragment"
@@ -157,7 +157,7 @@
 
     <fragment
         android:id="@+id/manageAccountFragment"
-        android:name="com.example.android.mycampusapp.acmanagement.ManageAccountFragment"
+        android:name="com.mycampusapp.acmanagement.ManageAccountFragment"
         android:label="Manage Account">
         <action
             android:id="@+id/action_manageAccountFragment_to_manageUsersFragment"
@@ -165,7 +165,7 @@
     </fragment>
     <fragment
         android:id="@+id/assignmentInput"
-        android:name="com.example.android.mycampusapp.assessments.assignments.input.AssignmentInputFragment"
+        android:name="com.mycampusapp.assessments.assignments.input.AssignmentInputFragment"
         android:label="Set Assignment">
         <argument
             android:name="assignment"
@@ -175,7 +175,7 @@
     </fragment>
     <fragment
         android:id="@+id/testsInputFragment"
-        android:name="com.example.android.mycampusapp.assessments.tests.input.TestsInputFragment"
+        android:name="com.mycampusapp.assessments.tests.input.TestsInputFragment"
         android:label="Add Tests">
         <argument
             android:name="assessment"
@@ -185,7 +185,7 @@
     </fragment>
     <fragment
         android:id="@+id/assessmentsFragment"
-        android:name="com.example.android.mycampusapp.assessments.AssessmentsFragment"
+        android:name="com.mycampusapp.assessments.AssessmentsFragment"
         android:label="Assignments and Tests">
         <action
             android:id="@+id/action_assessmentsFragment_to_testsInputFragment"
@@ -196,7 +196,7 @@
     </fragment>
     <fragment
         android:id="@+id/fridayFragment"
-        android:name="com.example.android.mycampusapp.timetable.display.days.friday.FridayFragment"
+        android:name="com.mycampusapp.timetable.display.days.friday.FridayFragment"
         android:label="Friday">
         <argument
             android:name="isClickable"
@@ -205,7 +205,7 @@
     </fragment>
     <fragment
         android:id="@+id/saturdayFragment"
-        android:name="com.example.android.mycampusapp.timetable.display.days.saturday.SaturdayFragment"
+        android:name="com.mycampusapp.timetable.display.days.saturday.SaturdayFragment"
         android:label="Saturday">
         <argument
             android:name="isClickable"
@@ -214,7 +214,7 @@
     </fragment>
     <fragment
         android:id="@+id/sundayFragment"
-        android:name="com.example.android.mycampusapp.timetable.display.days.sunday.SundayFragment"
+        android:name="com.mycampusapp.timetable.display.days.sunday.SundayFragment"
         android:label="Sunday">
         <argument
             android:name="isClickable"
@@ -223,7 +223,7 @@
     </fragment>
     <fragment
         android:id="@+id/mondayFragment"
-        android:name="com.example.android.mycampusapp.timetable.display.days.monday.MondayFragment"
+        android:name="com.mycampusapp.timetable.display.days.monday.MondayFragment"
         android:label="Monday">
         <argument
             android:name="isClickable"
@@ -232,7 +232,7 @@
     </fragment>
     <fragment
         android:id="@+id/tuesdayFragment"
-        android:name="com.example.android.mycampusapp.timetable.display.days.tuesday.TuesdayFragment"
+        android:name="com.mycampusapp.timetable.display.days.tuesday.TuesdayFragment"
         android:label="Tuesday">
         <argument
             android:name="isClickable"
@@ -241,7 +241,7 @@
     </fragment>
     <fragment
         android:id="@+id/wednesdayFragment"
-        android:name="com.example.android.mycampusapp.timetable.display.days.wednesday.WednesdayFragment"
+        android:name="com.mycampusapp.timetable.display.days.wednesday.WednesdayFragment"
         android:label="Wednesday">
         <argument
             android:name="isClickable"
@@ -250,7 +250,7 @@
     </fragment>
     <fragment
         android:id="@+id/thursdayFragment"
-        android:name="com.example.android.mycampusapp.timetable.display.days.thursday.ThursdayFragment"
+        android:name="com.mycampusapp.timetable.display.days.thursday.ThursdayFragment"
         android:label="Thursday">
         <argument
             android:name="isClickable"
@@ -259,7 +259,7 @@
     </fragment>
     <fragment
         android:id="@+id/testsFragment"
-        android:name="com.example.android.mycampusapp.assessments.tests.display.TestsFragment"
+        android:name="com.mycampusapp.assessments.tests.display.TestsFragment"
         android:label="TestsFragment">
         <argument
             android:name="isClickable"
@@ -268,7 +268,7 @@
     </fragment>
     <fragment
         android:id="@+id/assignmentsFragment"
-        android:name="com.example.android.mycampusapp.assessments.assignments.display.AssignmentsFragment"
+        android:name="com.mycampusapp.assessments.assignments.display.AssignmentsFragment"
         android:label="AssignmentsFragment">
         <argument
             android:name="isClickable"
@@ -277,11 +277,11 @@
     </fragment>
     <fragment
         android:id="@+id/manageUsersFragment"
-        android:name="com.example.android.mycampusapp.acmanagement.ManageUsersFragment"
+        android:name="com.mycampusapp.acmanagement.ManageUsersFragment"
         android:label="Manage Users" />
     <fragment
         android:id="@+id/sendFeedbackFragment"
-        android:name="com.example.android.mycampusapp.settings.SendFeedbackFragment"
+        android:name="com.mycampusapp.settings.SendFeedbackFragment"
         android:label="Send Feedback"
         tools:layout="@layout/send_feedback_fragment" />
 </navigation>

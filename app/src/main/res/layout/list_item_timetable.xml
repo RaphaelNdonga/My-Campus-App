@@ -6,11 +6,11 @@
 
         <variable
             name="timetableClass"
-            type="com.example.android.mycampusapp.data.TimetableClass" />
+            type="com.mycampusapp.data.TimetableClass" />
 
         <variable
             name="clickListener"
-            type="com.example.android.mycampusapp.timetable.display.TimetableListener" />
+            type="com.mycampusapp.timetable.display.TimetableListener" />
     </data>
 
     <androidx.cardview.widget.CardView

@@ -7,14 +7,14 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.assessments.AssessmentInputViewModel" />
+            type="com.mycampusapp.assessments.AssessmentInputViewModel" />
 
     </data>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".timetable.input.friday.FridayInputFragment">
+        tools:context="com.mycampusapp.timetable.input.friday.FridayInputFragment">
 
         <LinearLayout
             android:layout_width="match_parent"

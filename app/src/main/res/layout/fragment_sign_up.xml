@@ -6,7 +6,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.login.SignUpViewModel" />
+            type="com.mycampusapp.login.SignUpViewModel" />
     </data>
 
     <LinearLayout
@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="@dimen/layout_padding"
-        tools:context=".login.SignUpFragment">
+        tools:context="com.mycampusapp.login.SignUpFragment">
 
         <TextView
             android:id="@+id/sign_up_heading"

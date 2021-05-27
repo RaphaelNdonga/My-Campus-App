@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.android.mycampusapp.assessments.AssessmentsViewModel" />
+            type="com.mycampusapp.assessments.AssessmentsViewModel" />
 
     </data>
 
@@ -28,7 +28,7 @@
                     android:id="@+id/tests_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:layoutManager=".util.CustomLinearLayoutManager"
+                    app:layoutManager="com.mycampusapp.util.CustomLinearLayoutManager"
                     app:assessmentListData="@{viewModel.assessments}"
                     tools:listitem="@layout/list_item_assessment" />
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

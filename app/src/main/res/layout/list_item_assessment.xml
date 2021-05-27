@@ -6,11 +6,11 @@
 
         <variable
             name="assessment"
-            type="com.example.android.mycampusapp.data.Assessment" />
+            type="com.mycampusapp.data.Assessment" />
 
         <variable
             name="clickListener"
-            type="com.example.android.mycampusapp.assessments.AssessmentsListener" />
+            type="com.mycampusapp.assessments.AssessmentsListener" />
     </data>
 
     <androidx.cardview.widget.CardView
