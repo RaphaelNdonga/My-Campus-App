@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:553699551392:android:98b9a3dd7aff1ac9e581c5",
         "android_client_info": {
-          "package_name": "com.example.android.mycampusapp"
+          "package_name": "com.mycampusapp"
         }
       },
       "oauth_client": [
