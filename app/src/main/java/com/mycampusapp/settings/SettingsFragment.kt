@@ -6,7 +6,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceFragmentCompat
-import com.example.android.mycampusapp.R
+import com.mycampusapp.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
 

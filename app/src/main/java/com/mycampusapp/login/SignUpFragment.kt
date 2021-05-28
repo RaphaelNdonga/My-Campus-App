@@ -9,11 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.FragmentSignUpBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.functions.FirebaseFunctions
+import com.mycampusapp.R
+import com.mycampusapp.databinding.FragmentSignUpBinding
 import com.mycampusapp.util.EventObserver
 import com.mycampusapp.util.isValidEmail
 import com.mycampusapp.util.isValidMessagingTopic

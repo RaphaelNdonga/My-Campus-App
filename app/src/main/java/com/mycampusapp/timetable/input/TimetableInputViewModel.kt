@@ -6,10 +6,10 @@ import android.text.format.DateFormat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.android.mycampusapp.R
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.functions.FirebaseFunctions
+import com.mycampusapp.R
 import com.mycampusapp.data.CustomTime
 import com.mycampusapp.data.Location
 import com.mycampusapp.data.TimetableClass

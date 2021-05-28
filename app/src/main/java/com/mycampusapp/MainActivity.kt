@@ -9,13 +9,13 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.navigateUp
-import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.ActivityMainBinding
-import com.example.android.mycampusapp.timetable.display.TimetableFragmentDirections
+import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mycampusapp.assessments.AssessmentType
+import com.mycampusapp.databinding.ActivityMainBinding
+import com.mycampusapp.timetable.display.TimetableFragmentDirections
 import com.mycampusapp.util.DayOfWeek
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

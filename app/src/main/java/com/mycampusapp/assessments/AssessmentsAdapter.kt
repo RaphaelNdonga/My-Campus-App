@@ -13,11 +13,11 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.ListItemAssessmentBinding
+import com.mycampusapp.R
 import com.mycampusapp.data.Assessment
 import com.mycampusapp.data.CustomDate
 import com.mycampusapp.data.CustomTime
+import com.mycampusapp.databinding.ListItemAssessmentBinding
 import com.mycampusapp.util.format24HourTime
 import com.mycampusapp.util.formatAmPmTime
 import com.mycampusapp.util.formatDate

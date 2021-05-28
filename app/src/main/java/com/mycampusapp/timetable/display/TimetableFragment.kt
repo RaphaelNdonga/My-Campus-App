@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.FragmentTimetableBinding
 import com.google.android.material.tabs.TabLayoutMediator
+import com.mycampusapp.R
+import com.mycampusapp.databinding.FragmentTimetableBinding
 
 class TimetableFragment : Fragment() {
     override fun onCreateView(

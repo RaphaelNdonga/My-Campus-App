@@ -11,17 +11,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.FragmentLoginBinding
-import com.example.android.mycampusapp.util.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.mycampusapp.MainActivity
-import com.mycampusapp.util.COURSE_ID
-import com.mycampusapp.util.EventObserver
-import com.mycampusapp.util.isValidEmail
-import com.mycampusapp.util.sharedPrefFile
+import com.mycampusapp.R
+import com.mycampusapp.databinding.FragmentLoginBinding
+import com.mycampusapp.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

@@ -16,12 +16,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.FragmentTimetableInputBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.functions.FirebaseFunctions
+import com.mycampusapp.R
 import com.mycampusapp.data.CustomTime
+import com.mycampusapp.databinding.FragmentTimetableInputBinding
 import com.mycampusapp.location.LocationUtils
 import com.mycampusapp.timetable.input.ClassType
 import com.mycampusapp.timetable.input.TimetableInputViewModel

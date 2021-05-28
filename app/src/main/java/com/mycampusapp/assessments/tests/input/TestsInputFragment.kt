@@ -18,15 +18,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.FragmentTestInputBinding
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.functions.FirebaseFunctions
+import com.mycampusapp.R
 import com.mycampusapp.assessments.AssessmentInputViewModel
 import com.mycampusapp.assessments.AssessmentInputViewModelFactory
 import com.mycampusapp.assessments.AssessmentType
 import com.mycampusapp.data.CustomDate
 import com.mycampusapp.data.CustomTime
+import com.mycampusapp.databinding.FragmentTestInputBinding
 import com.mycampusapp.location.LocationUtils
 import com.mycampusapp.util.COURSE_ID
 import com.mycampusapp.util.EventObserver

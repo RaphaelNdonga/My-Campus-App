@@ -15,12 +15,12 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.FragmentAssignmentsBinding
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.functions.FirebaseFunctions
+import com.mycampusapp.R
 import com.mycampusapp.assessments.*
+import com.mycampusapp.databinding.FragmentAssignmentsBinding
 import com.mycampusapp.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber

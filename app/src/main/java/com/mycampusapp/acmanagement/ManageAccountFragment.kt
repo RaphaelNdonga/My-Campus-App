@@ -10,12 +10,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.FragmentAccountManagementBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.messaging.FirebaseMessaging
 import com.mycampusapp.LoginActivity
+import com.mycampusapp.R
+import com.mycampusapp.databinding.FragmentAccountManagementBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

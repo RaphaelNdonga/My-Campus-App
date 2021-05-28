@@ -7,9 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.SendFeedbackFragmentBinding
 import com.google.android.material.snackbar.Snackbar
+import com.mycampusapp.R
+import com.mycampusapp.databinding.SendFeedbackFragmentBinding
 import com.mycampusapp.util.WORK_EMAIL
 
 class SendFeedbackFragment : Fragment() {

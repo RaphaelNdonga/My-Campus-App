@@ -5,7 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.mycampusapp.R
+import com.mycampusapp.R
 import com.mycampusapp.assessments.AssessmentsAdapter
 import com.mycampusapp.data.Assessment
 import com.mycampusapp.data.DataStatus

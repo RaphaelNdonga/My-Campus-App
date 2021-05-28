@@ -5,8 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import com.example.android.mycampusapp.R
 import com.mycampusapp.MainActivity
+import com.mycampusapp.R
 import com.mycampusapp.assessments.AssessmentType
 
 private const val REQUEST_CODE = 0

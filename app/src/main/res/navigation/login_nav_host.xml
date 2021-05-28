@@ -24,7 +24,7 @@
         <argument
             android:name="studentStatus"
             android:defaultValue="UNDEFINED"
-            app:argType="com.example.android.mycampusapp.login.StudentStatus" />
+            app:argType="com.mycampusapp.login.StudentStatus" />
     </fragment>
 
 </navigation>

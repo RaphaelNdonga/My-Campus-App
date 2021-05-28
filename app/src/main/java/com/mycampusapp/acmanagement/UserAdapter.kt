@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.android.mycampusapp.databinding.ListItemUserBinding
 import com.mycampusapp.data.UserEmail
+import com.mycampusapp.databinding.ListItemUserBinding
 
 class UserAdapter(private val userListener: UserListener) :
     ListAdapter<UserEmail, UserAdapter.UserViewHolder>(DiffUtilCallback) {

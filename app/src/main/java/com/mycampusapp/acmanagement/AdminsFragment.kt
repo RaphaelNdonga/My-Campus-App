@@ -9,13 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.android.mycampusapp.R
-import com.example.android.mycampusapp.databinding.UsersFragmentBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.functions.FirebaseFunctions
+import com.mycampusapp.R
 import com.mycampusapp.data.UserEmail
+import com.mycampusapp.databinding.UsersFragmentBinding
 import com.mycampusapp.util.COURSE_ID
 import com.mycampusapp.util.EventObserver
 import com.mycampusapp.util.sharedPrefFile

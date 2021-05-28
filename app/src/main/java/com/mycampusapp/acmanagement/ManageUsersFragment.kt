@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.android.mycampusapp.databinding.FragmentManageUsersBinding
 import com.google.android.material.tabs.TabLayoutMediator
+import com.mycampusapp.databinding.FragmentManageUsersBinding
 
 class ManageUsersFragment : Fragment() {
     private lateinit var binding: FragmentManageUsersBinding
