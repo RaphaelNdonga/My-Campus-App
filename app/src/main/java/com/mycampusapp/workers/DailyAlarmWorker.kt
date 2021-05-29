@@ -36,7 +36,7 @@ class DailyAlarmWorker @AssistedInject constructor(
         val courseId = sharedPreferences.getString(COURSE_ID, "")!!
 
         val settingsPreference = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        val minutesPrior = settingsPreference.getString("prior_alarm", "")!!.toLong()
+        val minutesPrior = settingsPreference.getString("prior_alarm", "0")!!.toLong()
 
         /**
          * Why do we set two alarms?
