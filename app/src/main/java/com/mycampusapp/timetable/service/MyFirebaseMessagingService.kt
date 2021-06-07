@@ -37,7 +37,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val courseId = sharedPreferences.getString(COURSE_ID, "")!!
 
         val settingsPreference = PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        val minutesPrior = settingsPreference.getString("prior_alarm", "")!!.toLong()
+        val minutesPrior = settingsPreference.getString("prior_alarm", "0")!!.toLong()
 
         Timber.i("A new message has been received from ${remoteMessage.from}")
         Timber.i("The message is ${remoteMessage.data}")
@@ -103,14 +103,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         sendNotification(immediateMessage, getTodayEnumDay())
                     }
                 }
-        }
 
-        if (!updateAssessmentId.isNullOrEmpty() && !updateAssessmentType.isNullOrEmpty()) {
-            val assessmentType = enumValueOf<AssessmentType>(updateAssessmentType)
-            courses.document(courseId).collection(assessmentType.name).get()
-                .addOnSuccessListener {
-                    it.forEach { documentSnapshot ->
-                        val assessment = documentSnapshot.toObject(Assessment::class.java)
+            if (!updateAssessmentId.isNullOrEmpty() && !updateAssessmentType.isNullOrEmpty()) {
+                val assessmentType = enumValueOf<AssessmentType>(updateAssessmentType)
+                courses.document(courseId).collection(assessmentType.name)
+                    .document(updateAssessmentId)
+                    .get().addOnSuccessListener {
+                        val assessment = it.toObject(Assessment::class.java)!!
                         val message = "${assessment.subject} ${
                             assessmentType.name.lowercase(
                                 Locale.ROOT
@@ -148,7 +147,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         )
                         sendNotification(message = message, assessmentType = assessmentType)
                     }
-                }
+            }
         }
 
         if (!requestCode.isNullOrEmpty() && !cancelDay.isNullOrEmpty() && !cancelledSubject.isNullOrEmpty()) {
