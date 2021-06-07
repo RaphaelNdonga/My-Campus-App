@@ -103,51 +103,51 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         sendNotification(immediateMessage, getTodayEnumDay())
                     }
                 }
+        }
 
-            if (!updateAssessmentId.isNullOrEmpty() && !updateAssessmentType.isNullOrEmpty()) {
-                val assessmentType = enumValueOf<AssessmentType>(updateAssessmentType)
-                courses.document(courseId).collection(assessmentType.name)
-                    .document(updateAssessmentId)
-                    .get().addOnSuccessListener {
-                        val assessment = it.toObject(Assessment::class.java)!!
-                        val message = "${assessment.subject} ${
-                            assessmentType.name.lowercase(
-                                Locale.ROOT
-                            )
-                        } has been set to be collected on ${
-                            formatDate(
-                                CustomDate(assessment.year, assessment.month, assessment.day)
-                            )
-                        } at ${
-                            formatTime(
-                                CustomTime(assessment.hour, assessment.minute)
-                            )
-                        }"
-                        val intent = Intent(this, TimetableAlarmReceiver::class.java).apply {
-                            putExtra("message", message)
-                            putExtra("assessmentType", assessmentType.name)
-                        }
-
-                        val pendingIntent = PendingIntent.getBroadcast(
-                            this,
-                            assessment.alarmRequestCode,
-                            intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT
+        if (!updateAssessmentId.isNullOrEmpty() && !updateAssessmentType.isNullOrEmpty()) {
+            val assessmentType = enumValueOf<AssessmentType>(updateAssessmentType)
+            courses.document(courseId).collection(assessmentType.name)
+                .document(updateAssessmentId)
+                .get().addOnSuccessListener {
+                    val assessment = it.toObject(Assessment::class.java)!!
+                    val message = "${assessment.subject} ${
+                        assessmentType.name.lowercase(
+                            Locale.ROOT
                         )
-
-                        val alarmManager =
-                            applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                        val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
-                        val triggerTime =
-                            getAssessmentCalendar(assessment).timeInMillis - millisPrior
-                        alarmManager.setExact(
-                            AlarmManager.RTC_WAKEUP,
-                            triggerTime,
-                            pendingIntent
+                    } has been set to be collected on ${
+                        formatDate(
+                            CustomDate(assessment.year, assessment.month, assessment.day)
                         )
-                        sendNotification(message = message, assessmentType = assessmentType)
+                    } at ${
+                        formatTime(
+                            CustomTime(assessment.hour, assessment.minute)
+                        )
+                    }"
+                    val intent = Intent(this, TimetableAlarmReceiver::class.java).apply {
+                        putExtra("message", message)
+                        putExtra("assessmentType", assessmentType.name)
                     }
-            }
+
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        this,
+                        assessment.alarmRequestCode,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    )
+
+                    val alarmManager =
+                        applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
+                    val triggerTime =
+                        getAssessmentCalendar(assessment).timeInMillis - millisPrior
+                    alarmManager.setExact(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerTime,
+                        pendingIntent
+                    )
+                    sendNotification(message = message, assessmentType = assessmentType)
+                }
         }
 
         if (!requestCode.isNullOrEmpty() && !cancelDay.isNullOrEmpty() && !cancelledSubject.isNullOrEmpty()) {
