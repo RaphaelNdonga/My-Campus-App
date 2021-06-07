@@ -73,7 +73,7 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$timberVersion"
     implementation "androidx.legacy:legacy-support-v4:$androidXLegacySupport"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
 
     // Architecture Components
     implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
@@ -102,29 +102,31 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     //hilt with workmanager
-    implementation 'androidx.hilt:hilt-work:1.0.0-alpha03'
+    implementation 'androidx.hilt:hilt-work:1.0.0'
 
     implementation 'androidx.multidex:multidex:2.0.1'
 
     //recycler view selection dependency
-    implementation 'androidx.recyclerview:recyclerview-selection:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview-selection:1.1.0'
+
+    //firebase bom
+    implementation platform('com.google.firebase:firebase-bom:28.1.0')
 
     //firestore dependency
-    implementation 'com.google.firebase:firebase-firestore-ktx:22.1.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx'
 
     //firebase authentication dependency
-    implementation 'com.google.firebase:firebase-auth:20.0.2'
+    implementation 'com.google.firebase:firebase-auth'
 
     //firebase cloud messaging dependencies. Crashlytics are essential
-    implementation 'com.google.firebase:firebase-messaging-ktx:21.0.1'
-    implementation 'com.google.firebase:firebase-analytics-ktx:18.0.2'
-
-
-    //settings dependency
-    implementation 'androidx.preference:preference-ktx:1.1.1'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 
     //firebase cloud functions dependency
-    implementation 'com.google.firebase:firebase-functions:19.2.0'
+    implementation 'com.google.firebase:firebase-functions'
+    
+    //settings dependency
+    implementation 'androidx.preference:preference-ktx:1.1.1'
 
     // Kotlin + coroutines work manager dependency
     implementation "androidx.work:work-runtime-ktx:$work_version"
