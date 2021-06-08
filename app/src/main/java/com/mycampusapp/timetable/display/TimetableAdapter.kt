@@ -1,15 +1,20 @@
 package com.mycampusapp.timetable.display
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.format.DateFormat
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.mycampusapp.R
 import com.mycampusapp.data.CustomTime
 import com.mycampusapp.data.TimetableClass
@@ -51,8 +56,15 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
                 )
             )
             binding.listItemLocation.text = timetableClass.locationNameOrLink
-            val room = "Room ${timetableClass.room}"
-            binding.listItemRoom.text = room
+            if (timetableClass.locationCoordinates.isNotBlank()) {
+                val room = "Room: ${timetableClass.room}"
+                binding.listItemRoom.text = room
+            } else {
+                val password = "Password: ${timetableClass.room}"
+                binding.listItemRoom.text = password
+                binding.clipboard.visibility = View.VISIBLE
+            }
+
             binding.clickListener = clickListener
             itemView.isActivated = isActivated
         }
@@ -71,13 +83,13 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
                 override fun getPosition(): Int = adapterPosition
             }
 
-        fun setClickListener(currentClass: TimetableClass?) {
+        fun setClickListener(currentClass: TimetableClass) {
             /**
              * The location coordinates shall be used to determine whether a timetableClass
              * contains a location or a link
              */
-            if (!currentClass?.locationCoordinates.isNullOrBlank()) {
-                val mapUri = Uri.parse(currentClass?.locationCoordinates)
+            if (currentClass.locationCoordinates.isNotBlank()) {
+                val mapUri = Uri.parse(currentClass.locationCoordinates)
                 val mapIntent = Intent(Intent.ACTION_VIEW, mapUri)
                 mapIntent.setPackage("com.google.android.apps.maps")
                 binding.locationImg.setImageResource(R.drawable.ic_location)
@@ -85,13 +97,24 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
                     it.context.startActivity(mapIntent)
                 }
             } else {
-                val browserUri = Uri.parse(currentClass?.locationNameOrLink)
+                val browserUri = Uri.parse(currentClass.locationNameOrLink)
                 val browserIntent = Intent(Intent.ACTION_VIEW, browserUri)
 
                 binding.locationImg.setImageResource(R.drawable.ic_internet)
 
                 binding.listItemLocation.setOnClickListener {
                     it.context.startActivity(browserIntent)
+                }
+                binding.clipboard.setOnClickListener {
+                    val clipBoard =
+                        binding.root.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("password", currentClass.room)
+                    clipBoard.setPrimaryClip(clip)
+                    Snackbar.make(
+                        binding.root,
+                        "The password has been copied to the clipboard",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                 }
             }
         }
