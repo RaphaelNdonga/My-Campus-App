@@ -58,10 +58,10 @@
     <string name="network_error_msg">Please check your internet connection and try again</string>
     <string name="invalid_password">The password should contain at least 8 characters</string>
     <string name="invalid_email">Please enter a valid email address.</string>
-    <string name="fill_blanks">Please fill in all the values</string>
+    <string name="fill_blanks">Please fill in this blank</string>
     <string name="general_error">An error occurred. Try checking your internet connection</string>
     <string name="white_space_error">The course id cannot contain spaces</string>
-    <string name="course_id_requirements">The allowed characters are in the A to Z, numbers and -,_,.,~,% special characters</string>
+    <string name="course_id_requirements">The allowed characters A-Z, numbers, -,_,.,~,% and no spaces</string>
     <string name="confirm_password">Confirm password</string>
     <string name="confirm_password_request">Your passwords do not match</string>
     <string name="course_id">Course Id</string>
