@@ -39,7 +39,8 @@ object LocationUtils {
                 "Pan African University(PAU) ",
                 "geo:-1.0984353,37.0143342?q=Pan+African+University+Institute+for+Basic+Sciences+Technology+and+Innovation+(PAUSTI)+Block+A"
             ),
-            Location("To Be Determined","geo:-1.1017095,37.0141552?q=JKUAT+Main+Gate,+Gachororo+road")
+            Location("To Be Determined","geo:-1.1017095,37.0141552?q=JKUAT+Main+Gate,+Gachororo+road"),
+            Location("Red Hats Building (RH)","geo:-1.0927418,37.0107866?q=Red+Hats+Building")
         )
     }
 }
