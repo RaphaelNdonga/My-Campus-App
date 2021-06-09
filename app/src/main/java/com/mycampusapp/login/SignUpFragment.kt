@@ -74,35 +74,53 @@ class SignUpFragment : Fragment() {
             viewModel.password.value?.let {
                 password = it
             }
-            val courseId = viewModel.courseName.value
+            val courseId = viewModel.courseId.value
             val confirmPassword = viewModel.confirmPassword.value
 
-            if (email.isNullOrEmpty() || courseId.isNullOrEmpty() || password.isEmpty()) {
-                Snackbar.make(requireView(), R.string.fill_blanks, Snackbar.LENGTH_LONG).show()
+            if (email.isNullOrEmpty()) {
+                binding.email.error = requireActivity().getString(R.string.fill_blanks)
                 return@setOnClickListener
             }
+            binding.email.error = null
+
+            if (courseId.isNullOrEmpty()) {
+                binding.courseId.error = requireActivity().getString(R.string.fill_blanks)
+                return@setOnClickListener
+            }
+            binding.email.error = null
+
+
+            if (password.isEmpty()) {
+                binding.password.error = requireActivity().getString(R.string.fill_blanks)
+                return@setOnClickListener
+            }
+            binding.password.error = null
+
             if (password != confirmPassword) {
-                Snackbar.make(
-                    requireView(),
-                    R.string.confirm_password_request,
-                    Snackbar.LENGTH_LONG
-                )
-                    .show()
+                binding.confirmPassword.error =
+                    requireActivity().getString(R.string.confirm_password_request)
                 return@setOnClickListener
             }
+            binding.confirmPassword.error = null
+
             if (courseId.isValidMessagingTopic()) {
-                Snackbar.make(requireView(), R.string.course_id_requirements, Snackbar.LENGTH_LONG)
-                    .show()
+                binding.courseId.error = requireActivity().getString(R.string.course_id_requirements)
                 return@setOnClickListener
             }
+            binding.courseId.error = null
+
             if (!email.isValidEmail()) {
-                Snackbar.make(requireView(), R.string.invalid_email, Snackbar.LENGTH_LONG).show()
+                binding.email.error = requireActivity().getString(R.string.invalid_email)
                 return@setOnClickListener
             }
+            binding.email.error = null
+
             if (password.length < 8) {
-                Snackbar.make(requireView(), R.string.invalid_password, Snackbar.LENGTH_LONG).show()
+                binding.password.error = requireActivity().getString(R.string.invalid_password)
                 return@setOnClickListener
             }
+            binding.password.error = null
+
             data = hashMapOf(
                 "email" to email,
                 "courseId" to courseId
@@ -164,8 +182,8 @@ class SignUpFragment : Fragment() {
     }
 
     private fun startLoading() {
-        binding.classRepCourseName.visibility = View.GONE
-        binding.classRepEmail.visibility = View.GONE
+        binding.courseId.visibility = View.GONE
+        binding.email.visibility = View.GONE
         binding.password.visibility = View.GONE
         binding.classRepSignedUpBtn.visibility = View.GONE
         binding.progressBar.visibility = View.VISIBLE
@@ -175,8 +193,8 @@ class SignUpFragment : Fragment() {
     }
 
     private fun stopLoading() {
-        binding.classRepCourseName.visibility = View.VISIBLE
-        binding.classRepEmail.visibility = View.VISIBLE
+        binding.courseId.visibility = View.VISIBLE
+        binding.email.visibility = View.VISIBLE
         binding.password.visibility = View.VISIBLE
         binding.classRepSignedUpBtn.visibility = View.VISIBLE
         binding.progressBar.visibility = View.GONE
