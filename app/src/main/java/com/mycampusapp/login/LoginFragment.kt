@@ -100,12 +100,20 @@ class LoginFragment : Fragment() {
         nextBtn.setOnClickListener {
             val email = viewModel.email.value
             val password = viewModel.password.value
-            if (email.isNullOrEmpty() || password.isNullOrEmpty()) {
-                Snackbar.make(requireView(), R.string.fill_blanks, Snackbar.LENGTH_LONG).show()
+            if(email.isNullOrEmpty()){
+                binding.loginEmail.error = requireActivity().getString(R.string.fill_blanks)
                 return@setOnClickListener
             }
+            binding.loginEmail.error = null
+
+            if (password.isNullOrEmpty()) {
+                binding.loginPassword.error = requireActivity().getString(R.string.fill_blanks)
+                return@setOnClickListener
+            }
+            binding.loginPassword.error = null
+
             if (!email.isValidEmail()) {
-                Snackbar.make(requireView(), R.string.invalid_email, Snackbar.LENGTH_LONG).show()
+                binding.loginEmail.error = requireActivity().getString(R.string.invalid_email)
                 return@setOnClickListener
             }
             viewModel.signInUser(email, password)
