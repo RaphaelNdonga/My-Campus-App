@@ -13,6 +13,7 @@ import com.mycampusapp.R
 import com.mycampusapp.data.CustomTime
 import com.mycampusapp.data.Location
 import com.mycampusapp.data.TimetableClass
+import com.mycampusapp.location.LocationUtils
 import com.mycampusapp.util.*
 import timber.log.Timber
 
@@ -36,7 +37,7 @@ class TimetableInputViewModel(
         formatTime(CustomTime(it.hour, it.minute))
     })
     val textBoxLocation = MutableLiveData<String>(previousClass?.locationNameOrLink)
-    val textBoxRoom = MutableLiveData<String>(previousClass?.room)
+    val textBoxRoom = MutableLiveData<String>(previousClass?.room ?: "To be determined")
     private val id = previousClass?.id
     private val alarmRequestCode = previousClass?.alarmRequestCode
     private var location =
@@ -56,6 +57,17 @@ class TimetableInputViewModel(
     private val courseId = sharedPreferences.getString(COURSE_ID, "")!!
 
     private val dayFirestore = courseCollection.document(courseId).collection(dayOfWeek.name)
+
+    init {
+        if (previousClass == null) {
+            setLocation(
+                Location(
+                    "To be determined",
+                    "geo:-1.1017095,37.0141552?q=JKUAT+Main+Gate,+Gachororo+road"
+                )
+            )
+        }
+    }
 
 
     // Can only be tested through espresso
