@@ -35,7 +35,7 @@ class SignUpViewModel(
     val adminExists: LiveData<Boolean>
         get() = _adminExists
 
-    val courseName = MutableLiveData<String>()
+    val courseId = MutableLiveData<String>()
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
     val confirmPassword = MutableLiveData<String>()
