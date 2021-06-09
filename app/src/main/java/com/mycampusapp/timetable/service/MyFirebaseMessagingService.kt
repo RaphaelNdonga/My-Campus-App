@@ -61,46 +61,51 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 .addOnSuccessListener { updateDocument ->
                     Timber.i("update success")
 
-                    val timetableClass = updateDocument.toObject(TimetableClass::class.java)!!
-                    val intent =
-                        Intent(applicationContext, TimetableAlarmReceiver::class.java).apply {
-                            val message =
-                                "${timetableClass.subject} is starting at ${
+                    val timetableClass = updateDocument.toObject(TimetableClass::class.java)
+                    timetableClass?.let {
+                        val intent =
+                            Intent(applicationContext, TimetableAlarmReceiver::class.java).apply {
+                                val message =
+                                    "${timetableClass.subject} is starting at ${
+                                        formatTime(getTimetableCustomTime(timetableClass))
+                                    } in ${timetableClass.locationNameOrLink} Room ${timetableClass.room}"
+                                putExtra("message", message)
+                                putExtra("dayOfWeek", dayOfWeek.name)
+                            }
+                        val pendingIntent = PendingIntent.getBroadcast(
+                            applicationContext,
+                            timetableClass.alarmRequestCode,
+                            intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                        )
+                        val alarmManager =
+                            applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                        val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
+                        val triggerTime =
+                            getTimetableCalendar(
+                                timetableClass,
+                                dayOfWeek
+                            ).timeInMillis - millisPrior
+                        alarmManager.setExact(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTime,
+                            pendingIntent
+                        )
+                        Timber.i("The alarm will ring ${TimeUnit.MILLISECONDS.toMinutes(triggerTime - System.currentTimeMillis())} minutes from now")
+                        if (dayOfWeek == getTodayEnumDay()) {
+                            val immediateMessage =
+                                "**TODAY** ${timetableClass.subject} will start at ${
                                     formatTime(getTimetableCustomTime(timetableClass))
                                 } in ${timetableClass.locationNameOrLink} Room ${timetableClass.room}"
-                            putExtra("message", message)
-                            putExtra("dayOfWeek", dayOfWeek.name)
+                            sendNotification(immediateMessage, dayOfWeek)
                         }
-                    val pendingIntent = PendingIntent.getBroadcast(
-                        applicationContext,
-                        timetableClass.alarmRequestCode,
-                        intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                    )
-                    val alarmManager =
-                        applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                    val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
-                    val triggerTime =
-                        getTimetableCalendar(timetableClass, dayOfWeek).timeInMillis - millisPrior
-                    alarmManager.setExact(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerTime,
-                        pendingIntent
-                    )
-                    Timber.i("The alarm will ring ${TimeUnit.MILLISECONDS.toMinutes(triggerTime - System.currentTimeMillis())} minutes from now")
-                    if (dayOfWeek == getTodayEnumDay()) {
-                        val immediateMessage =
-                            "**TODAY** ${timetableClass.subject} will start at ${
-                                formatTime(getTimetableCustomTime(timetableClass))
-                            } in ${timetableClass.locationNameOrLink} Room ${timetableClass.room}"
-                        sendNotification(immediateMessage, dayOfWeek)
-                    }
-                    if (dayOfWeek == getTomorrowEnumDay()) {
-                        val immediateMessage =
-                            "**TOMORROW** ${timetableClass.subject} will start at ${
-                                formatTime(getTimetableCustomTime(timetableClass))
-                            } in ${timetableClass.locationNameOrLink} Room ${timetableClass.room}"
-                        sendNotification(immediateMessage, dayOfWeek)
+                        if (dayOfWeek == getTomorrowEnumDay()) {
+                            val immediateMessage =
+                                "**TOMORROW** ${timetableClass.subject} will start at ${
+                                    formatTime(getTimetableCustomTime(timetableClass))
+                                } in ${timetableClass.locationNameOrLink} Room ${timetableClass.room}"
+                            sendNotification(immediateMessage, dayOfWeek)
+                        }
                     }
                 }
         }
@@ -110,43 +115,45 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             courses.document(courseId).collection(assessmentType.name)
                 .document(updateAssessmentId)
                 .get().addOnSuccessListener {
-                    val assessment = it.toObject(Assessment::class.java)!!
-                    val message = "${assessment.subject} ${
-                        assessmentType.name.lowercase(
-                            Locale.ROOT
+                    val assessment = it.toObject(Assessment::class.java)
+                    assessment?.let {
+                        val message = "${assessment.subject} ${
+                            assessmentType.name.lowercase(
+                                Locale.ROOT
+                            )
+                        } has been set to be collected on ${
+                            formatDate(
+                                CustomDate(assessment.year, assessment.month, assessment.day)
+                            )
+                        } at ${
+                            formatTime(
+                                CustomTime(assessment.hour, assessment.minute)
+                            )
+                        }"
+                        val intent = Intent(this, TimetableAlarmReceiver::class.java).apply {
+                            putExtra("message", message)
+                            putExtra("assessmentType", assessmentType.name)
+                        }
+
+                        val pendingIntent = PendingIntent.getBroadcast(
+                            this,
+                            assessment.alarmRequestCode,
+                            intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT
                         )
-                    } has been set to be collected on ${
-                        formatDate(
-                            CustomDate(assessment.year, assessment.month, assessment.day)
+
+                        val alarmManager =
+                            applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                        val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
+                        val triggerTime =
+                            getAssessmentCalendar(assessment).timeInMillis - millisPrior
+                        alarmManager.setExact(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTime,
+                            pendingIntent
                         )
-                    } at ${
-                        formatTime(
-                            CustomTime(assessment.hour, assessment.minute)
-                        )
-                    }"
-                    val intent = Intent(this, TimetableAlarmReceiver::class.java).apply {
-                        putExtra("message", message)
-                        putExtra("assessmentType", assessmentType.name)
+                        sendNotification(message = message, assessmentType = assessmentType)
                     }
-
-                    val pendingIntent = PendingIntent.getBroadcast(
-                        this,
-                        assessment.alarmRequestCode,
-                        intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                    )
-
-                    val alarmManager =
-                        applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                    val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
-                    val triggerTime =
-                        getAssessmentCalendar(assessment).timeInMillis - millisPrior
-                    alarmManager.setExact(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerTime,
-                        pendingIntent
-                    )
-                    sendNotification(message = message, assessmentType = assessmentType)
                 }
         }
 
