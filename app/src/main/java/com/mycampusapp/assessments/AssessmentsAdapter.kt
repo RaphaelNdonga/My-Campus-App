@@ -100,7 +100,7 @@ class AssessmentsAdapter(private val clickListener: AssessmentsListener) :
             if (dayDifference in 0..1) {
                 return Color.RED
             }
-            if (dayDifference in 2..4) {
+            if (dayDifference in 2..6) {
                 return ResourcesCompat.getColor(
                     itemView.context.resources,
                     R.color.yellow,
