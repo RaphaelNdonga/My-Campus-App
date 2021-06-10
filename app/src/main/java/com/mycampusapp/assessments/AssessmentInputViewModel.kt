@@ -18,20 +18,20 @@ import com.mycampusapp.util.*
 
 class AssessmentInputViewModel(
     private val assignmentsCollection: CollectionReference,
-    private val assessment: Assessment?,
+    private val previousAssessment: Assessment?,
     private val functions: FirebaseFunctions,
     private val assessmentType: AssessmentType,
     private val app: Application
 ) : AndroidViewModel(app) {
 
     // acquire the date values and save them as integers
-    private val _dateSet = MutableLiveData<CustomDate>(assessment?.let {
-        CustomDate(assessment.year, assessment.month, assessment.day)
+    private val _dateSet = MutableLiveData<CustomDate>(previousAssessment?.let {
+        CustomDate(previousAssessment.year, previousAssessment.month, previousAssessment.day)
     })
     val dateSet: LiveData<CustomDate>
         get() = _dateSet
-    private val _timeSet = MutableLiveData<CustomTime>(assessment?.let {
-        CustomTime(assessment.hour, assessment.minute)
+    private val _timeSet = MutableLiveData<CustomTime>(previousAssessment?.let {
+        CustomTime(previousAssessment.hour, previousAssessment.minute)
     })
     val timeSet: LiveData<CustomTime>
         get() = _timeSet
@@ -51,13 +51,13 @@ class AssessmentInputViewModel(
         get() = _displayNavigator
 
     // The immutable variables below are connected to the xml file through a two-way dataBinding.
-    val textBoxSubject = MutableLiveData<String>(assessment?.subject)
+    val textBoxSubject = MutableLiveData<String>(previousAssessment?.subject)
     val textBoxDate = MutableLiveData<String>(dateText)
     val textBoxTime = MutableLiveData<String>(timeText)
-    val textBoxLocation = MutableLiveData<String>(assessment?.locationName)
-    val textBoxRoom = MutableLiveData<String>(assessment?.room)
+    val textBoxLocation = MutableLiveData<String>(previousAssessment?.locationName)
+    val textBoxRoom = MutableLiveData<String>(previousAssessment?.room?:"To be determined")
 
-    private var location = assessment?.let {
+    private var location = previousAssessment?.let {
         Location(
             it.locationName,
             it.locationCoordinates
@@ -66,6 +66,17 @@ class AssessmentInputViewModel(
 
     private val sharedPreferences = app.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
     private val courseId = sharedPreferences.getString(COURSE_ID, "")!!
+
+    init {
+        if (previousAssessment == null) {
+            setLocation(
+                Location(
+                    "To be determined",
+                    "geo:-1.1017095,37.0141552?q=JKUAT+Main+Gate,+Gachororo+road"
+                )
+            )
+        }
+    }
 
 
     fun save() {
@@ -81,7 +92,7 @@ class AssessmentInputViewModel(
             _snackBarEvent.value = Event(R.string.empty_message)
             return
         }
-        if (assessment == null) {
+        if (previousAssessment == null) {
             val currentAssessment = Assessment(
                 subject = currentSubject,
                 day = currentDate.day,
@@ -105,7 +116,7 @@ class AssessmentInputViewModel(
             return
         }
         val currentAssessment = Assessment(
-            id = assessment.id,
+            id = previousAssessment.id,
             subject = currentSubject,
             day = currentDate.day,
             month = currentDate.month,
@@ -114,10 +125,10 @@ class AssessmentInputViewModel(
             minute = currentTime.minute,
             locationName = currentLocation.name,
             locationCoordinates = currentLocation.coordinates,
-            alarmRequestCode = assessment.alarmRequestCode,
+            alarmRequestCode = previousAssessment.alarmRequestCode,
             room = currentRoom
         )
-        if (currentAssessment == assessment) {
+        if (currentAssessment == previousAssessment) {
             _snackBarEvent.value = Event(R.string.no_details_changed)
             navigateToDisplay()
             return
