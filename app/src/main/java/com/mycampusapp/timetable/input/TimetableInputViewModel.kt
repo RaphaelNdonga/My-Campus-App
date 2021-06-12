@@ -84,7 +84,7 @@ class TimetableInputViewModel(
          * If the class is online, check if the link is a valid url
          */
         if (_classType.value == ClassType.ONLINE && !locationOrLink.isValidUrl()) {
-            _snackbarText.value = Event("Please enter a valid url")
+            _snackbarText.value = Event(app.getString(R.string.valid_url_request))
             return
         }
         /**

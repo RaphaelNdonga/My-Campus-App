@@ -15,8 +15,8 @@ android {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
         multiDexEnabled true
-        versionCode 6
-        versionName "6.0"
+        versionCode 7
+        versionName "7.0"
         testInstrumentationRunner "com.mycampusapp.CustomTestRunner"
 
         vectorDrawables.useSupportLibrary = true

@@ -33,10 +33,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MondayInputFragment : Fragment() {
-
-    @Inject
-    lateinit var firestore: FirebaseFirestore
-
     @Inject
     lateinit var coursesCollection: CollectionReference
 

@@ -78,4 +78,8 @@
     <string name="location_link">Location/Link</string>
     <string name="send_feedback">Send Feedback</string>
     <string name="send_feedback_heading">Please share your thoughts with us</string>
+    <string name="link">link</string>
+    <string name="valid_url_request">Please enter a valid url</string>
+    <string name="add_link">Add a subject link</string>
+    <string name="essential_links">Essential Links</string>
 </resources>
