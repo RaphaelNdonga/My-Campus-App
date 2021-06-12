@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/timetableFragment"
         android:icon="@drawable/ic_timetable"
@@ -8,6 +9,10 @@
         android:id="@+id/assessmentsFragment"
         android:icon="@drawable/ic_assignments"
         android:title="@string/assessments" />
+    <item
+        android:id="@+id/LinksFragment"
+        android:icon="@drawable/ic_internet"
+        android:title="@string/essential_links" />
     <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_settings"
