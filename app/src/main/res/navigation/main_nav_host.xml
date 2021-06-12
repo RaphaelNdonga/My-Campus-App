@@ -284,4 +284,24 @@
         android:name="com.mycampusapp.settings.SendFeedbackFragment"
         android:label="Send Feedback"
         tools:layout="@layout/send_feedback_fragment" />
+    <fragment
+        android:id="@+id/LinksFragment"
+        android:name="com.mycampusapp.links.LinksFragment"
+        android:label="@string/essential_links"
+        tools:layout="@layout/links_fragment">
+        <action
+            android:id="@+id/action_linksFragment_to_linksInputFragment"
+            app:destination="@id/LinksInputFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/LinksInputFragment"
+        android:name="com.mycampusapp.links.LinksInputFragment"
+        android:label="@string/add_link"
+        tools:layout="@layout/links_input_fragment">
+        <argument
+            android:name="link"
+            android:defaultValue="@null"
+            app:argType="com.mycampusapp.data.Links"
+            app:nullable="true" />
+    </fragment>
 </navigation>
