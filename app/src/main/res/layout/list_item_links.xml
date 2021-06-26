@@ -14,11 +14,12 @@
             android:text="@string/subject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/text_view_margin"/>
+            android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"/>
         <TextView
             android:id="@+id/link"
             android:text="@string/link"
             android:textColor="@color/location"
+            android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
