@@ -9,14 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.selection.SelectionPredicates
+import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.selection.StorageStrategy
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.mycampusapp.R
 import com.mycampusapp.databinding.LinksFragmentBinding
-import com.mycampusapp.util.COURSE_ID
-import com.mycampusapp.util.IS_ADMIN
-import com.mycampusapp.util.LINKS
-import com.mycampusapp.util.sharedPrefFile
+import com.mycampusapp.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -26,7 +26,9 @@ class LinksFragment : Fragment() {
     private lateinit var viewModel: LinksViewModel
     private lateinit var binding: LinksFragmentBinding
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var snapshotListener:ListenerRegistration
+    private lateinit var snapshotListener: ListenerRegistration
+    private lateinit var adapter: EssentialLinksAdapter
+    private lateinit var tracker: SelectionTracker<Long>
 
     @Inject
     lateinit var courseCollection: CollectionReference
@@ -55,7 +57,7 @@ class LinksFragment : Fragment() {
                 findNavController().navigate(R.id.LinksInputFragment)
             }
         }
-        val adapter = EssentialLinksAdapter(EssentialLinksListener {
+        adapter = EssentialLinksAdapter(EssentialLinksListener {
             if (isAdmin) {
                 findNavController().navigate(
                     LinksFragmentDirections.actionLinksFragmentToLinksInputFragment(
@@ -64,7 +66,7 @@ class LinksFragment : Fragment() {
                 )
             }
         })
-        viewModel.links.observe(viewLifecycleOwner,{
+        viewModel.links.observe(viewLifecycleOwner, {
             adapter.submitList(it)
         })
         binding.linksRecyclerView.adapter = adapter
@@ -74,6 +76,16 @@ class LinksFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         snapshotListener = viewModel.addSnapshotListener()
+        tracker = SelectionTracker.Builder(
+            "linksSelection",
+            binding.linksRecyclerView,
+            MyItemKeyProvider(
+                binding.linksRecyclerView
+            ),
+            LinkItemDetailsLookup(binding.linksRecyclerView),
+            StorageStrategy.createLongStorage()
+        ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
+        adapter.tracker = tracker
     }
 
     override fun onStop() {
