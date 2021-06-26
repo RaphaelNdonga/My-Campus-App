@@ -16,4 +16,10 @@ class LinksViewModel(private val linksCollection: CollectionReference) : ViewMod
             _links.value = querySnapshot?.toObjects(Links::class.java)
         }
     }
+
+    fun deleteList(list: List<Links>) {
+        list.forEach {
+            linksCollection.document(it.id).delete()
+        }
+    }
 }

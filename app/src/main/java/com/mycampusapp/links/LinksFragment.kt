@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
@@ -132,11 +133,21 @@ class LinksFragment : Fragment() {
     private fun showAlertDialog() {
         val alertDialogBuilder = AlertDialog.Builder(requireContext(), R.style.MyCampusApp_Dialog)
         alertDialogBuilder.setPositiveButton(R.string.dialog_positive) { _, _ ->
-
+            deleteSelectedItems(tracker.selection)
         }
         alertDialogBuilder.setNegativeButton(R.string.dialog_negative) { _, _ -> }
         alertDialogBuilder.setMessage(R.string.dialog_delete_confirm)
         alertDialogBuilder.setTitle(R.string.dialog_delete)
         alertDialogBuilder.create().show()
+    }
+
+    private fun deleteSelectedItems(selection: Selection<Long>) {
+        val list = selection.map {
+            adapter.currentList[it.toInt()]
+        }.toList()
+        viewModel.deleteList(list)
+        tracker.selection.removeAll { true }
+        highlightState = false
+        requireActivity().invalidateOptionsMenu()
     }
 }
