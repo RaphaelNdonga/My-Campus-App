@@ -53,6 +53,12 @@ class LinksFragment : Fragment() {
         binding = LinksFragmentBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
 
+        binding.linksRefresher.setOnRefreshListener {
+            snapshotListener.remove()
+            viewModel.addSnapshotListener()
+            binding.linksRefresher.isRefreshing = false
+        }
+
         isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
 
         if (isAdmin) {

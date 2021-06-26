@@ -6,6 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".links.LinksFragment">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/links_refresher">
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/links_recycler_view"
         android:layout_width="match_parent"
@@ -13,6 +18,7 @@
         app:layoutManager=".util.CustomLinearLayoutManager"
         tools:listitem="@layout/list_item_links"
         />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_margin="@dimen/fab_margin"
