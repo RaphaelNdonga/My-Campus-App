@@ -1,6 +1,8 @@
 package com.mycampusapp.links
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -27,8 +29,8 @@ class LinksFragment : Fragment() {
     private lateinit var snapshotListener: ListenerRegistration
     private lateinit var adapter: EssentialLinksAdapter
     private lateinit var tracker: SelectionTracker<Long>
-    private var highlightState:Boolean = false
-    private var isAdmin:Boolean = false
+    private var highlightState: Boolean = false
+    private var isAdmin: Boolean = false
 
     @Inject
     lateinit var courseCollection: CollectionReference
@@ -76,12 +78,15 @@ class LinksFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.main_toolbar_menu,menu)
+        inflater.inflate(R.menu.main_toolbar_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
-            R.id.delete_all_classes-> {true}
+        return when (item.itemId) {
+            R.id.delete_all_classes -> {
+                showAlertDialog()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -122,5 +127,16 @@ class LinksFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         snapshotListener.remove()
+    }
+
+    private fun showAlertDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(requireContext(), R.style.MyCampusApp_Dialog)
+        alertDialogBuilder.setPositiveButton(R.string.dialog_positive) { _, _ ->
+
+        }
+        alertDialogBuilder.setNegativeButton(R.string.dialog_negative) { _, _ -> }
+        alertDialogBuilder.setMessage(R.string.dialog_delete_confirm)
+        alertDialogBuilder.setTitle(R.string.dialog_delete)
+        alertDialogBuilder.create().show()
     }
 }
