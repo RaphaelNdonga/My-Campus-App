@@ -55,6 +55,12 @@ class AdminsFragment : Fragment() {
                 AdminsViewModelFactory(adminsCollection, functions)
             ).get(AdminsViewModel::class.java)
 
+        binding.usersRefresher.setOnRefreshListener {
+            snapshotListener.remove()
+            viewModel.addSnapshotListener()
+            binding.usersRefresher.isRefreshing = false
+        }
+
         val adapter = UserAdapter(UserListener {
             showAlertDialogBox(it)
         })

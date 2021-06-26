@@ -52,6 +52,11 @@ class RegularsFragment : Fragment() {
             ViewModelProvider(this, RegularViewModelFactory(regularsCollection, functions)).get(
                 RegularsViewModel::class.java
             )
+        binding.usersRefresher.setOnRefreshListener {
+            snapshotListener.remove()
+            viewModel.addSnapshotListener()
+            binding.usersRefresher.isRefreshing = false
+        }
 
         val adapter = UserAdapter(UserListener {
             showDialogBox(it)
