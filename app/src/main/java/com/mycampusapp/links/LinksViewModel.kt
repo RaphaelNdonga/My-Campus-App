@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.mycampusapp.data.Links
+import timber.log.Timber
 
 class LinksViewModel(private val linksCollection: CollectionReference) : ViewModel() {
     private val _links = MutableLiveData<List<Links>>()
@@ -14,6 +15,9 @@ class LinksViewModel(private val linksCollection: CollectionReference) : ViewMod
     fun addSnapshotListener(): ListenerRegistration {
         return linksCollection.addSnapshotListener { querySnapshot, error ->
             _links.value = querySnapshot?.toObjects(Links::class.java)
+            if(error!=null){
+                Timber.i("An error occurred $error")
+            }
         }
     }
 
