@@ -124,6 +124,7 @@ class TuesdayInputFragment : Fragment() {
                     binding.classLocationEditText.inputType =
                         InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
                     binding.classLocationInput.helperText = null
+                    binding.classRoomInput.hint = requireContext().getString(R.string.room)
                 }
                 ClassType.ONLINE -> {
                     viewModel.nullifyLocation()
@@ -134,6 +135,7 @@ class TuesdayInputFragment : Fragment() {
                     binding.classLocationEditText.inputType =
                         InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS
                     binding.classLocationInput.helperText = "Paste the link here"
+                    binding.classRoomInput.hint = requireContext().getString(R.string.password)
                 }
                 else -> throw IllegalArgumentException("No other argument should be obtained")
             }
