@@ -54,7 +54,7 @@ object DiffUtilCallback : DiffUtil.ItemCallback<Links>() {
     }
 
     override fun areContentsTheSame(oldItem: Links, newItem: Links): Boolean {
-        return oldItem.subject == newItem.subject && newItem.link == oldItem.link
+        return false
     }
 
 }

@@ -23,7 +23,7 @@ class UserAdapter(private val userListener: UserListener) :
         }
 
         override fun areContentsTheSame(oldItem: UserEmail, newItem: UserEmail): Boolean {
-            return oldItem.email == newItem.email
+            return false
         }
 
     }
