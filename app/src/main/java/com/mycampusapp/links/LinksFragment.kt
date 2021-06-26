@@ -4,10 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -29,6 +27,8 @@ class LinksFragment : Fragment() {
     private lateinit var snapshotListener: ListenerRegistration
     private lateinit var adapter: EssentialLinksAdapter
     private lateinit var tracker: SelectionTracker<Long>
+    private var highlightState:Boolean = false
+    private var isAdmin:Boolean = false
 
     @Inject
     lateinit var courseCollection: CollectionReference
@@ -48,8 +48,9 @@ class LinksFragment : Fragment() {
             )
         ).get(LinksViewModel::class.java)
         binding = LinksFragmentBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
 
-        val isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
+        isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
 
         if (isAdmin) {
             binding.floatingActionButton.visibility = View.VISIBLE
@@ -73,6 +74,25 @@ class LinksFragment : Fragment() {
         return binding.root
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.main_toolbar_menu,menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.delete_all_classes-> {true}
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        val item = menu.findItem(R.id.delete_all_classes)
+        item.isEnabled = highlightState && isAdmin
+        item.isVisible = highlightState && isAdmin
+    }
+
     override fun onStart() {
         super.onStart()
         snapshotListener = viewModel.addSnapshotListener()
@@ -85,6 +105,17 @@ class LinksFragment : Fragment() {
             LinkItemDetailsLookup(binding.linksRecyclerView),
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
+
+        tracker.addObserver(
+            object : SelectionTracker.SelectionObserver<Long>() {
+                override fun onSelectionChanged() {
+                    super.onSelectionChanged()
+                    val nItems: Int? = tracker.selection.size()
+                    highlightState = nItems != null && nItems > 0
+                    requireActivity().invalidateOptionsMenu()
+                }
+
+            })
         adapter.tracker = tracker
     }
 
