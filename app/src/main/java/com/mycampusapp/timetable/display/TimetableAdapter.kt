@@ -126,6 +126,12 @@ class TimetableAdapter(
                 val popupMenu = PopupMenu(itemView.context, binding.moreIcon)
                 val inflater = popupMenu.menuInflater
                 inflater.inflate(R.menu.timetable_class_menu, popupMenu.menu)
+                val menuItem = popupMenu.menu.findItem(R.id.skip_switch)
+                if(timetableClass.isActive){
+                    menuItem.title = "Skip next"
+                }else{
+                    menuItem.title = "Undo skip next"
+                }
                 popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
                     return@OnMenuItemClickListener when (it.itemId) {
                         R.id.skip_switch -> {
