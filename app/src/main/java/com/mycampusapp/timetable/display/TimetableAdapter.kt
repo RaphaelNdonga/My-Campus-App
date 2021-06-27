@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
@@ -129,19 +128,34 @@ class TimetableAdapter(
                 inflater.inflate(R.menu.timetable_class_menu, popupMenu.menu)
                 popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
                     return@OnMenuItemClickListener when (it.itemId) {
-                        R.id.skip_next -> {
-                            val skippedClass = TimetableClass(
-                                timetableClass.id,
-                                timetableClass.subject,
-                                timetableClass.hour,
-                                timetableClass.minute,
-                                timetableClass.locationNameOrLink,
-                                timetableClass.locationCoordinates,
-                                timetableClass.alarmRequestCode,
-                                timetableClass.room,
-                                isActive = false
-                            )
-                            dayCollection.document(timetableClass.id).set(skippedClass)
+                        R.id.skip_switch -> {
+                            if(timetableClass.isActive) {
+                                val skippedClass = TimetableClass(
+                                    timetableClass.id,
+                                    timetableClass.subject,
+                                    timetableClass.hour,
+                                    timetableClass.minute,
+                                    timetableClass.locationNameOrLink,
+                                    timetableClass.locationCoordinates,
+                                    timetableClass.alarmRequestCode,
+                                    timetableClass.room,
+                                    isActive = false
+                                )
+                                dayCollection.document(timetableClass.id).set(skippedClass)
+                            }else{
+                                val skippedClass = TimetableClass(
+                                    timetableClass.id,
+                                    timetableClass.subject,
+                                    timetableClass.hour,
+                                    timetableClass.minute,
+                                    timetableClass.locationNameOrLink,
+                                    timetableClass.locationCoordinates,
+                                    timetableClass.alarmRequestCode,
+                                    timetableClass.room,
+                                    isActive = true
+                                )
+                                dayCollection.document(timetableClass.id).set(skippedClass)
+                            }
                             true
                         }
                         else -> true
