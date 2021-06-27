@@ -13,7 +13,8 @@ data class TimetableClass(
     val locationNameOrLink: String = "",
     val locationCoordinates: String = "",
     val alarmRequestCode: Int = Random().nextInt(Integer.MAX_VALUE),
-    val room: String = ""
+    val room: String = "",
+    var isActive:Boolean = true
 ) : Parcelable
 
 /**
