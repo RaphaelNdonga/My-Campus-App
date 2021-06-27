@@ -4,17 +4,21 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Paint
 import android.net.Uri
 import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.firestore.CollectionReference
 import com.mycampusapp.R
 import com.mycampusapp.data.CustomTime
 import com.mycampusapp.data.TimetableClass
@@ -22,24 +26,18 @@ import com.mycampusapp.databinding.ListItemTimetableBinding
 import com.mycampusapp.util.format24HourTime
 import com.mycampusapp.util.formatAmPmTime
 
-class TimetableAdapter(private val clickListener: TimetableListener) :
+class TimetableAdapter(
+    private val dayCollection: CollectionReference,
+    private val clickListener: TimetableListener
+) :
     ListAdapter<TimetableClass, TimetableAdapter.ViewHolder>(
         DiffUtilCallBack
     ) {
 
     var tracker: SelectionTracker<Long>? = null
 
-    class ViewHolder(private val binding: ListItemTimetableBinding) :
+    inner class ViewHolder(private val binding: ListItemTimetableBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        companion object {
-            fun from(parent: ViewGroup): ViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemTimetableBinding.inflate(layoutInflater, parent, false)
-                return ViewHolder(
-                    binding
-                )
-            }
-        }
 
         fun bind(
             timetableClass: TimetableClass,
@@ -67,6 +65,11 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
 
             binding.clickListener = clickListener
             itemView.isActivated = isActivated
+            if (timetableClass.isActive.not()) {
+                binding.listItemSubject.apply {
+                    paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                }
+            }
         }
 
         private fun formatTime(customTime: CustomTime): String {
@@ -118,6 +121,35 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
                 }
             }
         }
+
+        fun setOverflowClickListener(timetableClass: TimetableClass) {
+            binding.moreIcon.setOnClickListener {
+                val popupMenu = PopupMenu(itemView.context, binding.moreIcon)
+                val inflater = popupMenu.menuInflater
+                inflater.inflate(R.menu.timetable_class_menu, popupMenu.menu)
+                popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
+                    return@OnMenuItemClickListener when (it.itemId) {
+                        R.id.skip_next -> {
+                            val skippedClass = TimetableClass(
+                                timetableClass.id,
+                                timetableClass.subject,
+                                timetableClass.hour,
+                                timetableClass.minute,
+                                timetableClass.locationNameOrLink,
+                                timetableClass.locationCoordinates,
+                                timetableClass.alarmRequestCode,
+                                timetableClass.room,
+                                isActive = false
+                            )
+                            dayCollection.document(timetableClass.id).set(skippedClass)
+                            true
+                        }
+                        else -> true
+                    }
+                })
+                popupMenu.show()
+            }
+        }
     }
 
     init {
@@ -125,8 +157,10 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(
-            parent
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = ListItemTimetableBinding.inflate(layoutInflater, parent, false)
+        return ViewHolder(
+            binding
         )
     }
 
@@ -140,6 +174,7 @@ class TimetableAdapter(private val clickListener: TimetableListener) :
             holder.bind(currentClass, clickListener, it.isSelected(position.toLong()))
         }
         holder.setClickListener(currentClass)
+        holder.setOverflowClickListener(currentClass)
     }
 
     companion object DiffUtilCallBack : DiffUtil.ItemCallback<TimetableClass>() {
