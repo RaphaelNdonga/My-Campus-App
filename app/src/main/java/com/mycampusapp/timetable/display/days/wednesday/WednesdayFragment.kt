@@ -84,10 +84,11 @@ class WednesdayFragment : Fragment() {
         }
         setHasOptionsMenu(true)
         val app = requireActivity().application
+        val dayCollection = courseCollection.document(courseId).collection(wednesday.name)
         viewModel = ViewModelProvider(
             this,
             TimetableViewModelFactory(
-                courseCollection.document(courseId).collection(wednesday.name),
+                dayCollection,
                 functions,
                 wednesday,
                 app
@@ -97,7 +98,7 @@ class WednesdayFragment : Fragment() {
         binding.lifecycleOwner = this
         recyclerView = binding.timetableRecyclerView
         adapter =
-            TimetableAdapter(
+            TimetableAdapter(dayCollection,
                 TimetableListener {
                     if (isAdmin && !highlightState && fragmentIsClickable)
                         viewModel.displayFridayClassDetails(it)
