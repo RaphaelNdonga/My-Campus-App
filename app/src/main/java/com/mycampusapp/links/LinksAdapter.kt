@@ -75,6 +75,6 @@ class EssentialLinksViewHolder(private val binding: ListItemLinksBinding) :
     fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long>? =
         object : ItemDetailsLookup.ItemDetails<Long>() {
             override fun getSelectionKey(): Long? = itemId
-            override fun getPosition(): Int = adapterPosition
+            override fun getPosition(): Int = bindingAdapterPosition
         }
 }

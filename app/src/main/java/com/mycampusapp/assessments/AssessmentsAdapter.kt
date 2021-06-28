@@ -79,7 +79,7 @@ class AssessmentsAdapter(private val clickListener: AssessmentsListener) :
 
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> {
             return object : ItemDetailsLookup.ItemDetails<Long>() {
-                override fun getPosition(): Int = adapterPosition
+                override fun getPosition(): Int = bindingAdapterPosition
 
                 override fun getSelectionKey(): Long? = itemId
             }

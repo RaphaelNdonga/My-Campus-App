@@ -82,7 +82,7 @@ class TimetableAdapter(
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long>? =
             object : ItemDetailsLookup.ItemDetails<Long>() {
                 override fun getSelectionKey(): Long? = itemId
-                override fun getPosition(): Int = adapterPosition
+                override fun getPosition(): Int = bindingAdapterPosition
             }
 
         fun setClickListener(currentClass: TimetableClass) {
