@@ -68,6 +68,10 @@ class TimetableAdapter(
                 binding.listItemSubject.apply {
                     paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 }
+            }else{
+                binding.listItemSubject.apply {
+                    paintFlags = 0
+                }
             }
         }
 
