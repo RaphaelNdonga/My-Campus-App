@@ -197,13 +197,17 @@ class TimetableAdapter(
         holder.setOverflowClickListener(currentClass)
     }
 
+    override fun submitList(list: List<TimetableClass>?) {
+        super.submitList(list?.let { ArrayList(it) })
+    }
+
     companion object DiffUtilCallBack : DiffUtil.ItemCallback<TimetableClass>() {
         override fun areItemsTheSame(oldItem: TimetableClass, newItem: TimetableClass): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(oldItem: TimetableClass, newItem: TimetableClass): Boolean {
-            return false
+            return oldItem == newItem
         }
     }
 }
