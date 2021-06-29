@@ -17,6 +17,7 @@ import com.mycampusapp.R
 import com.mycampusapp.data.Assessment
 import com.mycampusapp.data.CustomDate
 import com.mycampusapp.data.CustomTime
+import com.mycampusapp.data.TimetableClass
 import com.mycampusapp.databinding.ListItemAssessmentBinding
 import com.mycampusapp.util.format24HourTime
 import com.mycampusapp.util.formatAmPmTime
@@ -127,11 +128,14 @@ class AssessmentsAdapter(private val clickListener: AssessmentsListener) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val currentassessment = getItem(position)
+        val currentAssessment = getItem(position)
         tracker?.let {
-            holder.bind(currentassessment, clickListener, it.isSelected(position.toLong()))
+            holder.bind(currentAssessment, clickListener, it.isSelected(position.toLong()))
         }
-        holder.setMapListener(currentassessment)
+        holder.setMapListener(currentAssessment)
+    }
+    override fun submitList(list: List<Assessment>?) {
+        super.submitList(list?.let { ArrayList(it) })
     }
 
     override fun getItemId(position: Int): Long {

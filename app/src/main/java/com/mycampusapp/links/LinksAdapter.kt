@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mycampusapp.data.Links
+import com.mycampusapp.data.TimetableClass
 import com.mycampusapp.databinding.ListItemLinksBinding
 
 class EssentialLinksAdapter(private val clickListener: EssentialLinksListener) :
@@ -40,6 +41,9 @@ class EssentialLinksAdapter(private val clickListener: EssentialLinksListener) :
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
+    override fun submitList(list: List<Links>?) {
+        super.submitList(list?.let { ArrayList(it) })
+    }
 }
 
 class EssentialLinksListener(private val clickListener: (link: Links) -> Unit) {
@@ -50,14 +54,15 @@ class EssentialLinksListener(private val clickListener: (link: Links) -> Unit) {
 
 object DiffUtilCallback : DiffUtil.ItemCallback<Links>() {
     override fun areItemsTheSame(oldItem: Links, newItem: Links): Boolean {
-        return oldItem == newItem
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Links, newItem: Links): Boolean {
-        return false
+        return oldItem == newItem
     }
 
 }
+
 
 class EssentialLinksViewHolder(private val binding: ListItemLinksBinding) :
     RecyclerView.ViewHolder(binding.root) {

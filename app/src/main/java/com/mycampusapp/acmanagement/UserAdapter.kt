@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.mycampusapp.data.TimetableClass
 import com.mycampusapp.data.UserEmail
 import com.mycampusapp.databinding.ListItemUserBinding
 
@@ -19,11 +20,11 @@ class UserAdapter(private val userListener: UserListener) :
 
     object DiffUtilCallback : DiffUtil.ItemCallback<UserEmail>() {
         override fun areItemsTheSame(oldItem: UserEmail, newItem: UserEmail): Boolean {
-            return oldItem == newItem
+            return oldItem.email == newItem.email
         }
 
         override fun areContentsTheSame(oldItem: UserEmail, newItem: UserEmail): Boolean {
-            return false
+            return oldItem == newItem
         }
 
     }
@@ -40,6 +41,9 @@ class UserAdapter(private val userListener: UserListener) :
         holder.itemView.setOnClickListener {
             userListener.onClick(currentItem)
         }
+    }
+    override fun submitList(list: List<UserEmail>?) {
+        super.submitList(list?.let { ArrayList(it) })
     }
 
 }
