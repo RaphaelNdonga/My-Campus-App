@@ -112,7 +112,7 @@ class TimetableViewModel(
             }
     }
 
-    private fun cancelData(
+    fun cancelData(
         requestCode: String,
         subject: String,
         dayOfWeek: DayOfWeek,
@@ -126,5 +126,19 @@ class TimetableViewModel(
                 "courseId" to courseId
             )
         return functions.getHttpsCallable("cancelData").call(data).continueWith { }
+    }
+    fun updateData(
+        timetableId: String,
+        dayOfWeek: DayOfWeek,
+        courseId: String
+    ): Task<Unit> {
+        val data = hashMapOf(
+            "timetableId" to timetableId,
+            "dayOfWeek" to dayOfWeek.name,
+            "courseId" to courseId
+        )
+        return functions.getHttpsCallable("updateData").call(data).continueWith {
+
+        }
     }
 }

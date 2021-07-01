@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
+import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -104,6 +105,59 @@ class SaturdayFragment : Fragment() {
                     if (isAdmin && !highlightState && fragmentIsClickable) {
                         viewModel.displayFridayClassDetails(it)
                     }
+                }, OverflowListener {timetableClass:TimetableClass,button:View->
+                    val popupMenu = PopupMenu(requireContext(), button)
+                    val popupInflater = popupMenu.menuInflater
+                    popupInflater.inflate(R.menu.timetable_class_menu, popupMenu.menu)
+                    val menuItem = popupMenu.menu.findItem(R.id.skip_switch)
+                    if(timetableClass.isActive){
+                        menuItem.title = "Skip next"
+                    }else{
+                        menuItem.title = "Undo skip next"
+                    }
+                    popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
+                        return@OnMenuItemClickListener when (it.itemId) {
+                            R.id.skip_switch -> {
+                                if(timetableClass.isActive) {
+                                    val skippedClass = TimetableClass(
+                                        timetableClass.id,
+                                        timetableClass.subject,
+                                        timetableClass.hour,
+                                        timetableClass.minute,
+                                        timetableClass.locationNameOrLink,
+                                        timetableClass.locationCoordinates,
+                                        timetableClass.alarmRequestCode,
+                                        timetableClass.room,
+                                        isActive = false
+                                    )
+                                    dayCollection.document(timetableClass.id).set(skippedClass)
+                                    viewModel.cancelData(
+                                        timetableClass.alarmRequestCode.toString(),
+                                        timetableClass.subject,
+                                        saturday,
+                                        courseId
+                                    )
+                                }else{
+                                    val skippedClass = TimetableClass(
+                                        timetableClass.id,
+                                        timetableClass.subject,
+                                        timetableClass.hour,
+                                        timetableClass.minute,
+                                        timetableClass.locationNameOrLink,
+                                        timetableClass.locationCoordinates,
+                                        timetableClass.alarmRequestCode,
+                                        timetableClass.room,
+                                        isActive = true
+                                    )
+                                    dayCollection.document(timetableClass.id).set(skippedClass)
+                                    viewModel.updateData(timetableClass.id, saturday, courseId)
+                                }
+                                true
+                            }
+                            else -> true
+                        }
+                    })
+                    popupMenu.show()
                 })
         recyclerView.adapter = adapter
 

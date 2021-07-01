@@ -30,7 +30,8 @@ import com.mycampusapp.util.formatAmPmTime
 
 class TimetableAdapter(
     private val dayCollection: CollectionReference,
-    private val clickListener: TimetableListener
+    private val clickListener: TimetableListener,
+    private val overflowListener: OverflowListener
 ) :
     ListAdapter<TimetableClass, TimetableAdapter.ViewHolder>(
         DiffUtilCallBack
@@ -134,51 +135,7 @@ class TimetableAdapter(
 
         fun setOverflowClickListener(timetableClass: TimetableClass) {
             binding.moreIcon.setOnClickListener {
-                val popupMenu = PopupMenu(itemView.context, binding.moreIcon)
-                val inflater = popupMenu.menuInflater
-                inflater.inflate(R.menu.timetable_class_menu, popupMenu.menu)
-                val menuItem = popupMenu.menu.findItem(R.id.skip_switch)
-                if(timetableClass.isActive){
-                    menuItem.title = "Skip next"
-                }else{
-                    menuItem.title = "Undo skip next"
-                }
-                popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener {
-                    return@OnMenuItemClickListener when (it.itemId) {
-                        R.id.skip_switch -> {
-                            if(timetableClass.isActive) {
-                                val skippedClass = TimetableClass(
-                                    timetableClass.id,
-                                    timetableClass.subject,
-                                    timetableClass.hour,
-                                    timetableClass.minute,
-                                    timetableClass.locationNameOrLink,
-                                    timetableClass.locationCoordinates,
-                                    timetableClass.alarmRequestCode,
-                                    timetableClass.room,
-                                    isActive = false
-                                )
-                                dayCollection.document(timetableClass.id).set(skippedClass)
-                            }else{
-                                val skippedClass = TimetableClass(
-                                    timetableClass.id,
-                                    timetableClass.subject,
-                                    timetableClass.hour,
-                                    timetableClass.minute,
-                                    timetableClass.locationNameOrLink,
-                                    timetableClass.locationCoordinates,
-                                    timetableClass.alarmRequestCode,
-                                    timetableClass.room,
-                                    isActive = true
-                                )
-                                dayCollection.document(timetableClass.id).set(skippedClass)
-                            }
-                            true
-                        }
-                        else -> true
-                    }
-                })
-                popupMenu.show()
+                overflowListener.onClick(timetableClass,it)
             }
         }
     }
@@ -225,6 +182,10 @@ class TimetableAdapter(
 
 class TimetableListener(val clickListener: (timetableClass: TimetableClass) -> Unit) {
     fun onClick(timetableClass: TimetableClass) = clickListener(timetableClass)
+}
+
+class OverflowListener(val clickListener: (timetableClass:TimetableClass,view:View)->Unit){
+    fun onClick(timetableClass: TimetableClass,view: View) = clickListener(timetableClass,view)
 }
 
 

@@ -73,7 +73,7 @@ class DailyAlarmWorker @AssistedInject constructor(
             Timber.i("In today's loop")
             it.forEach { documentSnapshot ->
                 val todayClass = documentSnapshot.toObject(TimetableClass::class.java)
-                if (timetableClassIsLater(todayClass)) {
+                if (timetableClassIsLater(todayClass) && todayClass.isActive) {
                     val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
                     val message = "${todayClass.subject} starts at ${
                         formatTime(
@@ -112,34 +112,36 @@ class DailyAlarmWorker @AssistedInject constructor(
             Timber.i("In tomorrow's loop")
             it.forEach { documentSnapshot ->
                 val tomorrowClass = documentSnapshot.toObject(TimetableClass::class.java)
-                val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
-                val message = "${tomorrowClass.subject} starts at ${
-                    formatTime(
-                        CustomTime(
-                            tomorrowClass.hour,
-                            tomorrowClass.minute
+                if(tomorrowClass.isActive) {
+                    val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
+                    val message = "${tomorrowClass.subject} starts at ${
+                        formatTime(
+                            CustomTime(
+                                tomorrowClass.hour,
+                                tomorrowClass.minute
+                            )
                         )
+                    } in ${tomorrowClass.locationNameOrLink} room ${tomorrowClass.room}"
+                    intent.putExtra("message", message)
+                    intent.putExtra("dayOfWeek", getTomorrowEnumDay().name)
+                    val pendingIntent = PendingIntent.getBroadcast(
+                        applicationContext,
+                        tomorrowClass.alarmRequestCode,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
                     )
-                } in ${tomorrowClass.locationNameOrLink} room ${tomorrowClass.room}"
-                intent.putExtra("message", message)
-                intent.putExtra("dayOfWeek", getTomorrowEnumDay().name)
-                val pendingIntent = PendingIntent.getBroadcast(
-                    applicationContext,
-                    tomorrowClass.alarmRequestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
-                val tomorrowCalendar = getTomorrowTimetableCalendar(tomorrowClass)
+                    val tomorrowCalendar = getTomorrowTimetableCalendar(tomorrowClass)
 
-                val alarmManager =
-                    applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
-                val triggerTime = tomorrowCalendar.timeInMillis - millisPrior
-                alarmManager.setExact(
-                    AlarmManager.RTC_WAKEUP,
-                    triggerTime,
-                    pendingIntent
-                )
+                    val alarmManager =
+                        applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                    val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
+                    val triggerTime = tomorrowCalendar.timeInMillis - millisPrior
+                    alarmManager.setExact(
+                        AlarmManager.RTC_WAKEUP,
+                        triggerTime,
+                        pendingIntent
+                    )
+                }
             }
         }
 
