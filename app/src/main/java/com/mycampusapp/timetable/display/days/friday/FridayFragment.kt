@@ -98,11 +98,11 @@ class FridayFragment : Fragment() {
         binding.lifecycleOwner = this
         recyclerView = binding.timetableRecyclerView
         adapter =
-            TimetableAdapter(dayCollection, TimetableListener {
+            TimetableAdapter(isAdmin,TimetableListener {
                     if (isAdmin && !highlightState && fragmentIsClickable) {
                         viewModel.displayFridayClassDetails(it)
                     }
-                }, OverflowListener {timetableClass:TimetableClass,button:View->
+                }, OverflowListener { timetableClass:TimetableClass, button:View->
                 val popupMenu = PopupMenu(requireContext(), button)
                 val popupInflater = popupMenu.menuInflater
                 popupInflater.inflate(R.menu.timetable_class_menu, popupMenu.menu)

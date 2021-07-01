@@ -11,16 +11,12 @@ import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
-import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.google.common.io.Resources
-import com.google.firebase.firestore.CollectionReference
 import com.mycampusapp.R
 import com.mycampusapp.data.CustomTime
 import com.mycampusapp.data.TimetableClass
@@ -29,7 +25,7 @@ import com.mycampusapp.util.format24HourTime
 import com.mycampusapp.util.formatAmPmTime
 
 class TimetableAdapter(
-    private val dayCollection: CollectionReference,
+    private val isAdmin:Boolean,
     private val clickListener: TimetableListener,
     private val overflowListener: OverflowListener
 ) :
@@ -135,8 +131,11 @@ class TimetableAdapter(
         }
 
         fun setOverflowClickListener(timetableClass: TimetableClass) {
-            binding.moreIcon.setOnClickListener {
-                overflowListener.onClick(timetableClass,it)
+            if(isAdmin){
+                binding.moreIcon.visibility = View.VISIBLE
+                binding.moreIcon.setOnClickListener {
+                    overflowListener.onClick(timetableClass,it)
+                }
             }
         }
     }
