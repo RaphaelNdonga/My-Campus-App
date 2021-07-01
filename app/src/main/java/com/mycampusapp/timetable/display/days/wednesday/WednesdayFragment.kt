@@ -130,8 +130,7 @@ class WednesdayFragment : Fragment() {
                                     )
                                     dayCollection.document(timetableClass.id).set(skippedClass)
                                     viewModel.cancelData(
-                                        timetableClass.alarmRequestCode.toString(),
-                                        timetableClass.subject,
+                                        timetableClass,
                                         wednesday,
                                         courseId
                                     )
@@ -148,7 +147,7 @@ class WednesdayFragment : Fragment() {
                                         isActive = true
                                     )
                                     dayCollection.document(timetableClass.id).set(skippedClass)
-                                    viewModel.updateData(timetableClass.id, wednesday, courseId)
+                                    viewModel.updateData(timetableClass, wednesday, courseId)
                                 }
                                 true
                             }

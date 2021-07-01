@@ -73,16 +73,14 @@ class TimetableViewModel(
                 val isLater = timetableClassIsLater(timetableClass)
                 if (getTodayEnumDay() == dayOfWeek && isLater) {
                     cancelData(
-                        timetableClass.alarmRequestCode.toString(),
-                        timetableClass.subject,
+                        timetableClass,
                         getTodayEnumDay(),
                         courseId
                     )
                 }
                 if (getTomorrowEnumDay() == dayOfWeek) {
                     cancelData(
-                        timetableClass.alarmRequestCode.toString(),
-                        timetableClass.subject,
+                        timetableClass,
                         getTomorrowEnumDay(),
                         courseId
                     )
@@ -113,11 +111,12 @@ class TimetableViewModel(
     }
 
     fun cancelData(
-        requestCode: String,
-        subject: String,
+        timetableClass: TimetableClass,
         dayOfWeek: DayOfWeek,
         courseId: String
-    ): Task<Unit> {
+    ): Task<Unit>? {
+        val requestCode = timetableClass.alarmRequestCode
+        val subject = timetableClass.subject
         val data =
             hashMapOf(
                 "requestCode" to requestCode,
@@ -125,20 +124,31 @@ class TimetableViewModel(
                 "dayOfWeek" to dayOfWeek.name,
                 "courseId" to courseId
             )
-        return functions.getHttpsCallable("cancelData").call(data).continueWith { }
+        return if ((getTodayEnumDay() == dayOfWeek) || getTomorrowEnumDay() == dayOfWeek) {
+            functions.getHttpsCallable("cancelData").call(data).continueWith { }
+        } else {
+            null
+        }
     }
+
     fun updateData(
-        timetableId: String,
+        timetableClass: TimetableClass,
         dayOfWeek: DayOfWeek,
         courseId: String
-    ): Task<Unit> {
+    ): Task<Unit>? {
+        val timetableId = timetableClass.id
         val data = hashMapOf(
             "timetableId" to timetableId,
             "dayOfWeek" to dayOfWeek.name,
             "courseId" to courseId
         )
-        return functions.getHttpsCallable("updateData").call(data).continueWith {
-
+        return if (
+            (getTodayEnumDay() == dayOfWeek) && (timetableClassIsLater(timetableClass)) ||
+            getTomorrowEnumDay() == dayOfWeek
+        ) {
+            functions.getHttpsCallable("updateData").call(data).continueWith {}
+        } else {
+            null
         }
     }
 }
