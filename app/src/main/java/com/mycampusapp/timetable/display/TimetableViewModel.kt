@@ -115,7 +115,7 @@ class TimetableViewModel(
         dayOfWeek: DayOfWeek,
         courseId: String
     ): Task<Unit>? {
-        val requestCode = timetableClass.alarmRequestCode
+        val requestCode = timetableClass.alarmRequestCode.toString()
         val subject = timetableClass.subject
         val data =
             hashMapOf(
@@ -124,6 +124,7 @@ class TimetableViewModel(
                 "dayOfWeek" to dayOfWeek.name,
                 "courseId" to courseId
             )
+        Timber.i("cancel data called")
         return if ((getTodayEnumDay() == dayOfWeek) || getTomorrowEnumDay() == dayOfWeek) {
             functions.getHttpsCallable("cancelData").call(data).continueWith { }
         } else {
