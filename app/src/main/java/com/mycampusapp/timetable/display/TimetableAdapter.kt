@@ -47,7 +47,6 @@ class TimetableAdapter(
             clickListener: TimetableListener,
             isActivated: Boolean = false
         ) {
-            binding.executePendingBindings()
             binding.timetableClass = timetableClass
             binding.listItemSubject.text = timetableClass.subject
             binding.listItemTime.text = formatTime(
@@ -78,9 +77,11 @@ class TimetableAdapter(
                     /**
                      * The anti alias flag smoothens out the text so that it does not look distorted
                      */
+                    setTextColor(Color.BLACK)
                     paintFlags = Paint.ANTI_ALIAS_FLAG
                 }
             }
+            binding.executePendingBindings()
         }
 
         private fun formatTime(customTime: CustomTime): String {
