@@ -105,7 +105,7 @@ class MondayFragment : Fragment() {
         binding.lifecycleOwner = this
         recyclerView = binding.timetableRecyclerView
         adapter =
-            TimetableAdapter(isAdmin,TimetableListener {
+            TimetableAdapter(isAdmin, TimetableListener {
                 if (isAdmin && !highlightState && fragmentIsClickable) {
                     viewModel.displayFridayClassDetails(it)
                 }
@@ -124,36 +124,18 @@ class MondayFragment : Fragment() {
                         return@OnMenuItemClickListener when (it.itemId) {
                             R.id.skip_switch -> {
                                 if (timetableClass.isActive) {
-                                    val skippedClass = TimetableClass(
-                                        timetableClass.id,
-                                        timetableClass.subject,
-                                        timetableClass.hour,
-                                        timetableClass.minute,
-                                        timetableClass.locationNameOrLink,
-                                        timetableClass.locationCoordinates,
-                                        timetableClass.alarmRequestCode,
-                                        timetableClass.room,
-                                        isActive = false
-                                    )
-                                    dayCollection.document(timetableClass.id).set(skippedClass)
+                                    Timber.i("is active. Deactivating...")
+                                    dayCollection.document(timetableClass.id)
+                                        .update("active", false)
                                     viewModel.cancelData(
                                         timetableClass,
                                         monday,
                                         courseId
                                     )
                                 } else {
-                                    val skippedClass = TimetableClass(
-                                        timetableClass.id,
-                                        timetableClass.subject,
-                                        timetableClass.hour,
-                                        timetableClass.minute,
-                                        timetableClass.locationNameOrLink,
-                                        timetableClass.locationCoordinates,
-                                        timetableClass.alarmRequestCode,
-                                        timetableClass.room,
-                                        isActive = true
-                                    )
-                                    dayCollection.document(timetableClass.id).set(skippedClass)
+                                    Timber.i("is inactive. Activating...")
+                                    dayCollection.document(timetableClass.id)
+                                        .update("active", true)
                                     viewModel.updateData(timetableClass, monday, courseId)
                                 }
                                 true
@@ -164,7 +146,8 @@ class MondayFragment : Fragment() {
                     popupMenu.show()
                 })
 
-        viewModel.timetableClasses.observe(viewLifecycleOwner,{
+        viewModel.timetableClasses.observe(viewLifecycleOwner, {
+            Timber.i("$it")
             adapter.submitList(it)
         })
 
