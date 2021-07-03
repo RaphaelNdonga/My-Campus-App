@@ -132,11 +132,13 @@ class MondayFragment : Fragment() {
                                         monday,
                                         courseId
                                     )
+                                    firebaseRefresh()
                                 } else {
                                     Timber.i("is inactive. Activating...")
                                     dayCollection.document(timetableClass.id)
                                         .update("active", true)
                                     viewModel.updateData(timetableClass, monday, courseId)
+                                    firebaseRefresh()
                                 }
                                 true
                             }
@@ -154,8 +156,7 @@ class MondayFragment : Fragment() {
         recyclerView.adapter = adapter
 
         binding.timetableRefreshLayout.setOnRefreshListener {
-            snapshotListener.remove()
-            viewModel.addSnapshotListener()
+            firebaseRefresh()
             binding.timetableRefreshLayout.isRefreshing = false
         }
 
@@ -180,6 +181,11 @@ class MondayFragment : Fragment() {
             })
 
         return binding.root
+    }
+
+    private fun firebaseRefresh() {
+        snapshotListener.remove()
+        viewModel.addSnapshotListener()
     }
 
     override fun onStart() {

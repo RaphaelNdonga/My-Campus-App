@@ -124,10 +124,12 @@ class FridayFragment : Fragment() {
                                     friday,
                                     courseId
                                 )
+                                firebaseRefresh()
                             } else {
                                 Timber.i("is inactive. Activating...")
                                 dayCollection.document(timetableClass.id).update("active",true)
                                 viewModel.updateData(timetableClass, friday, courseId)
+                                firebaseRefresh()
                             }
                             true
                         }
@@ -144,8 +146,7 @@ class FridayFragment : Fragment() {
 
 
         binding.timetableRefreshLayout.setOnRefreshListener {
-            snapshotListener.remove()
-            viewModel.addSnapshotListener()
+            firebaseRefresh()
             binding.timetableRefreshLayout.isRefreshing = false
         }
         viewModel.addNewClass.observe(viewLifecycleOwner,
@@ -166,6 +167,11 @@ class FridayFragment : Fragment() {
                 deleteSelectedItems(tracker.selection)
             })
         return binding.root
+    }
+
+    private fun firebaseRefresh() {
+        snapshotListener.remove()
+        viewModel.addSnapshotListener()
     }
 
     private fun deleteSelectedItems(selection: Selection<Long>) {
