@@ -157,6 +157,9 @@ class SundayFragment : Fragment() {
                     })
                     popupMenu.show()
                 })
+        viewModel.timetableClasses.observe(viewLifecycleOwner,{
+            adapter.submitList(it)
+        })
         recyclerView.adapter = adapter
 
         binding.timetableRefreshLayout.setOnRefreshListener {

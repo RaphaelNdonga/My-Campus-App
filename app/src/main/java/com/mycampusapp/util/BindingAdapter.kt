@@ -43,12 +43,6 @@ fun bindDataTextStatus(statusTextView: TextView, status: DataStatus?){
     }
 }
 
-@BindingAdapter("timetableListData")
-fun bindRecyclerView(recyclerView: RecyclerView, data: List<TimetableClass>?) {
-    val adapter = recyclerView.adapter as TimetableAdapter
-    adapter.submitList(data)
-}
-
 @BindingAdapter("assessmentListData")
 fun bindAssignmentRecyclerView(recyclerView: RecyclerView,data:List<Assessment>?){
     val adapter = recyclerView.adapter as AssessmentsAdapter

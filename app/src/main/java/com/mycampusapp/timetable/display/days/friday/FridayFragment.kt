@@ -155,6 +155,9 @@ class FridayFragment : Fragment() {
                 })
                 popupMenu.show()
             })
+        viewModel.timetableClasses.observe(viewLifecycleOwner,{
+            adapter.submitList(it)
+        })
         recyclerView.adapter = adapter
 
 
