@@ -178,6 +178,20 @@ fun getTomorrowEnumDay(): DayOfWeek {
     }
 }
 
+fun getYesterdayEnumDay():DayOfWeek{
+    val yesterday = Calendar.getInstance().get(Calendar.DAY_OF_WEEK).minus(1)
+    return when (yesterday) {
+        Calendar.SUNDAY -> DayOfWeek.SUNDAY
+        Calendar.MONDAY -> DayOfWeek.MONDAY
+        Calendar.TUESDAY -> DayOfWeek.TUESDAY
+        Calendar.WEDNESDAY -> DayOfWeek.WEDNESDAY
+        Calendar.THURSDAY -> DayOfWeek.THURSDAY
+        Calendar.FRIDAY -> DayOfWeek.FRIDAY
+        Calendar.SATURDAY -> DayOfWeek.SATURDAY
+        else -> DayOfWeek.SUNDAY
+    }
+}
+
 fun getDayOfWeekFromEnum(dayOfWeek: DayOfWeek): Int {
     return when (dayOfWeek) {
         DayOfWeek.MONDAY -> Calendar.MONDAY
