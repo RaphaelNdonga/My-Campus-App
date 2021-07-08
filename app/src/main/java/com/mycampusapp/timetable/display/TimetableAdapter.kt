@@ -175,7 +175,7 @@ class TimetableAdapter(
         }
 
         override fun areContentsTheSame(oldItem: TimetableClass, newItem: TimetableClass): Boolean {
-            return oldItem == newItem
+            return false
         }
     }
 }
