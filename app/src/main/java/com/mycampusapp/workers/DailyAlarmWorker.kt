@@ -7,8 +7,7 @@ import android.content.Intent
 import android.text.format.DateFormat
 import androidx.hilt.work.HiltWorker
 import androidx.preference.PreferenceManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.google.firebase.firestore.CollectionReference
 import com.mycampusapp.assessments.AssessmentType
 import com.mycampusapp.data.Assessment
@@ -102,6 +101,14 @@ class DailyAlarmWorker @AssistedInject constructor(
                         pendingIntent
                     )
                 }
+                /**
+                 * Only set up the reactivating worker if there is an inactive class. Even though
+                 * this function might be called repeatedly, ExistingWorkPolicy.KEEP will sort
+                 * that out.
+                 */
+                if(todayClass.isActive.not()){
+                    setUpReactivatingWorker()
+                }
             }
         }
 
@@ -112,7 +119,7 @@ class DailyAlarmWorker @AssistedInject constructor(
             Timber.i("In tomorrow's loop")
             it.forEach { documentSnapshot ->
                 val tomorrowClass = documentSnapshot.toObject(TimetableClass::class.java)
-                if(tomorrowClass.isActive) {
+                if (tomorrowClass.isActive) {
                     val intent = Intent(applicationContext, TimetableAlarmReceiver::class.java)
                     val message = "${tomorrowClass.subject} starts at ${
                         formatTime(
@@ -229,6 +236,30 @@ class DailyAlarmWorker @AssistedInject constructor(
 
 
         return Result.success()
+    }
+
+    private fun setUpReactivatingWorker() {
+        val constraints =
+            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+
+        /**
+         * The worker has a time delay of one day because?
+         * If the alarms have been set to ring today, we don't want the reactivation to happen today.
+         * This is because, it is a bad user experience to observe that the skipped class has
+         * reactivated itself before its time has passed.
+         * Therefore, all reactivation happens the following day.
+         */
+
+        val oneTimeWorkRequest =
+            OneTimeWorkRequestBuilder<ReactivatingWorker>().setConstraints(constraints)
+                .setInitialDelay(1, TimeUnit.DAYS).build()
+
+        WorkManager.getInstance(this.applicationContext)
+            .enqueueUniqueWork(
+                ReactivatingWorker.WORKER_NAME,
+                ExistingWorkPolicy.KEEP,
+                oneTimeWorkRequest
+            )
     }
 
     private fun formatTime(customTime: CustomTime): String {
