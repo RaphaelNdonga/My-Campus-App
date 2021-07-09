@@ -82,4 +82,5 @@
     <string name="valid_url_request">Please enter a valid url</string>
     <string name="add_link">Add a subject link</string>
     <string name="essential_links">Essential Links</string>
+    <string name="no_links_message">No links available</string>
 </resources>

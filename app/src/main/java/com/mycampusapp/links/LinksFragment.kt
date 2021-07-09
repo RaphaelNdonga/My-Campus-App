@@ -16,6 +16,7 @@ import androidx.recyclerview.selection.StorageStrategy
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.mycampusapp.R
+import com.mycampusapp.data.DataStatus
 import com.mycampusapp.databinding.LinksFragmentBinding
 import com.mycampusapp.util.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -78,6 +79,27 @@ class LinksFragment : Fragment() {
         })
         viewModel.links.observe(viewLifecycleOwner, {
             adapter.submitList(it)
+        })
+        viewModel.status.observe(viewLifecycleOwner, { dataStatus ->
+            dataStatus?.let {
+                when (it) {
+                    DataStatus.EMPTY -> {
+                        binding.chainImage.setImageResource(R.drawable.ic_chain)
+                        binding.chainImage.visibility = View.VISIBLE
+                        binding.noLinksTxt.visibility = View.VISIBLE
+
+                    }
+                    DataStatus.NOT_EMPTY -> {
+                        binding.chainImage.visibility = View.GONE
+                        binding.noLinksTxt.visibility = View.GONE
+                    }
+                    DataStatus.LOADING -> {
+                        binding.chainImage.setImageResource(R.drawable.loading_animation)
+                        binding.chainImage.visibility = View.VISIBLE
+                        binding.noLinksTxt.visibility = View.GONE
+                    }
+                }
+            }
         })
         binding.linksRecyclerView.adapter = adapter
         return binding.root
