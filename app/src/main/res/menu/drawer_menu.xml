@@ -14,6 +14,10 @@
         android:icon="@drawable/ic_internet"
         android:title="@string/essential_links" />
     <item
+        android:id="@+id/resourcesFragment"
+        android:icon="@drawable/ic_resources"
+        android:title="Resources" />
+    <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_settings"
         android:title="@string/settings_menu" />

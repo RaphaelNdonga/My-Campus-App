@@ -304,4 +304,9 @@
             app:argType="com.mycampusapp.data.Links"
             app:nullable="true" />
     </fragment>
+    <fragment
+        android:id="@+id/resourcesFragment"
+        android:name="com.mycampusapp.resources.ResourcesFragment"
+        android:label="resources_fragment"
+        tools:layout="@layout/resources_fragment" />
 </navigation>
