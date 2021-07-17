@@ -83,4 +83,5 @@
     <string name="add_link">Add a subject link</string>
     <string name="essential_links">Essential Links</string>
     <string name="no_links_message">No links available</string>
+    <string name="image">image</string>
 </resources>

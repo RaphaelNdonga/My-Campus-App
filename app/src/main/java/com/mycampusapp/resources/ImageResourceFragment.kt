@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import com.mycampusapp.databinding.ImageResourceFragmentBinding
@@ -51,6 +52,17 @@ class ImageResourceFragment : Fragment() {
                     val task = imagesRef.putFile(it)
                     task.addOnProgressListener { uploadTask ->
                         Timber.i(uploadTask.bytesTransferred.toString())
+                    }.addOnSuccessListener {
+                        imagesRef.downloadUrl.addOnSuccessListener { imageUri ->
+                            viewModel.addFirestoreData(imageUri.toString())
+                        }.addOnFailureListener { exception ->
+                            Toast.makeText(
+                                requireContext(),
+                                "An error occurred while downloading the url",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            Timber.i("Exception is $exception")
+                        }
                     }
                 }
             }
@@ -63,7 +75,7 @@ class ImageResourceFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 val cameraBitmap = result.data?.extras?.get("data") as Bitmap
                 val outputStream = ByteArrayOutputStream()
-                cameraBitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream)
+                cameraBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                 val inputStream = ByteArrayInputStream(outputStream.toByteArray())
                 val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmSS", Locale.UK).format(Date())
                 val imagesRef = viewModel.getImagesRef().child("JPEG_$timeStamp.jpg")
@@ -71,11 +83,21 @@ class ImageResourceFragment : Fragment() {
                 task.addOnProgressListener { uploadTask ->
                     Timber.i(uploadTask.bytesTransferred.toString())
                 }
+                imagesRef.downloadUrl.addOnSuccessListener { imageUri ->
+                    viewModel.addFirestoreData(imageUri.toString())
+                }.addOnFailureListener {
+                    Toast.makeText(
+                        requireContext(),
+                        "An error occurred while downloading the url",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    Timber.i("Exception is $it")
+                }
+            }
+        binding.cameraFab.setOnClickListener {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            getCameraImage.launch(intent)
+        }
+        return binding.root
     }
-    binding.cameraFab.setOnClickListener{
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        getCameraImage.launch(intent)
-    }
-    return binding.root
-}
 }
