@@ -305,8 +305,8 @@
             app:nullable="true" />
     </fragment>
     <fragment
-        android:id="@+id/resourcesFragment"
-        android:name="com.mycampusapp.resources.ImageResourceFragment"
-        android:label="resources_fragment"
+        android:id="@+id/imageResourcesFragment"
+        android:name="com.mycampusapp.imageresource.ImageResourceFragment"
+        android:label="Image Resources"
         tools:layout="@layout/image_resource_fragment" />
 </navigation>
