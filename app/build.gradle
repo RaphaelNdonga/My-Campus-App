@@ -136,4 +136,7 @@ dependencies {
     // Hilt + Work manager
     implementation 'androidx.hilt:hilt-work:1.0.0'
     kapt 'androidx.hilt:hilt-compiler:1.0.0'
+
+    //Glide dependency
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
 }
