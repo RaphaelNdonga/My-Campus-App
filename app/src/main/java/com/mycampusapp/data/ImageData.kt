@@ -2,7 +2,7 @@ package com.mycampusapp.data
 
 import java.util.*
 
-data class ImageUrl(
-    val id:String = UUID.randomUUID().toString(),
+data class ImageData(
+    val id:String = System.currentTimeMillis().toString(),
     val imageUrl:String = ""
     )
