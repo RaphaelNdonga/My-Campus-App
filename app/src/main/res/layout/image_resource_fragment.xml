@@ -4,16 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".resources.ResourcesFragment">
+    tools:context=".resources.ImageResourceFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="Resources" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/images_grid_view"
+        app:spanCount="2"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add"
         android:layout_width="wrap_content"
@@ -23,21 +22,21 @@
         app:srcCompat="@drawable/ic_add"
         android:layout_margin="@dimen/fab_margin" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_photo"
+        android:id="@+id/gallery_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/add"
-        app:srcCompat="@drawable/ic_camera"
+        app:srcCompat="@drawable/ic_picture"
         android:visibility="gone"
         android:layout_margin="@dimen/fab_margin" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_document"
+        android:id="@+id/camera_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/add_photo"
-        app:srcCompat="@drawable/ic_document"
+        app:layout_constraintBottom_toTopOf="@id/gallery_fab"
+        app:srcCompat="@drawable/ic_camera"
         android:layout_margin="@dimen/fab_margin"
         android:visibility="gone"/>
 

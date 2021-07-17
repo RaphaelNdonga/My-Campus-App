@@ -306,7 +306,7 @@
     </fragment>
     <fragment
         android:id="@+id/resourcesFragment"
-        android:name="com.mycampusapp.resources.ResourcesFragment"
+        android:name="com.mycampusapp.resources.ImageResourceFragment"
         android:label="resources_fragment"
-        tools:layout="@layout/resources_fragment" />
+        tools:layout="@layout/image_resource_fragment" />
 </navigation>

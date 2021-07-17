@@ -9,14 +9,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ResourcesViewModel @Inject constructor(
+class ImageResourceViewModel @Inject constructor(
     private val firebaseStorage: FirebaseStorage,
     private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
 
     fun getImagesRef():StorageReference {
         val courseId = sharedPreferences.getString(COURSE_ID,"")!!
-        return firebaseStorage.reference.child(courseId)
+        return firebaseStorage.reference.child(courseId).child("images")
     }
 
 }
