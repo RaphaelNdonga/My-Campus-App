@@ -14,7 +14,7 @@
         android:icon="@drawable/ic_internet"
         android:title="@string/essential_links" />
     <item
-        android:id="@+id/resourcesFragment"
+        android:id="@+id/imageResourcesFragment"
         android:icon="@drawable/ic_picture"
         android:title="Image Resources" />
     <item
