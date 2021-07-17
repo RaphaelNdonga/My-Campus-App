@@ -84,4 +84,7 @@
     <string name="essential_links">Essential Links</string>
     <string name="no_links_message">No links available</string>
     <string name="image">image</string>
+    <string name="add_document">add document</string>
+    <string name="document_resources">Document Resources</string>
+    <string name="image_resources">Image Resources</string>
 </resources>
