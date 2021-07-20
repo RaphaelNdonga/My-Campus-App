@@ -4,11 +4,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import com.mycampusapp.util.COURSES
+import com.mycampusapp.util.COURSE_ID
 import com.mycampusapp.util.sharedPrefFile
 import dagger.Module
 import dagger.Provides
@@ -23,28 +27,52 @@ object FirebaseModule {
     fun provideFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
     }
+
     @Provides
-    fun provideAuthentication():FirebaseAuth{
+    fun provideAuthentication(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }
+
     @Provides
-    fun provideFunctions(): FirebaseFunctions{
+    fun provideFunctions(): FirebaseFunctions {
         return FirebaseFunctions.getInstance()
     }
+
     @Provides
-    fun provideCoursesCollection(firestore: FirebaseFirestore):CollectionReference{
+    fun provideCoursesCollection(firestore: FirebaseFirestore): CollectionReference {
         return firestore.collection("courses")
     }
+
     @Provides
-    fun provideCloudMessaging():FirebaseMessaging{
+    fun provideCourseDocument(
+        firestore: FirebaseFirestore,
+        sharedPreferences: SharedPreferences
+    ): DocumentReference {
+        val courseId = sharedPreferences.getString(COURSE_ID,"")!!
+        return firestore.collection(COURSES).document(courseId)
+    }
+
+    @Provides
+    fun provideCloudMessaging(): FirebaseMessaging {
         return FirebaseMessaging.getInstance()
     }
+
     @Provides
-    fun provideCloudStorage():FirebaseStorage{
+    fun provideCloudStorage(): FirebaseStorage {
         return FirebaseStorage.getInstance()
     }
+
     @Provides
-    fun provideSharedPreferences(@ApplicationContext context: Context):SharedPreferences{
-        return context.getSharedPreferences(sharedPrefFile,Context.MODE_PRIVATE)
+    fun provideStorageReference(
+        firebaseStorage: FirebaseStorage,
+        sharedPreferences: SharedPreferences
+    ): StorageReference {
+        val courseId = sharedPreferences.getString(COURSE_ID, "")!!
+        return firebaseStorage.reference.child(courseId)
+    }
+
+    @Provides
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+        return context.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
     }
 }

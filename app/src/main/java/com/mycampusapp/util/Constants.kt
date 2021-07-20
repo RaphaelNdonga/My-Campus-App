@@ -12,3 +12,4 @@ const val RUN_DAILY: Long = 24 * 60 * 60 * 1000
 const val WORK_EMAIL = "raphaelndongawork@gmail.com"
 const val IMAGES = "images"
 const val COURSES = "courses"
+const val DOCUMENTS = "documents"

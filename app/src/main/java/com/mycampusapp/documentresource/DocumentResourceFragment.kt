@@ -1,28 +1,59 @@
 package com.mycampusapp.documentresource
 
-import androidx.lifecycle.ViewModelProvider
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.mycampusapp.R
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.mycampusapp.databinding.DocumentResourceFragmentBinding
+import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
+@AndroidEntryPoint
 class DocumentResourceFragment : Fragment() {
 
-    private lateinit var viewModel: DocumentResourceViewModel
+    private val viewModel: DocumentResourceViewModel by viewModels()
+    private lateinit var binding: DocumentResourceFragmentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.document_resource_fragment, container, false)
-    }
+        binding = DocumentResourceFragmentBinding.inflate(inflater, container, false)
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(DocumentResourceViewModel::class.java)
-        // TODO: Use the ViewModel
+        val getFileResult =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                val fileUri = result.data?.data
+                val docRef = viewModel.getDocumentsRef()
+                fileUri?.let {
+                    docRef.putFile(it).addOnSuccessListener {
+                        docRef.downloadUrl.addOnSuccessListener { url ->
+                            Timber.i("url is $url")
+                        }
+                    }
+                }
+            }
+        binding.addDocument.setOnClickListener {
+            val mimeTypes = arrayOf(
+                "application/msword",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .doc & .docx
+                "application/vnd.ms-powerpoint",
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation", // .ppt & .pptx
+                "application/vnd.ms-excel",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xls & .xlsx
+                "text/plain",
+                "application/pdf",
+                "application/zip"
+            )
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                type = "*/*"
+                putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
+            }
+            getFileResult.launch(intent)
+        }
+        return binding.root
     }
-
 }
