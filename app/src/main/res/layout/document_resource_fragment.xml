@@ -10,7 +10,8 @@
         android:id="@+id/document_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager=".util.CustomLinearLayoutManager"/>
+        app:layoutManager=".util.CustomLinearLayoutManager"
+        tools:listitem="@layout/list_item_document"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_document"
