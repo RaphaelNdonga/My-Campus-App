@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.mycampusapp.data.DocumentData
 import com.mycampusapp.databinding.DocumentResourceFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -35,6 +36,9 @@ class DocumentResourceFragment : Fragment() {
                     docRef.putFile(it).addOnSuccessListener {
                         docRef.downloadUrl.addOnSuccessListener { url ->
                             Timber.i("url is $url")
+                            val documentData =
+                                DocumentData(url = url.toString(), fileName = fileName)
+                            viewModel.addDocumentData(documentData)
                         }
                     }
                 }
