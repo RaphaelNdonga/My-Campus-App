@@ -33,6 +33,9 @@
                 android:layout_margin="@dimen/text_box_margin"
                 android:text="@string/subject"
                 android:textAppearance="@style/TextAppearance.MyCampusApp.RecyclerViewItemTitle"
+                app:layout_constraintEnd_toStartOf="@+id/more_icon"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constrainedWidth="true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -96,7 +99,8 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_more" />
+                app:srcCompat="@drawable/ic_more"
+                tools:visibility="visible"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
