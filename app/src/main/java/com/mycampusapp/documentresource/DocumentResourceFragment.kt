@@ -27,8 +27,11 @@ class DocumentResourceFragment : Fragment() {
         val getFileResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 val fileUri = result.data?.data
-                val docRef = viewModel.getDocumentsRef()
+
                 fileUri?.let {
+                    val fileName = it.lastPathSegment.toString().substringAfter("/")
+                    val docRef = viewModel.getDocumentsRef()
+                        .child(fileName)
                     docRef.putFile(it).addOnSuccessListener {
                         docRef.downloadUrl.addOnSuccessListener { url ->
                             Timber.i("url is $url")
