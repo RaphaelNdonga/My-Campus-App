@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.firebase.firestore.ListenerRegistration
 import com.mycampusapp.data.DocumentData
 import com.mycampusapp.databinding.DocumentResourceFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,6 +19,7 @@ class DocumentResourceFragment : Fragment() {
 
     private val viewModel: DocumentResourceViewModel by viewModels()
     private lateinit var binding: DocumentResourceFragmentBinding
+    private lateinit var snapshotListener:ListenerRegistration
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,6 +63,21 @@ class DocumentResourceFragment : Fragment() {
             }
             getFileResult.launch(intent)
         }
+        val adapter = DocumentsAdapter()
+        binding.documentRecyclerView.adapter = adapter
+        viewModel.documentList.observe(viewLifecycleOwner,{
+            adapter.submitList(it)
+        })
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        snapshotListener = viewModel.addSnapshotListener()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        snapshotListener.remove()
     }
 }
