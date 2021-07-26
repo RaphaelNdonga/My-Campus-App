@@ -57,16 +57,10 @@ class ImageResourceFragment : Fragment() {
                 val imageUri = result.data?.data
                 imageUri?.let { uri ->
                     val fileName = viewModel.getFileName(uri)
-                    val imageFile = File(root, fileName)
-                    val fos = FileOutputStream(imageFile)
                     val fis = requireContext().contentResolver.openInputStream(uri)
-                    try {
-                        fos.write(fis?.readBytes())
-                        fos.flush()
-                        fos.close()
-
+                    fis?.let { inputStream ->
                         val imagesRef = viewModel.getImagesRef().child(fileName)
-                        val task = imagesRef.putFile(uri)
+                        val task = imagesRef.putStream(inputStream)
                         task.addOnProgressListener { uploadTask ->
                             Timber.i(uploadTask.bytesTransferred.toString())
                         }.addOnSuccessListener {
@@ -77,6 +71,30 @@ class ImageResourceFragment : Fragment() {
                                         fileName = viewModel.getFileName(uri)
                                     )
                                 )
+                                /**
+                                 * Only save the file locally after it has been sent to the online
+                                 * database
+                                 */
+                                try {
+                                    val imageFile = File(root, fileName)
+                                    val fos = FileOutputStream(imageFile)
+
+                                    /**
+                                     * Using a second input stream because it seams the first input stream
+                                     * gets exhausted
+                                     */
+                                    val inputStream2 =
+                                        requireContext().contentResolver.openInputStream(uri)
+                                    fos.write(inputStream2?.readBytes())
+                                    fos.flush()
+                                    fos.close()
+                                } catch (ioE: IOException) {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Unable to create file",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
                             }.addOnFailureListener { exception ->
                                 Toast.makeText(
                                     requireContext(),
@@ -86,12 +104,6 @@ class ImageResourceFragment : Fragment() {
                                 Timber.i("Exception is $exception")
                             }
                         }
-                    } catch (ioE: IOException) {
-                        Toast.makeText(
-                            requireContext(),
-                            "Unable to create image file",
-                            Toast.LENGTH_LONG
-                        ).show()
                     }
                 }
             }
@@ -111,14 +123,14 @@ class ImageResourceFragment : Fragment() {
                  * the output stream instead of using an input stream to obtain the image data.
                  */
                 val cameraBitmap = result.data?.extras?.get("data") as Bitmap
-                val imageFile = File(root, fileName)
-                val outputStream = FileOutputStream(imageFile)
+                val outputStream = ByteArrayOutputStream()
                 cameraBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+                val inputStream = ByteArrayInputStream(outputStream.toByteArray())
 
 
                 val imagesRef = viewModel.getImagesRef().child(fileName)
 
-                val task = imagesRef.putFile(imageFile.toUri())
+                val task = imagesRef.putStream(inputStream)
                 task.addOnProgressListener { uploadTask ->
                     Timber.i(uploadTask.bytesTransferred.toString())
                 }.addOnSuccessListener {
@@ -126,6 +138,30 @@ class ImageResourceFragment : Fragment() {
                         viewModel.addFirestoreData(
                             DocumentData(url = imageUri.toString(), fileName = fileName)
                         )
+                        /**
+                         * Only save the file locally after it has been sent to the online
+                         * database
+                         */
+                        try {
+                            val imageFile = File(root, fileName)
+                            val fos = FileOutputStream(imageFile)
+
+                            /**
+                             * Open another input stream because it seems like the first input stream
+                             * gets exhausted
+                             */
+
+                            val inputStream2 = ByteArrayInputStream(outputStream.toByteArray())
+                            fos.write(inputStream2.readBytes())
+                            fos.flush()
+                            fos.close()
+                        } catch (ioE: IOException) {
+                            Toast.makeText(
+                                requireContext(),
+                                "An error occurred while saving the file",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }.addOnFailureListener {
                         Toast.makeText(
                             requireContext(),
