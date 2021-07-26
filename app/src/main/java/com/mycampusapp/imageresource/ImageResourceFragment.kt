@@ -10,13 +10,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import com.google.firebase.firestore.ListenerRegistration
+import com.mycampusapp.data.DocumentData
 import com.mycampusapp.databinding.ImageResourceFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
+import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -29,12 +31,15 @@ class ImageResourceFragment : Fragment() {
 
     private val viewModel by viewModels<ImageResourceViewModel>()
     private lateinit var binding: ImageResourceFragmentBinding
-    private lateinit var snapshotListener:ListenerRegistration
+    private lateinit var snapshotListener: ListenerRegistration
+    private lateinit var root: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        root = requireContext().getExternalFilesDir(null).toString()
+
         binding = ImageResourceFragmentBinding.inflate(inflater, container, false)
         binding.add.setOnClickListener {
             if (binding.galleryFab.visibility == View.GONE) {
@@ -50,23 +55,43 @@ class ImageResourceFragment : Fragment() {
         val getGalleryImage =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 val imageUri = result.data?.data
-                imageUri?.let {
-                    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmSS", Locale.UK).format(Date())
-                    val imagesRef = viewModel.getImagesRef().child("JPEG_$timeStamp.jpg")
-                    val task = imagesRef.putFile(it)
-                    task.addOnProgressListener { uploadTask ->
-                        Timber.i(uploadTask.bytesTransferred.toString())
-                    }.addOnSuccessListener {
-                        imagesRef.downloadUrl.addOnSuccessListener { imageUri ->
-                            viewModel.addFirestoreData(imageUri.toString())
-                        }.addOnFailureListener { exception ->
-                            Toast.makeText(
-                                requireContext(),
-                                "An error occurred while downloading the url",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            Timber.i("Exception is $exception")
+                imageUri?.let { uri ->
+                    val fileName = viewModel.getFileName(uri)
+                    val imageFile = File(root, fileName)
+                    val fos = FileOutputStream(imageFile)
+                    val fis = requireContext().contentResolver.openInputStream(uri)
+                    try {
+                        fos.write(fis?.readBytes())
+                        fos.flush()
+                        fos.close()
+
+                        val imagesRef = viewModel.getImagesRef().child(fileName)
+                        val task = imagesRef.putFile(uri)
+                        task.addOnProgressListener { uploadTask ->
+                            Timber.i(uploadTask.bytesTransferred.toString())
+                        }.addOnSuccessListener {
+                            imagesRef.downloadUrl.addOnSuccessListener { imageUri ->
+                                viewModel.addFirestoreData(
+                                    DocumentData(
+                                        url = imageUri.toString(),
+                                        fileName = viewModel.getFileName(uri)
+                                    )
+                                )
+                            }.addOnFailureListener { exception ->
+                                Toast.makeText(
+                                    requireContext(),
+                                    "An error occurred while downloading the url",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                Timber.i("Exception is $exception")
+                            }
                         }
+                    } catch (ioE: IOException) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Unable to create image file",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             }
@@ -77,18 +102,30 @@ class ImageResourceFragment : Fragment() {
         }
         val getCameraImage =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                val timeStamp =
+                    SimpleDateFormat("yyyyMMdd_HHmmSS", Locale.UK).format(Date())
+                val fileName = "JPEG_$timeStamp.jpg"
+
+                /**
+                 * The image data can be directly obtained from the bitmap by compressing it into
+                 * the output stream instead of using an input stream to obtain the image data.
+                 */
                 val cameraBitmap = result.data?.extras?.get("data") as Bitmap
-                val outputStream = ByteArrayOutputStream()
+                val imageFile = File(root, fileName)
+                val outputStream = FileOutputStream(imageFile)
                 cameraBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                val inputStream = ByteArrayInputStream(outputStream.toByteArray())
-                val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmSS", Locale.UK).format(Date())
-                val imagesRef = viewModel.getImagesRef().child("JPEG_$timeStamp.jpg")
-                val task = imagesRef.putStream(inputStream)
+
+
+                val imagesRef = viewModel.getImagesRef().child(fileName)
+
+                val task = imagesRef.putFile(imageFile.toUri())
                 task.addOnProgressListener { uploadTask ->
                     Timber.i(uploadTask.bytesTransferred.toString())
                 }.addOnSuccessListener {
                     imagesRef.downloadUrl.addOnSuccessListener { imageUri ->
-                        viewModel.addFirestoreData(imageUri.toString())
+                        viewModel.addFirestoreData(
+                            DocumentData(url = imageUri.toString(), fileName = fileName)
+                        )
                     }.addOnFailureListener {
                         Toast.makeText(
                             requireContext(),
@@ -103,7 +140,7 @@ class ImageResourceFragment : Fragment() {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             getCameraImage.launch(intent)
         }
-        viewModel.images.observe(viewLifecycleOwner,{
+        viewModel.images.observe(viewLifecycleOwner, {
             adapter.submitList(it)
             Timber.i("$it")
         })
