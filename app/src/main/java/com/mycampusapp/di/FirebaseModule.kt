@@ -70,9 +70,4 @@ object FirebaseModule {
         val courseId = sharedPreferences.getString(COURSE_ID, "")!!
         return firebaseStorage.reference.child(courseId)
     }
-
-    @Provides
-    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
-        return context.getSharedPreferences(sharedPrefFile, Context.MODE_PRIVATE)
-    }
 }
