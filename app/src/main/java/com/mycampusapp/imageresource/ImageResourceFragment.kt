@@ -10,8 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toFile
-import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import com.google.firebase.firestore.ListenerRegistration
 import com.mycampusapp.data.DocumentData
@@ -77,17 +75,9 @@ class ImageResourceFragment : Fragment() {
                                  */
                                 try {
                                     val imageFile = File(root, fileName)
-                                    val fos = FileOutputStream(imageFile)
-
-                                    /**
-                                     * Using a second input stream because it seams the first input stream
-                                     * gets exhausted
-                                     */
-                                    val inputStream2 =
+                                    val reopenedInputStream =
                                         requireContext().contentResolver.openInputStream(uri)
-                                    fos.write(inputStream2?.readBytes())
-                                    fos.flush()
-                                    fos.close()
+                                    viewModel.writeDataToFile(reopenedInputStream, imageFile)
                                 } catch (ioE: IOException) {
                                     Toast.makeText(
                                         requireContext(),
@@ -143,18 +133,15 @@ class ImageResourceFragment : Fragment() {
                          * database
                          */
                         try {
-                            val imageFile = File(root, fileName)
-                            val fos = FileOutputStream(imageFile)
-
                             /**
-                             * Open another input stream because it seems like the first input stream
+                             * Using a second input stream because it seams the first input stream
                              * gets exhausted
                              */
+                            val reopenedInputStream =
+                                ByteArrayInputStream(outputStream.toByteArray())
+                            val imageFile = File(root, fileName)
+                            viewModel.writeDataToFile(reopenedInputStream, imageFile)
 
-                            val inputStream2 = ByteArrayInputStream(outputStream.toByteArray())
-                            fos.write(inputStream2.readBytes())
-                            fos.flush()
-                            fos.close()
                         } catch (ioE: IOException) {
                             Toast.makeText(
                                 requireContext(),

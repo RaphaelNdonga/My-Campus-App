@@ -16,6 +16,9 @@ import com.mycampusapp.util.COURSE_ID
 import com.mycampusapp.util.IMAGES
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import javax.inject.Inject
 
 @HiltViewModel
@@ -67,5 +70,12 @@ class ImageResourceViewModel @Inject constructor(
             }
         }
         return result
+    }
+
+    fun writeDataToFile(inputStream: InputStream?, imageFile:File) {
+        val fos = FileOutputStream(imageFile)
+        fos.write(inputStream?.readBytes())
+        fos.flush()
+        fos.close()
     }
 }
