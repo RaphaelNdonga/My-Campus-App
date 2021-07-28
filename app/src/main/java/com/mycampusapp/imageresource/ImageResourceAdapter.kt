@@ -14,7 +14,7 @@ import com.mycampusapp.databinding.ListItemImageBinding
 import com.mycampusapp.documentresource.DocumentsAdapter
 import java.io.File
 
-class ImageResourceAdapter :
+class ImageResourceAdapter(private val imageListener:DocumentsAdapter.DocumentClickListener) :
     ListAdapter<DocumentData, ImageResourceAdapter.ImageViewHolder>(DocumentsAdapter.DocumentsDiffUtilCallback) {
     class ImageViewHolder(private val binding: ListItemImageBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -49,5 +49,8 @@ class ImageResourceAdapter :
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val currentItem = getItem(position)
         holder.bind(currentItem)
+        holder.itemView.setOnClickListener {
+            imageListener.onClick(currentItem)
+        }
     }
 }

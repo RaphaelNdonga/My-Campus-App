@@ -1,5 +1,6 @@
 package com.mycampusapp.imageresource
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -10,10 +11,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
 import com.google.firebase.firestore.ListenerRegistration
+import com.mycampusapp.R
 import com.mycampusapp.data.DocumentData
 import com.mycampusapp.databinding.ImageResourceFragmentBinding
+import com.mycampusapp.documentresource.DocumentsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.io.*
@@ -48,7 +52,23 @@ class ImageResourceFragment : Fragment() {
                 binding.cameraFab.visibility = View.GONE
             }
         }
-        val adapter = ImageResourceAdapter()
+        val adapter = ImageResourceAdapter(DocumentsAdapter.DocumentClickListener { imageDoc ->
+            val file = File(root, imageDoc.fileName)
+            if (file.exists()) {
+                val uri = FileProvider.getUriForFile(
+                    requireContext(),
+                    requireActivity().applicationContext.packageName + ".provider",
+                    file
+                )
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(uri, "image/*")
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                startActivity(intent)
+            } else {
+                showDialogBox(imageDoc)
+            }
+        })
         binding.imagesGridView.adapter = adapter
         val getGalleryImage =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -178,5 +198,29 @@ class ImageResourceFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         snapshotListener.remove()
+    }
+    private fun showDialogBox(imageDoc: DocumentData) {
+        val builder = AlertDialog.Builder(requireContext(), R.style.MyCampusApp_Dialog)
+            .setTitle("Download")
+            .setMessage("Do you want to download ${imageDoc.fileName}? ")
+            .setNegativeButton(R.string.dialog_negative) { _, _ -> }
+            .setPositiveButton(R.string.dialog_positive) { _, _ ->
+                val documentRef = viewModel.getImagesRef().child(imageDoc.fileName)
+                val documentFile = File(root, imageDoc.fileName)
+                documentRef.getFile(documentFile).addOnSuccessListener {
+                    Toast.makeText(
+                        requireContext(),
+                        "Document has been saved successfully",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }.addOnFailureListener {
+                    Toast.makeText(
+                        requireContext(),
+                        "Error occurred ${it.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        builder.create().show()
     }
 }
