@@ -20,6 +20,7 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.mycampusapp.R
 import com.mycampusapp.data.DocumentData
 import com.mycampusapp.databinding.DocumentResourceFragmentBinding
+import com.mycampusapp.util.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.io.File
@@ -85,6 +86,13 @@ class DocumentResourceFragment : Fragment() {
         binding.documentRecyclerView.adapter = adapter
         viewModel.documentList.observe(viewLifecycleOwner, {
             adapter.submitList(it)
+        })
+        viewModel.toaster.observe(viewLifecycleOwner, EventObserver {
+            Toast.makeText(
+                requireContext(),
+                "There was an error saving your file.",
+                Toast.LENGTH_LONG
+            ).show()
         })
 
         return binding.root

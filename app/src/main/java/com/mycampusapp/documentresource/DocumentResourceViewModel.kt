@@ -13,6 +13,7 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.storage.StorageReference
 import com.mycampusapp.data.DocumentData
 import com.mycampusapp.util.DOCUMENTS
+import com.mycampusapp.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
 import java.io.File
@@ -29,6 +30,8 @@ class DocumentResourceViewModel @Inject constructor(
     private val _documentList = MutableLiveData<List<DocumentData>>()
     val documentList: LiveData<List<DocumentData>> = _documentList
     private val documentsCollection = courseDocument.collection(DOCUMENTS)
+    private val _toaster = MutableLiveData<Event<Unit>>()
+    val toaster:LiveData<Event<Unit>> = _toaster
     val mimeTypes = arrayOf(
         "application/msword",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .doc & .docx
@@ -102,7 +105,7 @@ class DocumentResourceViewModel @Inject constructor(
                 }
             }
         } catch (ioE: IOException) {
-
+            _toaster.value = Event(Unit)
         }
     }
 }
