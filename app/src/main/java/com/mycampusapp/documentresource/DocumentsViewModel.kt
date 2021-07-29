@@ -20,6 +20,7 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
 import java.lang.NullPointerException
 import javax.inject.Inject
 
@@ -62,7 +63,7 @@ class DocumentsViewModel @Inject constructor(
     fun addSnapshotListener(): ListenerRegistration {
         return documentsCollection.addSnapshotListener { querySnapshot, error ->
             _documentList.value = querySnapshot?.toObjects(DocumentData::class.java)
-            if(error != null){
+            if (error != null) {
                 Timber.e("An error occurred ${error.message}")
             }
             checkDataStatus()
@@ -91,28 +92,34 @@ class DocumentsViewModel @Inject constructor(
         return result
     }
 
-    fun moveToLocalAndSaveToFirestore(root: String, fileName: String) {
-        val file = File(root, fileName)
-        val fos = FileOutputStream(file)
-        val fis = contentResolver.openInputStream(file.toUri())
+    fun moveToLocalAndSaveToFirestore(root: String, fileName: String, uri: Uri) {
+        val inputStream1 = contentResolver.openInputStream(uri)
         try {
             /**
-             * This is where we move the file to local app external storage
-             */
-            fos.write(fis?.readBytes())
-            fos.flush()
-            fos.close()
-            /**
-             * After movement is successful, save the document data to firestore
+             * save the document data to firestore
              */
             val docRef = getDocumentsRef()
                 .child(fileName)
-            docRef.putFile(file.toUri()).addOnSuccessListener {
-                docRef.downloadUrl.addOnSuccessListener { url ->
-                    Timber.i("url is $url")
-                    val documentData =
-                        DocumentData(url = url.toString(), fileName = fileName)
-                    addDocumentData(documentData)
+            inputStream1?.let {
+                docRef.putStream(it).addOnSuccessListener {
+                    docRef.downloadUrl.addOnSuccessListener { url ->
+                        Timber.i("url is $url")
+                        val documentData =
+                            DocumentData(url = url.toString(), fileName = fileName)
+                        addDocumentData(documentData)
+                    }
+                    /**
+                     * Save the document locally only after it has successfully been saved to
+                     * firestore.
+                     * Again, we need 2 input streams because inputStream1 sort of gets exhausted
+                     * after use
+                     */
+                    val inputStream2 = contentResolver.openInputStream(uri)
+                    val file = File(root, fileName)
+                    val fileOutputStream = FileOutputStream(file)
+                    fileOutputStream.write(inputStream2?.readBytes())
+                    fileOutputStream.flush()
+                    fileOutputStream.close()
                 }
             }
         } catch (ioE: IOException) {

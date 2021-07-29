@@ -45,7 +45,7 @@ class DocumentsFragment : Fragment() {
 
                 fileUri?.let {
                     val fileName = viewModel.getFileName(it)
-                    viewModel.moveToLocalAndSaveToFirestore(root, fileName)
+                    viewModel.moveToLocalAndSaveToFirestore(root, fileName, it)
                 }
             }
 
