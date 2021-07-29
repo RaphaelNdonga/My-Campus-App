@@ -91,4 +91,6 @@
     <string name="take_photo">Take a photo</string>
     <string name="file_name">file name</string>
     <string name="green_check_description">File has been downloaded</string>
+    <string name="loading">Loading…</string>
+    <string name="no_images_msg">No images available at this moment</string>
 </resources>

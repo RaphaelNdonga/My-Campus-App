@@ -15,6 +15,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
 import com.google.firebase.firestore.ListenerRegistration
 import com.mycampusapp.R
+import com.mycampusapp.data.DataStatus
 import com.mycampusapp.data.DocumentData
 import com.mycampusapp.databinding.ImagesFragmentBinding
 import com.mycampusapp.documentresource.DocumentsAdapter
@@ -191,6 +192,28 @@ class ImagesFragment : Fragment() {
             adapter.submitList(it)
             Timber.i("$it")
         })
+        viewModel.status.observe(viewLifecycleOwner, { status ->
+            status?.let {
+                when (it) {
+                    DataStatus.EMPTY -> {
+                        binding.noImagesPlaceholder.visibility = View.VISIBLE
+                        binding.noImagesTxt.visibility = View.VISIBLE
+                        binding.noImagesPlaceholder.setImageResource(R.drawable.ic_picture)
+                        binding.noImagesTxt.text = requireContext().getString(R.string.no_images_msg)
+                    }
+                    DataStatus.NOT_EMPTY -> {
+                        binding.noImagesPlaceholder.visibility = View.GONE
+                        binding.noImagesTxt.visibility = View.GONE
+                    }
+                    DataStatus.LOADING -> {
+                        binding.noImagesPlaceholder.visibility = View.VISIBLE
+                        binding.noImagesTxt.visibility = View.VISIBLE
+                        binding.noImagesTxt.text = requireContext().getString(R.string.loading)
+                        binding.noImagesPlaceholder.setImageResource(R.drawable.loading_animation)
+                    }
+                }
+            }
+        })
         return binding.root
     }
 
@@ -203,6 +226,7 @@ class ImagesFragment : Fragment() {
         super.onStop()
         snapshotListener.remove()
     }
+
     private fun showDialogBox(imageDoc: DocumentData) {
         val builder = AlertDialog.Builder(requireContext(), R.style.MyCampusApp_Dialog)
             .setTitle("Download")
@@ -227,7 +251,8 @@ class ImagesFragment : Fragment() {
             }
         builder.create().show()
     }
-    private fun refreshImages(){
+
+    private fun refreshImages() {
         snapshotListener.remove()
         snapshotListener = viewModel.addSnapshotListener()
     }
