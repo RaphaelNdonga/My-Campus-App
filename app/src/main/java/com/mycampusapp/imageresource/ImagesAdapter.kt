@@ -14,8 +14,8 @@ import com.mycampusapp.databinding.ListItemImageBinding
 import com.mycampusapp.documentresource.DocumentsAdapter
 import java.io.File
 
-class ImageResourceAdapter(private val imageListener:DocumentsAdapter.DocumentClickListener) :
-    ListAdapter<DocumentData, ImageResourceAdapter.ImageViewHolder>(DocumentsAdapter.DocumentsDiffUtilCallback) {
+class ImagesAdapter(private val imageListener:DocumentsAdapter.DocumentClickListener) :
+    ListAdapter<DocumentData, ImagesAdapter.ImageViewHolder>(DocumentsAdapter.DocumentsDiffUtilCallback) {
     class ImageViewHolder(private val binding: ListItemImageBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(imageData: DocumentData) {

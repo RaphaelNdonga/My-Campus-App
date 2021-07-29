@@ -22,7 +22,7 @@ import java.io.InputStream
 import javax.inject.Inject
 
 @HiltViewModel
-class ImageResourceViewModel @Inject constructor(
+class ImagesViewModel @Inject constructor(
     private val firebaseStorage: FirebaseStorage,
     sharedPreferences: SharedPreferences,
     courseCollection:CollectionReference,

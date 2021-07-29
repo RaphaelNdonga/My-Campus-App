@@ -1,44 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".imageresource.ImageResourceFragment">
+    tools:context=".imageresource.ImagesFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/images_grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/images_grid_view"
-        tools:listitem="@layout/list_item_image"
-        tools:itemCount="5"
         app:layoutManager=".util.CustomLinearLayoutManager"
-        />
+        tools:itemCount="5"
+        tools:listitem="@layout/list_item_image" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/fab_margin"
+        android:contentDescription="@string/add_photo"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:srcCompat="@drawable/ic_add"
-        android:layout_margin="@dimen/fab_margin" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_add" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/gallery_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/add"
-        app:srcCompat="@drawable/ic_picture"
+        android:layout_margin="@dimen/fab_margin"
+        android:contentDescription="@string/choose_gallery"
         android:visibility="gone"
-        android:layout_margin="@dimen/fab_margin" />
+        app:layout_constraintBottom_toTopOf="@id/add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_picture" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/camera_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/gallery_fab"
-        app:srcCompat="@drawable/ic_camera"
         android:layout_margin="@dimen/fab_margin"
-        android:visibility="gone"/>
+        android:contentDescription="@string/take_photo"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/gallery_fab"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_camera" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

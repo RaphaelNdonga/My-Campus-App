@@ -81,10 +81,14 @@
     <string name="link">link</string>
     <string name="valid_url_request">Please enter a valid url</string>
     <string name="add_link">Add a subject link</string>
-    <string name="essential_links">Essential Links</string>
+    <string name="links">Links</string>
     <string name="no_links_message">No links available</string>
-    <string name="image">image</string>
+    <string name="images">Images</string>
     <string name="add_document">add document</string>
-    <string name="document_resources">Document Resources</string>
-    <string name="image_resources">Image Resources</string>
+    <string name="documents">Documents</string>
+    <string name="choose_gallery">Add an image from the gallery</string>
+    <string name="add_photo">Add a photo</string>
+    <string name="take_photo">Take a photo</string>
+    <string name="file_name">file name</string>
+    <string name="green_check_description">File has been downloaded</string>
 </resources>

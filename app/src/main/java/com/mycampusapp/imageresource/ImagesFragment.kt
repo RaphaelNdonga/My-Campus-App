@@ -25,13 +25,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class ImageResourceFragment : Fragment() {
+class ImagesFragment : Fragment() {
 
     companion object {
-        fun newInstance() = ImageResourceFragment()
+        fun newInstance() = ImagesFragment()
     }
 
-    private val viewModel by viewModels<ImageResourceViewModel>()
+    private val viewModel by viewModels<ImagesViewModel>()
     private lateinit var binding: ImageResourceFragmentBinding
     private lateinit var snapshotListener: ListenerRegistration
     private lateinit var root: String
@@ -39,7 +39,7 @@ class ImageResourceFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         root = requireContext().getExternalFilesDir(null).toString()
 
         binding = ImageResourceFragmentBinding.inflate(inflater, container, false)
@@ -52,7 +52,7 @@ class ImageResourceFragment : Fragment() {
                 binding.cameraFab.visibility = View.GONE
             }
         }
-        val adapter = ImageResourceAdapter(DocumentsAdapter.DocumentClickListener { imageDoc ->
+        val adapter = ImagesAdapter(DocumentsAdapter.DocumentClickListener { imageDoc ->
             val file = File(root, imageDoc.fileName)
             if (file.exists()) {
                 val uri = FileProvider.getUriForFile(

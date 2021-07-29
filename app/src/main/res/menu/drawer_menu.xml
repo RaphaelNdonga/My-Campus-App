@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/timetableFragment"
         android:icon="@drawable/ic_timetable"
@@ -12,15 +11,15 @@
     <item
         android:id="@+id/LinksFragment"
         android:icon="@drawable/ic_internet"
-        android:title="@string/essential_links" />
+        android:title="@string/links" />
     <item
-        android:id="@+id/imageResourcesFragment"
+        android:id="@+id/imagesFragment"
         android:icon="@drawable/ic_picture"
-        android:title="@string/image_resources" />
+        android:title="@string/images" />
     <item
-        android:id="@+id/documentResourceFragment"
+        android:id="@+id/documentsFragment"
         android:icon="@drawable/ic_document"
-        android:title="@string/document_resources" />
+        android:title="@string/documents" />
     <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/ic_settings"

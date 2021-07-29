@@ -2,46 +2,38 @@ package com.mycampusapp.documentresource
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.database.Cursor
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.provider.OpenableColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.firebase.firestore.ListenerRegistration
 import com.mycampusapp.R
 import com.mycampusapp.data.DocumentData
-import com.mycampusapp.databinding.DocumentResourceFragmentBinding
+import com.mycampusapp.databinding.DocumentsFragmentBinding
 import com.mycampusapp.util.EventObserver
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
 
 
 @AndroidEntryPoint
-class DocumentResourceFragment : Fragment() {
+class DocumentsFragment : Fragment() {
 
-    private val viewModel: DocumentResourceViewModel by viewModels()
-    private lateinit var binding: DocumentResourceFragmentBinding
+    private val viewModel: DocumentsViewModel by viewModels()
+    private lateinit var binding: DocumentsFragmentBinding
     private lateinit var snapshotListener: ListenerRegistration
     private lateinit var root: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = DocumentResourceFragmentBinding.inflate(inflater, container, false)
+    ): View {
+        binding = DocumentsFragmentBinding.inflate(inflater, container, false)
         root = requireContext().getExternalFilesDir(null).toString()
 
         Timber.i("The root directory is $root")

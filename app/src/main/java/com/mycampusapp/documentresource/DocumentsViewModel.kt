@@ -22,7 +22,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
-class DocumentResourceViewModel @Inject constructor(
+class DocumentsViewModel @Inject constructor(
     private val storageReference: StorageReference,
     private val contentResolver: ContentResolver,
     courseDocument: DocumentReference

@@ -287,7 +287,7 @@
     <fragment
         android:id="@+id/LinksFragment"
         android:name="com.mycampusapp.links.LinksFragment"
-        android:label="@string/essential_links"
+        android:label="@string/links"
         tools:layout="@layout/links_fragment">
         <action
             android:id="@+id/action_linksFragment_to_linksInputFragment"
@@ -305,13 +305,13 @@
             app:nullable="true" />
     </fragment>
     <fragment
-        android:id="@+id/imageResourcesFragment"
-        android:name="com.mycampusapp.imageresource.ImageResourceFragment"
-        android:label="Image Resources"
+        android:id="@+id/imagesFragment"
+        android:name="com.mycampusapp.imageresource.ImagesFragment"
+        android:label="@string/images"
         tools:layout="@layout/image_resource_fragment" />
     <fragment
-        android:id="@+id/documentResourceFragment"
-        android:name="com.mycampusapp.documentresource.DocumentResourceFragment"
-        android:label="@string/document_resources"
-        tools:layout="@layout/document_resource_fragment" />
+        android:id="@+id/documentsFragment"
+        android:name="com.mycampusapp.documentresource.DocumentsFragment"
+        android:label="@string/documents"
+        tools:layout="@layout/documents_fragment" />
 </navigation>
