@@ -36,8 +36,8 @@
 
             <ImageView
                 android:id="@+id/timetable_empty_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="@dimen/image_placeholder_dimen"
+                android:layout_height="@dimen/image_placeholder_dimen"
                 app:dataStatusImage="@{viewModel.status}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
