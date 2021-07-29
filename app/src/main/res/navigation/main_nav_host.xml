@@ -308,7 +308,7 @@
         android:id="@+id/imagesFragment"
         android:name="com.mycampusapp.imageresource.ImagesFragment"
         android:label="@string/images"
-        tools:layout="@layout/image_resource_fragment" />
+        tools:layout="@layout/images_fragment" />
     <fragment
         android:id="@+id/documentsFragment"
         android:name="com.mycampusapp.documentresource.DocumentsFragment"

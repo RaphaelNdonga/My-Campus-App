@@ -16,7 +16,7 @@ import androidx.fragment.app.viewModels
 import com.google.firebase.firestore.ListenerRegistration
 import com.mycampusapp.R
 import com.mycampusapp.data.DocumentData
-import com.mycampusapp.databinding.ImageResourceFragmentBinding
+import com.mycampusapp.databinding.ImagesFragmentBinding
 import com.mycampusapp.documentresource.DocumentsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -32,7 +32,7 @@ class ImagesFragment : Fragment() {
     }
 
     private val viewModel by viewModels<ImagesViewModel>()
-    private lateinit var binding: ImageResourceFragmentBinding
+    private lateinit var binding: ImagesFragmentBinding
     private lateinit var snapshotListener: ListenerRegistration
     private lateinit var root: String
 
@@ -42,7 +42,7 @@ class ImagesFragment : Fragment() {
     ): View {
         root = requireContext().getExternalFilesDir(null).toString()
 
-        binding = ImageResourceFragmentBinding.inflate(inflater, container, false)
+        binding = ImagesFragmentBinding.inflate(inflater, container, false)
         binding.add.setOnClickListener {
             if (binding.galleryFab.visibility == View.GONE) {
                 binding.galleryFab.visibility = View.VISIBLE
@@ -51,6 +51,10 @@ class ImagesFragment : Fragment() {
                 binding.galleryFab.visibility = View.GONE
                 binding.cameraFab.visibility = View.GONE
             }
+        }
+        binding.imagesRefresher.setOnRefreshListener {
+            refreshImages()
+            binding.imagesRefresher.isRefreshing = false
         }
         val adapter = ImagesAdapter(DocumentsAdapter.DocumentClickListener { imageDoc ->
             val file = File(root, imageDoc.fileName)
@@ -222,5 +226,9 @@ class ImagesFragment : Fragment() {
                 }
             }
         builder.create().show()
+    }
+    private fun refreshImages(){
+        snapshotListener.remove()
+        snapshotListener = viewModel.addSnapshotListener()
     }
 }
