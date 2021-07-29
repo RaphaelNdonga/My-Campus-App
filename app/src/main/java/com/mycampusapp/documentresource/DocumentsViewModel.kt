@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.storage.StorageReference
+import com.mycampusapp.data.DataStatus
 import com.mycampusapp.data.DocumentData
 import com.mycampusapp.util.DOCUMENTS
 import com.mycampusapp.util.Event
@@ -19,6 +20,7 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.NullPointerException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,8 +32,13 @@ class DocumentsViewModel @Inject constructor(
     private val _documentList = MutableLiveData<List<DocumentData>>()
     val documentList: LiveData<List<DocumentData>> = _documentList
     private val documentsCollection = courseDocument.collection(DOCUMENTS)
+
+    private val _status = MutableLiveData<DataStatus>(DataStatus.LOADING)
+    val status: LiveData<DataStatus> = _status
+
     private val _toaster = MutableLiveData<Event<Unit>>()
-    val toaster:LiveData<Event<Unit>> = _toaster
+    val toaster: LiveData<Event<Unit>> = _toaster
+
     val mimeTypes = arrayOf(
         "application/msword",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .doc & .docx
@@ -55,6 +62,10 @@ class DocumentsViewModel @Inject constructor(
     fun addSnapshotListener(): ListenerRegistration {
         return documentsCollection.addSnapshotListener { querySnapshot, error ->
             _documentList.value = querySnapshot?.toObjects(DocumentData::class.java)
+            if(error != null){
+                Timber.e("An error occurred ${error.message}")
+            }
+            checkDataStatus()
         }
     }
 
@@ -106,6 +117,18 @@ class DocumentsViewModel @Inject constructor(
             }
         } catch (ioE: IOException) {
             _toaster.value = Event(Unit)
+        }
+    }
+
+    private fun checkDataStatus() {
+        try {
+            val docsList = _documentList.value
+            if (docsList.isNullOrEmpty()) {
+                throw NullPointerException()
+            }
+            _status.value = DataStatus.NOT_EMPTY
+        } catch (npe: NullPointerException) {
+            _status.value = DataStatus.EMPTY
         }
     }
 }

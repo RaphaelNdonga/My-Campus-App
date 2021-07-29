@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.firebase.firestore.ListenerRegistration
 import com.mycampusapp.R
+import com.mycampusapp.data.DataStatus
 import com.mycampusapp.data.DocumentData
 import com.mycampusapp.databinding.DocumentsFragmentBinding
 import com.mycampusapp.util.EventObserver
@@ -90,6 +91,28 @@ class DocumentsFragment : Fragment() {
                 Toast.LENGTH_LONG
             ).show()
         })
+        viewModel.status.observe(viewLifecycleOwner, { status ->
+            status?.let {
+                when (it) {
+                    DataStatus.EMPTY -> {
+                        binding.noDocsImage.visibility = View.VISIBLE
+                        binding.noDocsTxt.visibility = View.VISIBLE
+                        binding.noDocsImage.setImageResource(R.drawable.ic_document)
+                        binding.noDocsTxt.text = requireContext().getString(R.string.no_docs_msg)
+                    }
+                    DataStatus.NOT_EMPTY -> {
+                        binding.noDocsImage.visibility = View.GONE
+                        binding.noDocsTxt.visibility = View.GONE
+                    }
+                    DataStatus.LOADING -> {
+                        binding.noDocsImage.visibility = View.VISIBLE
+                        binding.noDocsTxt.visibility = View.VISIBLE
+                        binding.noDocsImage.setImageResource(R.drawable.loading_animation)
+                        binding.noDocsTxt.text = requireContext().getString(R.string.loading)
+                    }
+                }
+            }
+        })
 
         return binding.root
     }
@@ -128,7 +151,8 @@ class DocumentsFragment : Fragment() {
         super.onStop()
         snapshotListener.remove()
     }
-    private fun refreshDocuments(){
+
+    private fun refreshDocuments() {
         snapshotListener.remove()
         snapshotListener = viewModel.addSnapshotListener()
     }

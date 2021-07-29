@@ -93,4 +93,5 @@
     <string name="green_check_description">File has been downloaded</string>
     <string name="loading">Loading…</string>
     <string name="no_images_msg">No images available at this moment</string>
+    <string name="no_docs_msg">No documents available at this moment</string>
 </resources>
