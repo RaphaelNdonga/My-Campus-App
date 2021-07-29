@@ -55,6 +55,10 @@ class DocumentsFragment : Fragment() {
             }
             getFileResult.launch(intent)
         }
+        binding.documentsRefresher.setOnRefreshListener {
+            refreshDocuments()
+            binding.documentsRefresher.isRefreshing = false
+        }
 
         val adapter = DocumentsAdapter(DocumentsAdapter.DocumentClickListener { documentData ->
             val file = File(root, documentData.fileName)
@@ -123,5 +127,9 @@ class DocumentsFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         snapshotListener.remove()
+    }
+    private fun refreshDocuments(){
+        snapshotListener.remove()
+        snapshotListener = viewModel.addSnapshotListener()
     }
 }
