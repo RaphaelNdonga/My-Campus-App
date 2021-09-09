@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.ImageCapture
 import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
 import com.google.firebase.firestore.ListenerRegistration
@@ -74,7 +75,9 @@ class ImagesFragment : Fragment() {
                 showDialogBox(imageDoc)
             }
         })
+
         binding.imagesGridView.adapter = adapter
+
         val getGalleryImage =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 val imageUri = result.data?.data
@@ -127,66 +130,11 @@ class ImagesFragment : Fragment() {
             intent.type = "image/*"
             getGalleryImage.launch(intent)
         }
-        val getCameraImage =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                val timeStamp =
-                    SimpleDateFormat("yyyyMMdd_HHmmSS", Locale.UK).format(Date())
-                val fileName = "JPEG_$timeStamp.jpg"
 
-                /**
-                 * The image data can be directly obtained from the bitmap by compressing it into
-                 * the output stream instead of using an input stream to obtain the image data.
-                 */
-                val cameraBitmap = result.data?.extras?.get("data") as Bitmap
-                val outputStream = ByteArrayOutputStream()
-                cameraBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                val inputStream = ByteArrayInputStream(outputStream.toByteArray())
+        val imageCapture = ImageCapture.Builder()
 
-
-                val imagesRef = viewModel.getImagesRef().child(fileName)
-
-                val task = imagesRef.putStream(inputStream)
-                task.addOnProgressListener { uploadTask ->
-                    Timber.i(uploadTask.bytesTransferred.toString())
-                }.addOnSuccessListener {
-                    imagesRef.downloadUrl.addOnSuccessListener { imageUri ->
-                        viewModel.addFirestoreData(
-                            DocumentData(url = imageUri.toString(), fileName = fileName)
-                        )
-                        /**
-                         * Only save the file locally after it has been sent to the online
-                         * database
-                         */
-                        try {
-                            /**
-                             * Using a second input stream because it seams the first input stream
-                             * gets exhausted
-                             */
-                            val reopenedInputStream =
-                                ByteArrayInputStream(outputStream.toByteArray())
-                            val imageFile = File(root, fileName)
-                            viewModel.writeDataToFile(reopenedInputStream, imageFile)
-
-                        } catch (ioE: IOException) {
-                            Toast.makeText(
-                                requireContext(),
-                                "An error occurred while saving the file",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    }.addOnFailureListener {
-                        Toast.makeText(
-                            requireContext(),
-                            "An error occurred while downloading the url",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        Timber.i("Exception is $it")
-                    }
-                }
-            }
         binding.cameraFab.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            getCameraImage.launch(intent)
+
         }
         viewModel.images.observe(viewLifecycleOwner, {
             adapter.submitList(it)
