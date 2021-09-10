@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlinVersion = '1.5.0'
+    ext.kotlinVersion = '1.5.30'
     ext.hilt_version = '2.37'
     ext.navigationVersion = '2.3.3'
 
@@ -10,7 +10,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.30"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         classpath 'com.google.gms:google-services:4.3.10'
@@ -35,9 +35,9 @@ task clean(type: Delete) {
 ext {
     // Sdk and tools
     // Support library and architecture components support minSdk 14 and above.
-    minSdkVersion = 19
-    targetSdkVersion = 30
-    compileSdkVersion = 30
+    minSdkVersion = 21
+    targetSdkVersion = 31
+    compileSdkVersion = 31
 
     // App dependencies
     androidXVersion = '1.0.0'

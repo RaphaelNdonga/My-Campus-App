@@ -27,7 +27,8 @@
         </provider>
         <activity
             android:name="com.mycampusapp.LoginActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
