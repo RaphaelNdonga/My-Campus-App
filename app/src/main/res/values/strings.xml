@@ -94,4 +94,5 @@
     <string name="loading">Loading…</string>
     <string name="no_images_msg">No images available at this moment</string>
     <string name="no_docs_msg">No documents available at this moment</string>
+    <string name="switch_camera">Switch camera</string>
 </resources>

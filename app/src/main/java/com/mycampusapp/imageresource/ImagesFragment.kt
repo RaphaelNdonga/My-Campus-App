@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.ImageCapture
 import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.firestore.ListenerRegistration
 import com.mycampusapp.R
 import com.mycampusapp.data.DataStatus
@@ -131,10 +132,8 @@ class ImagesFragment : Fragment() {
             getGalleryImage.launch(intent)
         }
 
-        val imageCapture = ImageCapture.Builder()
-
         binding.cameraFab.setOnClickListener {
-
+            findNavController().navigate(R.id.action_imagesFragment_to_cameraFragment)
         }
         viewModel.images.observe(viewLifecycleOwner, {
             adapter.submitList(it)

@@ -308,10 +308,18 @@
         android:id="@+id/imagesFragment"
         android:name="com.mycampusapp.imageresource.ImagesFragment"
         android:label="@string/images"
-        tools:layout="@layout/images_fragment" />
+        tools:layout="@layout/images_fragment" >
+        <action
+            android:id="@+id/action_imagesFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
+    </fragment>
     <fragment
         android:id="@+id/documentsFragment"
         android:name="com.mycampusapp.documentresource.DocumentsFragment"
         android:label="@string/documents"
         tools:layout="@layout/documents_fragment" />
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.mycampusapp.imageresource.CameraFragment"
+        android:label="CameraFragment" />
 </navigation>
