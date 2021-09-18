@@ -6,24 +6,37 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import com.google.firebase.storage.StorageReference
+import com.mycampusapp.data.DocumentData
 import com.mycampusapp.databinding.FragmentCameraBinding
-import com.mycampusapp.util.CAMERA_CODE_PERMISSIONS
 import com.mycampusapp.util.CAMERA_PERMISSIONS
+import com.mycampusapp.util.IMAGES
+import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import java.util.concurrent.Executors
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class CameraFragment : Fragment() {
     private lateinit var binding: FragmentCameraBinding
     private var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-    private val executor = Executors.newSingleThreadExecutor()
+    private val cameraExecutor = Executors.newSingleThreadExecutor()
+    private var imageCapture: ImageCapture? = null
+
+    private val viewModel by viewModels<CameraViewModel>()
 
     private val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionMap ->
@@ -56,12 +69,15 @@ class CameraFragment : Fragment() {
         }
 
         binding.switchCamera.setOnClickListener {
-            cameraSelector = if(cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA){
+            cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
                 CameraSelector.DEFAULT_FRONT_CAMERA
-            }else{
+            } else {
                 CameraSelector.DEFAULT_BACK_CAMERA
             }
             startCamera()
+        }
+        binding.imageCapture.setOnClickListener {
+            takePhoto()
         }
         return binding.root
     }
@@ -70,14 +86,56 @@ class CameraFragment : Fragment() {
         val preview = Preview.Builder().build().also {
             it.setSurfaceProvider(binding.cameraPreview.surfaceProvider)
         }
-        val imageCapture = ImageCapture.Builder().build()
+        imageCapture = ImageCapture.Builder().build()
 
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
             cameraProvider.unbindAll()
-            cameraProvider.bindToLifecycle(viewLifecycleOwner, cameraSelector, preview)
+            cameraProvider.bindToLifecycle(
+                viewLifecycleOwner,
+                cameraSelector,
+                preview,
+                imageCapture
+            )
         }, ContextCompat.getMainExecutor(requireContext()))
+    }
+
+    private fun takePhoto() {
+        val root = requireActivity().getExternalFilesDir(null)
+        val timeStamp = System.currentTimeMillis()
+        val fileName = "JPEG_$timeStamp.jpg"
+        val file = File(root, fileName)
+        val imagesRef = viewModel.getImagesRef().child(fileName)
+        imageCapture?.takePicture(
+            ImageCapture.OutputFileOptions.Builder(file).build(),
+            cameraExecutor,
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    imagesRef.putFile(file.toUri()).addOnSuccessListener {
+                        imagesRef.downloadUrl.addOnSuccessListener {
+                            viewModel.addFirestoreData(
+                                DocumentData(url = it.toString(), fileName = fileName)
+                            )
+                        }
+                        Toast.makeText(
+                            requireContext(),
+                            "Image saved successfully",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        Navigation.findNavController(requireView()).navigateUp()
+                    }
+                }
+
+                override fun onError(exception: ImageCaptureException) {
+                    Toast.makeText(
+                        requireContext(),
+                        "An error occurred while taking the image",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+
+            })
     }
 
     private fun allPermissionsGranted(): Boolean {

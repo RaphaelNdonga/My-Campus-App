@@ -45,11 +45,11 @@ object FirebaseModule {
 
     @Provides
     fun provideCourseDocument(
-        firestore: FirebaseFirestore,
+        courseCollection: CollectionReference,
         sharedPreferences: SharedPreferences
     ): DocumentReference {
         val courseId = sharedPreferences.getString(COURSE_ID,"")!!
-        return firestore.collection(COURSES).document(courseId)
+        return courseCollection.document(courseId)
     }
 
     @Provides

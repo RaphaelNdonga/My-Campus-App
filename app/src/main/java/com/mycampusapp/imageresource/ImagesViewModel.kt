@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ImagesViewModel @Inject constructor(
-    private val firebaseStorage: FirebaseStorage,
+    private val storageReference: StorageReference,
     sharedPreferences: SharedPreferences,
     courseCollection: CollectionReference,
     private val contentResolver: ContentResolver
@@ -38,12 +38,11 @@ class ImagesViewModel @Inject constructor(
     val status: LiveData<DataStatus> = _status
 
     fun getImagesRef(): StorageReference {
-        return firebaseStorage.reference.child(courseId).child(IMAGES)
+        return storageReference.child(IMAGES)
     }
 
     fun addFirestoreData(documentData: DocumentData) {
-        val imageUrl = DocumentData(url = documentData.url, fileName = documentData.fileName)
-        imagesCollection.document(imageUrl.id).set(imageUrl)
+        imagesCollection.document(documentData.id).set(documentData)
     }
 
     fun addSnapshotListener(): ListenerRegistration {
