@@ -12,10 +12,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
-class MyCampusApplication : Application(), Configuration.Provider {
+class MyCampusApplication : Application(){
 
-    @Inject
-    lateinit var workerFactory: HiltWorkerFactory
     override fun onCreate() {
         Timber.plant(Timber.DebugTree())
         super.onCreate()
@@ -41,9 +39,5 @@ class MyCampusApplication : Application(), Configuration.Provider {
             val notificationManager = getSystemService(NotificationManager::class.java)
             notificationManager?.createNotificationChannel(notificationChannel)
         }
-    }
-
-    override fun getWorkManagerConfiguration(): Configuration {
-        return Configuration.Builder().setWorkerFactory(workerFactory).build()
     }
 }

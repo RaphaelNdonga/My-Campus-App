@@ -9,6 +9,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.preference.PreferenceManager
 import androidx.work.*
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.mycampusapp.assessments.AssessmentType
 import com.mycampusapp.data.Assessment
 import com.mycampusapp.data.CustomTime
@@ -21,13 +22,14 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-@HiltWorker
-class DailyAlarmWorker @AssistedInject constructor(
-    @Assisted context: Context,
-    @Assisted workerParams: WorkerParameters
+class DailyAlarmWorker(
+    context: Context,
+    workerParams: WorkerParameters
 ) : Worker(context, workerParams) {
-    @Inject
-    lateinit var coursesCollection: CollectionReference
+
+    private val coursesCollection: CollectionReference = FirebaseFirestore.getInstance().collection(
+        COURSES
+    )
 
     override fun doWork(): Result {
         val sharedPreferences =
@@ -106,7 +108,7 @@ class DailyAlarmWorker @AssistedInject constructor(
                  * this function might be called repeatedly, ExistingWorkPolicy.KEEP will sort
                  * that out.
                  */
-                if(todayClass.isActive.not()){
+                if (todayClass.isActive.not()) {
                     setUpReactivatingWorker()
                 }
             }
