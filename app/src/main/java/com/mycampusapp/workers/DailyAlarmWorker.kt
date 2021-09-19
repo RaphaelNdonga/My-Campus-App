@@ -109,6 +109,7 @@ class DailyAlarmWorker(
                  * that out.
                  */
                 if (todayClass.isActive.not()) {
+                    Timber.i("Reactivating worker is being setup")
                     setUpReactivatingWorker()
                 }
             }
