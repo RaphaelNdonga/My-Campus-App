@@ -12,7 +12,7 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/file_type_image"
+            android:id="@+id/file_image"
             android:layout_width="@dimen/document_image_dimen"
             android:layout_height="@dimen/document_image_dimen"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -32,7 +32,7 @@
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/green_check"
-            app:layout_constraintStart_toEndOf="@+id/file_type_image"
+            app:layout_constraintStart_toEndOf="@+id/file_image"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView

@@ -10,13 +10,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.mycampusapp.R
 import com.mycampusapp.data.DocumentData
-import com.mycampusapp.databinding.ListItemImageBinding
+import com.mycampusapp.databinding.ListItemDocumentBinding
 import com.mycampusapp.documentresource.DocumentsAdapter
 import java.io.File
 
 class ImagesAdapter(private val imageListener:DocumentsAdapter.DocumentClickListener) :
     ListAdapter<DocumentData, ImagesAdapter.ImageViewHolder>(DocumentsAdapter.DocumentsDiffUtilCallback) {
-    class ImageViewHolder(private val binding: ListItemImageBinding) :
+    class ImageViewHolder(private val binding: ListItemDocumentBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(imageData: DocumentData) {
             val root = binding.root.context.getExternalFilesDir(null).toString()
@@ -27,7 +27,7 @@ class ImagesAdapter(private val imageListener:DocumentsAdapter.DocumentClickList
                 Glide.with(itemView).load(imageUri).apply(
                     RequestOptions().placeholder(R.drawable.loading_animation)
                         .error(R.drawable.ic_broken_image)
-                ).into(binding.imageResource)
+                ).into(binding.fileImage)
 
             }else{
                 binding.greenCheck.visibility = View.VISIBLE
@@ -35,15 +35,15 @@ class ImagesAdapter(private val imageListener:DocumentsAdapter.DocumentClickList
                 Glide.with(itemView).load(imageUri).apply(
                     RequestOptions().placeholder(R.drawable.loading_animation)
                         .error(R.drawable.ic_broken_image)
-                ).into(binding.imageResource)
+                ).into(binding.fileImage)
             }
-            binding.imageName.text = imageData.fileName
+            binding.fileName.text = imageData.fileName
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return ImageViewHolder(ListItemImageBinding.inflate(layoutInflater, parent, false))
+        return ImageViewHolder(ListItemDocumentBinding.inflate(layoutInflater, parent, false))
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {

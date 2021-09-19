@@ -52,19 +52,19 @@ class DocumentsAdapter(private val clickListener:DocumentClickListener) :
             val fileExtension = currentItem.fileName.reversed().substringBefore(".").reversed()
             when (fileExtension) {
                 "pdf" -> {
-                    binding.fileTypeImage.setImageResource(R.drawable.ic_pdf)
+                    binding.fileImage.setImageResource(R.drawable.ic_pdf)
                 }
                 "docx" -> {
-                    binding.fileTypeImage.setImageResource(R.drawable.ic_word)
+                    binding.fileImage.setImageResource(R.drawable.ic_word)
                 }
                 "xlsx" -> {
-                    binding.fileTypeImage.setImageResource(R.drawable.ic_excel)
+                    binding.fileImage.setImageResource(R.drawable.ic_excel)
                 }
                 "zip" -> {
-                    binding.fileTypeImage.setImageResource(R.drawable.ic_zip)
+                    binding.fileImage.setImageResource(R.drawable.ic_zip)
                 }
                 else -> {
-                    binding.fileTypeImage.setImageResource(R.drawable.ic_document)
+                    binding.fileImage.setImageResource(R.drawable.ic_document)
                 }
             }
             val root = binding.root.context.getExternalFilesDir(null)

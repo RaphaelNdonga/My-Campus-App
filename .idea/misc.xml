@@ -13,6 +13,8 @@
         <entry key="app/src/main/res/layout/documents_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_timetable.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/list_item_document.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/list_item_image.xml" value="0.18" />
         <entry key="app/src/main/res/layout/list_item_timetable.xml" value="0.19322916666666667" />
       </map>
     </option>
