@@ -1,6 +1,7 @@
 package com.mycampusapp
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
@@ -49,6 +50,14 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(navController.graph, drawerLayout)
         toolbar.setupWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if(destination.id == R.id.cameraFragment){
+                toolbar.visibility = View.GONE
+            }else{
+                toolbar.visibility = View.VISIBLE
+            }
+        }
 
         viewModel = ViewModelProvider(
             this,

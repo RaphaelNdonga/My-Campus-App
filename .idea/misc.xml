@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/RAPHAEL/AndroidStudioProjects/My-Campus-App/app/src/main/res/layout/fragment_timetable_input.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_back.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_camera.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_shutter.xml" value="0.1388888888888889" />
         <entry key="app/src/main/res/drawable/ic_shutter_normal.xml" value="0.1388888888888889" />
         <entry key="app/src/main/res/drawable/ic_shutter_pressed.xml" value="0.1388888888888889" />

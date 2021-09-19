@@ -1,12 +1,17 @@
 package com.mycampusapp.imageresource
 
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -20,6 +25,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.storage.StorageReference
+import com.mycampusapp.R
 import com.mycampusapp.data.DocumentData
 import com.mycampusapp.databinding.FragmentCameraBinding
 import com.mycampusapp.util.CAMERA_PERMISSIONS
@@ -54,12 +60,11 @@ class CameraFragment : Fragment() {
                 ).show()
             }
         }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentCameraBinding.inflate(inflater, container, false)
 
         if (allPermissionsGranted()) {
@@ -77,9 +82,25 @@ class CameraFragment : Fragment() {
             startCamera()
         }
         binding.imageCapture.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                captureAnimation()
+            }
             takePhoto()
         }
+        binding.back.setOnClickListener {
+            findNavController().navigateUp()
+        }
         return binding.root
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun captureAnimation() {
+        binding.root.postDelayed({
+                binding.root.foreground = ColorDrawable(Color.WHITE)
+                binding.root.postDelayed({
+                    binding.root.foreground = null
+                }, 50L)
+            },100L,)
     }
 
     private fun startCamera() {
@@ -102,6 +123,7 @@ class CameraFragment : Fragment() {
     }
 
     private fun takePhoto() {
+        startLoading()
         val root = requireActivity().getExternalFilesDir(null)
         val timeStamp = System.currentTimeMillis()
         val fileName = "JPEG_$timeStamp.jpg"
@@ -145,5 +167,12 @@ class CameraFragment : Fragment() {
                 it
             ) == PackageManager.PERMISSION_GRANTED
         }
+    }
+
+    private fun startLoading() {
+        binding.switchCamera.visibility = View.GONE
+        binding.imageCapture.background =
+            AppCompatResources.getDrawable(requireContext(), R.drawable.loading_animation)
+        binding.imageCapture.isClickable = false
     }
 }
