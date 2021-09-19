@@ -18,12 +18,14 @@ import com.mycampusapp.timetable.receiver.TimetableAlarmReceiver
 import com.mycampusapp.util.*
 import com.mycampusapp.workers.DailyAlarmWorker
 import timber.log.Timber
+import java.io.File
 
 class ManageAccountViewModel(
     private val app: Application,
     private val courseCollection: CollectionReference,
     private val firebaseMessaging: FirebaseMessaging,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val root: File?
 ) :
     AndroidViewModel(app) {
     private val sharedPreferences =
@@ -38,6 +40,12 @@ class ManageAccountViewModel(
     fun getEmail(): String = sharedPreferences.getString(USER_EMAIL, "")!!
     fun getCourseId(): String = sharedPreferences.getString(COURSE_ID, "")!!
     fun isAdmin(): Boolean = sharedPreferences.getBoolean(IS_ADMIN, false)
+
+    private fun deleteAllFiles(){
+        root?.listFiles { file->
+            file.delete()
+        }
+    }
 
     private fun cancelTodayAlarms() {
         val todayCollection = alarmSet.elementAt(0)
@@ -190,6 +198,7 @@ class ManageAccountViewModel(
         removeDailyAlarmWorker()
         unsubscribeFromTopic()
         removeSharedPreferences()
+        deleteAllFiles()
     }
 
     fun logOut() {

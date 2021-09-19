@@ -43,9 +43,11 @@ class ManageAccountFragment : Fragment() {
             false
         )
         val app = requireActivity().application
+        val root = requireActivity().getExternalFilesDir(null)
+
         viewModel = ViewModelProvider(
             this,
-            ManageAccountViewModelFactory(app, courseCollection, messaging, auth)
+            ManageAccountViewModelFactory(app, courseCollection, messaging, auth, root)
         ).get(ManageAccountViewModel::class.java)
 
         binding.accountDetailsEmail.text = viewModel.getEmail()
