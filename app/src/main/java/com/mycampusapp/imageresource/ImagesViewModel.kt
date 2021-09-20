@@ -31,7 +31,7 @@ class ImagesViewModel @Inject constructor(
     sharedPreferences: SharedPreferences,
     courseCollection: CollectionReference,
     private val contentResolver: ContentResolver,
-    private val storageDirectory:File?
+    private val storageDirectory: File?
 ) : ViewModel() {
     private val courseId = sharedPreferences.getString(COURSE_ID, "")!!
     private val imagesCollection = courseCollection.document(courseId).collection(IMAGES)
@@ -135,14 +135,25 @@ class ImagesViewModel @Inject constructor(
     }
 
     fun deleteLocal(fileName: String) {
-        val file = File(storageDirectory,fileName)
+        val file = File(storageDirectory, fileName)
         file.delete()
     }
 
-    fun startLoading(){
+    fun startLoading() {
         _status.value = DataStatus.LOADING
     }
-    fun stopLoading(){
+
+    fun stopLoading() {
         checkDataStatus()
+    }
+
+    fun getFileSize(uri: Uri): Long? {
+        var size: Long? = null
+        contentResolver.query(uri, null, null, null, null)?.use {
+            it.moveToFirst()
+            val sizeIndex = it.getColumnIndex(OpenableColumns.SIZE)
+            size = it.getLong(sizeIndex)
+        }
+        return size
     }
 }

@@ -17,6 +17,7 @@ import androidx.camera.core.ImageCapture
 import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ListenerRegistration
 import com.mycampusapp.R
 import com.mycampusapp.data.DataStatus
@@ -24,6 +25,7 @@ import com.mycampusapp.data.DocumentData
 import com.mycampusapp.databinding.ImagesFragmentBinding
 import com.mycampusapp.documentresource.DocumentItemListener
 import com.mycampusapp.documentresource.DocumentsAdapter
+import com.mycampusapp.util.FILE_SIZE_LIMIT
 import com.mycampusapp.util.IS_ADMIN
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -112,8 +114,14 @@ class ImagesFragment : Fragment() {
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 val imageUri = result.data?.data
                 imageUri?.let { uri ->
-                    val fileName = viewModel.getFileName(uri)
-                    viewModel.moveToLocalAndSaveToFirestore(root, fileName, uri)
+                    val fileSize = viewModel.getFileSize(uri) ?: 0L
+                    if (fileSize < FILE_SIZE_LIMIT) {
+                        val fileName = viewModel.getFileName(uri)
+                        viewModel.moveToLocalAndSaveToFirestore(root, fileName, uri)
+                    } else {
+                        Snackbar.make(requireView(), "The file is too large", Snackbar.LENGTH_LONG)
+                            .show()
+                    }
                 }
             }
         binding.galleryFab.setOnClickListener {
