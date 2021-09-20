@@ -9,6 +9,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import java.io.File
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -20,5 +21,9 @@ object ApplicationModule {
     @Provides
     fun provideContentResolver(@ApplicationContext context: Context):ContentResolver{
         return context.contentResolver
+    }
+    @Provides
+    fun provideStorageDirectory(@ApplicationContext applicationContext:Context): File?{
+        return applicationContext.getExternalFilesDir(null)
     }
 }
