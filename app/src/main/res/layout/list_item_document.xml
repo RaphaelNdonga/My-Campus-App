@@ -9,7 +9,8 @@
     android:focusable="true">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="@dimen/card_constraint_layout_padding">
 
         <ImageView
             android:id="@+id/file_image"
@@ -45,8 +46,17 @@
             android:visibility="gone"
             tools:visibility="visible"
             android:contentDescription="Downloaded"
-            app:srcCompat="@drawable/ic_green_check"
-            android:layout_margin="@dimen/fab_margin"/>
+            app:srcCompat="@drawable/ic_green_check"/>
+        <ImageView
+            android:id="@+id/more_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_more"
+            tools:visibility="visible"
+            android:contentDescription="@string/options" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

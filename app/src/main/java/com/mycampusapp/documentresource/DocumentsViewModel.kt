@@ -28,7 +28,8 @@ import javax.inject.Inject
 class DocumentsViewModel @Inject constructor(
     private val storageReference: StorageReference,
     private val contentResolver: ContentResolver,
-    courseDocument: DocumentReference
+    courseDocument: DocumentReference,
+    private val storageDirectory: File?
 ) : ViewModel() {
     private val _documentList = MutableLiveData<List<DocumentData>>()
     val documentList: LiveData<List<DocumentData>> = _documentList
@@ -60,6 +61,16 @@ class DocumentsViewModel @Inject constructor(
         documentsCollection.document(documentData.id).set(documentData)
     }
 
+    fun deleteLocal(fileName: String) {
+        val localFile = File(storageDirectory, fileName)
+        localFile.delete()
+    }
+
+    fun deleteOnline(documentData: DocumentData) {
+        documentsCollection.document(documentData.id).delete()
+        getDocumentsRef().child(documentData.fileName).delete()
+    }
+
     fun addSnapshotListener(): ListenerRegistration {
         return documentsCollection.addSnapshotListener { querySnapshot, error ->
             _documentList.value = querySnapshot?.toObjects(DocumentData::class.java)
@@ -70,7 +81,7 @@ class DocumentsViewModel @Inject constructor(
         }
     }
 
-    fun getFileName(uri: Uri): String {
+    private fun getFileName(uri: Uri): String {
         var result: String? = null
         if (uri.scheme == "content") {
             val cursor = contentResolver.query(uri, null, null, null, null)
@@ -92,7 +103,9 @@ class DocumentsViewModel @Inject constructor(
         return result
     }
 
-    fun moveToLocalAndSaveToFirestore(root: String, fileName: String, uri: Uri) {
+    fun moveToLocalAndSaveToFirestore(uri: Uri) {
+        val fileName = getFileName(uri)
+        _status.value = DataStatus.LOADING
         val inputStream1 = contentResolver.openInputStream(uri)
         try {
             /**
@@ -115,15 +128,17 @@ class DocumentsViewModel @Inject constructor(
                      * after use
                      */
                     val inputStream2 = contentResolver.openInputStream(uri)
-                    val file = File(root, fileName)
+                    val file = File(storageDirectory, fileName)
                     val fileOutputStream = FileOutputStream(file)
                     fileOutputStream.write(inputStream2?.readBytes())
                     fileOutputStream.flush()
                     fileOutputStream.close()
+                    checkDataStatus()
                 }
             }
         } catch (ioE: IOException) {
             _toaster.value = Event(Unit)
+            checkDataStatus()
         }
     }
 
@@ -137,5 +152,9 @@ class DocumentsViewModel @Inject constructor(
         } catch (npe: NullPointerException) {
             _status.value = DataStatus.EMPTY
         }
+    }
+
+    fun getRoot(): String {
+        return storageDirectory.toString()
     }
 }

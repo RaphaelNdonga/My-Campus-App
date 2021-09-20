@@ -2,10 +2,12 @@ package com.mycampusapp.documentresource
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
@@ -17,9 +19,10 @@ import com.mycampusapp.data.DataStatus
 import com.mycampusapp.data.DocumentData
 import com.mycampusapp.databinding.DocumentsFragmentBinding
 import com.mycampusapp.util.EventObserver
+import com.mycampusapp.util.IS_ADMIN
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.io.File
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -28,24 +31,23 @@ class DocumentsFragment : Fragment() {
     private val viewModel: DocumentsViewModel by viewModels()
     private lateinit var binding: DocumentsFragmentBinding
     private lateinit var snapshotListener: ListenerRegistration
-    private lateinit var root: String
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = DocumentsFragmentBinding.inflate(inflater, container, false)
-        root = requireContext().getExternalFilesDir(null).toString()
-
-        Timber.i("The root directory is $root")
+        val isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
 
         val getFileResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 val fileUri = result.data?.data
 
                 fileUri?.let {
-                    val fileName = viewModel.getFileName(it)
-                    viewModel.moveToLocalAndSaveToFirestore(root, fileName, it)
+                    viewModel.moveToLocalAndSaveToFirestore(it)
                 }
             }
 
@@ -62,7 +64,7 @@ class DocumentsFragment : Fragment() {
         }
 
         val adapter = DocumentsAdapter(DocumentsAdapter.DocumentClickListener { documentData ->
-            val file = File(root, documentData.fileName)
+            val file = File(viewModel.getRoot(), documentData.fileName)
             if (file.exists()) {
                 val uri = FileProvider.getUriForFile(
                     requireContext(),
@@ -77,8 +79,29 @@ class DocumentsFragment : Fragment() {
                 startActivity(intent)
 
             } else {
-                showDialogBox(documentData)
+                downloadConfirmation(documentData)
             }
+        }, DocumentItemListener { documentData: DocumentData, view: View ->
+            val popupMenu = PopupMenu(requireContext(), view)
+            val menuInflater = popupMenu.menuInflater
+
+            menuInflater.inflate(R.menu.delete_menu, popupMenu.menu)
+
+            popupMenu.setOnMenuItemClickListener {
+                val file = File(viewModel.getRoot(), documentData.fileName)
+                when (it.itemId) {
+                    R.id.delete -> {
+                        if(file.exists()){
+                            deleteConfirmation(documentData)
+                        }else if(isAdmin){
+                            onlineDeleteConfirmation(documentData)
+                        }
+                        true
+                    }
+                    else -> true
+                }
+            }
+            popupMenu.show()
         })
         binding.documentRecyclerView.adapter = adapter
         viewModel.documentList.observe(viewLifecycleOwner, {
@@ -101,10 +124,12 @@ class DocumentsFragment : Fragment() {
                         binding.noDocsTxt.text = requireContext().getString(R.string.no_docs_msg)
                     }
                     DataStatus.NOT_EMPTY -> {
+                        binding.documentRecyclerView.visibility = View.VISIBLE
                         binding.noDocsImage.visibility = View.GONE
                         binding.noDocsTxt.visibility = View.GONE
                     }
                     DataStatus.LOADING -> {
+                        binding.documentRecyclerView.visibility = View.GONE
                         binding.noDocsImage.visibility = View.VISIBLE
                         binding.noDocsTxt.visibility = View.VISIBLE
                         binding.noDocsImage.setImageResource(R.drawable.loading_animation)
@@ -117,14 +142,46 @@ class DocumentsFragment : Fragment() {
         return binding.root
     }
 
-    private fun showDialogBox(documentData: DocumentData) {
+    private fun deleteConfirmation(documentData: DocumentData) {
+        val isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
+        val builder = AlertDialog.Builder(requireActivity(), R.style.MyCampusApp_Dialog)
+        builder.setTitle(getString(R.string.dialog_delete))
+        builder.setMessage("Delete local file?")
+
+        builder.setPositiveButton(getString(R.string.dialog_positive)) { _, _ ->
+                viewModel.deleteLocal(
+                    documentData.fileName
+                )
+            if (isAdmin) {
+                onlineDeleteConfirmation(documentData)
+            }
+        }
+        builder.setNegativeButton(getString(R.string.dialog_negative)) { _, _ -> }
+
+        builder.create().show()
+    }
+
+    private fun onlineDeleteConfirmation(documentData: DocumentData) {
+        val builder = AlertDialog.Builder(requireActivity(), R.style.MyCampusApp_Dialog)
+        builder.setTitle(getString(R.string.dialog_delete))
+        builder.setMessage("Delete online file?")
+
+        builder.setPositiveButton(getString(R.string.dialog_positive)) { _, _ ->
+            viewModel.deleteOnline(documentData)
+        }
+        builder.setNegativeButton(getString(R.string.dialog_negative)) { _, _ -> }
+
+        builder.create().show()
+    }
+
+    private fun downloadConfirmation(documentData: DocumentData) {
         val builder = AlertDialog.Builder(requireContext(), R.style.MyCampusApp_Dialog)
             .setTitle("Download")
             .setMessage("Do you want to download ${documentData.fileName}? ")
             .setNegativeButton(R.string.dialog_negative) { _, _ -> }
             .setPositiveButton(R.string.dialog_positive) { _, _ ->
                 val documentRef = viewModel.getDocumentsRef().child(documentData.fileName)
-                val documentFile = File(root, documentData.fileName)
+                val documentFile = File(viewModel.getRoot(), documentData.fileName)
                 documentRef.getFile(documentFile).addOnSuccessListener {
                     Toast.makeText(
                         requireContext(),
