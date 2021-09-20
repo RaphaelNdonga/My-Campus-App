@@ -3,8 +3,6 @@ package com.mycampusapp.documentresource
 import android.content.ContentResolver
 import android.net.Uri
 import android.provider.OpenableColumns
-import android.widget.Toast
-import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,7 +18,6 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
 import java.lang.NullPointerException
 import javax.inject.Inject
 
@@ -161,7 +158,18 @@ class DocumentsViewModel @Inject constructor(
     fun startLoading() {
         _status.value = DataStatus.LOADING
     }
-    fun stopLoading(){
+
+    fun stopLoading() {
         checkDataStatus()
+    }
+
+    fun getFileSize(uri: Uri): Long? {
+        var size:Long? = null
+        contentResolver.query(uri, null, null, null, null)?.use {
+            it.moveToFirst()
+            val sizeIndex = it.getColumnIndex(OpenableColumns.SIZE)
+            size = it.getLong(sizeIndex)
+        }
+        return size
     }
 }

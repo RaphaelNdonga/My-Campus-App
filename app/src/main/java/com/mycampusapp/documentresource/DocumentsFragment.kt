@@ -13,14 +13,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.ListenerRegistration
 import com.mycampusapp.R
 import com.mycampusapp.data.DataStatus
 import com.mycampusapp.data.DocumentData
 import com.mycampusapp.databinding.DocumentsFragmentBinding
 import com.mycampusapp.util.EventObserver
+import com.mycampusapp.util.FILE_SIZE_LIMIT
 import com.mycampusapp.util.IS_ADMIN
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 
@@ -47,7 +50,14 @@ class DocumentsFragment : Fragment() {
                 val fileUri = result.data?.data
 
                 fileUri?.let {
-                    viewModel.moveToLocalAndSaveToFirestore(it)
+                    val fileSize = viewModel.getFileSize(it) ?: 0L
+                    Timber.i("The file size is $fileSize")
+                    if (fileSize < FILE_SIZE_LIMIT) {
+                        viewModel.moveToLocalAndSaveToFirestore(it)
+                    } else {
+                        Snackbar.make(requireView(), "The file is too large", Snackbar.LENGTH_LONG)
+                            .show()
+                    }
                 }
             }
 
@@ -91,9 +101,9 @@ class DocumentsFragment : Fragment() {
                 val file = File(viewModel.getRoot(), documentData.fileName)
                 when (it.itemId) {
                     R.id.delete -> {
-                        if(file.exists()){
+                        if (file.exists()) {
                             deleteConfirmation(documentData)
-                        }else if(isAdmin){
+                        } else if (isAdmin) {
                             onlineDeleteConfirmation(documentData)
                         }
                         true
@@ -149,9 +159,9 @@ class DocumentsFragment : Fragment() {
         builder.setMessage("Delete local file?")
 
         builder.setPositiveButton(getString(R.string.dialog_positive)) { _, _ ->
-                viewModel.deleteLocal(
-                    documentData.fileName
-                )
+            viewModel.deleteLocal(
+                documentData.fileName
+            )
             if (isAdmin) {
                 onlineDeleteConfirmation(documentData)
             }
