@@ -81,23 +81,20 @@ class DocumentsViewModel @Inject constructor(
     private fun getFileName(uri: Uri): String {
         var result: String? = null
         if (uri.scheme == "content") {
-            val cursor = contentResolver.query(uri, null, null, null, null)
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                }
-            } finally {
-                cursor?.close()
+            contentResolver.query(uri, null, null, null, null)?.use {
+                it.moveToFirst()
+                val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                result = it.getString(nameIndex)
             }
         }
         if (result == null) {
             result = uri.path
             val cut = result!!.lastIndexOf('/')
             if (cut != -1) {
-                result = result.substring(cut + 1)
+                result = result!!.substring(cut + 1)
             }
         }
-        return result
+        return result as String
     }
 
     fun moveToLocalAndSaveToFirestore(uri: Uri) {
@@ -164,7 +161,7 @@ class DocumentsViewModel @Inject constructor(
     }
 
     fun getFileSize(uri: Uri): Long? {
-        var size:Long? = null
+        var size: Long? = null
         contentResolver.query(uri, null, null, null, null)?.use {
             it.moveToFirst()
             val sizeIndex = it.getColumnIndex(OpenableColumns.SIZE)
