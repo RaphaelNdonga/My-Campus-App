@@ -99,7 +99,6 @@ class DocumentsViewModel @Inject constructor(
 
     fun moveToLocalAndSaveToFirestore(uri: Uri) {
         val fileName = getFileName(uri)
-        _status.value = DataStatus.LOADING
         val inputStream1 = contentResolver.openInputStream(uri)
         try {
             /**
@@ -127,12 +126,10 @@ class DocumentsViewModel @Inject constructor(
                     fileOutputStream.write(inputStream2?.readBytes())
                     fileOutputStream.flush()
                     fileOutputStream.close()
-                    checkDataStatus()
                 }
             }
         } catch (ioE: IOException) {
             _toaster.value = Event(Unit)
-            checkDataStatus()
         }
     }
 
