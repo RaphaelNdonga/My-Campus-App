@@ -14,11 +14,13 @@ import com.google.firebase.storage.StorageReference
 import com.mycampusapp.data.DataStatus
 import com.mycampusapp.data.DocumentData
 import com.mycampusapp.util.COURSE_ID
+import com.mycampusapp.util.Event
 import com.mycampusapp.util.IMAGES
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
 import java.lang.NullPointerException
 import javax.inject.Inject
@@ -28,7 +30,8 @@ class ImagesViewModel @Inject constructor(
     private val storageReference: StorageReference,
     sharedPreferences: SharedPreferences,
     courseCollection: CollectionReference,
-    private val contentResolver: ContentResolver
+    private val contentResolver: ContentResolver,
+    private val storageDirectory:File?
 ) : ViewModel() {
     private val courseId = sharedPreferences.getString(COURSE_ID, "")!!
     private val imagesCollection = courseCollection.document(courseId).collection(IMAGES)
@@ -51,6 +54,43 @@ class ImagesViewModel @Inject constructor(
             if (firestoreException != null) {
                 Timber.i("The firebase exception is $firestoreException")
             }
+            checkDataStatus()
+        }
+    }
+
+    fun moveToLocalAndSaveToFirestore(root: String, fileName: String, uri: Uri) {
+        _status.value = DataStatus.LOADING
+        val inputStream1 = contentResolver.openInputStream(uri)
+        try {
+            /**
+             * save the document data to firestore
+             */
+            val imagesRef = getImagesRef()
+                .child(fileName)
+            inputStream1?.let {
+                imagesRef.putStream(it).addOnSuccessListener {
+                    imagesRef.downloadUrl.addOnSuccessListener { url ->
+                        Timber.i("url is $url")
+                        val documentData =
+                            DocumentData(url = url.toString(), fileName = fileName)
+                        addFirestoreData(documentData)
+                    }
+                    /**
+                     * Save the document locally only after it has successfully been saved to
+                     * firestore.
+                     * Again, we need 2 input streams because inputStream1 sort of gets exhausted
+                     * after use
+                     */
+                    val inputStream2 = contentResolver.openInputStream(uri)
+                    val file = File(root, fileName)
+                    val fileOutputStream = FileOutputStream(file)
+                    fileOutputStream.write(inputStream2?.readBytes())
+                    fileOutputStream.flush()
+                    fileOutputStream.close()
+                }
+            }
+            checkDataStatus()
+        } catch (ioE: IOException) {
             checkDataStatus()
         }
     }
@@ -94,5 +134,15 @@ class ImagesViewModel @Inject constructor(
         fos.write(inputStream?.readBytes())
         fos.flush()
         fos.close()
+    }
+
+    fun deleteOnline(documentData: DocumentData) {
+        imagesCollection.document(documentData.id).delete()
+        getImagesRef().child(documentData.fileName).delete()
+    }
+
+    fun deleteLocal(fileName: String) {
+        val file = File(storageDirectory,fileName)
+        file.delete()
     }
 }

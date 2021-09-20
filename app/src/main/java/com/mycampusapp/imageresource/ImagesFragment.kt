@@ -2,6 +2,7 @@ package com.mycampusapp.imageresource
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.ImageCapture
@@ -20,12 +22,15 @@ import com.mycampusapp.R
 import com.mycampusapp.data.DataStatus
 import com.mycampusapp.data.DocumentData
 import com.mycampusapp.databinding.ImagesFragmentBinding
+import com.mycampusapp.documentresource.DocumentItemListener
 import com.mycampusapp.documentresource.DocumentsAdapter
+import com.mycampusapp.util.IS_ADMIN
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ImagesFragment : Fragment() {
@@ -38,6 +43,9 @@ class ImagesFragment : Fragment() {
     private lateinit var binding: ImagesFragmentBinding
     private lateinit var snapshotListener: ListenerRegistration
     private lateinit var root: String
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,6 +83,27 @@ class ImagesFragment : Fragment() {
             } else {
                 showDialogBox(imageDoc)
             }
+        }, DocumentItemListener { documentData: DocumentData, view: View ->
+            val popupMenu = PopupMenu(requireContext(), view)
+            val menuInflater = popupMenu.menuInflater
+            menuInflater.inflate(R.menu.delete_menu, popupMenu.menu)
+
+            popupMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { menuItem ->
+                val isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
+                when (menuItem.itemId) {
+                    R.id.delete -> {
+                        val file = File(root, documentData.fileName)
+                        if (file.exists()) {
+                            deleteConfirmation(documentData)
+                        } else if (isAdmin) {
+                            onlineDeleteConfirmation(documentData)
+                        }
+                        true
+                    }
+                    else -> true
+                }
+            })
+            popupMenu.show()
         })
 
         binding.imagesGridView.adapter = adapter
@@ -84,46 +113,7 @@ class ImagesFragment : Fragment() {
                 val imageUri = result.data?.data
                 imageUri?.let { uri ->
                     val fileName = viewModel.getFileName(uri)
-                    val fis = requireContext().contentResolver.openInputStream(uri)
-                    fis?.let { inputStream ->
-                        val imagesRef = viewModel.getImagesRef().child(fileName)
-                        val task = imagesRef.putStream(inputStream)
-                        task.addOnProgressListener { uploadTask ->
-                            Timber.i(uploadTask.bytesTransferred.toString())
-                        }.addOnSuccessListener {
-                            imagesRef.downloadUrl.addOnSuccessListener { imageUri ->
-                                viewModel.addFirestoreData(
-                                    DocumentData(
-                                        url = imageUri.toString(),
-                                        fileName = viewModel.getFileName(uri)
-                                    )
-                                )
-                                /**
-                                 * Only save the file locally after it has been sent to the online
-                                 * database
-                                 */
-                                try {
-                                    val imageFile = File(root, fileName)
-                                    val reopenedInputStream =
-                                        requireContext().contentResolver.openInputStream(uri)
-                                    viewModel.writeDataToFile(reopenedInputStream, imageFile)
-                                } catch (ioE: IOException) {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        "Unable to create file",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                            }.addOnFailureListener { exception ->
-                                Toast.makeText(
-                                    requireContext(),
-                                    "An error occurred while downloading the url",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                Timber.i("Exception is $exception")
-                            }
-                        }
-                    }
+                    viewModel.moveToLocalAndSaveToFirestore(root, fileName, uri)
                 }
             }
         binding.galleryFab.setOnClickListener {
@@ -146,13 +136,16 @@ class ImagesFragment : Fragment() {
                         binding.noImagesPlaceholder.visibility = View.VISIBLE
                         binding.noImagesTxt.visibility = View.VISIBLE
                         binding.noImagesPlaceholder.setImageResource(R.drawable.ic_picture)
-                        binding.noImagesTxt.text = requireContext().getString(R.string.no_images_msg)
+                        binding.noImagesTxt.text =
+                            requireContext().getString(R.string.no_images_msg)
                     }
                     DataStatus.NOT_EMPTY -> {
+                        binding.imagesGridView.visibility = View.VISIBLE
                         binding.noImagesPlaceholder.visibility = View.GONE
                         binding.noImagesTxt.visibility = View.GONE
                     }
                     DataStatus.LOADING -> {
+                        binding.imagesGridView.visibility = View.GONE
                         binding.noImagesPlaceholder.visibility = View.VISIBLE
                         binding.noImagesTxt.visibility = View.VISIBLE
                         binding.noImagesTxt.text = requireContext().getString(R.string.loading)
@@ -162,6 +155,38 @@ class ImagesFragment : Fragment() {
             }
         })
         return binding.root
+    }
+
+    private fun onlineDeleteConfirmation(documentData: DocumentData) {
+        val builder = AlertDialog.Builder(requireActivity(), R.style.MyCampusApp_Dialog)
+        builder.setTitle(getString(R.string.dialog_delete))
+        builder.setMessage("Delete online file?")
+
+        builder.setPositiveButton(getString(R.string.dialog_positive)) { _, _ ->
+            viewModel.deleteOnline(documentData)
+        }
+        builder.setNegativeButton(getString(R.string.dialog_negative)) { _, _ -> }
+
+        builder.create().show()
+    }
+
+    private fun deleteConfirmation(documentData: DocumentData) {
+        val isAdmin = sharedPreferences.getBoolean(IS_ADMIN, false)
+        val builder = AlertDialog.Builder(requireActivity(), R.style.MyCampusApp_Dialog)
+        builder.setTitle(getString(R.string.dialog_delete))
+        builder.setMessage("Delete local file?")
+
+        builder.setPositiveButton(getString(R.string.dialog_positive)) { _, _ ->
+            viewModel.deleteLocal(
+                documentData.fileName
+            )
+            if (isAdmin) {
+                onlineDeleteConfirmation(documentData)
+            }
+        }
+        builder.setNegativeButton(getString(R.string.dialog_negative)) { _, _ -> }
+
+        builder.create().show()
     }
 
     override fun onStart() {
