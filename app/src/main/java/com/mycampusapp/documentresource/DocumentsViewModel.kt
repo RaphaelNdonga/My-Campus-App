@@ -157,4 +157,11 @@ class DocumentsViewModel @Inject constructor(
     fun getRoot(): String {
         return storageDirectory.toString()
     }
+
+    fun startLoading() {
+        _status.value = DataStatus.LOADING
+    }
+    fun stopLoading(){
+        checkDataStatus()
+    }
 }

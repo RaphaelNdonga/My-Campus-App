@@ -129,13 +129,6 @@ class ImagesViewModel @Inject constructor(
         }
     }
 
-    fun writeDataToFile(inputStream: InputStream?, imageFile: File) {
-        val fos = FileOutputStream(imageFile)
-        fos.write(inputStream?.readBytes())
-        fos.flush()
-        fos.close()
-    }
-
     fun deleteOnline(documentData: DocumentData) {
         imagesCollection.document(documentData.id).delete()
         getImagesRef().child(documentData.fileName).delete()
@@ -144,5 +137,12 @@ class ImagesViewModel @Inject constructor(
     fun deleteLocal(fileName: String) {
         val file = File(storageDirectory,fileName)
         file.delete()
+    }
+
+    fun startLoading(){
+        _status.value = DataStatus.LOADING
+    }
+    fun stopLoading(){
+        checkDataStatus()
     }
 }

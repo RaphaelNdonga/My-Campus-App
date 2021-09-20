@@ -205,6 +205,7 @@ class ImagesFragment : Fragment() {
             .setMessage("Do you want to download ${imageDoc.fileName}? ")
             .setNegativeButton(R.string.dialog_negative) { _, _ -> }
             .setPositiveButton(R.string.dialog_positive) { _, _ ->
+                viewModel.startLoading()
                 val documentRef = viewModel.getImagesRef().child(imageDoc.fileName)
                 val documentFile = File(root, imageDoc.fileName)
                 documentRef.getFile(documentFile).addOnSuccessListener {
@@ -213,12 +214,16 @@ class ImagesFragment : Fragment() {
                         "Document has been saved successfully",
                         Toast.LENGTH_LONG
                     ).show()
+                    refreshImages()
+                    viewModel.stopLoading()
                 }.addOnFailureListener {
                     Toast.makeText(
                         requireContext(),
                         "Error occurred ${it.message}",
                         Toast.LENGTH_LONG
                     ).show()
+                    refreshImages()
+                    viewModel.stopLoading()
                 }
             }
         builder.create().show()

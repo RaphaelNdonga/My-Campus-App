@@ -180,6 +180,7 @@ class DocumentsFragment : Fragment() {
             .setMessage("Do you want to download ${documentData.fileName}? ")
             .setNegativeButton(R.string.dialog_negative) { _, _ -> }
             .setPositiveButton(R.string.dialog_positive) { _, _ ->
+                viewModel.startLoading()
                 val documentRef = viewModel.getDocumentsRef().child(documentData.fileName)
                 val documentFile = File(viewModel.getRoot(), documentData.fileName)
                 documentRef.getFile(documentFile).addOnSuccessListener {
@@ -188,12 +189,16 @@ class DocumentsFragment : Fragment() {
                         "Document has been saved successfully",
                         Toast.LENGTH_LONG
                     ).show()
+                    refreshDocuments()
+                    viewModel.stopLoading()
                 }.addOnFailureListener {
                     Toast.makeText(
                         requireContext(),
                         "Error occurred ${it.message}",
                         Toast.LENGTH_LONG
                     ).show()
+                    refreshDocuments()
+                    viewModel.stopLoading()
                 }
             }
         builder.create().show()
