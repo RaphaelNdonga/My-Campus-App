@@ -97,10 +97,18 @@ class LoginFragment : Fragment() {
             }
         })
 
+        viewModel.snackBarText2.observe(viewLifecycleOwner, EventObserver {
+            if (it != null) {
+                Snackbar.make(requireView(), it, Snackbar.LENGTH_INDEFINITE).setAction("RESEND") {
+                    auth.currentUser?.sendEmailVerification()
+                }.show()
+            }
+        })
+
         nextBtn.setOnClickListener {
             val email = viewModel.email.value
             val password = viewModel.password.value
-            if(email.isNullOrEmpty()){
+            if (email.isNullOrEmpty()) {
                 binding.loginEmail.error = requireActivity().getString(R.string.fill_blanks)
                 return@setOnClickListener
             }
@@ -152,7 +160,7 @@ class LoginFragment : Fragment() {
     private fun checkCurrentUser() {
         val currentUser = auth.currentUser
         val courseId = sharedPreferences.getString(COURSE_ID, "")
-        if (currentUser != null && !courseId.isNullOrBlank()) {
+        if (currentUser != null && !courseId.isNullOrBlank() && currentUser.isEmailVerified) {
             startLoading()
             val mainIntent = Intent(this.context, MainActivity::class.java)
             startActivity(mainIntent)

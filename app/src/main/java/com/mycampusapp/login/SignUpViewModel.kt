@@ -120,6 +120,11 @@ class SignUpViewModel(
             StudentStatus.REGULAR -> setCourseId(data)
             StudentStatus.UNDEFINED -> return
         }
+        sendVerificationEmail()
+    }
+
+    private fun sendVerificationEmail() {
+        auth.currentUser!!.sendEmailVerification()
     }
 
     fun createUser(data: HashMap<String, String>, password: String) {

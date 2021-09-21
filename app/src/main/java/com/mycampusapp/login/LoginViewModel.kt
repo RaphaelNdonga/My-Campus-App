@@ -42,6 +42,9 @@ class LoginViewModel(
     private val _snackBarText = MutableLiveData<Event<String?>>()
     val snackBarText: LiveData<Event<String?>> = _snackBarText
 
+    private val _snackBarText2 = MutableLiveData<Event<String?>>()
+    val snackBarText2: LiveData<Event<String?>> = _snackBarText2
+
     val email = MutableLiveData<String>()
     val password = MutableLiveData<String>()
 
@@ -65,7 +68,8 @@ class LoginViewModel(
                 sharedPrefEdit.putString(USER_EMAIL, email)
 
                 Timber.i("Signed in successfully with email and password")
-                auth.currentUser?.getIdToken(true)
+                val currentUser = auth.currentUser
+                currentUser?.getIdToken(true)
                     ?.addOnSuccessListener { result: GetTokenResult? ->
                         val courseId: String? = result?.claims?.get("courseId") as String?
                         if (courseId.isNullOrEmpty()) {
@@ -98,7 +102,13 @@ class LoginViewModel(
                         }
                         val sharedPrefBol = sharedPreferences.getBoolean(IS_ADMIN, false)
                         Timber.i("The shared preferences boolean is $sharedPrefBol")
-                        initiateEvent(_mainNavigator)
+
+                        if (currentUser.isEmailVerified) {
+                            initiateEvent(_mainNavigator)
+                        } else {
+                            _snackBarText2.value =
+                                Event("We sent you an email in your inbox. Please verify")
+                        }
                     }
 
                 return@addOnCompleteListener
