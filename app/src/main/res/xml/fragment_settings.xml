@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
         app:key="timetable_category"
         app:title="Timetable">
@@ -17,5 +18,14 @@
             app:key="prior_alarm"
             app:title="Alert how many minutes before?"
             app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="support_category"
+        app:title="Support">
+        <Preference
+            app:title="Privacy Policy"
+            app:key="privacy_policy">
+        </Preference>
     </PreferenceCategory>
 </PreferenceScreen>

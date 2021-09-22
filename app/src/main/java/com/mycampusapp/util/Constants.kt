@@ -18,3 +18,4 @@ const val DOCUMENTS = "documents"
 const val CAMERA_CODE_PERMISSIONS = 10
 val CAMERA_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
 const val FILE_SIZE_LIMIT = 25000000
+const val PRIVACY_POLICY_LINK = "https://raphaelndonga.github.io/My-Campus-App/"
