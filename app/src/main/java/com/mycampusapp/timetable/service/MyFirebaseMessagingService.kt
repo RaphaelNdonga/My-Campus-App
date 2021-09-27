@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.text.format.DateFormat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
@@ -86,11 +87,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                                 timetableClass,
                                 dayOfWeek
                             ).timeInMillis - millisPrior
-                        alarmManager.setExact(
-                            AlarmManager.RTC_WAKEUP,
-                            triggerTime,
-                            pendingIntent
-                        )
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            alarmManager.setExactAndAllowWhileIdle(
+                                AlarmManager.RTC_WAKEUP,
+                                triggerTime,
+                                pendingIntent
+                            )
+                        } else {
+                            alarmManager.setExact(
+                                AlarmManager.RTC_WAKEUP,
+                                triggerTime,
+                                pendingIntent
+                            )
+                        }
                         Timber.i("The alarm will ring ${TimeUnit.MILLISECONDS.toMinutes(triggerTime - System.currentTimeMillis())} minutes from now")
                         if (dayOfWeek == getTodayEnumDay()) {
                             val immediateMessage =
@@ -147,11 +156,19 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
                         val triggerTime =
                             getAssessmentCalendar(assessment).timeInMillis - millisPrior
-                        alarmManager.setExact(
-                            AlarmManager.RTC_WAKEUP,
-                            triggerTime,
-                            pendingIntent
-                        )
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            alarmManager.setExactAndAllowWhileIdle(
+                                AlarmManager.RTC_WAKEUP,
+                                triggerTime,
+                                pendingIntent
+                            )
+                        } else {
+                            alarmManager.setExact(
+                                AlarmManager.RTC_WAKEUP,
+                                triggerTime,
+                                pendingIntent
+                            )
+                        }
                         sendNotification(message = message, assessmentType = assessmentType)
                     }
                 }

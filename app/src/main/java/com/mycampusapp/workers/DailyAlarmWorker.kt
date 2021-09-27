@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.text.format.DateFormat
 import androidx.hilt.work.HiltWorker
 import androidx.preference.PreferenceManager
@@ -97,11 +98,19 @@ class DailyAlarmWorker(
                     val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
                     val triggerTime = getTimetableCalendar(todayClass, getTodayEnumDay())
                         .timeInMillis - millisPrior
-                    alarmManager.setExact(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerTime,
-                        pendingIntent
-                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTime,
+                            pendingIntent
+                        )
+                    } else {
+                        alarmManager.setExact(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTime,
+                            pendingIntent
+                        )
+                    }
                 }
                 /**
                  * Only set up the reactivating worker if there is an inactive class. Even though
@@ -146,11 +155,19 @@ class DailyAlarmWorker(
                         applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                     val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
                     val triggerTime = tomorrowCalendar.timeInMillis - millisPrior
-                    alarmManager.setExact(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerTime,
-                        pendingIntent
-                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTime,
+                            pendingIntent
+                        )
+                    } else {
+                        alarmManager.setExact(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTime,
+                            pendingIntent
+                        )
+                    }
                 }
             }
         }
@@ -186,11 +203,19 @@ class DailyAlarmWorker(
                         applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                     val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
                     val triggerTime = getAssessmentCalendar(assignment).timeInMillis - millisPrior
-                    alarmManager.setExact(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerTime,
-                        pendingIntent
-                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTime,
+                            pendingIntent
+                        )
+                    } else {
+                        alarmManager.setExact(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTime,
+                            pendingIntent
+                        )
+                    }
                 }
             }
         }
@@ -228,11 +253,19 @@ class DailyAlarmWorker(
                         applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                     val millisPrior = TimeUnit.MINUTES.toMillis(minutesPrior)
                     val triggerTime = getAssessmentCalendar(test).timeInMillis - millisPrior
-                    alarmManager.setExact(
-                        AlarmManager.RTC_WAKEUP,
-                        triggerTime,
-                        pendingIntent
-                    )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        alarmManager.setExactAndAllowWhileIdle(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTime,
+                            pendingIntent
+                        )
+                    }else{
+                        alarmManager.setExact(
+                            AlarmManager.RTC_WAKEUP,
+                            triggerTime,
+                            pendingIntent
+                        )
+                    }
                 }
             }
         }
