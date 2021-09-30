@@ -54,7 +54,7 @@
     <string name="no_tests_string">No tests in the near future!</string>
     <string name="sign_up_text">Verifying sign up details</string>
     <string name="course_exists">This course already has an admin</string>
-    <string name="course_non_existent">This course does not exist</string>
+    <string name="course_non_existent">This course does not exist. Consider creating an admin account.</string>
     <string name="network_error_msg">Please check your internet connection and try again</string>
     <string name="invalid_password">The password should contain at least 8 characters</string>
     <string name="invalid_email">Please enter a valid email address.</string>
@@ -71,7 +71,7 @@
     <string name="place_holder">Place holder</string>
     <string name="new_assessment_text">Create a new assessment</string>
     <string name="next">Next</string>
-    <string name="admin_sign_up_txt">sign up as class rep</string>
+    <string name="admin_sign_up_txt">sign up as admin</string>
     <string name="regular_sign_up_txt">sign up as regular student</string>
     <string name="new_user_txt">New User?</string>
     <string name="new_class_txt">Create a new class</string>
