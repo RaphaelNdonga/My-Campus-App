@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/signup_view_margin"
             android:hint="@string/course_id"
-            app:helperText="This is the unique id that connects the admin to the regular users">
+            app:helperText="@string/course_id_helper_txt">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"

@@ -98,4 +98,5 @@
     <string name="go_back">Go back</string>
     <string name="options">Options</string>
     <string name="dismiss">Dismiss</string>
+    <string name="course_id_helper_txt">This is the unique id that connects the admin to the regular users. For example: ElectronicsEngineering2018</string>
 </resources>
