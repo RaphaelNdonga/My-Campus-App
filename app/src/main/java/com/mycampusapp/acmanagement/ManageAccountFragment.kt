@@ -56,6 +56,7 @@ class ManageAccountFragment : Fragment() {
 
         if (viewModel.isAdmin()) {
             binding.manageUsersBtn.visibility = View.VISIBLE
+            binding.manageUsersHelperTxt.visibility = View.VISIBLE
         }
 
         binding.manageUsersBtn.setOnClickListener {
