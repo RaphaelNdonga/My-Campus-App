@@ -10,8 +10,13 @@
         <entry key="app/src/main/res/drawable/ic_shutter_normal.xml" value="0.1388888888888889" />
         <entry key="app/src/main/res/drawable/ic_shutter_pressed.xml" value="0.1388888888888889" />
         <entry key="app/src/main/res/drawable/ic_switch_camera.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_alarm.xml" value="0.1" />
         <entry key="app/src/main/res/layout/documents_fragment.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_account_management.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_camera.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_manage_users.xml" value="0.19322916666666667" />
+        <entry key="app/src/main/res/layout/fragment_sign_up.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_timetable.xml" value="0.1" />
         <entry key="app/src/main/res/layout/list_item_document.xml" value="0.1" />
         <entry key="app/src/main/res/layout/list_item_image.xml" value="0.18" />
