@@ -140,6 +140,8 @@ class LoginFragment : Fragment() {
         binding.newUserTxt.visibility = View.GONE
         binding.classRepSignUpBtn.visibility = View.GONE
         binding.regularStudentSignUpBtn.visibility = View.GONE
+        binding.adminHelperTxt.visibility = View.GONE
+        binding.regularHelperTxt.visibility = View.GONE
         binding.loggingInTxt.visibility = View.VISIBLE
         binding.progressBar.visibility = View.VISIBLE
     }
@@ -153,6 +155,8 @@ class LoginFragment : Fragment() {
         binding.newUserTxt.visibility = View.VISIBLE
         binding.classRepSignUpBtn.visibility = View.VISIBLE
         binding.regularStudentSignUpBtn.visibility = View.VISIBLE
+        binding.regularHelperTxt.visibility = View.VISIBLE
+        binding.adminHelperTxt.visibility = View.VISIBLE
         binding.loggingInTxt.visibility = View.GONE
         binding.progressBar.visibility = View.GONE
     }

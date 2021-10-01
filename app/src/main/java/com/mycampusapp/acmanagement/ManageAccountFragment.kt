@@ -51,7 +51,8 @@ class ManageAccountFragment : Fragment() {
         ).get(ManageAccountViewModel::class.java)
 
         binding.accountDetailsEmail.text = viewModel.getEmail()
-        binding.accountDetailsCourse.text = viewModel.getCourseId()
+        val courseIdText = "Course Id: ${viewModel.getCourseId()}"
+        binding.accountDetailsCourse.text = courseIdText
 
         if (viewModel.isAdmin()) {
             binding.manageUsersBtn.visibility = View.VISIBLE

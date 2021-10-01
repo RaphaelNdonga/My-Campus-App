@@ -113,7 +113,7 @@
             android:id="@+id/admin_helper_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recommended if you are the first to register your course"
+            android:text="@string/admin_user_helper_txt"
             app:layout_constraintBottom_toTopOf="@+id/regular_student_sign_up_btn"
             app:layout_constraintStart_toStartOf="@id/class_rep_sign_up_btn"
             app:layout_constraintTop_toBottomOf="@+id/class_rep_sign_up_btn" />
@@ -134,7 +134,7 @@
             android:id="@+id/regular_helper_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Only use this if someone has shared the course id with you"
+            android:text="@string/regular_user_helper_txt"
             app:layout_constraintStart_toStartOf="@id/regular_student_sign_up_btn"
             app:layout_constraintTop_toBottomOf="@+id/regular_student_sign_up_btn" />
 

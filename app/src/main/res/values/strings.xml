@@ -99,4 +99,7 @@
     <string name="options">Options</string>
     <string name="dismiss">Dismiss</string>
     <string name="course_id_helper_txt">This is the unique id that connects the admin to the regular users. For example: ElectronicsEngineering2018</string>
+    <string name="manage_users_helper_txt">Promote regular users to admins or demote them</string>
+    <string name="regular_user_helper_txt">Only use this if someone has shared the course id with you</string>
+    <string name="admin_user_helper_txt">Recommended if you are the first to register your course</string>
 </resources>
